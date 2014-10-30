@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-	<link rel="stylesheet" href="bootstrap.min.css">
-	<meta charset="UTF-8">
-	<title>Document</title>
-	<div class="navbar navbar-default">
+<div class="navbar navbar-default">
   <div class="navbar-header">
-    <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="#">MeMe</a>
+    <a class="navbar-brand" href="#">Brand</a>
   </div>
   <div class="navbar-collapse collapse navbar-responsive-collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">能力</a></li>
-      <li><a href="#">揪咪</a></li>
+      <li class="active"><a href="#">Active</a></li>
+      <li><a href="#">Link</a></li>
       <li class="dropdown">
-        <a class="dropdown-toggle" aria-expanded="false" href="#" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="#">Action</a></li>
           <li><a href="#">Another action</a></li>
@@ -32,12 +25,12 @@
       </li>
     </ul>
     <form class="navbar-form navbar-left">
-      <input class="form-control col-lg-8" type="text" placeholder="Search">
+      <input type="text" class="form-control col-lg-8" placeholder="Search">
     </form>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="#">Link</a></li>
       <li class="dropdown">
-        <a class="dropdown-toggle" aria-expanded="false" href="#" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Dropdown <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="#">Action</a></li>
           <li><a href="#">Another action</a></li>
@@ -49,8 +42,3 @@
     </ul>
   </div>
 </div>
-</head>
-<body>
-	
-</body>
-</html>
