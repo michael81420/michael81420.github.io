@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>功率半導體三段價值鏈深度分析 — 成長幅度與「肉」之所在</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--card2:#1c2330;--bd:#30363d;--tx:#e6edf3;--mut:#8b949e;
+--g:#3fb950;--r:#f85149;--y:#d29922;--b:#58a6ff;--p:#bc8cff;--accent:#2f81f7;}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#0d1117,#0b0f14);color:var(--tx);
+font-family:-apple-system,"PingFang TC","Helvetica Neue",Arial,sans-serif;line-height:1.65}
+.wrap{max-width:1120px;margin:0 auto;padding:24px 18px 80px}
+header{text-align:center;padding:40px 16px 28px;border-bottom:1px solid var(--bd);margin-bottom:8px}
+header h1{font-size:30px;margin:0 0 10px;letter-spacing:.5px}
+header .sub{color:var(--mut);font-size:15px}
+.badge{display:inline-block;background:#1f2937;color:var(--b);border:1px solid var(--bd);
+border-radius:20px;padding:3px 12px;font-size:12px;margin:4px 4px 0}
+h2{font-size:21px;margin:42px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+h3{font-size:16px;color:var(--b);margin:22px 0 8px}
+p{color:#cdd9e5;font-size:14.5px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px 22px;margin:14px 0}
+.tldr{background:linear-gradient(135deg,#13233b,#161b22);border:1px solid #28456e}
+.tldr h2{border:0;padding:0;margin-top:0}
+.tldr .big{font-size:18px;color:#fff;font-weight:600;margin:6px 0}
+.win{color:var(--g);font-weight:700}
+.mid{color:var(--y);font-weight:700}
+.lose{color:var(--r);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;overflow:hidden;border-radius:8px}
+th,td{padding:8px 9px;text-align:right;border-bottom:1px solid var(--bd)}
+th{background:#1a212c;color:var(--mut);font-weight:600;text-align:right;position:sticky;top:0}
+td:first-child,th:first-child,td.l,th.l{text-align:left}
+tr:hover td{background:#1a2230}
+.tag{font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600}
+.t-os{background:#3b2a1a;color:#e3a008}
+.t-idm{background:#1a2e3b;color:#56b6ff}
+.t-mid{background:#1a3b27;color:#56d364}
+.chart-box{position:relative;height:340px;margin:14px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.chart-box{height:300px}}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+.scard{background:var(--card2);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.scard .nm{font-size:16px;font-weight:700}
+.scard .px{float:right;color:var(--b);font-weight:700}
+.scard .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mut);
+border-bottom:1px dashed #2a323d;padding:4px 0}
+.scard .row b{color:var(--tx);font-weight:600}
+.scard .cmt{font-size:12px;color:#aeb9c4;margin-top:8px;line-height:1.5}
+.pill{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;margin-top:6px}
+.p-top{background:#16331f;color:#56d364;border:1px solid #2ea043}
+.p-warn{background:#3a1d1d;color:#ff7b72;border:1px solid #da3633}
+.p-watch{background:#33291a;color:#e3a008;border:1px solid #9e6a03}
+ul{font-size:14px;color:#cdd9e5}li{margin:5px 0}
+.note{font-size:12px;color:var(--mut)}
+.quote{background:#10202f;border-left:3px solid var(--b);padding:10px 16px;border-radius:6px;margin:8px 0;font-size:13.5px}
+.foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--bd);color:var(--mut);font-size:12px}
+.scoretable td{text-align:center}.scoretable td.l{text-align:left}
+.s5{color:#56d364;font-weight:700}.s3{color:#e3a008;font-weight:700}.s1{color:#ff7b72;font-weight:700}
+</style></head><body><div class="wrap">
+
+<header>
+<h1>功率半導體三段價值鏈 · 深度分析</h1>
+<div class="sub">海外 IDM × 台灣 IDM × 中下游 / 架線 —— 成長幅度誰大?搭配股價,肉在哪一段?</div>
+<div style="margin-top:10px">
+<span class="badge">質化主軸:股癌 EP671 + 產業鏈地圖</span>
+<span class="badge">數據:Futu(海外)+ FinMind(台股)</span>
+<span class="badge">取數日:2026-06-19</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 一句話結論</h2>
+<p class="big">📈 成長幅度:<span class="win">中下游 / 架線</span> &gt; <span class="mid">台灣 IDM</span> &gt; <span class="lose">海外 IDM</span></p>
+<p class="big">🍖 肉最多:<span class="win">台灣中下游 / 架線</span> 這一段——成長最強且部分估值仍合理</p>
+<p>核心邏輯與股癌「<b>外溢效應</b>」一致:海外 IDM 把高毛利高階品留著、把中低階訂單外溢給台廠,
+最直接、彈性最大的受惠者是<b>承接委外的封測 / 導線架(架線)</b>。海外 IDM 雖將迎景氣復甦,但以 <b>forward PE</b> 衡量已偏貴
+(38–52 倍、歷史 98–99 分位),且<b>現價高於晨星(Morningstar)獨立研報之公允價值</b>(ON +35%、STM +9%、TXN +4%),肉已被吃掉一大半。</p>
+<p class="note">★ 估值一律以 <b>forward PE</b> 為錨,並用晨星研報之公允價值/星級交叉驗證真實性;<b>不採用賣方分析師目標價與評級</b>(預測準度不足)。</p>
+<p class="big" style="margin-top:14px">🎯 三檔代表:</p>
+<ul>
+<li><span class="win">捷敏-KY (6525)</span> — CP 值最高:前瞻 PE ~21、PEG ~1.9、殖利率 3.5%,委外成長確定性高。</li>
+<li><span class="win">順德 (2351)</span> — 成長爆發力最強:月營收 YoY <b>+36.8%</b>、毛利率 12%→19%(VPD 導線架直接吃 AI 伺服器),但估值貴(PEG 3.4),需獲利兌現。</li>
+<li><span class="p-watch" style="padding:1px 8px;border-radius:10px">漢磊 (3707)</span> — 轉機 / 選擇權:SiC/GaN 代工剛轉虧為盈,外資近 2 月狂買 1.6 萬張,高風險高彈性。</li>
+</ul>
+</div>
+
+<h2>一、股癌 EP671 核心論點(本報告前提)</h2>
+<div class="card">
+<div class="quote">💡 <b>外溢效應</b>:AI 伺服器與 800V 高壓爆發時,海外 IDM(英飛凌、TI)把毛利 40–50%+ 的高階品(DrMOS / 高階 SiC)留著,中低階訂單「外溢」給台廠。</div>
+<div class="quote">💡 <b>地緣紅利</b>:Nexperia(安世)受制裁 → 大廠「非中化」提早布局,台系成二線供應商驗證對象。</div>
+<div class="quote">💡 <b>800V DC 破冰</b>:即使明年滲透率僅 5%,GB300 / Rubin 單顆 1800W 也讓功率元件「用量 + 密度」大增。</div>
+<div class="quote">💡 <b>先行指標</b>:觀察英飛凌、安森美等美股 IDM 巨頭動向,確認趨勢啟動。</div>
+<p class="note">★ 本報告「相信上述論點正確」,並以當前數據檢驗:論點若成立,錢會怎麼流、哪一段彈性最大、現價是否已反映。</p>
+</div>
+
+<h2>二、三段價值鏈 · 分工與金流方向</h2>
+<div class="card">
+<p style="text-align:center;font-size:15px;line-height:2.2">
+<span class="tag t-os">① 海外 IDM</span> 英飛凌 / 安森美 / 意法 / TI&nbsp;&nbsp;<b style="color:var(--g)">— 外溢中低階訂單 →</b><br>
+<span class="tag t-idm">② 台灣 IDM</span> 強茂 / 台半 / 朋程 / 富鼎&nbsp;&nbsp;<b style="color:var(--g)">— 委外封測/導線架 →</b><br>
+<span class="tag t-mid">③ 中下游 / 架線</span> 順德 / 捷敏 / 界霖(+ 漢磊 / 世界先進 代工)
+</p>
+<p class="note">越往下游,基期越低、營運槓桿越大 → 成長彈性越高;但波動與估值也需逐檔檢視。</p>
+</div>
+
+<h2>三、成長幅度比較(最新月營收 YoY)</h2>
+<div class="card"><div class="chart-box"><canvas id="growthChart"></canvas></div>
+<p class="note">海外 IDM 以 FY2025 全年營收 YoY 表示(景氣低谷,2026 為復甦年);台股為 2026/05 單月營收 YoY。
+中下游 / 架線整段營收 YoY 普遍 +18~37%,明顯領先。</p></div>
+
+<h2>四、判讀前提:產業循環的兩種烈度(本益比悖論)</h2>
+<div class="card">
+<p>估值與「肉」要怎麼讀,先看這個產業屬於哪一種循環——這決定 PE 能不能用、市場 front-run(提前反映)有多猛。</p>
+<div style="overflow-x:auto"><table>
+<tr><th class=l>面向</th><th class=l>深度商品循環</th><th class=l>溫和循環</th></tr>
+<tr><td class=l>本質</td><td class=l>報價驅動的大宗商品</td><td class=l>規格品 / 長約</td></tr>
+<tr><td class=l>谷底獲利</td><td class=l><span class="lose">會虧損(EPS 轉負)</span></td><td class=l><span class="win">仍維持正獲利</span></td></tr>
+<tr><td class=l>毛利率擺盪</td><td class=l>劇烈(可由負到 40%+)</td><td class=l>溫和(約 30%↔60%)</td></tr>
+<tr><td class=l>PE 可用性</td><td class=l>轉折點失效(谷底 PE 爆高/負)</td><td class=l>仍有參考性</td></tr>
+<tr><td class=l>市場 front-run</td><td class=l>最猛、最早</td><td class=l>幅度小、較漸進</td></tr>
+<tr><td class=l>本案對應</td><td class=l><span class="tag t-os">記憶體 · 被動元件(MLCC)</span></td><td class=l><span class="tag t-idm">功率 / 類比 IDM</span></td></tr>
+</table></div>
+<div class="quote">⚠️ <b>本益比悖論</b>:循環股的 trailing PE 會反向騙人——<b>谷底 EPS 低 / 負 → PE 爆高,常是買點;頂部 EPS 高 → PE 看似便宜,常是賣點</b>。市場永遠走在 EPS 上修之前。故估值要用 <b>forward PE</b>,並用獨立 through-cycle 研報(晨星公允價值)看穿循環驗證,而非看當期 trailing PE,也不採信賣方目標價。</div>
+<p class="note"><b>對本報告海外 IDM 的意涵</b>:功率 / 類比 IDM 屬<b>溫和循環</b>(谷底 ON/STM/TXN 都沒虧過),故 forward PE 仍可用;且晨星 through-cycle 公允價值已把復甦正常化計入,ON 現價仍高於公允價值 +35% → 屬「結構成長已被 price-in」,<b>而非「估值還沒更新」</b>。反之,深度商品循環(記憶體/被動)在谷底用 PE 判斷會嚴重失真,需改用價格動能、報價週期與正常化獲利。</p>
+</div>
+
+<h2>五、估值地圖 · 前瞻 PE vs 成長(找便宜的成長)</h2>
+<div class="card"><div class="chart-box"><canvas id="valChart"></canvas></div>
+<p class="note">橫軸=前瞻成長率,縱軸=前瞻 PE。<b>越靠右下=越便宜的成長(肉越多)</b>。
+台股前瞻 EPS 為自建估值(Q1'26 實際 + 後三季以各檔假設成長率推估),非券商目標價。</p></div>
+
+<h2>六、完整數據表</h2>
+<div class="card">
+<h3>海外 IDM(Futu 行情 + 晨星研報,2026-06-19)</h3>
+<div style="overflow-x:auto"><table id="osTable"></table></div>
+<p class="note">★ 以 forward PE(38–52 倍、歷史分位 74–99%)為估值錨,並以晨星公允價值交叉驗證:
+現價皆高於公允價值(ON +35% 為高估★★、STM +9%、TXN +4% 為合理★★★)→ 景氣復甦的成長大致已反映在價格。</p>
+</div>
+<div class="card">
+<h3>台股 三段(FinMind,股價 2026-06-18 / 營收 2026-05)</h3>
+<div style="overflow-x:auto"><table id="twTable"></table></div>
+<p class="note">PEG = 前瞻PE ÷ 前瞻成長率;漢磊仍虧損故無 PE/PEG。法人為近約 2 個月(4/15 起)買賣超合計,單位:張。</p>
+</div>
+
+<h2>七、籌碼面 · 近 2 個月法人動向</h2>
+<div class="card"><div class="chart-box"><canvas id="chipChart"></canvas></div>
+<p class="note">正=淨買超、負=淨賣超(張)。外資狂買漢磊(+1.6萬)、世界先進(+20萬);
+<b>富鼎遭外資大賣 −6,364 張</b>(配合營收持平 + 股價已漲逾年線 109%,為警訊)。</p></div>
+
+<h2>八、個股卡片</h2>
+<div id="segCards"></div>
+
+<h2>九、分段「肉」綜合評分(成長 + 估值 + 籌碼)</h2>
+<div class="card">
+<div style="overflow-x:auto"><table class="scoretable" id="scoreTable"></table></div>
+<p class="note">評分 1–5(5最佳)。綜合 = 成長 × 估值 × 籌碼三維。代表整段相對吸引力,非個股買賣建議。</p>
+</div>
+
+<h2>十、結論與配置思路</h2>
+<div class="card">
+<h3>🥇 肉最多:中下游 / 架線</h3>
+<p>成長幅度三段最大(營收 YoY +18~37%)、且伴隨毛利率擴張(順德 12%→19%、界霖 12%→19%)的營運槓桿,
+完全對應股癌「外溢效應」。估值分歧:<b>捷敏-KY (6525)</b> 前瞻 PE ~21、PEG ~1.9、殖利率 3.5% 為 CP 值最高;
+<b>順德 (2351)</b> 成長最猛但 PEG 3.4 偏貴,賭 VPD 放量;<b>漢磊 (3707)</b> 轉機選擇權,外資狂買但尚未獲利。</p>
+<h3>🥈 居中:台灣 IDM</h3>
+<p>強茂、台半站上波段新高、投信買盤強,但前瞻 PE 仍 42–47、PEG 偏高;<b>台半 (5425)</b> PEG ~2.0 相對合理。
+<span class="lose">警訊:富鼎 (8261)</span> 營收近持平、外資大賣、股價卻漲逾年線 109%,追高風險高;朋程營收衰退(EV 競爭)。</p>
+<h3>🥉 肉最少:海外 IDM</h3>
+<p>2026 將迎景氣復甦(TXN 已 +13% 領先),但 forward PE 已 38–52 倍、估值歷史高分位,
+且<b>現價高於晨星公允價值</b>(ON +35% 已被評為高估),上檔有限。
+最佳用途是當股癌說的「<b>先行指標</b>」——確認趨勢啟動,而非賺價差的標的。</p>
+<h3>⚠️ 風險</h3>
+<ul>
+<li><b>已大漲</b>:台股這批多站上年線 50~109%、區間位階 90~100%,屬「對的故事 + 不便宜的價格」,追高須留意回檔。</li>
+<li><b>滲透率不如預期</b>:800V DC 明年僅 5% 滲透,若 AI 資本支出或 EV 放緩,高基期估值修正快。</li>
+<li><b>低基期錯覺</b>:架線股 EPS 自虧損 / 低基期回升,YoY 數字漂亮但需確認結構性訂單(委外釋單)延續。</li>
+<li><b>自建估值假設</b>:前瞻 EPS 為本報告推估(假設已逐檔標註),非精確預測,實際以財報為準。</li>
+</ul>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:海外 IDM 報價 / 財報 / 前瞻 PE / 晨星(Morningstar)公允價值研報 — Futu OpenAPI(2026-06-19);
+<b>估值方法</b>:以 forward PE 為錨 + 晨星獨立研報交叉驗證,不採用賣方分析師目標價/評級;
+台股月營收 / 損益 / PER / 法人 / 股價 — FinMind(股價 2026-06-18、營收 2026-05);
+質化論點 — NotebookLM「功率半導體」筆記本(股癌 EP671 + 產業鏈地圖)。<br>
+<b>免責聲明</b>:本報告為數據彙整與分析,前瞻 EPS / PE / PEG 為作者自建估值並標明假設,
+<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證並評估自身風險承受度。
+</div>
+
+<script>
+const D={"overseas": [{"id": "ON", "name": "onsemi 安森美", "price": 121.62, "rev_fy25": "60.0億美元", "rev_yoy": -15.3, "eps_fy25": 0.29, "gm": 33.1, "ttm_pe": 89.4, "fwd_pe": 38.5, "ms_fv": 90.0, "ms_star": 2, "vs_fv": 35.1, "note": "FY25營收-15%、淨利-92%深陷低谷,EPS自2023高點4.89崩至0.29;車用SiC領導者。晨星★★(高估):公允價值$90、隱含2026 PE 29x,料毛利率38%→50%(2030)、AI資料中心$2.5億→$20億(2030)"}, {"id": "STM", "name": "STMicro 意法", "price": 78.39, "rev_fy25": "118.0億美元", "rev_yoy": -11.1, "eps_fy25": 0.18, "gm": 33.9, "ttm_pe": 489.9, "fwd_pe": 52.1, "ms_fv": 72.0, "ms_star": 3, "vs_fv": 8.9, "note": "FY25營收-11%、淨利-88%,EPS 4.46→0.18;車用SiC先驅(特斯拉)。晨星★★★:公允價值$72、隱含2026/27 PE 55x/23x,估值已在歷史98分位"}, {"id": "TXN", "name": "TI 德州儀器", "price": 322.86, "rev_fy25": "176.8億美元", "rev_yoy": 13.0, "eps_fy25": 5.45, "gm": 57.0, "ttm_pe": 55.2, "fwd_pe": 40.2, "ms_fv": 310.0, "ms_star": 3, "vs_fv": 4.1, "note": "FY25營收+13%已領先回升、毛利率57%;類比+電源龍頭。晨星★★★:公允價值$310、隱含2026/27/28 PE 40x/30x/24x,估值歷史99分位"}, {"id": "IFNNY", "name": "Infineon 英飛凌", "price": null, "rev_fy25": "~150億歐元", "rev_yoy": null, "eps_fy25": null, "gm": null, "ttm_pe": null, "fwd_pe": null, "ms_fv": null, "ms_star": null, "vs_fv": null, "note": "全球功率半導體霸主、8吋SiC已量產;為OTC(IFNNY)無Futu即時數據,僅列質化定位"}], "tw": [{"id": "2481", "name": "強茂", "seg": "台灣IDM", "price": 160.0, "rev_yoy": 13.7, "rev_cum": 11.3, "ttm_eps": 3.14, "ttm_pe": 51.0, "fy26": 3.38, "fwd_pe": 47.3, "peg": 6.22, "pbr": 4.22, "yield": 1.13, "vs_ma": 85.6, "pos": 95.8, "inst": 33598, "foreign": -2354, "trust": 33559, "gm_q": [31.1, 30.3, 30.7, 31.3, 32.7, 32.7], "eps_q": [0.53, 0.72, 0.66, 0.79, 0.94, 0.75], "note": "營收YoY+14%但毛利率僅微升,法人投信買、外資小賣,保守給+10%"}, {"id": "5425", "name": "台半", "seg": "台灣IDM", "price": 118.5, "rev_yoy": 11.8, "rev_cum": 1.4, "ttm_eps": 2.31, "ttm_pe": 51.3, "fy26": 2.79, "fwd_pe": 42.5, "peg": 2.04, "pbr": 3.66, "yield": 1.69, "vs_ma": 96.5, "pos": 100.0, "inst": 6998, "foreign": 1654, "trust": 1451, "gm_q": [27.5, 27.1, 29.5, 30.6, 30.7, 31.3], "eps_q": [0.62, 0.47, 0.17, 0.6, 0.84, 0.7], "note": "EPS自Q2低基期強彈、毛利率27→31%,但累計YoY僅+1.4%,給+30%回升"}, {"id": "8255", "name": "朋程", "seg": "台灣IDM", "price": 195.0, "rev_yoy": -11.6, "rev_cum": -7.0, "ttm_eps": 5.71, "ttm_pe": 34.2, "fy26": 5.51, "fwd_pe": 35.4, "peg": null, "pbr": 2.54, "yield": 1.79, "vs_ma": 46.3, "pos": 94.8, "inst": 1675, "foreign": 904, "trust": 0, "gm_q": [29.5, 28.8, 27.5, 24.1, 26.5, 26.9], "eps_q": [1.74, 2.32, 0.38, 1.95, 1.68, 1.7], "note": "營收YoY-12%、毛利率下滑,EV競爭,給-5%"}, {"id": "8261", "name": "富鼎", "seg": "台灣IDM", "price": 215.0, "rev_yoy": 1.2, "rev_cum": 6.5, "ttm_eps": 5.85, "ttm_pe": 36.8, "fy26": 5.85, "fwd_pe": 36.8, "peg": null, "pbr": 4.18, "yield": 2.33, "vs_ma": 108.8, "pos": 100.0, "inst": -5769, "foreign": -6364, "trust": 22, "gm_q": [33.7, 37.0, 37.9, 36.8, 37.9, 38.1], "eps_q": [1.6, 1.45, 0.67, 1.93, 1.68, 1.57], "note": "營收近持平、外資大賣,毛利率高但無成長,給0%"}, {"id": "2351", "name": "順德", "seg": "中下游架線", "price": 195.0, "rev_yoy": 36.8, "rev_cum": 19.1, "ttm_eps": 2.27, "ttm_pe": 85.9, "fy26": 2.74, "fwd_pe": 71.2, "peg": 3.44, "pbr": 4.9, "yield": 0.56, "vs_ma": 93.2, "pos": 78.9, "inst": 6569, "foreign": 3828, "trust": 3335, "gm_q": [12.6, 14.6, 10.5, 12.4, 15.8, 19.1], "eps_q": [0.75, 0.62, -0.23, 0.48, 0.8, 1.22], "note": "營收YoY+37%、毛利率12→19%強烈經營槓桿,VPD放量,給+45%"}, {"id": "6525", "name": "捷敏-KY", "seg": "中下游架線", "price": 143.0, "rev_yoy": 19.0, "rev_cum": 14.7, "ttm_eps": 6.07, "ttm_pe": 23.6, "fy26": 6.74, "fwd_pe": 21.2, "peg": 1.93, "pbr": 4.21, "yield": 3.5, "vs_ma": 71.7, "pos": 100.0, "inst": -2354, "foreign": -3043, "trust": 485, "gm_q": [22.7, 24.6, 28.9, 28.3, 24.5, 26.1], "eps_q": [1.54, 1.42, 1.1, 1.85, 1.5, 1.62], "note": "營收YoY+19%、毛利率高檔,委外穩定,給+15%"}, {"id": "5285", "name": "界霖", "seg": "中下游架線", "price": 93.7, "rev_yoy": 18.5, "rev_cum": 10.4, "ttm_eps": 2.11, "ttm_pe": 44.4, "fy26": 2.55, "fwd_pe": 36.7, "peg": 1.76, "pbr": 3.22, "yield": 1.6, "vs_ma": 73.3, "pos": 90.0, "inst": 4813, "foreign": 4654, "trust": 120, "gm_q": [11.8, 12.8, 13.2, 12.6, 14.7, 18.7], "eps_q": [0.85, 0.43, 0.03, 0.55, 0.53, 1.0], "note": "低基期回升、毛利率11→19%,給+40%"}, {"id": "3707", "name": "漢磊", "seg": "中下游架線", "price": 83.2, "rev_yoy": 28.0, "rev_cum": 24.0, "ttm_eps": -1.77, "ttm_pe": null, "fy26": null, "fwd_pe": null, "peg": null, "pbr": 4.58, "yield": 0.0, "vs_ma": 50.2, "pos": 89.3, "inst": 16416, "foreign": 16373, "trust": 0, "gm_q": [-2.9, -5.7, -4.2, -2.9, -1.0, 5.1], "eps_q": [-0.43, -0.55, -0.47, -0.48, -0.47, -0.35], "note": "仍虧損(EPS為負),毛利率剛轉正,屬轉機選擇權,不給前瞻PE"}, {"id": "5347", "name": "世界先進", "seg": "中下游架線", "price": 174.5, "rev_yoy": 19.5, "rev_cum": 8.5, "ttm_eps": 4.21, "ttm_pe": 41.4, "fy26": 4.51, "fwd_pe": 38.7, "peg": 5.45, "pbr": 4.76, "yield": 2.58, "vs_ma": 52.0, "pos": 89.5, "inst": 159929, "foreign": 205303, "trust": -51525, "gm_q": [28.7, 30.1, 28.0, 26.8, 27.5, 29.3], "eps_q": [1.04, 1.31, 1.11, 0.93, 0.95, 1.22], "note": "營收YoY+20%但EPS較平、毛利率持平,大型代工,給+10%"}], "seg_order": ["海外IDM", "台灣IDM", "中下游架線"], "seg_label": {"海外IDM": "① 海外 IDM(技術主導/外溢來源)", "台灣IDM": "② 台灣 IDM(自有設計+晶圓/模組)", "中下游架線": "③ 台灣 IDM 中下游 / 架線(導線架+委外封測,外溢直接受惠)"}};
+const C={os:'#e3a008',idm:'#56b6ff',mid:'#56d364'};
+const segColor=s=>s==='海外IDM'?C.os:(s==='台灣IDM'?C.idm:C.mid);
+Chart.defaults.color='#8b949e';Chart.defaults.font.family="'PingFang TC',sans-serif";
+Chart.defaults.borderColor='#30363d';
+
+// 成長 bar
+const gLabels=[],gVals=[],gCol=[];
+D.overseas.filter(o=>o.rev_yoy!=null).forEach(o=>{gLabels.push(o.id+'(FY25)');gVals.push(o.rev_yoy);gCol.push(C.os)});
+D.tw.forEach(t=>{if(t.rev_yoy!=null){gLabels.push(t.id+' '+t.name);gVals.push(t.rev_yoy);gCol.push(segColor(t.seg))}});
+new Chart(document.getElementById('growthChart'),{type:'bar',
+data:{labels:gLabels,datasets:[{label:'營收 YoY %',data:gVals,backgroundColor:gCol}]},
+options:{indexAxis:'y',plugins:{legend:{display:false},
+title:{display:true,text:'營收年增率 YoY %(黃=海外IDM 藍=台灣IDM 綠=中下游/架線)'}},
+scales:{x:{title:{display:true,text:'YoY %'}}}}});
+
+// 估值散點 前瞻PE vs 成長
+function fwdGrowth(t){if(t.fy26==null||t.ttm_eps==null||t.ttm_eps<=0)return null;return +(((t.fy26/t.ttm_eps)-1)*100).toFixed(1);}
+const pts={海外IDM:[],台灣IDM:[],中下游架線:[]};
+D.tw.forEach(t=>{const g=fwdGrowth(t);if(g!=null&&t.fwd_pe!=null)pts[t.seg].push({x:g,y:t.fwd_pe,label:t.id+t.name})});
+// 海外: 用 fwd_pe, 成長以 FY25->fwd 隱含(以分析師 forward 反推, 簡化用復甦標示於右側)
+D.overseas.forEach(o=>{if(o.fwd_pe!=null){pts['海外IDM'].push({x: o.id==='TXN'?47:(o.id==='ON'?80:60), y:o.fwd_pe,label:o.id})}});
+new Chart(document.getElementById('valChart'),{type:'scatter',
+data:{datasets:[
+{label:'海外IDM',data:pts['海外IDM'],backgroundColor:C.os,pointRadius:7},
+{label:'台灣IDM',data:pts['台灣IDM'],backgroundColor:C.idm,pointRadius:7},
+{label:'中下游/架線',data:pts['中下游架線'],backgroundColor:C.mid,pointRadius:7},
+]},options:{plugins:{legend:{position:'top'},
+tooltip:{callbacks:{label:c=>c.raw.label+' (成長'+c.raw.x+'%, 前瞻PE '+c.raw.y+')'}},
+title:{display:true,text:'前瞻 PE vs 前瞻成長率 — 越靠右下越便宜的成長'}},
+scales:{x:{title:{display:true,text:'前瞻成長率 %(海外為景氣復甦概略值)'}},
+y:{title:{display:true,text:'前瞻 PE(倍)'}}}}});
+
+// 籌碼
+const cLabels=D.tw.map(t=>t.id+' '+t.name);
+new Chart(document.getElementById('chipChart'),{type:'bar',
+data:{labels:cLabels,datasets:[
+{label:'外資淨(張)',data:D.tw.map(t=>t.foreign||0),backgroundColor:'#58a6ff'},
+{label:'投信淨(張)',data:D.tw.map(t=>t.trust||0),backgroundColor:'#bc8cff'},
+]},options:{plugins:{title:{display:true,text:'近2個月法人買賣超(張)— 外資 vs 投信'}},
+scales:{y:{title:{display:true,text:'淨買賣張數'}}}}});
+
+// 海外表
+const ot=document.getElementById('osTable');
+const stars=n=>n!=null?'★'.repeat(n)+'☆'.repeat(5-n):'—';
+ot.innerHTML='<tr><th class=l>代號</th><th class=l>名稱</th><th>現價$</th><th>FY25營收YoY</th><th>FY25 EPS</th><th>毛利率</th><th>前瞻PE</th><th>晨星公允價值</th><th>現價vs公允</th><th>晨星星級</th></tr>'+
+D.overseas.map(o=>`<tr><td class=l><b>${o.id}</b></td><td class=l>${o.name}</td>
+<td>${o.price??'—'}</td><td>${o.rev_yoy!=null?o.rev_yoy+'%':'—'}</td><td>${o.eps_fy25??'—'}</td>
+<td>${o.gm!=null?o.gm+'%':'—'}</td><td><b>${o.fwd_pe??'—'}</b></td><td>${o.ms_fv!=null?'$'+o.ms_fv:'—'}</td>
+<td style="color:${o.vs_fv>20?'#ff7b72':(o.vs_fv!=null?'#e3a008':'#8b949e')}">${o.vs_fv!=null?'+'+o.vs_fv+'%':'—'}</td>
+<td title="5★深度低估 1★高估">${stars(o.ms_star)}</td></tr>`).join('');
+
+// 台股表
+const tagOf=s=>s==='海外IDM'?'<span class="tag t-os">海外</span>':(s==='台灣IDM'?'<span class="tag t-idm">台IDM</span>':'<span class="tag t-mid">架線</span>');
+const tt=document.getElementById('twTable');
+const order={'台灣IDM':1,'中下游架線':2};
+const tws=[...D.tw].sort((a,b)=>(order[a.seg]-order[b.seg])||(b.rev_yoy-a.rev_yoy));
+tt.innerHTML='<tr><th class=l>段</th><th class=l>代號</th><th class=l>名稱</th><th>股價</th><th>營收YoY</th><th>TTM EPS</th><th>TTM PE</th><th>FY26E EPS</th><th>前瞻PE</th><th>PEG</th><th>PBR</th><th>殖利率</th><th>vs年線</th><th>區間位階</th></tr>'+
+tws.map(t=>`<tr><td class=l>${tagOf(t.seg)}</td><td class=l><b>${t.id}</b></td><td class=l>${t.name}</td>
+<td>${t.price}</td>
+<td style="color:${t.rev_yoy>=15?'#56d364':(t.rev_yoy<0?'#ff7b72':'#e6edf3')}">${t.rev_yoy!=null?t.rev_yoy+'%':'—'}</td>
+<td>${t.ttm_eps??'—'}</td><td>${t.ttm_pe??'—'}</td><td>${t.fy26??'—'}</td>
+<td>${t.fwd_pe??'—'}</td>
+<td style="color:${t.peg!=null&&t.peg<2?'#56d364':(t.peg!=null&&t.peg>3?'#ff7b72':'#e6edf3')}">${t.peg??'—'}</td>
+<td>${t.pbr??'—'}</td><td>${t.yield!=null?t.yield+'%':'—'}</td>
+<td style="color:${t.vs_ma>80?'#e3a008':'#8b949e'}">+${t.vs_ma}%</td>
+<td>${t.pos!=null?t.pos+'%':'—'}</td></tr>`).join('');
+
+// 個股卡片 分段
+const sc=document.getElementById('segCards');
+const PILL={'6525':['p-top','🥇 CP值最高'],'2351':['p-top','🥇 成長最猛'],'3707':['p-watch','🎲 轉機選擇權'],
+'5425':['p-watch','相對合理'],'8261':['p-warn','⚠️ 追高/外資賣'],'8255':['p-warn','⚠️ 營收衰退'],'5347':['p-watch','外資大買']};
+D.seg_order.filter(s=>s!=='海外IDM').forEach(seg=>{
+ const h=document.createElement('h3');h.textContent=D.seg_label[seg];sc.appendChild(h);
+ const box=document.createElement('div');box.className='cards';
+ D.tw.filter(t=>t.seg===seg).sort((a,b)=>b.rev_yoy-a.rev_yoy).forEach(t=>{
+  const pill=PILL[t.id]?`<span class="pill ${PILL[t.id][0]}">${PILL[t.id][1]}</span>`:'';
+  const d=document.createElement('div');d.className='scard';
+  d.innerHTML=`<div class="nm">${t.name}<span class="px">${t.price}</span><br><span style="font-size:12px;color:#8b949e">${t.id}</span></div>
+  <div class="row"><span>營收YoY</span><b style="color:${t.rev_yoy>=15?'#56d364':(t.rev_yoy<0?'#ff7b72':'#e6edf3')}">${t.rev_yoy}%</b></div>
+  <div class="row"><span>TTM PE / 前瞻PE</span><b>${t.ttm_pe??'—'} / ${t.fwd_pe??'—'}</b></div>
+  <div class="row"><span>PEG / PBR</span><b>${t.peg??'—'} / ${t.pbr??'—'}</b></div>
+  <div class="row"><span>殖利率 / vs年線</span><b>${t.yield??'—'}% / +${t.vs_ma}%</b></div>
+  <div class="row"><span>近2月法人(張)</span><b style="color:${t.inst>=0?'#56d364':'#ff7b72'}">${t.inst>=0?'+':''}${t.inst.toLocaleString()}</b></div>
+  <div class="cmt">${t.note||''}</div>${pill}`;
+  box.appendChild(d);
+ });
+ sc.appendChild(box);
+});
+
+// 分段評分
+const scores=[
+ ['海外IDM','① 海外 IDM',2,2,3,'復甦但已反映:forward PE 38-52、現價高於晨星公允價值(ON +35%)'],
+ ['台灣IDM','② 台灣 IDM',3,3,3,'成長分歧、估值偏貴、籌碼有買有賣(富鼎外資大賣)'],
+ ['中下游架線','③ 中下游/架線',5,4,4,'成長最強+營運槓桿,外溢直接受惠;捷敏估值合理'],
+];
+const st=document.getElementById('scoreTable');
+const cls=v=>v>=4?'s5':(v>=3?'s3':'s1');
+st.innerHTML='<tr><th class=l>分段</th><th>成長</th><th>估值</th><th>籌碼</th><th>綜合「肉」</th><th class=l>說明</th></tr>'+
+scores.map(r=>{const tot=((r[2]+r[3]+r[4])/3).toFixed(1);
+return `<tr><td class=l><b>${r[1]}</b></td><td class="${cls(r[2])}">${r[2]}</td><td class="${cls(r[3])}">${r[3]}</td>
+<td class="${cls(r[4])}">${r[4]}</td><td class="${cls(tot)}" style="font-size:15px">${tot}</td><td class=l>${r[5]}</td></tr>`}).join('');
+</script>
+</div></body></html>
