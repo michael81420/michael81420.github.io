@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ponytail · 讓 AI agent 像最懶的資深工程師那樣寫 code</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 回到列表</a><button class="theme-toggle" onclick="toggleTheme()">☾</button></div>
+
+<header>
+<h1>Ponytail · 讓 AI agent 像最懶的資深工程師那樣寫 code</h1>
+<div class="sub">一個跨平台的「行為規則注入套件」——不執行任何程式，只在 AI agent 動筆前塞進一句話：<b>「這段 code 到底需不需要存在？」</b><br>口號：<i>The best code is the code you never wrote.</i></div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://github.com/DietrichGebert/ponytail" target="_blank" rel="noopener">來源:GitHub · DietrichGebert/ponytail ↗</a>
+<span class="badge">主語言:JavaScript / Python</span>
+<span class="badge">授權:MIT</span>
+<span class="badge">整理日:2026-06-26</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🪶 Ponytail 是 <span class="win">prompt 層的「過度工程 linter」</span>，不是框架、不是 runtime。</p>
+<p>它把一組「資深工程師的偷懶直覺」寫成規則，透過各平台的 hook / config 機制，注入到 Claude Code、Cursor、Codex、Copilot 等 <b>14+ 個 AI agent</b> 的 system context。核心是一條<b>決策梯</b>：寫任何一行 code 前，由上往下問，碰到第一個成立的就停手。</p>
+<p class="note">★ 效果完全取決於模型的「指令遵循能力」——沒有 guardrail 強制驗證 agent 真的走過這條梯子。買的是<b>思考框架</b>，不是保證數字。</p>
+</div>
+
+<h2>它解決什麼問題</h2>
+<div class="card">
+<p>AI agent 寫 code 最常見的毛病是 <b>hallucinated bloat</b>（幻覺式臃腫）：</p>
+<ul>
+<li>幫你裝整包 lodash，只為了寫 <code>x =&gt; x * 2</code></li>
+<li>幫你建一個 <code>DatePickerWrapperComponent</code>，包住一個原生 <code>&lt;input type="date"&gt;</code></li>
+<li>幫單一用途的 code 蓋一層 interface + factory + config</li>
+</ul>
+<p>Ponytail 直接在<b>認知層</b>堵住這個洞——不是事後 code review 補救，而是在 agent 開始想之前就改變它的預設傾向。</p>
+</div>
+
+<h2>核心：決策梯（Decision Ladder）</h2>
+<div class="card">
+<p>agent 在寫 code 前必須由上往下走過這個梯子，<b>碰到第一個適用點就停</b>：</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">1 · 這根本不需要存在嗎？</div><div class="kd">直接跳過（YAGNI）。投機性需求一律砍。</div></div>
+<div class="kcard"><div class="kt">2 · Codebase 已有實作？</div><div class="kd">重用，不要重寫。</div></div>
+<div class="kcard"><div class="kt">3 · 標準函式庫有？</div><div class="kd">用 stdlib。</div></div>
+<div class="kcard"><div class="kt">4 · 原生平台 feature？</div><div class="kd">用原生，如 <code>&lt;input type="date"&gt;</code> 而非 picker library。</div></div>
+<div class="kcard"><div class="kt">5 · 已安裝的 dependency？</div><div class="kd">用它，別為幾行 code 加新依賴。</div></div>
+<div class="kcard"><div class="kt">6 · 一行搞定？</div><div class="kd">寫一行。都不行才寫最小可行實作。</div></div>
+</div>
+<p class="note" style="margin-top:12px">★ <b>不可跳過的安全底線</b>（所有強度等級都保留）：trust boundary 驗證、資料遺失防護、security、accessibility、防 data loss 的 error handling。明確區分「可以偷懶的」和「絕對不能省的」，是這個工具的工程誠信所在。</p>
+</div>
+
+<h2>它怎麼運作</h2>
+<div class="card">
+<p>Ponytail 不是 standalone 工具，而是跨平台的<b>規則同步 + 注入系統</b>，依各 agent 的能力分三種注入方式：</p>
+<table>
+<tr><th class="l">機制</th><th class="l">對象</th><th class="l">做法</th></tr>
+<tr><td class="l"><b>靜態 rules</b></td><td class="l">Cursor / Windsurf / Cline / Copilot</td><td class="l">在 repo 放 <code>.cursor/rules/</code>、<code>.clinerules</code>、<code>.github/copilot-instructions.md</code>，啟動時讀入為 always-on context</td></tr>
+<tr><td class="l"><b>生命週期 Hook</b></td><td class="l">Claude Code / Codex（CLI）</td><td class="l">用 Node.js lifecycle hooks 在 session 開始 / 每次 prompt 時動態注入</td></tr>
+<tr><td class="l"><b>Skill 命令</b></td><td class="l">Claude Code / Gemini CLI 等</td><td class="l">提供可呼叫指令（見下）</td></tr>
+</table>
+<p style="margin-top:12px"><code>scripts/sync-rules.js</code> 負責讓「核心規則文字」在所有平台格式間保持一致——這是維護 14+ agent 支援的關鍵基礎設施。</p>
+<p style="margin-top:10px"><b>可呼叫的指令：</b></p>
+<ul>
+<li><code>/ponytail [lite|full|ultra|off]</code> — 切換強度</li>
+<li><code>/ponytail-review</code> — 分析目前 diff 是否過度工程</li>
+<li><code>/ponytail-audit</code> — 掃整個 repo 的複雜度</li>
+<li><code>/ponytail-debt</code> — 把延遲優化的 comment 整理成可執行 ledger</li>
+<li><code>/ponytail-gain</code> — 顯示 benchmark 數據</li>
+</ul>
+</div>
+
+<h2>強度等級</h2>
+<div class="card">
+<table>
+<tr><th class="l">等級</th><th class="l">行為</th></tr>
+<tr><td class="l"><span class="pill p-neu">lite</span></td><td class="l">溫和建議，不強制</td></tr>
+<tr><td class="l"><span class="pill p-bull">full</span></td><td class="l"><b>預設</b>；平衡的最小化</td></tr>
+<tr><td class="l"><span class="pill p-turn">ultra</span></td><td class="l">對嚴重過度工程的 codebase 激進最小化</td></tr>
+<tr><td class="l"><span class="pill p-bear">off</span></td><td class="l">關閉</td></tr>
+</table>
+<p class="note" style="margin-top:10px">預設值可用環境變數 <code>PONYTAIL_DEFAULT_MODE</code> 或 <code>~/.config/ponytail/config.json</code> 設定。</p>
+</div>
+
+<h2>工程師觀點</h2>
+<div class="card">
+<h3>👍 好在哪</h3>
+<ul>
+<li><b>問題診斷精準</b>：在認知層堵 bloat，而非事後補救。</li>
+<li><b>零 runtime 開銷</b>：純 prompt 層，對正式環境毫無影響。</li>
+<li><b>跨平台</b>：IDE 與 CLI 兩型都覆蓋，sync 腳本讓規則維護不失控。</li>
+<li><b>有安全底線</b>：明確列出「絕對不能省」，避免淪為讓 agent 略過安全檢查的工具。</li>
+</ul>
+<h3>⚠️ 取捨與隱憂</h3>
+<ul>
+<li><b>完全依賴 LLM 的指令遵循</b>：沒有 guardrail 驗證 agent 真的走過決策梯。context 滿時規則可能被模型忽略。</li>
+<li><b>Benchmark 需存疑</b>：README 宣稱「54% less code、27% faster、100% safe」是自述、在特定 12 個任務上測的，缺第三方驗證；已精簡的 codebase 效益趨近零。</li>
+<li><b>「懶」不等於「對」</b>：YAGNI 那步由 agent 自己判斷，可能誤砍真正必要的邏輯——ultra 模式在 legacy code 上尤其危險。</li>
+<li><b>維護負擔</b>：14+ 平台 = 14+ 套格式要同步，平台改規格時有滯後風險。</li>
+</ul>
+</div>
+
+<div class="kbox">
+<div class="kcard"><div class="kt">KP1 · 本質是 prompt 層 linter</div><div class="kd">不執行程式，只插入「思考前先問的清單」。輕量無風險，但效果取決於模型。</div></div>
+<div class="kcard"><div class="kt">KP2 · 決策梯是精華</div><div class="kd">YAGNI → 原生 → stdlib → 已有依賴 → 一行 → MVP，把資深直覺明確寫給 agent。</div></div>
+<div class="kcard"><div class="kt">KP3 · 數字當方向，非保證</div><div class="kd">54% less code 在過度工程場景成立，已精簡 codebase 近乎零效益。</div></div>
+<div class="kcard"><div class="kt">KP4 · 安全底線是誠信標誌</div><div class="kd">保留不可省略清單，避免變成「偷懶略過安全」的工具。</div></div>
+</div>
+
+<h2>什麼時候用、什麼時候別用</h2>
+<div class="card">
+<p><b class="win">適合</b>：agentic workflow 下 agent 常「多做事」、想控 LLM 成本、legacy refactor 要聚焦最小改動、成熟 codebase 不想引入新依賴。</p>
+<p><b class="lose">不適合</b>：greenfield 需要搭完整鷹架、prototype / spike 要創作空間、ultra + 複雜業務邏輯（過度刪減風險高）、不熟 YAGNI 的初級工程師寫第一個專案。</p>
+</div>
+
+<h2>類似專案 / 延伸閱讀</h2>
+<div class="card">
+<table>
+<tr><th class="l">專案</th><th class="l">何時選它</th></tr>
+<tr><td class="l"><b>CLAUDE.md 自定義指令</b></td><td class="l">Claude Code 原生支援，直接寫 coding guidelines。單一工具、不需跨平台同步時首選，零外部依賴。</td></tr>
+<tr><td class="l"><b>Cursor Rules（.cursorrules）</b></td><td class="l">純 Cursor 生態的 always-on rules，Cursor 重度用戶可自行借鑑 Ponytail 的規則文字。</td></tr>
+<tr><td class="l"><b>continue.dev</b></td><td class="l">開源 AI coding assistant，可設自定 system prompt 與 workflow。更廣但需更多設定。</td></tr>
+<tr><td class="l"><b>Aider</b></td><td class="l">CLI agent，支援 <code>--system-prompt</code>，可直接貼入決策梯規則，不需裝 plugin。偏好 git-native 流程者選它。</td></tr>
+</table>
+</div>
+
+<h2>Repo 基本事實</h2>
+<div class="card">
+<table>
+<tr><th class="l">項目</th><th class="l">數據</th></tr>
+<tr><td class="l">作者</td><td class="l">DietrichGebert（個人帳號）</td></tr>
+<tr><td class="l">建立 / 整理日</td><td class="l">2026-06-12 / 整理日 2026-06-26（repo 才 14 天）</td></tr>
+<tr><td class="l">Stars / Forks</td><td class="l">~57.8k / ~2.9k（兩週病毒式成長）</td></tr>
+<tr><td class="l">Open Issues</td><td class="l">83</td></tr>
+<tr><td class="l">最新版本</td><td class="l">v4.8.3（2026-06-24，共 13 個 release）</td></tr>
+<tr><td class="l">授權 / 語言</td><td class="l">MIT · JavaScript 55% / Python 44%</td></tr>
+<tr><td class="l">Homepage</td><td class="l">ponytail.dev</td></tr>
+</table>
+<p class="note" style="margin-top:10px">★ 57.8k stars 在 14 天累積極不尋常，代表觸動市場痛點；但 v4.8.3 + 14 天 repo 的組合也顯示版本跑很快，<b>長期穩定性與維護仍需觀察</b>。</p>
+</div>
+
+<div class="foot"><b>資料來源</b>:<a href="https://github.com/DietrichGebert/ponytail" target="_blank" rel="noopener">github.com/DietrichGebert/ponytail</a> · <a href="https://ponytail.dev" target="_blank" rel="noopener">ponytail.dev</a>（README、檔案結構、GitHub API 驗證之 stars/forks/release）。benchmark 數字為作者自述、未經第三方驗證。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資或技術選型建議。</div>
+</div></body></html>
