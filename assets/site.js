@@ -17,6 +17,19 @@ function initHome(){
   var hero=document.getElementById('hero');
   var empty=document.getElementById('empty');
   var cat='全部',q='';
+  // 自動把最新一篇（依 .pc-date）填進精選
+  function dateNum(c){var p=(c.querySelector('.pc-date')||{}).textContent||'';var m=p.match(/\d+/g)||[];return (+m[0]||0)*10000+(+m[1]||0)*100+(+m[2]||0);}
+  if(hero){
+    var cards=[].slice.call(grid.querySelectorAll('.post-card'));
+    var latest=cards.sort(function(a,b){return dateNum(b)-dateNum(a);})[0];
+    if(latest){
+      hero.href=latest.getAttribute('href');
+      hero.querySelector('.kicker').textContent='精選 · '+latest.dataset.cat;
+      hero.querySelector('.f-title').textContent=latest.querySelector('.pc-title').textContent;
+      hero.querySelector('.f-excerpt').textContent=latest.querySelector('.pc-excerpt').textContent;
+      hero.querySelector('.f-meta').textContent=latest.querySelector('.pc-date').textContent;
+    }
+  }
   function apply(){
     var anyVisible=false;
     grid.querySelectorAll('.post-card').forEach(function(c){
