@@ -49,6 +49,11 @@ input{font-family:inherit;outline:none}
   background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 16px}
 .btn-back:hover{color:var(--accent);border-color:var(--accent);text-decoration:none}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:6px}
+.tb-actions{display:flex;align-items:center;gap:10px}
+/* 語言切換鈕（中/EN）— 沿用 theme-toggle 視覺，較寬以容文字 */
+.lang-toggle{height:38px;min-width:42px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;font-weight:700;color:var(--ink);flex:none}
+.lang-toggle:hover{border-color:var(--accent)}
 
 /* ============================================================
    首頁（列表頁）
@@ -114,7 +119,7 @@ input{font-family:inherit;outline:none}
 /* ============================================================
    文章（深度報告）— 沿用原 class，套用紙質主題
    ============================================================ */
-.wrap{max-width:1120px;margin:0 auto;padding:14px 18px 80px}
+.wrap{max-width:1240px;margin:0 auto;padding:14px 18px 80px}
 .wrap header{text-align:center;padding:32px 16px 28px;border-bottom:1px solid var(--border);margin:14px 0 8px}
 .wrap header h1{font-size:30px;margin:0 0 10px;letter-spacing:-.01em;color:var(--ink);font-weight:800}
 .wrap header .sub{color:var(--ink2);font-size:15px}
@@ -206,3 +211,31 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
 
 @media(max-width:760px){.cards{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.chart-box{height:300px}
   .hero-img{height:200px}.sec-img{height:150px}}
+
+/* ============================================================
+   文章頁左側「所有文章」樹（site.js 動態注入，依 body[data-slug]）
+   版面：頂部返回鈕靠左、標題置中＋標誌線，線下才是
+   [左側清單][置中內文][右側對稱留白]——讓內文真正置中。
+   ============================================================ */
+.article-cols{display:grid;grid-template-columns:210px minmax(0,1fr) 210px;gap:32px;align-items:start;margin-top:10px}
+.article-body{min-width:0}
+.rail{position:sticky;top:20px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
+.rail-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding:0 4px}
+.rail nav{display:flex;flex-direction:column;gap:4px}
+.rail-toggle{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border-radius:8px;padding:8px 6px;color:var(--ink)}
+.rail-toggle:hover{background:var(--surface)}
+.rail-toggle .chev{font-size:10px;color:var(--ink3);width:10px;flex:none;transition:transform .15s ease;transform:rotate(90deg)}
+.rail-group.collapsed .rail-toggle .chev{transform:rotate(0deg)}
+.rail-toggle .rg-cat{flex:1;font-size:13px;font-weight:700}
+.rail-toggle .rg-count{font-size:11px;font-weight:600;color:var(--ink3)}
+.rail-items{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 9px;padding-left:8px;border-left:1px solid var(--border)}
+.rail-group.collapsed .rail-items{display:none}
+.rail-item{font-size:13px;line-height:1.45;border-radius:7px;padding:8px 10px;color:var(--ink2);font-weight:500}
+.rail-item:hover{background:var(--surface);text-decoration:none}
+.rail-item.active{background:var(--accent);color:#fff;font-weight:700}
+.rail-item.active:hover{background:var(--accent);color:#fff}
+
+@media(max-width:980px){
+  .article-cols{grid-template-columns:1fr;gap:0}
+  .rail{position:static;margin:0 0 18px}
+}

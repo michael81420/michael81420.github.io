@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>michael · Investing Notes</title>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
+</head><body>
+
+<div class="home">
+
+  <header class="home-head">
+    <a href="index.en.html" class="brand">michael</a>
+    <nav>
+      <a class="icon-link" href="https://www.linkedin.com/in/hc-hsieh-michael" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a class="icon-link" href="https://github.com/michael81420" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.27-.01-1.16-.02-2.1-3.34.7-4.04-1.4-4.04-1.4-.55-1.36-1.34-1.72-1.34-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.78 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.77 0-1.27.47-2.31 1.23-3.13-.12-.29-.53-1.48.12-3.08 0 0 1-.31 3.3 1.19a11.6 11.6 0 0 1 6 0c2.3-1.5 3.3-1.19 3.3-1.19.65 1.6.24 2.79.12 3.08.77.82 1.23 1.86 1.23 3.13 0 4.48-2.81 5.47-5.49 5.76.43.36.81 1.08.81 2.18 0 1.57-.01 2.84-.01 3.23 0 .31.21.68.83.56C20.56 21.88 24 17.49 24 12.29 24 5.78 18.63.5 12 .5z"/></svg>
+      </a>
+      <button class="lang-toggle" onclick="toggleLang()">中</button>
+      <button class="theme-toggle" onclick="toggleTheme()">☾</button>
+    </nav>
+  </header>
+
+  <div class="tagline">Supply-chain breakdowns · valuation checks · cycle calls — and the things worth writing down.</div>
+
+  <!-- Featured (site.js auto-fills with the latest post) -->
+  <a id="hero" class="featured" href="posts/power-semiconductor-ep672.en.html">
+    <div class="blob"></div>
+    <div class="inner">
+      <span class="kicker">Featured · Gooaye Podcast</span>
+      <div class="f-title">Gooaye EP672 · Stock Notes</div>
+      <div class="f-excerpt">Overseas IDM × Taiwan IDM × mid/downstream — where is the growth, and where is the meat? Anchored on forward PE and cross-checked with Morningstar.</div>
+      <div class="f-meta">2026 · 6 · 21 · Deep dive</div>
+    </div>
+  </a>
+
+  <!-- Category + search -->
+  <div class="toolbar">
+    <button class="chip active" data-cat="全部">All</button>
+    <button class="chip" data-cat="股癌podcast分析">Gooaye Podcast</button>
+    <button class="chip" data-cat="AI 技術分享">AI Notes</button>
+    <button class="chip" data-cat="旅遊">Travel</button>
+    <div class="search">
+      <div class="dot"></div>
+      <input id="search" type="text" placeholder="Search…">
+    </div>
+  </div>
+
+  <div class="empty" id="empty" style="display:none">No matching posts — try another category or keyword.</div>
+
+  <!-- Post list -->
+  <div class="grid" id="grid">
+
+    <a class="post-card" data-cat="股癌podcast分析"
+       data-title="Gooaye EP674 stock notes review fact check"
+       data-excerpt="rebalance correction quarterly line micron gross margin oil price 0050 ytd google spacex tesla apple rotation"
+       href="posts/gooaye-ep674-stocks.en.html">
+      <span class="pc-cat">Gooaye Podcast</span>
+      <div class="pc-title">Gooaye EP674 · Stock Notes</div>
+      <div class="pc-excerpt">First-half performance review, the rebalance correction, and a line-by-line fact check of the on-air numbers — oil price, Micron margins, 0050 returns — flagging what holds up and what doesn't.</div>
+      <div class="pc-date">2026 · 6 · 27</div>
+    </a>
+
+    <a class="post-card" data-cat="AI 技術分享"
+       data-title="Ponytail make AI agent write code like the laziest senior engineer"
+       data-excerpt="claude code cursor yagni over-engineering prompt linter decision ladder skill hook"
+       href="posts/ponytail.en.html">
+      <span class="pc-cat">AI Notes</span>
+      <div class="pc-title">Ponytail · Stop AI Agents Over-Engineering</div>
+      <div class="pc-excerpt">A prompt-layer "over-engineering linter" that forces the agent to ask, before writing a line: does this even need to exist? With an engineer's take and similar projects.</div>
+      <div class="pc-date">2026 · 6 · 26</div>
+    </a>
+
+    <a class="post-card" data-cat="股癌podcast分析"
+       data-title="Gooaye EP673 stock notes transcript"
+       data-excerpt="passive components yageo mediatek broadcom asic memory index transcript"
+       href="posts/gooaye-ep673-stocks.en.html">
+      <span class="pc-cat">Gooaye Podcast</span>
+      <div class="pc-title">Gooaye EP673 · Stock Notes</div>
+      <div class="pc-excerpt">A name-by-name pass over the TW and US stocks from this episode, tagged bullish/bearish, with a sentiment overview table and sector catalysts.</div>
+      <div class="pc-date">2026 · 6 · 24</div>
+    </a>
+
+    <a class="post-card" data-cat="股癌podcast分析"
+       data-title="Power semiconductor three-tier value chain deep dive EP672"
+       data-excerpt="overseas idm taiwan idm mid downstream wire bonding forward pe morningstar capacity is king"
+       href="posts/power-semiconductor-ep672.en.html">
+      <span class="pc-cat">Gooaye Podcast</span>
+      <div class="pc-title">Gooaye EP672 · Stock Notes</div>
+      <div class="pc-excerpt">Growth comparison across the three value-chain tiers, a valuation map and per-segment "meat" scoring, with a second-pass check on forward EPS.</div>
+      <div class="pc-date">2026 · 6 · 21</div>
+    </a>
+
+    <a class="post-card" data-cat="旅遊"
+       data-title="5 day 4 night Nagoya local culture trip itinerary food souvenirs cafes"
+       data-excerpt="nagoya atsuta shrine osu inuyama castle meiji mura gifu kinkazan hida takayama tea ceremony hida beef kissaten ogura toast souvenirs"
+       href="posts/nagoya-5d4n.en.html">
+      <span class="pc-cat">Travel</span>
+      <div class="pc-title">Nagoya 5-Day Local Culture Trip</div>
+      <div class="pc-excerpt">A slow route from Atsuta Shrine, Inuyama Castle and Gifu's Kinkazan to Hida-Takayama and a tea-ceremony experience, with daily transit, restaurants and a top-15 souvenir/café list.</div>
+      <div class="pc-date">2026 · 4 · 9</div>
+    </a>
+
+  </div>
+
+  <footer class="home-foot">
+    <div class="f-links">
+      <a class="icon-link" href="https://www.linkedin.com/in/hc-hsieh-michael" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a class="icon-link" href="https://github.com/michael81420" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.27-.01-1.16-.02-2.1-3.34.7-4.04-1.4-4.04-1.4-.55-1.36-1.34-1.72-1.34-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.78 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.77 0-1.27.47-2.31 1.23-3.13-.12-.29-.53-1.48.12-3.08 0 0 1-.31 3.3 1.19a11.6 11.6 0 0 1 6 0c2.3-1.5 3.3-1.19 3.3-1.19.65 1.6.24 2.79.12 3.08.77.82 1.23 1.86 1.23 3.13 0 4.48-2.81 5.47-5.49 5.76.43.36.81 1.08.81 2.18 0 1.57-.01 2.84-.01 3.23 0 .31.21.68.83.56C20.56 21.88 24 17.49 24 12.29 24 5.78 18.63.5 12 .5z"/></svg>
+      </a>
+    </div>
+    <div class="f-copy">© 2026 michael · Personal research notes only — not investment advice.</div>
+  </footer>
+
+</div>
+
+</body></html>

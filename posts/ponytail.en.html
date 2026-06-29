@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ponytail · Getting AI Agents to Code Like the Laziest Senior Engineer</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="ponytail"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Ponytail · Getting AI Agents to Code Like the Laziest Senior Engineer</h1>
+<div class="sub">A cross-platform "behavioral rules injection package" — it executes nothing, it just slips one question in before the AI agent starts writing: <b>"Does this code even need to exist?"</b><br>Motto: <i>The best code is the code you never wrote.</i></div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://github.com/DietrichGebert/ponytail" target="_blank" rel="noopener">Source: GitHub · DietrichGebert/ponytail ↗</a>
+<span class="badge">Primary language: JavaScript / Python</span>
+<span class="badge">License: MIT</span>
+<span class="badge">Compiled: 2026-06-26</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🪶 Ponytail is a <span class="win">prompt-layer "over-engineering linter"</span> — not a framework, not a runtime.</p>
+<p>It encodes a set of "lazy senior engineer instincts" as rules and injects them into the system context of <b>14+ AI agents</b> — Claude Code, Cursor, Codex, Copilot and more — via each platform's hook / config mechanism. The core is a <b>Decision Ladder</b>: before writing any line of code, walk it top to bottom and stop at the first step that applies.</p>
+<p class="note">★ Effectiveness depends entirely on the model's instruction-following ability — there is no guardrail that verifies the agent actually walked the ladder. You are buying a <b>thinking framework</b>, not a guaranteed metric.</p>
+</div>
+
+<h2>What Problem It Solves</h2>
+<div class="card">
+<p>The most common failure mode of AI agents writing code is <b>hallucinated bloat</b>:</p>
+<ul>
+<li>Installing the entire lodash package just to write <code>x =&gt; x * 2</code></li>
+<li>Creating a <code>DatePickerWrapperComponent</code> around a plain <code>&lt;input type="date"&gt;</code></li>
+<li>Adding an interface + factory + config layer on top of single-use code</li>
+</ul>
+<p>Ponytail plugs this hole at the <b>cognitive layer</b> — not by patching things up in a code review after the fact, but by shifting the agent's default inclination before it even begins to think.</p>
+</div>
+
+<h2>The Core: Decision Ladder</h2>
+<div class="card">
+<p>Before writing any code, the agent must walk down this ladder top to bottom and <b>stop at the first applicable rung</b>:</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">1 · Does this need to exist at all?</div><div class="kd">Skip it (YAGNI). Speculative requirements get cut unconditionally.</div></div>
+<div class="kcard"><div class="kt">2 · Already implemented in the codebase?</div><div class="kd">Reuse it — don't rewrite it.</div></div>
+<div class="kcard"><div class="kt">3 · In the standard library?</div><div class="kd">Use stdlib.</div></div>
+<div class="kcard"><div class="kt">4 · A native platform feature?</div><div class="kd">Use the native one — e.g. <code>&lt;input type="date"&gt;</code> instead of a picker library.</div></div>
+<div class="kcard"><div class="kt">5 · An already-installed dependency?</div><div class="kd">Use it — don't add a new dependency for a few lines of code.</div></div>
+<div class="kcard"><div class="kt">6 · One-liner?</div><div class="kd">Write one line. Only if none of the above apply: write the minimum viable implementation.</div></div>
+</div>
+<p class="note" style="margin-top:12px">★ <b>Non-negotiable safety floor</b> (retained at every intensity level): trust boundary validation, data-loss prevention, security, accessibility, and error handling that prevents data loss. The explicit distinction between "where laziness is fine" and "what must never be skipped" is the engineering integrity of this tool.</p>
+</div>
+
+<h2>How It Works</h2>
+<div class="card">
+<p>Ponytail is not a standalone tool — it is a cross-platform <b>rules sync + injection system</b> that uses three injection strategies depending on what each agent supports:</p>
+<table>
+<tr><th class="l">Mechanism</th><th class="l">Targets</th><th class="l">Approach</th></tr>
+<tr><td class="l"><b>Static rules</b></td><td class="l">Cursor / Windsurf / Cline / Copilot</td><td class="l">Drop files (<code>.cursor/rules/</code>, <code>.clinerules</code>, <code>.github/copilot-instructions.md</code>) in the repo; they are read in as always-on context at startup</td></tr>
+<tr><td class="l"><b>Lifecycle hooks</b></td><td class="l">Claude Code / Codex (CLI)</td><td class="l">Use Node.js lifecycle hooks to inject rules dynamically at session start and on each prompt</td></tr>
+<tr><td class="l"><b>Skill commands</b></td><td class="l">Claude Code / Gemini CLI, etc.</td><td class="l">Expose callable commands (see below)</td></tr>
+</table>
+<p style="margin-top:12px"><code>scripts/sync-rules.js</code> keeps the canonical rule text consistent across all platform formats — the critical infrastructure behind supporting 14+ agents without losing coherence.</p>
+<p style="margin-top:10px"><b>Available commands:</b></p>
+<ul>
+<li><code>/ponytail [lite|full|ultra|off]</code> — switch intensity level</li>
+<li><code>/ponytail-review</code> — analyze the current diff for over-engineering</li>
+<li><code>/ponytail-audit</code> — scan the entire repo for complexity</li>
+<li><code>/ponytail-debt</code> — compile deferred-optimization comments into an actionable ledger</li>
+<li><code>/ponytail-gain</code> — display benchmark data</li>
+</ul>
+</div>
+
+<h2>Intensity Levels</h2>
+<div class="card">
+<table>
+<tr><th class="l">Level</th><th class="l">Behavior</th></tr>
+<tr><td class="l"><span class="pill p-neu">lite</span></td><td class="l">Gentle suggestions, non-enforced</td></tr>
+<tr><td class="l"><span class="pill p-bull">full</span></td><td class="l"><b>Default</b>; balanced minimization</td></tr>
+<tr><td class="l"><span class="pill p-turn">ultra</span></td><td class="l">Aggressive minimization for severely over-engineered codebases</td></tr>
+<tr><td class="l"><span class="pill p-bear">off</span></td><td class="l">Disabled</td></tr>
+</table>
+<p class="note" style="margin-top:10px">The default can be configured via the <code>PONYTAIL_DEFAULT_MODE</code> environment variable or <code>~/.config/ponytail/config.json</code>.</p>
+</div>
+
+<h2>Engineer's Take</h2>
+<div class="card">
+<h3>👍 What's Good</h3>
+<ul>
+<li><b>Precise problem diagnosis</b>: plugs bloat at the cognitive layer rather than patching it after the fact.</li>
+<li><b>Zero runtime overhead</b>: purely prompt-layer — zero impact on production environments.</li>
+<li><b>Cross-platform</b>: covers both IDE and CLI agents; the sync script keeps rule maintenance from spiraling out of control.</li>
+<li><b>Has a safety floor</b>: explicitly lists what must never be skipped, preventing the tool from becoming an excuse for agents to bypass security checks.</li>
+</ul>
+<h3>⚠️ Trade-offs and Concerns</h3>
+<ul>
+<li><b>Fully reliant on the LLM's instruction-following</b>: no guardrail verifies the agent actually walked the Decision Ladder. When context is full, the model may silently ignore the rules.</li>
+<li><b>Benchmarks warrant skepticism</b>: the README claims "54% less code, 27% faster, 100% safe" — these are self-reported, measured on a specific set of 12 tasks, and lack third-party verification. Codebases already lean will see near-zero benefit.</li>
+<li><b>"Lazy" ≠ "correct"</b>: the YAGNI step is judged by the agent itself, which can incorrectly cut logic that is genuinely necessary — ultra mode is especially dangerous on legacy code.</li>
+<li><b>Maintenance burden</b>: 14+ platforms = 14+ format variants to keep in sync; there is a lag risk whenever a platform changes its spec.</li>
+</ul>
+</div>
+
+<div class="kbox">
+<div class="kcard"><div class="kt">KP1 · It's a prompt-layer linter at heart</div><div class="kd">Executes no code — just inserts a checklist the agent must consult before thinking. Lightweight and low-risk, but effectiveness depends on the model.</div></div>
+<div class="kcard"><div class="kt">KP2 · The Decision Ladder is the gem</div><div class="kd">YAGNI → native → stdlib → existing dependency → one-liner → MVP — senior instincts made explicit for agents.</div></div>
+<div class="kcard"><div class="kt">KP3 · Numbers are a direction, not a guarantee</div><div class="kd">"54% less code" holds in over-engineered scenarios; near-zero benefit on already-lean codebases.</div></div>
+<div class="kcard"><div class="kt">KP4 · The safety floor is a mark of integrity</div><div class="kd">Keeping the non-negotiable list prevents the tool from becoming a way to lazily skip security.</div></div>
+</div>
+
+<h2>When to Use It — and When Not To</h2>
+<div class="card">
+<p><b class="win">Good fit</b>: agentic workflows where agents routinely over-build; wanting to control LLM costs; legacy refactoring focused on minimal diffs; mature codebases that should not acquire new dependencies.</p>
+<p><b class="lose">Poor fit</b>: greenfield projects that genuinely need full scaffolding; prototype / spike work that needs creative latitude; ultra mode on complex business logic (high risk of over-deletion); junior engineers writing their first project who are not yet fluent with YAGNI.</p>
+</div>
+
+<h2>Similar Projects / Further Reading</h2>
+<div class="card">
+<table>
+<tr><th class="l">Project</th><th class="l">When to prefer it</th></tr>
+<tr><td class="l"><b>CLAUDE.md custom instructions</b></td><td class="l">Natively supported by Claude Code — write coding guidelines directly. First choice when using a single tool with no cross-platform sync needed; zero external dependencies.</td></tr>
+<tr><td class="l"><b>Cursor Rules (.cursorrules)</b></td><td class="l">Always-on rules for the Cursor ecosystem. Heavy Cursor users can lift Ponytail's rule text directly.</td></tr>
+<tr><td class="l"><b>continue.dev</b></td><td class="l">Open-source AI coding assistant with configurable system prompts and workflows. Broader scope but more setup required.</td></tr>
+<tr><td class="l"><b>Aider</b></td><td class="l">CLI agent with <code>--system-prompt</code> support — paste the Decision Ladder rules directly, no plugin needed. Preferred by those who favor a git-native workflow.</td></tr>
+</table>
+</div>
+
+<h2>Repo Facts</h2>
+<div class="card">
+<table>
+<tr><th class="l">Item</th><th class="l">Data</th></tr>
+<tr><td class="l">Author</td><td class="l">DietrichGebert (personal account)</td></tr>
+<tr><td class="l">Created / Compiled</td><td class="l">2026-06-12 / compiled 2026-06-26 (repo was only 14 days old)</td></tr>
+<tr><td class="l">Stars / Forks</td><td class="l">~57.8k / ~2.9k (viral growth in two weeks)</td></tr>
+<tr><td class="l">Open Issues</td><td class="l">83</td></tr>
+<tr><td class="l">Latest release</td><td class="l">v4.8.3 (2026-06-24, 13 releases total)</td></tr>
+<tr><td class="l">License / Language</td><td class="l">MIT · JavaScript 55% / Python 44%</td></tr>
+<tr><td class="l">Homepage</td><td class="l">ponytail.dev</td></tr>
+</table>
+<p class="note" style="margin-top:10px">★ 57.8k stars accumulated in 14 days is highly unusual and signals a genuine market pain point. That said, v4.8.3 on a 14-day-old repo also shows a very fast release cadence — <b>long-term stability and maintenance trajectory still need to be watched</b>.</p>
+</div>
+
+<div class="foot"><b>Sources</b>: <a href="https://github.com/DietrichGebert/ponytail" target="_blank" rel="noopener">github.com/DietrichGebert/ponytail</a> · <a href="https://ponytail.dev" target="_blank" rel="noopener">ponytail.dev</a> (README, file structure, stars/forks/releases verified via GitHub API). Benchmark figures are author self-reported and have not been independently verified.<br><b>Disclaimer</b>: This page is a personal research note and does not constitute investment or technology-selection advice.</div>
+</div></body></html>
