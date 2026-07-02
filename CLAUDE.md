@@ -80,8 +80,17 @@ posts/<slug>.html       每篇文章一檔，slug 用 kebab-case
 ```
 
 - `data-cat` / `data-title` / `data-excerpt` 餵給 `site.js` 的分類+搜尋，務必填。
-- **若是新分類**：在 `.toolbar` 加一顆 `<button class="chip" data-cat="分類名">分類名</button>`。chip 是 data-driven，加了就能用，不用改 JS。
-- 最新／最重要的可換上 `#hero`（`.featured`）精選位。
+- **若是新分類**：在 `.toolbar` 加一顆 `<button class="chip" data-cat="分類名">分類名</button>`。chip 是 data-driven，加了就能用，不用改 JS。同時在 `site.js` 的 `CATL` 補上該分類的中英標籤。
+- `#hero`（`.featured`）精選位**自動選最新一篇**（依卡片 `.pc-date` 日期），不用手改；把新卡片放 `#grid` 最前面即可。
+
+### 站是雙語的，一篇要掛四處
+
+每篇文章有中英兩檔（`posts/<slug>.html` + `posts/<slug>.en.html`），首頁也有兩份（`index.html` + `index.en.html`）。掛一篇新文章要同步：
+
+1. `posts/<slug>.html` — 中文頁（body 加 `data-slug="<slug>"`，topbar 需 `lang-toggle` 按鈕）。
+2. `posts/<slug>.en.html` — 英文頁（`<html lang="en">`、back 鈕指 `../index.en.html`、`lang-toggle` 文字為「中」）。兩檔 `data-slug` 必須一致，lang-toggle 才切得過去。
+3. `index.html` 與 `index.en.html` 各加一張 `post-card`（各自語言的 title/excerpt，`href` 指對應語言檔；`data-cat` 兩邊都用**中文**正規值）。
+4. **`site.js` 最上面的 `POSTS` 陣列加一筆**（`slug`/`cat`/`zh`/`en`）—— 這是左側全文章樹的唯一事實來源，漏了進頁時左欄選不到當前文章。順序新→舊。
 
 ## 不要做的事
 
