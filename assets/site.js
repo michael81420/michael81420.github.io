@@ -62,19 +62,30 @@ function initHome(){
       hero.querySelector('.f-meta').textContent=latest.querySelector('.pc-date').textContent;
     }
   }
+  // 超過 6 篇時預設只顯示最新 6 篇（DOM 已是新→舊），按鈕展開全部
+  var expanded=false,showAll=document.getElementById('showAll');
+  window.toggleAll=function(){expanded=!expanded;apply();};
   function apply(){
-    var anyVisible=false;
+    var shown=0,matched=0;
     grid.querySelectorAll('.post-card').forEach(function(c){
       var okCat=cat==='全部'||c.dataset.cat===cat;
       var hay=(c.dataset.title+' '+(c.dataset.excerpt||'')).toLowerCase();
       var okQ=q===''||hay.indexOf(q)>=0;
-      var show=okCat&&okQ;
+      var match=okCat&&okQ;
+      if(match)matched++;
+      var show=match&&(expanded||matched<=6);
       c.style.display=show?'':'none';
-      if(show)anyVisible=true;
+      if(show)shown++;
     });
     var heroVisible=hero&&cat==='全部'&&q==='';
     if(hero)hero.style.display=heroVisible?'':'none';
-    if(empty)empty.style.display=(!anyVisible&&!heroVisible)?'':'none';
+    if(empty)empty.style.display=(!shown&&!heroVisible)?'':'none';
+    if(showAll){
+      showAll.style.display=matched>6?'inline-flex':'none';
+      showAll.classList.toggle('open',expanded);
+      var txt=document.getElementById('showAllTxt');
+      if(txt)txt.textContent=expanded?(LANG==='en'?'Show less':'收合文章'):(LANG==='en'?'Show all posts':'顯示全部文章');
+    }
   }
   chips.forEach(function(ch){
     ch.addEventListener('click',function(){
