@@ -3,6 +3,7 @@
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    順序＝首頁卡片順序（新→舊）。cat 用首頁 data-cat 的正規中文值。 */
 var POSTS=[
+  {slug:'gooaye-ep677-stocks',        cat:'股癌podcast分析', zh:'股癌 EP677 · 個股觀點整理',          en:'Gooaye EP677 · Stock Notes'},
   {slug:'gooaye-ep676-stocks',        cat:'股癌podcast分析', zh:'股癌 EP676 · 個股觀點整理',          en:'Gooaye EP676 · Stock Notes'},
   {slug:'gooaye-ep675-stocks',        cat:'股癌podcast分析', zh:'股癌 EP675 · 個股觀點整理',          en:'Gooaye EP675 · Stock Notes'},
   {slug:'gooaye-ep674-stocks',        cat:'股癌podcast分析', zh:'股癌 EP674 · 個股觀點整理',          en:'Gooaye EP674 · Stock Notes'},
