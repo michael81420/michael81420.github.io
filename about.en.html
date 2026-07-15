@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · michael</title>
+<script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
+</head><body>
+
+<div class="home">
+
+  <div class="topbar">
+    <a class="btn-back" href="index.en.html">← Back to home</a>
+    <div class="tb-actions">
+      <button class="lang-toggle" onclick="toggleLang()">中</button>
+      <button class="theme-toggle" onclick="toggleTheme()">☾</button>
+    </div>
+  </div>
+
+  <div class="about-hero">
+    <div class="blob"></div>
+    <div class="inner">
+      <div class="a-head">
+        <img class="avatar" src="assets/img/avatar.png" alt="Hsiao-Chung Hsieh">
+        <div>
+          <div class="a-name">Hsiao-Chung Hsieh</div>
+          <div class="a-role">Software Engineer @ Mediatek</div>
+        </div>
+      </div>
+      <div class="a-contact">michael81420@gmail.com</div>
+      <div class="a-links">
+        <a href="https://www.linkedin.com/in/hc-hsieh-michael" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://github.com/michael81420" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-h">Experience</div>
+  <div class="tl">
+
+    <div class="tl-item">
+      <div class="tl-rail"><div class="tl-dot accent"></div><div class="tl-line"></div></div>
+      <div class="tl-body"><div class="tl-card">
+        <div class="tl-head"><span class="tl-title">Software Engineer · Mediatek</span><span class="tl-period">2020.02 – Present</span></div>
+        <div class="tl-sum">Engineered the Camera ISP HAL architecture, focused on raw-domain image processing (HDR, sensor remosaic), balancing algorithmic needs with performance and flexibility; led departmental development for the flagship Dimensity 9400 project.</div>
+        <div class="tl-hl">
+          <div><span class="b">▸</span><span>Migrated the tuning architecture to SQLite, improving readability and flexibility</span></div>
+          <div><span class="b">▸</span><span>Built automation tools that significantly reduced manual effort department-wide</span></div>
+          <div><span class="b">▸</span><span>Built a Simpleperf-based profiling tool, helping the team cut ~20% instructions and CPU cycles</span></div>
+          <div><span class="b">▸</span><span>Built an IQ-matching workflow that auto-diagnoses issues against historical cases and writes back to the knowledge base</span></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-body"><div class="tl-card">
+        <div class="tl-head"><span class="tl-title">Intern · Industrial Technology Research Institute</span><span class="tl-period">2019.04 – 2019.11</span></div>
+        <div class="tl-sum">Researched deep-learning training techniques: scaling network architectures without significant performance loss, and mitigating catastrophic forgetting so pretrained models retain accuracy on original data after learning new data.</div>
+      </div></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-body"><div class="tl-card">
+        <div class="tl-head"><span class="tl-title">M.S. Computer Science</span><span class="tl-etag">Education</span></div>
+        <div class="tl-sum">National Yang Ming Chiao Tung University</div>
+        <div class="tl-note">Publication: Net2Net Extension for the AlphaGo Zero Algorithm, ACG-16, 2019</div>
+      </div></div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+      <div class="tl-body"><div class="tl-card">
+        <div class="tl-head"><span class="tl-title">B.S. Computer Science</span><span class="tl-etag">Education</span></div>
+        <div class="tl-sum">National Chung Hsing University</div>
+      </div></div>
+    </div>
+
+  </div>
+
+  <div class="card about-skills">
+    <div class="sk-label">Skills</div>
+    <div class="sk-grid" id="sk-grid"></div>
+  </div>
+
+  <footer class="home-foot">
+    <div class="f-links">
+      <a class="icon-link" href="https://www.linkedin.com/in/hc-hsieh-michael" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a class="icon-link" href="https://github.com/michael81420" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.27-.01-1.16-.02-2.1-3.34.7-4.04-1.4-4.04-1.4-.55-1.36-1.34-1.72-1.34-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.78 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.77 0-1.27.47-2.31 1.23-3.13-.12-.29-.53-1.48.12-3.08 0 0 1-.31 3.3 1.19a11.6 11.6 0 0 1 6 0c2.3-1.5 3.3-1.19 3.3-1.19.65 1.6.24 2.79.12 3.08.77.82 1.23 1.86 1.23 3.13 0 4.48-2.81 5.47-5.49 5.76.43.36.81 1.08.81 2.18 0 1.57-.01 2.84-.01 3.23 0 .31.21.68.83.56C20.56 21.88 24 17.49 24 12.29 24 5.78 18.63.5 12 .5z"/></svg>
+      </a>
+    </div>
+    <div class="f-copy">© 2026 michael · Personal research notes only, not investment advice.</div>
+  </footer>
+
+</div>
+
+</body></html>
