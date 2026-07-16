@@ -3,6 +3,8 @@
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    順序＝首頁卡片順序（新→舊）。cat 用首頁 data-cat 的正規中文值。 */
 var POSTS=[
+  {slug:'openwiki',                   cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
+  {slug:'karpathy-llm-wiki',          cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
   {slug:'gooaye-ep679-stocks',        cat:'股癌podcast分析', zh:'股癌 EP679 · 個股觀點整理',          en:'Gooaye EP679 · Stock Notes'},
   {slug:'gooaye-ep678-stocks',        cat:'股癌podcast分析', zh:'股癌 EP678 · 個股觀點整理',          en:'Gooaye EP678 · Stock Notes'},
   {slug:'gooaye-ep677-stocks',        cat:'股癌podcast分析', zh:'股癌 EP677 · 個股觀點整理',          en:'Gooaye EP677 · Stock Notes'},

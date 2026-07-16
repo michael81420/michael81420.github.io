@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Wiki · Let an LLM Maintain a Knowledge Base That Grows</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="karpathy-llm-wiki"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>LLM Wiki · Let an LLM Maintain a Knowledge Base That Grows</h1>
+<div class="sub">Instead of re-retrieving documents on every question (RAG), the LLM acts like a wiki editor: it <b>writes</b> what it reads into a persistent, interlinked set of markdown files — and next time it just reads the wiki.<br>The real point: <i>it solves not a retrieval-technology problem, but the willpower problem of maintaining a knowledge base over time.</i></div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener">Source: Andrej Karpathy · GitHub Gist ↗</a>
+<span class="badge">Type: design pattern / idea file</span>
+<span class="badge">Compiled: 2026-07-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">📚 LLM Wiki <span class="win">shifts retrieval cost from query time to write time</span> — reason once, bake it into a page, then reads replace re-computation.</p>
+<p>Classic RAG re-retrieves and re-assembles "the shared conclusion of these five docs" every single time. LLM Wiki has the model <b>write that synthesis into one markdown page</b>, and proactively update cross-references and flag contradictions. Humans curate sources, set direction, judge what matters; the LLM does all the bookkeeping grunt work.</p>
+<p class="note">★ Karpathy explicitly frames this as an <b>idea file you can hand to your agent to co-develop — not a spec</b>. His closing line: "Everything mentioned above is optional and modular." The value is a <i>pattern</i>, not a product.</p>
+</div>
+
+<h2>The problem it solves</h2>
+<div class="card">
+<p>Karpathy's core claim is a single sentence:</p>
+<div class="quote">The tedious part of maintaining a knowledge base is not the reading or the thinking — it's the <b>bookkeeping</b>.</div>
+<p style="margin-top:12px">People abandon their wikis not for lack of insight, but because updating cross-references, keeping summaries current, and flagging stale claims scales with size until it crushes the will to maintain it. An <b>LLM doesn't get bored, doesn't forget to update links, and can edit 15 files at once</b> — so maintenance cost approaches zero.</p>
+<p>He compares it to Vannevar Bush's 1945 Memex: Bush wanted a private, actively-organized store where the links are as valuable as the documents. The one thing he never solved was <i>who maintains it</i> — the LLM fills that gap.</p>
+</div>
+
+<h2>Classic RAG vs. LLM Wiki</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Classic RAG re-retrieves and re-reasons on every query and throws the answer away; LLM Wiki writes once, then every query is a cheap read and knowledge compounds">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+  <!-- divider -->
+  <line x1="380" y1="20" x2="380" y2="300" style="stroke:var(--border)" stroke-dasharray="4 5"/>
+
+  <!-- ============ Panel A: Classic RAG ============ -->
+  <text x="20" y="30" style="fill:var(--ink);font:700 15px sans-serif">Classic RAG</text>
+  <text x="20" y="49" style="fill:var(--ink3);font:400 11.5px sans-serif">every query pays the full cost again</text>
+
+  <g style="font:600 12px sans-serif">
+    <rect x="20" y="70"  width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="90" text-anchor="middle" style="fill:var(--ink)">Q1</text>
+    <rect x="20" y="135" width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="155" text-anchor="middle" style="fill:var(--ink)">Q2</text>
+    <rect x="20" y="200" width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="220" text-anchor="middle" style="fill:var(--ink)">Q3</text>
+  </g>
+  <g style="font:600 11px sans-serif">
+    <line x1="74" y1="85"  x2="118" y2="85"  style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="74" y1="150" x2="118" y2="150" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="74" y1="215" x2="118" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="120" y="68"  width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="89" text-anchor="middle" style="fill:var(--lose)">re-retrieve + reason</text>
+    <rect x="120" y="133" width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="154" text-anchor="middle" style="fill:var(--lose)">re-retrieve + reason</text>
+    <rect x="120" y="198" width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="219" text-anchor="middle" style="fill:var(--lose)">re-retrieve + reason</text>
+  </g>
+  <g style="font:400 11.5px sans-serif">
+    <line x1="252" y1="85"  x2="296" y2="85"  style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="252" y1="150" x2="296" y2="150" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="252" y1="215" x2="296" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <text x="300" y="82" style="fill:var(--ink2)">answer</text><text x="300" y="96" style="fill:var(--ink3);font-size:10px">discarded ✕</text>
+    <text x="300" y="147" style="fill:var(--ink2)">answer</text><text x="300" y="161" style="fill:var(--ink3);font-size:10px">discarded ✕</text>
+    <text x="300" y="212" style="fill:var(--ink2)">answer</text><text x="300" y="226" style="fill:var(--ink3);font-size:10px">discarded ✕</text>
+  </g>
+  <text x="20" y="285" style="fill:var(--ink3);font:400 11px sans-serif">↑ expensive reasoning repeats at <tspan style="fill:var(--lose)">query time</tspan> · stateless</text>
+
+  <!-- ============ Panel B: LLM Wiki ============ -->
+  <text x="400" y="30" style="fill:var(--ink);font:700 15px sans-serif">LLM Wiki</text>
+  <text x="400" y="49" style="fill:var(--ink3);font:400 11.5px sans-serif">write once, then every query is a cheap read</text>
+
+  <g style="font:600 12px sans-serif">
+    <rect x="400" y="66" width="62" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="431" y="86" text-anchor="middle" style="fill:var(--ink)">source</text>
+    <line x1="464" y1="81" x2="500" y2="81" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="502" y="64" width="104" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="554" y="85" text-anchor="middle" style="fill:var(--lose);font-size:11.5px">ingest / write</text>
+    <text x="554" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">one-time</text>
+    <line x1="606" y1="81" x2="644" y2="81" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="646" y="60" width="96" height="42" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="694" y="79" text-anchor="middle" style="fill:var(--win);font-size:12px">Wiki</text><text x="694" y="93" text-anchor="middle" style="fill:var(--win);font:400 9.5px sans-serif">markdown</text>
+  </g>
+
+  <g style="font:600 12px sans-serif">
+    <rect x="400" y="150" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="169" text-anchor="middle" style="fill:var(--ink)">Q1</text>
+    <rect x="400" y="188" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="207" text-anchor="middle" style="fill:var(--ink)">Q2</text>
+    <rect x="400" y="226" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="245" text-anchor="middle" style="fill:var(--ink)">Q3</text>
+  </g>
+  <g style="font:600 11.5px sans-serif">
+    <line x1="454" y1="164" x2="496" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="454" y1="202" x2="496" y2="202" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="454" y1="240" x2="496" y2="240" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="498" y="150" width="86" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="541" y="169" text-anchor="middle" style="fill:var(--win)">read page</text>
+    <rect x="498" y="188" width="86" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="541" y="207" text-anchor="middle" style="fill:var(--win)">read page</text>
+    <rect x="498" y="226" width="86" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="541" y="245" text-anchor="middle" style="fill:var(--win)">read page</text>
+    <path d="M694 104 L694 130 Q694 140 684 140 L562 140 Q550 140 550 150" style="fill:none;stroke:var(--winbd)" stroke-dasharray="3 4"/>
+  </g>
+  <g style="font:400 11.5px sans-serif">
+    <line x1="586" y1="164" x2="618" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="586" y1="202" x2="618" y2="202" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="586" y1="240" x2="618" y2="240" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <text x="622" y="168" style="fill:var(--ink2)">answer</text>
+    <text x="622" y="206" style="fill:var(--ink2)">answer</text>
+    <text x="622" y="244" style="fill:var(--ink2)">answer</text>
+  </g>
+  <text x="400" y="285" style="fill:var(--ink3);font:400 11px sans-serif">↑ expensive reasoning happens once at <tspan style="fill:var(--win)">write time</tspan> · compounds</text>
+</svg>
+</div>
+<table>
+<tr><th class="l">Dimension</th><th class="l">Classic RAG<br><span class="note">(NotebookLM / file upload Q&amp;A)</span></th><th class="l">LLM Wiki</th></tr>
+<tr><td class="l">Where knowledge lives</td><td class="l">Vector index over raw documents</td><td class="l">A continually-rewritten set of markdown files</td></tr>
+<tr><td class="l">What each query does</td><td class="l">Re-retrieve chunks → re-assemble answer</td><td class="l">Read the index, then read pre-digested pages</td></tr>
+<tr><td class="l">Cross-document synthesis</td><td class="l">Re-reasoned every time</td><td class="l">Already written into a page; just read it</td></tr>
+<tr><td class="l">Contradictions / staleness</td><td class="l">Not surfaced</td><td class="l">Flagged during ingest / lint</td></tr>
+<tr><td class="l">Accumulation</td><td class="l"><span class="lose">None</span> (stateless, discarded after asking)</td><td class="l"><span class="win">Yes</span> (compounding, richer with use)</td></tr>
+</table>
+</div>
+
+<h2>Three-layer architecture</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The three-layer loop: the Schema sets the rules, the LLM distills immutable Raw Sources into the Wiki, humans explore the Wiki and edit the Schema when the rules fall short">
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+
+  <rect x="190" y="40" width="370" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="210" y="64" style="fill:var(--ink);font:700 14px sans-serif">① Raw Sources</text>
+  <text x="210" y="84" style="fill:var(--ink3);font:400 11px sans-serif">articles / papers / images / data · read, never edited</text>
+  <text x="540" y="64" text-anchor="end" style="fill:var(--ink3);font:600 11px sans-serif">immutable</text>
+
+  <line x1="370" y1="96" x2="370" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="382" y="117" style="fill:var(--ink3);font:400 10.5px sans-serif">distill: read raw → write pages</text>
+
+  <rect x="190" y="130" width="370" height="60" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="210" y="155" style="fill:var(--win);font:700 14px sans-serif">② The Wiki</text>
+  <text x="210" y="175" style="fill:var(--ink2);font:400 11px sans-serif">summaries / entities / comparisons · interlinked markdown</text>
+  <text x="540" y="155" text-anchor="end" style="fill:var(--win);font:600 11px sans-serif">LLM owns it</text>
+
+  <rect x="190" y="224" width="370" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="210" y="248" style="fill:var(--ink);font:700 14px sans-serif">③ The Schema</text>
+  <text x="210" y="268" style="fill:var(--ink3);font:400 11px sans-serif">CLAUDE.md / AGENTS.md · structure, conventions, workflows</text>
+  <text x="540" y="248" text-anchor="end" style="fill:var(--ink3);font:600 11px sans-serif">human-maintained</text>
+
+  <path d="M560 160 H600 Q612 160 612 172 V240 Q612 252 600 252 H564" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="622" y="200" style="fill:var(--ink3);font:400 10.5px sans-serif">humans explore here,</text>
+  <text x="622" y="215" style="fill:var(--ink3);font:400 10.5px sans-serif">fix rules when short</text>
+
+  <path d="M190 252 H140 Q128 252 128 240 V172 Q128 160 140 160 H186" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="118" y="200" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">rules govern</text>
+  <text x="118" y="215" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">how the LLM writes</text>
+</svg>
+</div>
+<div class="kbox">
+<div class="kcard"><div class="kt">① Raw Sources (immutable)</div><div class="kd">Original documents — articles, papers, images, data. The LLM reads but never edits them; the single source of truth.</div></div>
+<div class="kcard"><div class="kt">② The Wiki (LLM-generated)</div><div class="kd">Interlinked markdown: summaries, entity pages, comparisons, synthesis pages. <b>The LLM fully owns this layer</b> — creating, updating, maintaining links. Humans read, the LLM writes.</div></div>
+<div class="kcard"><div class="kt">③ The Schema (config)</div><div class="kd">CLAUDE.md / AGENTS.md: defines wiki structure, conventions, workflows. Turns a general chatbot into a disciplined wiki editor.</div></div>
+</div>
+<p style="margin-top:12px"><b>The loop</b>: Schema sets the rules → the LLM distills Raw Sources into the Wiki → humans explore the Wiki and, when rules fall short, go back and edit the Schema. This upgrades "prompt engineering" into a <b>living, persistent agent-governance document</b>.</p>
+</div>
+
+<h2>Three core operations</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three operations orbit the wiki: Ingest writes new sources in (expensive), Query reads out and files good answers back as new pages, Lint periodically checks for contradictions, orphans and stale claims and fixes them">
+  <defs>
+    <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+
+  <rect x="300" y="140" width="150" height="76" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="375" y="172" text-anchor="middle" style="fill:var(--win);font:700 15px sans-serif">The Wiki</text>
+  <text x="375" y="192" text-anchor="middle" style="fill:var(--win);font:400 10.5px sans-serif">markdown · interlinked</text>
+
+  <!-- Ingest -->
+  <text x="18" y="36" style="fill:var(--lose);font:700 14px sans-serif">Ingest</text>
+  <text x="18" y="54" style="fill:var(--ink3);font:400 11px sans-serif">costliest, most error-prone</text>
+  <rect x="18" y="80" width="86" height="34" rx="7" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="61" y="102" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">new source</text>
+  <line x1="106" y1="97" x2="136" y2="97" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <rect x="138" y="80" width="112" height="34" rx="7" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="194" y="102" text-anchor="middle" style="fill:var(--lose);font:600 11.5px sans-serif">LLM reads + you</text>
+  <path d="M250 97 H300 Q320 97 320 117 V136" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="18" y="134" style="fill:var(--ink3);font:400 10.5px sans-serif">write: summary page · update index ·</text>
+  <text x="18" y="149" style="fill:var(--ink3);font:400 10.5px sans-serif">edit 10–15 related pages · append log</text>
+
+  <!-- Query -->
+  <text x="492" y="36" style="fill:var(--win);font:700 14px sans-serif">Query</text>
+  <text x="492" y="54" style="fill:var(--ink3);font:400 11px sans-serif">cheap — and it feeds back</text>
+  <line x1="452" y1="160" x2="488" y2="160" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="470" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">read</text>
+  <rect x="490" y="143" width="124" height="34" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="552" y="165" text-anchor="middle" style="fill:var(--win);font:600 11.5px sans-serif">index → pages</text>
+  <line x1="616" y1="160" x2="648" y2="160" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="652" y="164" style="fill:var(--ink2);font:600 11.5px sans-serif">cited answer</text>
+  <path d="M694 176 V254 Q694 266 682 266 H442 Q430 266 430 254 V222" style="fill:none;stroke:var(--ink3)" stroke-dasharray="4 4" marker-end="url(#ah3)"/>
+  <text x="562" y="236" text-anchor="middle" style="fill:var(--win);font:600 10.5px sans-serif">good answers get filed back as new pages</text>
+  <text x="562" y="250" text-anchor="middle" style="fill:var(--win);font:600 10.5px sans-serif">→ query is writing</text>
+
+  <!-- Lint -->
+  <line x1="330" y1="218" x2="330" y2="276" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="338" y="252" style="fill:var(--ink3);font:400 10.5px sans-serif">check</text>
+  <rect x="140" y="280" width="250" height="52" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="265" y="303" text-anchor="middle" style="fill:var(--mid);font:700 13px sans-serif">Lint</text>
+  <text x="265" y="321" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">contradictions / orphans / stale / missing links</text>
+  <path d="M200 280 V190 Q200 178 212 178 H296" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="214" y="170" style="fill:var(--ink3);font:400 10.5px sans-serif">fix</text>
+  <text x="402" y="312" style="fill:var(--ink3);font:400 10.5px sans-serif">← "optional" in the gist; the community says never skip it</text>
+</svg>
+</div>
+<h3>Ingest</h3>
+<p>Drop in a new source → LLM reads → discusses key points with you → writes a summary page → updates the index → <b>goes back and edits related entity/concept pages</b> (one source often touches 10–15 pages) → appends to log.md. The most expensive and error-prone operation.</p>
+<h3>Query</h3>
+<p>Read the index to find relevant pages → read them → synthesize an answer with citations, output as a markdown page / comparison table / slides / chart. <b>Key insight</b>: good answers get "filed back into the wiki" as new pages — ad-hoc analysis shouldn't live only in chat history. This makes <b>querying and writing the same action</b>.</p>
+<h3>Lint</h3>
+<p>Periodically have the LLM check for: contradictions across pages, stale claims that a newer source overturned, orphan pages with no inbound links, important concepts mentioned but lacking their own page, missing cross-references, gaps fillable by web search. <b>The step most easily skipped — and the one the community agrees you can least afford to skip.</b></p>
+</div>
+
+<h2>Implementation details (no database needed)</h2>
+<div class="card">
+<table>
+<colgroup><col style="width:22%"><col></colgroup>
+<tr><th class="l">Component</th><th class="l">What it does</th></tr>
+<tr><td class="l"><code>index.md</code></td><td class="l">A content-oriented catalog: one-line summary per page + categories. Queries read it first. Karpathy notes it's enough up to ~100 sources / a few hundred pages — <b>no embedding-based RAG infrastructure required</b>.</td></tr>
+<tr><td class="l"><code>log.md</code></td><td class="l">Append-only timeline with a fixed prefix <code>## [2026-04-02] ingest | title</code>, parseable by plain unix tools (<code>grep "^## \[" log.md | tail -5</code>).</td></tr>
+<tr><td class="l">Git</td><td class="l">The wiki <i>is</i> a git repo — history, branching, collaboration for free. The core reason to pick markdown over a database.</td></tr>
+<tr><td class="l">Obsidian</td><td class="l">Used as the "IDE": graph view for topology (who's a hub, who's an orphan), Web Clipper to turn pages into markdown, Dataview queries over frontmatter, Marp to generate slides directly.</td></tr>
+<tr><td class="l" style="white-space:nowrap"><code>qmd</code> (optional)</td><td class="l">Bolt on as it scales: local BM25 + vector hybrid search + LLM re-rank, CLI or MCP. By Shopify CEO Tobi Lütke, ~28k GitHub stars — a real, popular tool.</td></tr>
+</table>
+</div>
+
+<h2>An engineer's take</h2>
+<div class="card">
+<h3>👍 What's good</h3>
+<ul>
+<li><b>Trading write amplification for query quality</b>: cross-document reasoning is done once and baked into a page; queries become reads. A classic database trade-off — just with an LLM as the ETL.</li>
+<li><b>Zero-infrastructure start</b>: markdown + git + grep is all you need — no vector DB, no embedding pipeline. For solo PKM / small research, friction is minimal.</li>
+<li><b>A 30-year-old metaphor for human/machine division</b>: humans judge, the LLM does bookkeeping. "Wiki editor" is intuitive enough that non-engineers grasp "I'm working with an assistant that never gets tired."</li>
+</ul>
+<h3>⚠️ Trade-offs and risks<span class="note"> (mostly community production feedback, not in the original)</span></h3>
+<table>
+<colgroup><col style="width:20%"><col><col></colgroup>
+<tr><th class="l">Risk</th><th class="l">How it shows up</th><th class="l">Mitigation</th></tr>
+<tr><td class="l"><b>Bias / hallucination compounding</b></td><td class="l">Once a hallucination is written in, later queries read "secondhand data the model polluted itself," and errors compound as established fact — harder to catch than a one-off.</td><td class="l">Mark pages "verify against source" to force checking the original — but cache cost doubles. One report: per-entity pages ended up bigger than the source; a single dense table was more efficient.</td></tr>
+<tr><td class="l"><b>Drift</b><br>the big killer</td><td class="l">Ingest under-updates cross-references; pages silently go stale; free-form links rot within a few years.</td><td class="l">Make lint a scheduled requirement, not optional; use typed entities + explicit schema instead of free-text links.</td></tr>
+<tr><td class="l"><b>Entity dedup</b></td><td class="l">"Merge this new info into an existing entity page, or open a new one?" is the hardest write-time call — yields duplicate or wrongly-merged pages.</td><td class="l">No agreed solution yet; the most open problem.</td></tr>
+<tr><td class="l"><b>Multi-user collisions</b></td><td class="l">Without authorship boundaries and review gates, a shared wiki rots.</td><td class="l">Production cases use PR review, one writer per layer, and <code>file@SHA:lines</code> version-pinned citations instead of copying full text.</td></tr>
+<tr><td class="l"><b>Scale ceiling</b></td><td class="l">Past a few hundred pages, index.md needs qmd — so you touch infrastructure after all.</td><td class="l">Version-pinned paths instead of copied originals; distilled versions instead of raw noisy formats.</td></tr>
+</table>
+</div>
+
+<div class="kbox">
+<div class="kcard"><div class="kt">KP1 · It's write-time ETL</div><div class="kd">Cross-doc reasoning shifted to write time; queries become reads. Write amplification bought with query quality.</div></div>
+<div class="kcard"><div class="kt">KP2 · Query = writing</div><div class="kd">Good answers get filed back as new pages — the biggest behavioral difference from RAG.</div></div>
+<div class="kcard"><div class="kt">KP3 · Don't skip lint</div><div class="kd">Karpathy lists it as optional; the community says it's the one step you can't skip — no lint, the wiki drifts and rots.</div></div>
+<div class="kcard"><div class="kt">KP4 · It solves willpower, not tech</div><div class="kd">It addresses humans abandoning knowledge-base upkeep, not a retrieval-algorithm problem.</div></div>
+</div>
+
+<h2>When to use it, when not to</h2>
+<div class="card">
+<p><b class="win">Good fit</b>: personal research PKM, long-running topic tracking (deep industry/company research), a reading companion. These have "queries far more frequent than writes, and tolerate a little drift" — the sweet spot. <span class="note">(This very site runs a stock wiki that's an instance of the same pattern.)</span></p>
+<p><b class="lose">Poor fit</b>: anything needing strict traceability or regulatory compliance (finance/medical decision basis) that can't tolerate an LLM summary layer between source and conclusion — unless paired with version-pinned citations; and one-off tasks you'll never re-query, which don't justify ingest's write cost.</p>
+</div>
+
+<h2>Choosing against existing options</h2>
+<div class="card">
+<table>
+<tr><th class="l">Option</th><th class="l">Pick it over LLM Wiki when…</th></tr>
+<tr><td class="l"><b>Classic RAG / Vector DB</b></td><td class="l">Data changes fast, you won't re-query the same knowledge, or volume makes wiki-ifying's write cost not worth it.</td></tr>
+<tr><td class="l"><b>GraphRAG</b> (Microsoft)</td><td class="l">You want automated breadth, not human-guided depth; you don't care about readability, only retrieval quality.</td></tr>
+<tr><td class="l"><b>Obsidian + Dataview (manual)</b></td><td class="l">Small volume, you want to organize it yourself, and you don't trust an LLM writing into your knowledge base.</td></tr>
+<tr><td class="l"><b>NotebookLM / file upload</b></td><td class="l">One-off tasks, no intent to accumulate, wary of wiki drift.</td></tr>
+<tr><td class="l"><b>qmd</b></td><td class="l"><b>Not a replacement — complementary</b>: bolt on as a search layer once the wiki outgrows manual index.md (hundreds of pages).</td></tr>
+</table>
+</div>
+
+<div class="foot"><b>Sources</b>:<a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener">Karpathy · LLM Wiki gist</a> (verbatim). Drift/cost notes are secondhand from gist comments.<br><b>Disclaimer</b>: This page is a personal research note, not investment or technology-selection advice.</div>
+</div></body></html>

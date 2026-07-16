@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWiki · LangChain's CLI That Lets an LLM Agent Auto-Write Your Codebase Wiki</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="openwiki"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>OpenWiki · Let an LLM Agent Auto-Write Your Codebase Wiki</h1>
+<div class="sub">A CLI from the LangChain team: it scans a repo, runs an agent loop to produce structured markdown docs (architecture, workflows, module map), and can run on CI to open a PR daily keeping them fresh.<br>It's not a docs tool for humans — it's about <b>giving downstream AI coding agents (Claude Code / Cursor) a stable "repo manual" to consult</b>.</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://github.com/langchain-ai/openwiki" target="_blank" rel="noopener">Source: langchain-ai/openwiki · GitHub ↗</a>
+<span class="badge">Type: CLI tool / MIT</span>
+<span class="badge">Compiled: 2026-07-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🛠 OpenWiki turns <span class="win">"codebase docs" into an agent's output</span> — scan the repo, generate <code>openwiki/</code> markdown, run on CI to keep it updated, so coding agents have stable context.</p>
+<p>Two modes: <b>code</b> mode generates docs for the current repo and maintains a marked block inside <code>AGENTS.md</code>/<code>CLAUDE.md</code>; <b>personal</b> mode connects Gmail/Notion/X and other connectors into a personal knowledge base. Under the hood it runs LangChain's own <code>deepagents</code> agent framework.</p>
+<p class="note">★ Very young (created 2026-06-22, exploded to 11.6k stars in ~3 weeks), still 0.x, behavior may change a lot. Better to <b>study its design</b> than to run it in production today.</p>
+</div>
+
+<h2>The problem it solves</h2>
+<div class="card">
+<p>What AI coding agents lack most is <b>stable, non-live repo context</b>: every time they enter a large repo they re-discover the architecture from scratch. The traditional fix — hand-written <code>CLAUDE.md</code> / ADRs — depends entirely on human discipline to maintain.</p>
+<div class="quote">OpenWiki's bet: if the docs are for agents to read, then <b>let an agent write and maintain them</b> — humans only review.</div>
+<p style="margin-top:12px">It runs an agent over the repo, producing a set of structured docs under <code>openwiki/</code> (quickstart, architecture, cli, agent, operations, integrations…), and injects a "read <code>openwiki/</code> first" hint into the root <code>AGENTS.md</code>/<code>CLAUDE.md</code> using <code>&lt;!-- OPENWIKI:START --&gt;…END --&gt;</code> markers — <b>rewriting only that block</b>, leaving your other content untouched.</p>
+</div>
+
+<h2>Two modes</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">code mode (default)</div><div class="kd">Generates <code>openwiki/</code> docs for the current repo + maintains the marked block in <code>AGENTS.md</code>/<code>CLAUDE.md</code>. Before running, collects a change summary via <code>git status/log/diff</code> to feed the agent.</div></div>
+<div class="kcard"><div class="kt">personal mode</div><div class="kd">Connects six connectors — git-repo, X, Notion, Gmail, Web Search (Tavily), Hacker News — ingesting fetched data into <code>~/.openwiki/wiki/</code> as a personal knowledge base; each connector can have multiple instances on separate schedules.</div></div>
+</div>
+</div>
+
+<h2>How it works</h2>
+<div class="card">
+<div style="font-size:12px;color:var(--ink3);margin:2px 0 14px">▸ Workflow: from repo scan to a daily auto-PR — skipped when nothing changed</div>
+<svg viewBox="0 0 720 300" style="width:100%;height:auto;display:block;font-family:inherit" text-anchor="middle" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ow-ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--ink3)"/></marker></defs>
+  <!-- top row -->
+  <ellipse cx="80" cy="68" rx="54" ry="30" style="fill:var(--turnbg);stroke:var(--turnbd);stroke-width:1.5"/>
+  <text x="80" y="64" style="fill:var(--ink);font-weight:700;font-size:14px">Repo</text>
+  <text x="80" y="82" style="fill:var(--ink2);font-size:10px">target codebase</text>
+  <rect x="205" y="40" width="150" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="280" y="63" style="fill:var(--ink);font-weight:700;font-size:13px">git evidence</text>
+  <text x="280" y="81" style="fill:var(--ink2);font-size:10px">init·update diff</text>
+  <rect x="460" y="34" width="220" height="68" rx="12" style="fill:var(--surface);stroke:var(--accent);stroke-width:2"/>
+  <text x="570" y="57" style="fill:var(--ink);font-weight:700;font-size:13px">deepagents agent loop</text>
+  <text x="570" y="75" style="fill:var(--ink2);font-size:10px">scan repo → write docs</text>
+  <text x="570" y="93" style="fill:var(--accent);font-size:10px">🔒 writes only openwiki/</text>
+  <!-- bottom row -->
+  <rect x="495" y="180" width="185" height="58" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="587" y="204" style="fill:var(--ink);font-weight:700;font-size:13px">openwiki/ *.md</text>
+  <text x="587" y="222" style="fill:var(--ink2);font-size:10px">architecture·CLI·workflow…</text>
+  <polygon points="345,173 427,210 345,247 263,210" style="fill:var(--midbg);stroke:var(--midbd);stroke-width:1.5"/>
+  <text x="345" y="206" style="fill:var(--ink);font-weight:700;font-size:12px">SHA-256 dedup</text>
+  <text x="345" y="223" style="fill:var(--ink2);font-size:10px">unchanged?</text>
+  <ellipse cx="90" cy="210" rx="62" ry="32" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:1.5"/>
+  <text x="90" y="206" style="fill:var(--ink);font-weight:700;font-size:14px">CI opens PR</text>
+  <text x="90" y="224" style="fill:var(--ink2);font-size:10px">daily cron</text>
+  <!-- arrows -->
+  <line x1="134" y1="68" x2="203" y2="68" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="169" y="57" style="fill:var(--ink3);font-size:9.5px">log/diff</text>
+  <line x1="355" y1="68" x2="458" y2="68" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="406" y="57" style="fill:var(--ink3);font-size:9.5px">change summary</text>
+  <line x1="587" y1="102" x2="587" y2="178" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="597" y="146" text-anchor="start" style="fill:var(--ink3);font-size:9.5px">write docs</text>
+  <line x1="495" y1="210" x2="429" y2="210" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <line x1="263" y1="210" x2="156" y2="210" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="209" y="200" style="fill:var(--ink3);font-size:9.5px">changed→open PR</text>
+  <text x="209" y="225" style="fill:var(--ink3);font-size:9px">same→skip</text>
+  <path d="M 90,178 C 20,150 22,112 76,100" style="fill:none;stroke:var(--turn);stroke-width:1.8;stroke-dasharray:5 4" marker-end="url(#ow-ah)"/>
+</svg>
+<table>
+<colgroup><col style="width:24%"><col></colgroup>
+<tr><th class="l">Piece</th><th class="l">What it does</th></tr>
+<tr><td class="l">Agent skeleton</td><td class="l">Calls LangChain's own <code>deepagents</code> (<code>createDeepAgent</code> + <code>CompositeBackend</code> + <code>FilesystemBackend</code>), running on a custom <code>OpenWikiLocalShellBackend</code> whose virtual filesystem root maps to the target repo.</td></tr>
+<tr><td class="l"><b>docs-only write guard</b></td><td class="l">In code mode the backend blocks any write/edit outside <code>openwiki/</code> (<code>docs-only-backend.ts</code>). If the agent tries to touch source, it's rejected at the code layer with an error — <b>not left to prompt discipline</b>.</td></tr>
+<tr><td class="l">Git evidence</td><td class="l">The host process runs git first to build a change summary: <code>init</code> grabs the last 20 commits, <code>update</code> the diff since the last recorded HEAD. Gives the model stable, non-live context.</td></tr>
+<tr><td class="l">Idempotent dedup</td><td class="l">After a run it takes a SHA-256 snapshot of <code>openwiki/</code>; if nothing changed it skips writing metadata — avoiding meaningless empty PRs on scheduled CI.</td></tr>
+<tr><td class="l">Multi-provider</td><td class="l"><code>createModel</code> branches by provider (Anthropic / OpenAI / OpenRouter / Bedrock / Vertex / OpenAI-compatible), all on LangChain retry. Adding a provider = edit one file + one case.</td></tr>
+<tr><td class="l">State persistence</td><td class="l"><code>@langchain/langgraph-checkpoint-sqlite</code> stores conversation threads in <code>~/.openwiki/openwiki.sqlite</code>, keyed by a hash of the repo path, so interactive mode can resume.</td></tr>
+</table>
+</div>
+
+<h2>Key features</h2>
+<div class="card">
+<ul>
+<li><code>openwiki --init</code> / <code>--update</code> one-shot generate/incrementally update repo docs; <code>--print</code> for one-off CI output.</li>
+<li>Auto-maintains the marked block in <code>AGENTS.md</code>/<code>CLAUDE.md</code> so coding agents know to read the wiki first.</li>
+<li>Built-in GitHub Actions / GitLab CI / Bitbucket Pipelines templates; a daily cron opens a PR to update docs by default.</li>
+<li>Interactive Ink (React for terminal) UI: ask follow-ups live, swap keys with <code>/api-key</code>, <code>/langsmith-key</code>, LangSmith tracing supported.</li>
+<li>Cross-platform OAuth (with an ngrok tunnel for callbacks), macOS LaunchAgents to schedule local connectors.</li>
+<li>Supports OpenAI ChatGPT-subscription login (via a Codex backend, no API quota) and multiple billing models.</li>
+</ul>
+</div>
+
+<h2>Tech stack</h2>
+<div class="card">
+<table>
+<colgroup><col style="width:24%"><col></colgroup>
+<tr><th class="l">Area</th><th class="l">What</th></tr>
+<tr><td class="l">Language / runtime</td><td class="l">TypeScript (85.5%) + some JS, Node.js ≥22, <code>pnpm</code> monorepo, plain <code>tsc</code> build (no bundler).</td></tr>
+<tr><td class="l">CLI UI</td><td class="l"><code>ink</code> (React for terminal) + <code>react</code> 18.</td></tr>
+<tr><td class="l">Agent framework</td><td class="l"><code>deepagents</code> (LangChain's "Claude Code-style" framework), <code>langchain</code> 1.x, <code>@langchain/core</code>, <code>@langchain/langgraph-checkpoint-sqlite</code>.</td></tr>
+<tr><td class="l">LLM providers</td><td class="l"><code>@langchain/anthropic</code> / <code>openai</code> / <code>openrouter</code> / <code>aws</code>(Bedrock), <code>@anthropic-ai/vertex-sdk</code>.</td></tr>
+<tr><td class="l">Others</td><td class="l"><code>@langchain/tavily</code>(web search), <code>zod</code> 4, <code>marked</code>, <code>cron-parser</code>/<code>cronstrue</code>.</td></tr>
+<tr><td class="l">Testing / tooling</td><td class="l"><code>vitest</code> (22 test files), <code>eslint</code> 10, <code>prettier</code>.</td></tr>
+</table>
+</div>
+
+<h2>Quick start</h2>
+<div class="card">
+<table>
+<tr><td class="l"><code>npm install -g openwiki</code></td><td class="l">Global install (on Windows prefer npm/pnpm to avoid bun compiling better-sqlite3).</td></tr>
+<tr><td class="l"><code>openwiki --init</code></td><td class="l">Interactive: pick provider / API key / model, generate <code>openwiki/</code> docs.</td></tr>
+<tr><td class="l"><code>openwiki --update</code></td><td class="l">Incrementally update docs from the git diff.</td></tr>
+<tr><td class="l"><code>openwiki -p "summarize what you can do"</code></td><td class="l">One-off, non-interactive, prints and exits.</td></tr>
+<tr><td class="l"><code>openwiki personal --init</code></td><td class="l">Personal knowledge-base mode.</td></tr>
+<tr><td class="l"><code>openwiki auth notion|gmail|x</code></td><td class="l">Authorize a connector via browser OAuth.</td></tr>
+</table>
+<p class="note" style="margin-top:10px">CI schedule: copy <code>examples/openwiki-update.yml</code> into <code>.github/workflows/</code>, set <code>OPENROUTER_API_KEY</code> (template defaults to OpenRouter + <code>z-ai/glm-5.2</code>), and it opens a PR daily.</p>
+</div>
+
+<h2>An engineer's take</h2>
+<div class="card">
+<h3>👍 Worth learning</h3>
+<ul>
+<li><b>docs-only write guard</b>: blocking non-doc writes at the backend layer instead of via prompt — a great example of "don't outsource your security boundary to LLM self-discipline." Anyone doing "agent + file writes" should copy this.</li>
+<li><b>Content snapshot dedup</b>: SHA-256 comparison avoids meaningless empty PRs — an idempotent-CI detail many agent tools miss.</li>
+<li><b>Centralized provider abstraction</b>: config converges in <code>constants.ts</code> + one <code>createModel</code> branch, so adding a provider is cheap.</li>
+<li><b>Dogfooding</b>: the repo's own <code>openwiki/</code> was generated by OpenWiki, reads quite well, has source maps — the strongest maturity signal.</li>
+</ul>
+<div style="font-size:12px;color:var(--ink3);margin:6px 0 12px">▸ docs-only guard: the write boundary sits in the backend, not left to LLM self-discipline</div>
+<svg viewBox="0 0 720 200" style="width:100%;height:auto;display:block;font-family:inherit" text-anchor="middle" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ow-ah2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--ink3)"/></marker>
+    <marker id="ow-ok" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--win)"/></marker>
+    <marker id="ow-no" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--lose)"/></marker>
+  </defs>
+  <rect x="25" y="72" width="150" height="60" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="100" y="98" style="fill:var(--ink);font-weight:700;font-size:13px">agent write request</text>
+  <text x="100" y="116" style="fill:var(--ink2);font-size:10px">write / edit tools</text>
+  <rect x="255" y="32" width="160" height="140" rx="12" style="fill:var(--surface);stroke:var(--accent);stroke-width:2"/>
+  <text x="335" y="60" style="fill:var(--ink3);font-size:10px">path check</text>
+  <text x="335" y="94" style="fill:var(--ink);font-weight:700;font-size:15px">docs-only</text>
+  <text x="335" y="115" style="fill:var(--ink);font-weight:700;font-size:14px">backend guard</text>
+  <text x="335" y="140" style="fill:var(--ink2);font-size:10px">blocked at code layer</text>
+  <rect x="500" y="44" width="195" height="54" rx="10" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:1.5"/>
+  <text x="597" y="67" style="fill:var(--win);font-weight:700;font-size:13px">openwiki/ *.md　✓</text>
+  <text x="597" y="85" style="fill:var(--ink2);font-size:10px">allowed</text>
+  <rect x="500" y="116" width="195" height="54" rx="10" style="fill:var(--losebg);stroke:var(--losebd);stroke-width:1.5"/>
+  <text x="597" y="139" style="fill:var(--lose);font-weight:700;font-size:13px">other paths　✗</text>
+  <text x="597" y="157" style="fill:var(--ink2);font-size:10px">rejected + error</text>
+  <line x1="175" y1="102" x2="253" y2="102" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah2)"/>
+  <text x="214" y="92" style="fill:var(--ink3);font-size:9.5px">file path</text>
+  <path d="M 415,82 L 498,71" style="fill:none;stroke:var(--win);stroke-width:1.8" marker-end="url(#ow-ok)"/>
+  <path d="M 415,132 L 498,143" style="fill:none;stroke:var(--lose);stroke-width:1.8" marker-end="url(#ow-no)"/>
+</svg>
+<h3>⚠️ Trade-offs &amp; concerns</h3>
+<table>
+<colgroup><col style="width:22%"><col><col></colgroup>
+<tr><th class="l">Concern</th><th class="l">What shows up</th><th class="l">How to read it</th></tr>
+<tr><td class="l"><b>Very young, discount the numbers</b></td><td class="l">Created 2026-06-22, first tag 0.0.1 on 07-05, now 0.1.2. The 11.6k stars are a 3-week spike pushed by Trendshift/HN.</td><td class="l">Still 0.x, behavior may change; stars ≠ production validation. 110 open issues means it's still filling gaps fast.</td></tr>
+<tr><td class="l"><b>Tightly coupled to LangChain</b></td><td class="l">Built on their own <code>deepagents</code> (early 1.x) and <code>@langchain/*</code> pinned to recent majors.</td><td class="l">The whole dependency chain is new; any breaking bump ripples in. Integrating with non-LangGraph frameworks is costly.</td></tr>
+<tr><td class="l"><b>No hallucination check</b></td><td class="l">It's essentially "stuff the repo into context and summarize"; accuracy drops on huge monorepos or highly dynamic code.</td><td class="l">No post-generation lint (e.g. verifying that file paths cited in the docs actually exist).</td></tr>
+<tr><td class="l"><b>Privacy in personal mode</b></td><td class="l">Reads private Gmail/X/Notion data and hands it to an LLM; OAuth tokens sit in plaintext at <code>~/.openwiki/.env</code>.</td><td class="l">Enterprises should assess data exfiltration risk, especially with untrusted providers (self-hosted gateways).</td></tr>
+<tr><td class="l"><b>A daily extra PR</b></td><td class="l">Auto-opened doc PRs still need human review.</td><td class="l">Without good auto-merge rules it can add management overhead.</td></tr>
+</table>
+</div>
+
+<h2>When to use it, when not</h2>
+<div class="card">
+<p><b class="win">Good fit</b>: mid-to-large, frequently changing, multi-person repos with downstream AI coding agents, where you want agents to have a stable "repo manual."</p>
+<p><b class="lose">Poor fit</b>: small stable projects (maintenance cost &gt; benefit), strict compliance on LLM output (internal finance/medical docs), or when you won't send API keys/repo content to a third-party provider. If you just want a project brief for Claude Code, <code>claude /init</code> is enough — no need for the whole connector/scheduling system.</p>
+</div>
+
+<h2>How to choose vs. similar tools</h2>
+<div class="card">
+<table>
+<tr><th class="l">Project</th><th class="l">When to pick it over OpenWiki</th></tr>
+<tr><td class="l"><b>DeepWiki</b> (Devin/Cognition)</td><td class="l">When you want to "instantly read docs for someone else's public repo" — no install, no API key, browse online. OpenWiki is CLI-first, self-hostable, integrates into your own CI.</td></tr>
+<tr><td class="l"><b>Repomix</b></td><td class="l">When you just want to pack a repo into a single LLM-friendly text file to feed ChatGPT/Claude yourself — lighter, no agent loop or auto-doc pipeline.</td></tr>
+<tr><td class="l"><b>Sourcegraph Cody</b></td><td class="l">When you want "live codebase Q&amp;A" (code search + RAG) rather than an offline, readable static wiki.</td></tr>
+<tr><td class="l"><b>Claude Code <code>/init</code></b></td><td class="l">When you only need a project brief for Claude Code — a one-shot scan, far lighter than the full connector/scheduling stack. OpenWiki pays off only when you need continuous multi-source updates.</td></tr>
+<tr><td class="l"><b>Hand-written ADRs + MkDocs</b></td><td class="l">When the team already has the discipline for architecture decision records, demands 100% accuracy, and doesn't trust an LLM auto-generation layer.</td></tr>
+</table>
+</div>
+
+<div class="foot"><b>Sources</b>:<a href="https://github.com/langchain-ai/openwiki" target="_blank" rel="noopener">langchain-ai/openwiki</a> (README, source, package.json, generated <code>openwiki/</code> docs). Star/version figures verified live via the GitHub API.<br><b>Disclaimer</b>: This page is a personal research note, not investment or technology-selection advice.</div>
+</div></body></html>

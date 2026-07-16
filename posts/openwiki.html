@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenWiki · LangChain 讓 LLM agent 自動幫 codebase 寫維基</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="openwiki"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>OpenWiki · 讓 LLM agent 自動幫 codebase 寫維基</h1>
+<div class="sub">LangChain 官方團隊做的 CLI：掃描 repo，跑一個 agent loop 產出結構化 markdown 文件（架構、workflow、模組地圖），還能掛 CI 每天自動開 PR 更新。<br>定位不是給人看的文件工具——是<b>讓下游的 AI coding agent（Claude Code / Cursor）有穩定「repo 說明書」可查</b>。</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://github.com/langchain-ai/openwiki" target="_blank" rel="noopener">來源:langchain-ai/openwiki · GitHub ↗</a>
+<span class="badge">性質:CLI 工具 / MIT</span>
+<span class="badge">整理日:2026-07-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🛠 OpenWiki 把<span class="win">「codebase 的文件」變成 agent 跑出來的產物</span>——掃 repo、生成 <code>openwiki/</code> markdown、掛 CI 持續更新，讓 coding agent 有穩定上下文可查。</p>
+<p>兩種模式：<b>code</b> 模式對當前 repo 生成文件並維護 <code>AGENTS.md</code>/<code>CLAUDE.md</code> 的專屬區塊；<b>personal</b> 模式接 Gmail/Notion/X 等 connector，做個人知識庫。底層跑 LangChain 自家的 <code>deepagents</code> agent 框架。</p>
+<p class="note">★ 極年輕（2026-06-22 建立、約 3 週爆紅到 11.6k star），版本還在 0.x，行為仍可能大改。看它<b>學設計</b>比直接上生產更划算。</p>
+</div>
+
+<h2>它解決什麼問題</h2>
+<div class="card">
+<p>AI coding agent 最缺的是<b>穩定、非即時查詢的 repo 上下文</b>：每次進到一個大 repo 都要重新摸索架構。傳統做法是人手寫 <code>CLAUDE.md</code> / ADR，但維護成本全靠人的紀律。</p>
+<div class="quote">OpenWiki 的賭注：既然文件是給 agent 讀的，那就<b>讓 agent 自己寫、自己維護</b>——人只需要 review。</div>
+<p style="margin-top:12px">它跑 agent 掃 repo，產出 <code>openwiki/</code> 目錄下一組結構化文件（quickstart、architecture、cli、agent、operations、integrations…），並在 repo 根目錄的 <code>AGENTS.md</code>/<code>CLAUDE.md</code> 用 <code>&lt;!-- OPENWIKI:START --&gt;…END --&gt;</code> 標記塞一段「請先讀 <code>openwiki/</code> 再工作」的提示——<b>只重寫這段</b>，不動你其他內容。</p>
+</div>
+
+<h2>兩種模式</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">code 模式（預設）</div><div class="kd">對當前 repo 產出 <code>openwiki/</code> 文件 + 維護 <code>AGENTS.md</code>/<code>CLAUDE.md</code> 標記區塊。跑前先用 <code>git status/log/diff</code> 收集變更摘要餵給 agent。</div></div>
+<div class="kcard"><div class="kt">personal 模式</div><div class="kd">接 git-repo、X、Notion、Gmail、Web Search（Tavily）、Hacker News 六種 connector，把抓下來的資料 ingest 進 <code>~/.openwiki/wiki/</code>，變成個人知識庫；同一 connector 可設多個 instance 分開排程。</div></div>
+</div>
+</div>
+
+<h2>運作原理</h2>
+<div class="card">
+<div style="font-size:12px;color:var(--ink3);margin:2px 0 14px">▸ 運作流程：從 repo 掃描到每日自動開 PR，內容沒變就跳過</div>
+<svg viewBox="0 0 720 300" style="width:100%;height:auto;display:block;font-family:inherit" text-anchor="middle" xmlns="http://www.w3.org/2000/svg">
+  <defs><marker id="ow-ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--ink3)"/></marker></defs>
+  <!-- top row -->
+  <ellipse cx="80" cy="68" rx="54" ry="30" style="fill:var(--turnbg);stroke:var(--turnbd);stroke-width:1.5"/>
+  <text x="80" y="64" style="fill:var(--ink);font-weight:700;font-size:14px">Repo</text>
+  <text x="80" y="82" style="fill:var(--ink2);font-size:10px">目標程式碼</text>
+  <rect x="205" y="40" width="150" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="280" y="63" style="fill:var(--ink);font-weight:700;font-size:13px">git 證據收集</text>
+  <text x="280" y="81" style="fill:var(--ink2);font-size:10px">init·update diff</text>
+  <rect x="460" y="34" width="220" height="68" rx="12" style="fill:var(--surface);stroke:var(--accent);stroke-width:2"/>
+  <text x="570" y="57" style="fill:var(--ink);font-weight:700;font-size:13px">deepagents agent loop</text>
+  <text x="570" y="75" style="fill:var(--ink2);font-size:10px">掃 repo → 生成文件</text>
+  <text x="570" y="93" style="fill:var(--accent);font-size:10px">🔒 只能寫 openwiki/</text>
+  <!-- bottom row -->
+  <rect x="495" y="180" width="185" height="58" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="587" y="204" style="fill:var(--ink);font-weight:700;font-size:13px">openwiki/ *.md</text>
+  <text x="587" y="222" style="fill:var(--ink2);font-size:10px">架構·CLI·workflow…</text>
+  <polygon points="345,173 427,210 345,247 263,210" style="fill:var(--midbg);stroke:var(--midbd);stroke-width:1.5"/>
+  <text x="345" y="206" style="fill:var(--ink);font-weight:700;font-size:12px">SHA-256 去重</text>
+  <text x="345" y="223" style="fill:var(--ink2);font-size:10px">內容沒變?</text>
+  <ellipse cx="90" cy="210" rx="62" ry="32" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:1.5"/>
+  <text x="90" y="206" style="fill:var(--ink);font-weight:700;font-size:14px">CI 開 PR</text>
+  <text x="90" y="224" style="fill:var(--ink2);font-size:10px">每日 cron</text>
+  <!-- arrows -->
+  <line x1="134" y1="68" x2="203" y2="68" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="169" y="57" style="fill:var(--ink3);font-size:9.5px">log/diff</text>
+  <line x1="355" y1="68" x2="458" y2="68" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="406" y="57" style="fill:var(--ink3);font-size:9.5px">餵變更摘要</text>
+  <line x1="587" y1="102" x2="587" y2="178" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="597" y="146" text-anchor="start" style="fill:var(--ink3);font-size:9.5px">寫入文件</text>
+  <line x1="495" y1="210" x2="429" y2="210" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <line x1="263" y1="210" x2="156" y2="210" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah)"/>
+  <text x="209" y="200" style="fill:var(--ink3);font-size:9.5px">有變更→開 PR</text>
+  <text x="209" y="225" style="fill:var(--ink3);font-size:9px">沒變→跳過</text>
+  <path d="M 90,178 C 20,150 22,112 76,100" style="fill:none;stroke:var(--turn);stroke-width:1.8;stroke-dasharray:5 4" marker-end="url(#ow-ah)"/>
+</svg>
+<table>
+<colgroup><col style="width:24%"><col></colgroup>
+<tr><th class="l">環節</th><th class="l">做什麼</th></tr>
+<tr><td class="l">Agent 骨架</td><td class="l">呼叫 LangChain 自家 <code>deepagents</code>（<code>createDeepAgent</code> + <code>CompositeBackend</code> + <code>FilesystemBackend</code>），跑在自訂的 <code>OpenWikiLocalShellBackend</code> 上，虛擬檔案系統根目錄對到目標 repo。</td></tr>
+<tr><td class="l"><b>docs-only 寫入護欄</b></td><td class="l">code 模式下 backend 直接擋掉「非 <code>openwiki/</code> 路徑」的 write/edit（<code>docs-only-backend.ts</code>）。agent 想改原始碼會被程式碼層拒絕並回錯誤——<b>不是靠 prompt 約束</b>。</td></tr>
+<tr><td class="l">Git 證據收集</td><td class="l">host process 先跑 git 指令產生變更摘要：<code>init</code> 抓最近 20 筆 commit，<code>update</code> 抓上次 HEAD 之後的 diff。給模型穩定、非即時查詢的上下文。</td></tr>
+<tr><td class="l">冪等去重</td><td class="l">完成後對 <code>openwiki/</code> 算 SHA-256 snapshot，內容沒變就不寫 metadata——避免排程 CI 產生無意義的空 PR。</td></tr>
+<tr><td class="l">多 provider 抽象</td><td class="l"><code>createModel</code> 依 provider 分支建 chat model（Anthropic / OpenAI / OpenRouter / Bedrock / Vertex / OpenAI-compatible），全走 LangChain retry。加新 provider ＝ 改一個檔案 + 加一個 case。</td></tr>
+<tr><td class="l">State 持久化</td><td class="l"><code>@langchain/langgraph-checkpoint-sqlite</code> 把對話 thread 存到 <code>~/.openwiki/openwiki.sqlite</code>，key 是 repo 路徑 hash，互動模式可接續對話。</td></tr>
+</table>
+</div>
+
+<h2>主要功能</h2>
+<div class="card">
+<ul>
+<li><code>openwiki --init</code> / <code>--update</code> 一鍵生成/增量更新 repo 文件，<code>--print</code> 給 CI 用的一次性輸出。</li>
+<li>自動維護 <code>AGENTS.md</code>/<code>CLAUDE.md</code> 專屬區塊，讓 coding agent 自動知道先讀 wiki。</li>
+<li>內建 GitHub Actions / GitLab CI / Bitbucket Pipelines 範本，預設每天 cron 自動開 PR 更新文件。</li>
+<li>互動式 Ink（React for terminal）UI，可即時追問、<code>/api-key</code>、<code>/langsmith-key</code> 動態換 key，支援 LangSmith tracing。</li>
+<li>跨平台 OAuth（含 ngrok 隧道給 callback）、macOS LaunchAgents 排程本地 connector。</li>
+<li>支援 OpenAI ChatGPT 訂閱登入（走 Codex backend，不吃 API 額度）等多種計費模型。</li>
+</ul>
+</div>
+
+<h2>技術棧</h2>
+<div class="card">
+<table>
+<colgroup><col style="width:24%"><col></colgroup>
+<tr><th class="l">面向</th><th class="l">用什麼</th></tr>
+<tr><td class="l">語言 / 環境</td><td class="l">TypeScript（85.5%）+ 少量 JS，Node.js ≥22，<code>pnpm</code> monorepo，純 <code>tsc</code> build（無 bundler）。</td></tr>
+<tr><td class="l">CLI UI</td><td class="l"><code>ink</code>（React for terminal）+ <code>react</code> 18。</td></tr>
+<tr><td class="l">Agent 框架</td><td class="l"><code>deepagents</code>（LangChain 自家「Claude Code 式」框架）、<code>langchain</code> 1.x、<code>@langchain/core</code>、<code>@langchain/langgraph-checkpoint-sqlite</code>。</td></tr>
+<tr><td class="l">LLM provider</td><td class="l"><code>@langchain/anthropic</code> / <code>openai</code> / <code>openrouter</code> / <code>aws</code>(Bedrock)、<code>@anthropic-ai/vertex-sdk</code>。</td></tr>
+<tr><td class="l">其他</td><td class="l"><code>@langchain/tavily</code>(web search)、<code>zod</code> 4、<code>marked</code>、<code>cron-parser</code>/<code>cronstrue</code>。</td></tr>
+<tr><td class="l">測試 / 工具鏈</td><td class="l"><code>vitest</code>（22 個測試檔）、<code>eslint</code> 10、<code>prettier</code>。</td></tr>
+</table>
+</div>
+
+<h2>快速上手</h2>
+<div class="card">
+<table>
+<tr><td class="l"><code>npm install -g openwiki</code></td><td class="l">全域安裝（Windows 建議走 npm/pnpm，避免 bun 需編譯 better-sqlite3）。</td></tr>
+<tr><td class="l"><code>openwiki --init</code></td><td class="l">互動式：選 provider / API key / model，生成 <code>openwiki/</code> 文件。</td></tr>
+<tr><td class="l"><code>openwiki --update</code></td><td class="l">依 git diff 增量更新文件。</td></tr>
+<tr><td class="l"><code>openwiki -p "摘要一下你能做什麼"</code></td><td class="l">一次性、非互動、印完就結束。</td></tr>
+<tr><td class="l"><code>openwiki personal --init</code></td><td class="l">個人知識庫模式。</td></tr>
+<tr><td class="l"><code>openwiki auth notion|gmail|x</code></td><td class="l">走瀏覽器 OAuth 授權 connector。</td></tr>
+</table>
+<p class="note" style="margin-top:10px">CI 排程：把 <code>examples/openwiki-update.yml</code> 複製到 <code>.github/workflows/</code>，設好 <code>OPENROUTER_API_KEY</code>（範本預設 OpenRouter + <code>z-ai/glm-5.2</code>）即可每天自動開 PR。</p>
+</div>
+
+<h2>工程師觀點</h2>
+<div class="card">
+<h3>👍 值得學的設計</h3>
+<ul>
+<li><b>docs-only 寫入護欄</b>：用 backend override 從程式碼層擋掉 agent 亂寫非文件路徑，而非單靠 prompt——「別把安全邊界外包給 LLM 自律」的好示範，做「agent + 檔案寫入」的人都該參考。</li>
+<li><b>內容 snapshot 去重</b>：SHA-256 比對避免無意義空 PR，這種 idempotent CI job 細節很多 agent 工具會漏。</li>
+<li><b>Provider 抽象集中化</b>：設定收斂在 <code>constants.ts</code> + <code>createModel</code> 一處，加 provider 成本低。</li>
+<li><b>Dogfooding</b>：repo 裡的 <code>openwiki/</code> 就是 OpenWiki 自己生成的，讀起來品質相當高、有 source map——最有力的成熟度佐證。</li>
+</ul>
+<div style="font-size:12px;color:var(--ink3);margin:6px 0 12px">▸ docs-only 護欄：寫入邊界擋在 backend，不外包給 LLM 自律</div>
+<svg viewBox="0 0 720 200" style="width:100%;height:auto;display:block;font-family:inherit" text-anchor="middle" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ow-ah2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--ink3)"/></marker>
+    <marker id="ow-ok" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--win)"/></marker>
+    <marker id="ow-no" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L7,3 L0,6 Z" style="fill:var(--lose)"/></marker>
+  </defs>
+  <rect x="25" y="72" width="150" height="60" rx="10" style="fill:var(--surface2);stroke:var(--border);stroke-width:1.5"/>
+  <text x="100" y="98" style="fill:var(--ink);font-weight:700;font-size:13px">agent 寫入請求</text>
+  <text x="100" y="116" style="fill:var(--ink2);font-size:10px">write / edit 工具</text>
+  <rect x="255" y="32" width="160" height="140" rx="12" style="fill:var(--surface);stroke:var(--accent);stroke-width:2"/>
+  <text x="335" y="60" style="fill:var(--ink3);font-size:10px">路徑檢查</text>
+  <text x="335" y="94" style="fill:var(--ink);font-weight:700;font-size:15px">docs-only</text>
+  <text x="335" y="115" style="fill:var(--ink);font-weight:700;font-size:14px">backend 護欄</text>
+  <text x="335" y="140" style="fill:var(--ink2);font-size:10px">程式碼層攔截</text>
+  <rect x="500" y="44" width="195" height="54" rx="10" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:1.5"/>
+  <text x="597" y="67" style="fill:var(--win);font-weight:700;font-size:13px">openwiki/ *.md　✓</text>
+  <text x="597" y="85" style="fill:var(--ink2);font-size:10px">允許寫入</text>
+  <rect x="500" y="116" width="195" height="54" rx="10" style="fill:var(--losebg);stroke:var(--losebd);stroke-width:1.5"/>
+  <text x="597" y="139" style="fill:var(--lose);font-weight:700;font-size:13px">其他路徑　✗</text>
+  <text x="597" y="157" style="fill:var(--ink2);font-size:10px">拒絕 + 回錯誤</text>
+  <line x1="175" y1="102" x2="253" y2="102" style="stroke:var(--ink3);stroke-width:1.8" marker-end="url(#ow-ah2)"/>
+  <text x="214" y="92" style="fill:var(--ink3);font-size:9.5px">檔案路徑</text>
+  <path d="M 415,82 L 498,71" style="fill:none;stroke:var(--win);stroke-width:1.8" marker-end="url(#ow-ok)"/>
+  <path d="M 415,132 L 498,143" style="fill:none;stroke:var(--lose);stroke-width:1.8" marker-end="url(#ow-no)"/>
+</svg>
+<h3>⚠️ 取捨與隱憂</h3>
+<table>
+<colgroup><col style="width:22%"><col><col></colgroup>
+<tr><th class="l">隱憂</th><th class="l">具體表現</th><th class="l">怎麼看</th></tr>
+<tr><td class="l"><b>極年輕，數字打折</b></td><td class="l">2026-06-22 建立、首個 tag 0.0.1 在 07-05、現 0.1.2。11.6k star 是被 Trendshift/HN 推上熱榜的 3 週爆紅曲線。</td><td class="l">版本 0.x，行為仍可能大改；star ≠ 生產驗證。110 個 open issues 代表還在快速填坑。</td></tr>
+<tr><td class="l"><b>強綁 langchain 生態</b></td><td class="l">底層吃自家 <code>deepagents</code>（1.x 初期）、<code>@langchain/*</code> 全鎖近期 major。</td><td class="l">依賴鏈都很新，任一環破壞性升級都會波及；跟非 LangGraph 框架整合成本高。</td></tr>
+<tr><td class="l"><b>沒有幻覺文件驗證</b></td><td class="l">本質是「把 repo 塞進 context 讓 LLM 總結」，超大 monorepo 或高度動態程式碼準確度會掉。</td><td class="l">沒看到生成後 lint 檢查（例如驗證文件引用的檔案路徑是否存在）。</td></tr>
+<tr><td class="l"><b>personal 模式隱私面</b></td><td class="l">要讀 Gmail/X/Notion 私人資料丟給 LLM 摘要，OAuth token 存 <code>~/.openwiki/.env</code> 明文。</td><td class="l">企業採用前自行評估資料外流，尤其切到非受信任 provider（自架 gateway）時。</td></tr>
+<tr><td class="l"><b>CI 每天多一個 PR</b></td><td class="l">自動開的文件 PR 仍要人 review。</td><td class="l">沒設好 auto-merge 規則反而增加管理負擔。</td></tr>
+</table>
+</div>
+
+<h2>什麼時候用、什麼時候別用</h2>
+<div class="card">
+<p><b class="win">適合</b>：中大型、變動頻繁、多人協作、且下游有用 AI coding agent 的 repo，想讓 agent 有穩定「repo 說明書」可查。</p>
+<p><b class="lose">不適合</b>：小型穩定專案（維護成本 &gt; 效益）、對 LLM 產出有嚴格合規要求（金融/醫療內部文件）、或不想把 API key/repo 內容送第三方 provider 的場景。若只是想要一份給 Claude Code 用的專案說明，<code>claude /init</code> 就夠，不必引入整套 connector/排程系統。</p>
+</div>
+
+<h2>類似專案怎麼選</h2>
+<div class="card">
+<table>
+<tr><th class="l">專案</th><th class="l">何時選它而非 OpenWiki</th></tr>
+<tr><td class="l"><b>DeepWiki</b>（Devin/Cognition）</td><td class="l">想「馬上看別人公開 repo 的文件」——免安裝、免自帶 API key、線上瀏覽。OpenWiki 反過來是 CLI-first、可自架、可持續整合進自己 CI。</td></tr>
+<tr><td class="l"><b>Repomix</b></td><td class="l">只想把 repo 打包成單一 LLM 友善文字檔自己餵給 ChatGPT/Claude，不需要 agent loop 與自動產文件流程時，更輕量。</td></tr>
+<tr><td class="l"><b>Sourcegraph Cody</b></td><td class="l">要的是「即時查 codebase」（code search + RAG 問答）而非「離線可讀的靜態 wiki」。</td></tr>
+<tr><td class="l"><b>Claude Code <code>/init</code></b></td><td class="l">只要一份給 Claude Code 的專案說明，一次性掃描即可，比整套 connector/排程輕得多。只有需要「跨多來源持續自動更新」時 OpenWiki 才划算。</td></tr>
+<tr><td class="l"><b>手寫 ADR + MkDocs</b></td><td class="l">團隊本來就有紀律做架構決策紀錄、要求 100% 準確度、不信任 LLM 自動生成層。</td></tr>
+</table>
+</div>
+
+<div class="foot"><b>資料來源</b>:<a href="https://github.com/langchain-ai/openwiki" target="_blank" rel="noopener">langchain-ai/openwiki</a>（README、原始碼、package.json、<code>openwiki/</code> 生成文件）。star/版本等數字為 GitHub API 即時查核。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資或技術選型建議。</div>
+</div></body></html>

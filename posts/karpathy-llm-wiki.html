@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Wiki · 讓 LLM 幫你維護一份會長大的知識庫</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="karpathy-llm-wiki"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>LLM Wiki · 讓 LLM 幫你維護一份會長大的知識庫</h1>
+<div class="sub">不是每次問問題都重新翻資料（RAG），而是讓 LLM 像維基管理員一樣，把每次讀到的東西<b>寫進</b>一份持久、互相連結的 markdown 知識庫——下次直接讀維基。<br>口號本質：<i>解決的不是檢索技術，而是人類長期維護知識庫的意志力問題。</i></div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener">來源:Andrej Karpathy · GitHub Gist ↗</a>
+<span class="badge">性質:設計模式 / idea file</span>
+<span class="badge">整理日:2026-07-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">📚 LLM Wiki 把<span class="win">「檢索的成本」從查詢時攤到寫入時</span>——推理做一次、寫死進頁面，之後查詢是讀取而非重算。</p>
+<p>傳統 RAG 每次問「這五份文件的共同結論」都要重新檢索、重新拼裝。LLM Wiki 讓 LLM 把綜合結果<b>寫成一頁 markdown</b>，並主動更新交叉引用、標記矛盾。人負責找資料、下方向、判斷意義；LLM 負責所有「記帳型苦力」。</p>
+<p class="note">★ Karpathy 明確定位這是<b>可貼給 agent 一起發展的 idea file，不是規格書</b>。文末原話：「以上一切都是選用且模組化的。」文章價值在提出「模式」，不是提出「產品」。</p>
+</div>
+
+<h2>它解決什麼問題</h2>
+<div class="card">
+<p>Karpathy 的核心論點只有一句：</p>
+<div class="quote">維護知識庫最累的不是閱讀或思考，而是<b>記帳（bookkeeping）</b>。</div>
+<p style="margin-top:12px">人類維護 wiki 會半途而廢，不是缺乏洞見，而是「更新交叉引用、保持摘要最新、標記過時資料」這種苦力活隨規模成長，最終壓垮維護意願。<b>LLM 不會嫌煩、不會忘記更新連結、可以一次改 15 個檔案</b>——維護成本趨近於零。</p>
+<p>他把這比作 Vannevar Bush 1945 年的 Memex 構想：Bush 想要一個「私人、被主動整理、連結和文件本身一樣有價值」的知識庫，唯一沒解決的是「誰來維護」——LLM 補上了這塊。</p>
+</div>
+
+<h2>傳統 RAG vs. LLM Wiki</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="傳統 RAG 每次查詢都重新檢索與推理、答案問完即丟；LLM Wiki 寫入一次，之後都是便宜的讀取，而且知識會累積">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+  <!-- divider -->
+  <line x1="380" y1="20" x2="380" y2="300" style="stroke:var(--border)" stroke-dasharray="4 5"/>
+
+  <!-- ============ Panel A: 傳統 RAG ============ -->
+  <text x="20" y="30" style="fill:var(--ink);font:700 15px sans-serif">傳統 RAG</text>
+  <text x="20" y="49" style="fill:var(--ink3);font:400 11.5px sans-serif">每次查詢都重付整套成本</text>
+
+  <!-- three query rows, each pays a full retrieve+reason cost -->
+  <g style="font:600 12px sans-serif">
+    <rect x="20" y="70"  width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="90" text-anchor="middle" style="fill:var(--ink)">Q1</text>
+    <rect x="20" y="135" width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="155" text-anchor="middle" style="fill:var(--ink)">Q2</text>
+    <rect x="20" y="200" width="52" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="46" y="220" text-anchor="middle" style="fill:var(--ink)">Q3</text>
+  </g>
+  <g style="font:600 11.5px sans-serif">
+    <line x1="74" y1="85"  x2="118" y2="85"  style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="74" y1="150" x2="118" y2="150" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="74" y1="215" x2="118" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="120" y="68"  width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="89" text-anchor="middle" style="fill:var(--lose)">重新檢索＋推理</text>
+    <rect x="120" y="133" width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="154" text-anchor="middle" style="fill:var(--lose)">重新檢索＋推理</text>
+    <rect x="120" y="198" width="132" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="186" y="219" text-anchor="middle" style="fill:var(--lose)">重新檢索＋推理</text>
+  </g>
+  <g style="font:400 11.5px sans-serif">
+    <line x1="252" y1="85"  x2="296" y2="85"  style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="252" y1="150" x2="296" y2="150" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="252" y1="215" x2="296" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <text x="300" y="82" style="fill:var(--ink2)">答案</text><text x="300" y="96" style="fill:var(--ink3);font-size:10px">丟棄 ✕</text>
+    <text x="300" y="147" style="fill:var(--ink2)">答案</text><text x="300" y="161" style="fill:var(--ink3);font-size:10px">丟棄 ✕</text>
+    <text x="300" y="212" style="fill:var(--ink2)">答案</text><text x="300" y="226" style="fill:var(--ink3);font-size:10px">丟棄 ✕</text>
+  </g>
+  <text x="20" y="285" style="fill:var(--ink3);font:400 11px sans-serif">↑ 貴的推理在<tspan style="fill:var(--lose)">查詢時</tspan>重複發生 · stateless 不累積</text>
+
+  <!-- ============ Panel B: LLM Wiki ============ -->
+  <text x="400" y="30" style="fill:var(--ink);font:700 15px sans-serif">LLM Wiki</text>
+  <text x="400" y="49" style="fill:var(--ink3);font:400 11.5px sans-serif">寫入一次，之後都是便宜的讀取</text>
+
+  <!-- one-time write path -->
+  <g style="font:600 12px sans-serif">
+    <rect x="400" y="66" width="60" height="30" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="430" y="86" text-anchor="middle" style="fill:var(--ink)">來源</text>
+    <line x1="462" y1="81" x2="500" y2="81" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="502" y="64" width="104" height="34" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="554" y="85" text-anchor="middle" style="fill:var(--lose);font-size:11.5px">Ingest 寫入</text>
+    <text x="554" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">一次性</text>
+    <line x1="606" y1="81" x2="644" y2="81" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="646" y="60" width="96" height="42" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="694" y="79" text-anchor="middle" style="fill:var(--win);font-size:12px">Wiki</text><text x="694" y="93" text-anchor="middle" style="fill:var(--win);font:400 9.5px sans-serif">markdown</text>
+  </g>
+
+  <!-- cheap reads -->
+  <g style="font:600 12px sans-serif">
+    <rect x="400" y="150" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="169" text-anchor="middle" style="fill:var(--ink)">Q1</text>
+    <rect x="400" y="188" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="207" text-anchor="middle" style="fill:var(--ink)">Q2</text>
+    <rect x="400" y="226" width="52" height="28" rx="7" style="fill:var(--surface2);stroke:var(--border)"/><text x="426" y="245" text-anchor="middle" style="fill:var(--ink)">Q3</text>
+  </g>
+  <g style="font:600 11.5px sans-serif">
+    <line x1="454" y1="164" x2="496" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="454" y1="202" x2="496" y2="202" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="454" y1="240" x2="496" y2="240" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <rect x="498" y="150" width="80" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="538" y="169" text-anchor="middle" style="fill:var(--win)">讀頁</text>
+    <rect x="498" y="188" width="80" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="538" y="207" text-anchor="middle" style="fill:var(--win)">讀頁</text>
+    <rect x="498" y="226" width="80" height="28" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="538" y="245" text-anchor="middle" style="fill:var(--win)">讀頁</text>
+    <!-- reads pull from the same Wiki -->
+    <path d="M694 104 L694 130 Q694 140 684 140 L560 140 Q548 140 548 150" style="fill:none;stroke:var(--winbd)" stroke-dasharray="3 4"/>
+  </g>
+  <g style="font:400 11.5px sans-serif">
+    <line x1="580" y1="164" x2="614" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="580" y1="202" x2="614" y2="202" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <line x1="580" y1="240" x2="614" y2="240" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+    <text x="618" y="168" style="fill:var(--ink2)">答案</text>
+    <text x="618" y="206" style="fill:var(--ink2)">答案</text>
+    <text x="618" y="244" style="fill:var(--ink2)">答案</text>
+  </g>
+  <text x="400" y="285" style="fill:var(--ink3);font:400 11px sans-serif">↑ 貴的推理只在<tspan style="fill:var(--win)">寫入時</tspan>做一次 · 知識越用越厚</text>
+</svg>
+</div>
+<table>
+<tr><th class="l">面向</th><th class="l">傳統 RAG<br><span class="note">（NotebookLM / 上傳檔案問答）</span></th><th class="l">LLM Wiki</th></tr>
+<tr><td class="l">知識儲存位置</td><td class="l">原始文件的向量索引</td><td class="l">一份會被持續改寫的 markdown 檔案集</td></tr>
+<tr><td class="l">每次查詢做的事</td><td class="l">重新檢索 chunk → 重新拼裝答案</td><td class="l">先讀 index，直接讀整理好的頁面</td></tr>
+<tr><td class="l">跨文件綜合</td><td class="l">每次都要重新推理一次</td><td class="l">綜合結果已寫成頁面，之後直接讀</td></tr>
+<tr><td class="l">矛盾 / 過時資料</td><td class="l">不會主動標記</td><td class="l">ingest / lint 時主動比對、標記推翻</td></tr>
+<tr><td class="l">累積性</td><td class="l"><span class="lose">無</span>（stateless，問完即丟）</td><td class="l"><span class="win">有</span>（compounding，越用越豐富）</td></tr>
+</table>
+</div>
+
+<h2>三層架構</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三層架構閉環：Schema 決定規則，LLM 依規則把不可變的 Raw Sources 蒸餾進 Wiki，人在 Wiki 層探索，發現規則不夠用時回頭修 Schema">
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+
+  <!-- ① Raw Sources -->
+  <rect x="170" y="40" width="420" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="190" y="64" style="fill:var(--ink);font:700 14px sans-serif">① Raw Sources</text>
+  <text x="190" y="84" style="fill:var(--ink3);font:400 11px sans-serif">文章 / 論文 / 圖片 / 資料檔 · LLM 只讀不改</text>
+  <text x="570" y="64" text-anchor="end" style="fill:var(--ink3);font:600 11px sans-serif">不可變</text>
+
+  <line x1="380" y1="96" x2="380" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="392" y="117" style="fill:var(--ink3);font:400 10.5px sans-serif">蒸餾：讀 Raw → 寫成頁面</text>
+
+  <!-- ② The Wiki -->
+  <rect x="170" y="130" width="420" height="60" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="190" y="155" style="fill:var(--win);font:700 14px sans-serif">② The Wiki</text>
+  <text x="190" y="175" style="fill:var(--ink2);font:400 11px sans-serif">摘要頁 / 實體頁 / 比較頁 · 互相連結的 markdown</text>
+  <text x="570" y="155" text-anchor="end" style="fill:var(--win);font:600 11px sans-serif">LLM 完全擁有</text>
+
+  <!-- ③ The Schema -->
+  <rect x="170" y="224" width="420" height="56" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="190" y="248" style="fill:var(--ink);font:700 14px sans-serif">③ The Schema</text>
+  <text x="190" y="268" style="fill:var(--ink3);font:400 11px sans-serif">CLAUDE.md / AGENTS.md · 結構、慣例、工作流程</text>
+  <text x="570" y="248" text-anchor="end" style="fill:var(--ink3);font:600 11px sans-serif">人維護</text>
+
+  <!-- Wiki → Schema (人探索後回頭改規則) -->
+  <path d="M590 160 H640 Q652 160 652 172 V240 Q652 252 640 252 H600" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="662" y="200" style="fill:var(--ink3);font:400 10.5px sans-serif">人在這層探索，</text>
+  <text x="662" y="215" style="fill:var(--ink3);font:400 10.5px sans-serif">規則不夠用就改</text>
+
+  <!-- Schema → Wiki (規則決定怎麼寫) -->
+  <path d="M170 252 H120 Q108 252 108 240 V172 Q108 160 120 160 H166" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="98" y="200" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">規則決定</text>
+  <text x="98" y="215" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">LLM 怎麼寫</text>
+</svg>
+</div>
+<div class="kbox">
+<div class="kcard"><div class="kt">① Raw Sources（不可變）</div><div class="kd">原始文件——文章、論文、圖片、資料檔。LLM 只讀不改，是唯一的 source of truth。</div></div>
+<div class="kcard"><div class="kt">② The Wiki（LLM 生成）</div><div class="kd">一堆互相連結的 markdown：摘要頁、實體頁、比較頁、synthesis 頁。<b>LLM 完全擁有這層</b>——建頁、更新頁、維護交叉引用。人讀，LLM 寫。</div></div>
+<div class="kcard"><div class="kt">③ The Schema（配置檔）</div><div class="kd">CLAUDE.md / AGENTS.md：定義 wiki 結構、慣例、工作流程。讓 LLM 從「泛用聊天機器人」變成「有紀律的維基管理員」。</div></div>
+</div>
+<p style="margin-top:12px"><b>閉環關係</b>：Schema 決定規則 → LLM 依規則把 Raw Sources 蒸餾進 Wiki → 人在 Wiki 層探索、發現規則不夠用時回頭修 Schema。這其實把「prompt engineering」升級成一份<b>活的、持久化的 agent 治理文件</b>。</p>
+</div>
+
+<h2>三個核心操作</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三個核心操作繞著 Wiki 轉：Ingest 把新來源寫進去（貴），Query 讀出來並把好答案歸檔成新頁，Lint 定期檢查矛盾、孤兒頁與過時主張並修正">
+  <defs>
+    <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
+    </marker>
+  </defs>
+
+  <!-- Wiki (center) -->
+  <rect x="300" y="140" width="150" height="76" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="375" y="172" text-anchor="middle" style="fill:var(--win);font:700 15px sans-serif">The Wiki</text>
+  <text x="375" y="192" text-anchor="middle" style="fill:var(--win);font:400 10.5px sans-serif">markdown · 互相連結</text>
+
+  <!-- Ingest (left) -->
+  <text x="18" y="36" style="fill:var(--lose);font:700 14px sans-serif">Ingest · 收錄</text>
+  <text x="18" y="54" style="fill:var(--ink3);font:400 11px sans-serif">最貴、最容易出錯</text>
+  <rect x="18" y="80" width="80" height="34" rx="7" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="58" y="102" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">新來源</text>
+  <line x1="100" y1="97" x2="130" y2="97" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <rect x="132" y="80" width="112" height="34" rx="7" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="188" y="102" text-anchor="middle" style="fill:var(--lose);font:600 11.5px sans-serif">LLM 讀 + 討論</text>
+  <path d="M244 97 H300 Q320 97 320 117 V136" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="18" y="134" style="fill:var(--ink3);font:400 10.5px sans-serif">寫入：摘要頁 · 更新 index ·</text>
+  <text x="18" y="149" style="fill:var(--ink3);font:400 10.5px sans-serif">回改 10–15 頁 · 補 log</text>
+
+  <!-- Query (right) -->
+  <text x="492" y="36" style="fill:var(--win);font:700 14px sans-serif">Query · 查詢</text>
+  <text x="492" y="54" style="fill:var(--ink3);font:400 11px sans-serif">便宜，而且會回饋</text>
+  <line x1="452" y1="160" x2="488" y2="160" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="470" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">讀</text>
+  <rect x="490" y="143" width="118" height="34" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="549" y="165" text-anchor="middle" style="fill:var(--win);font:600 11.5px sans-serif">讀 index → 讀頁</text>
+  <line x1="610" y1="160" x2="644" y2="160" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="648" y="164" style="fill:var(--ink2);font:600 11.5px sans-serif">答案 + 引用</text>
+  <!-- archive back into the wiki -->
+  <path d="M690 176 V240 Q690 252 678 252 H442 Q430 252 430 240 V222" style="fill:none;stroke:var(--ink3)" stroke-dasharray="4 4" marker-end="url(#ah3)"/>
+  <text x="560" y="240" text-anchor="middle" style="fill:var(--win);font:600 10.5px sans-serif">好答案歸檔成新頁 → Query 就是寫作</text>
+
+  <!-- Lint (bottom-left) -->
+  <line x1="330" y1="218" x2="330" y2="276" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="338" y="252" style="fill:var(--ink3);font:400 10.5px sans-serif">檢查</text>
+  <rect x="150" y="280" width="210" height="52" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="255" y="303" text-anchor="middle" style="fill:var(--mid);font:700 13px sans-serif">Lint · 健檢</text>
+  <text x="255" y="321" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">矛盾 / 孤兒頁 / 過時主張 / 缺連結</text>
+  <path d="M200 280 V190 Q200 178 212 178 H296" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+  <text x="214" y="170" style="fill:var(--ink3);font:400 10.5px sans-serif">修正</text>
+  <text x="372" y="321" style="fill:var(--ink3);font:400 10.5px sans-serif">← 原文列為選用，社群公認最不能省</text>
+</svg>
+</div>
+<h3>Ingest · 收錄</h3>
+<p>丟一份新來源 → LLM 讀 → 跟你討論重點 → 寫一頁摘要 → 更新 index → <b>回頭改相關的既有實體/概念頁</b>（一份來源常動到 10–15 頁）→ log.md 補一筆。工程上最貴、最容易出錯的操作。</p>
+<h3>Query · 查詢</h3>
+<p>先讀 index 找相關頁 → 讀頁 → 綜合答案並附引用，可輸出成 markdown 頁 / 比較表 / 投影片 / 圖表。<b>關鍵洞見</b>：好答案要「歸檔回 wiki」變成新頁——臨時問出來的分析不該只活在對話紀錄裡。這把<b>「查詢」和「寫作」變成同一個動作</b>。</p>
+<h3>Lint · 健檢</h3>
+<p>定期讓 LLM 檢查：頁面矛盾、被推翻卻沒更新的舊主張、沒有 inbound link 的孤兒頁、被提到卻無獨立頁的重要概念、缺失的交叉引用、可用網搜補的缺口。<b>三個操作裡最容易被跳過、但社群公認最不能省的一步。</b></p>
+</div>
+
+<h2>實作細節（都不需要資料庫）</h2>
+<div class="card">
+<table>
+<colgroup><col style="width:22%"><col></colgroup>
+<tr><th class="l">元件</th><th class="l">做什麼</th></tr>
+<tr><td class="l"><code>index.md</code></td><td class="l">內容導向的目錄：每頁一行摘要 + 分類。查詢時先讀它找頁。Karpathy 明講 ~100 來源/數百頁內夠用，<b>不需要 embedding RAG 基礎設施</b>。</td></tr>
+<tr><td class="l"><code>log.md</code></td><td class="l">append-only 時間軸，固定前綴 <code>## [2026-04-02] ingest | 標題</code>，純 unix 工具可 parse（<code>grep "^## \[" log.md | tail -5</code>）。</td></tr>
+<tr><td class="l">Git</td><td class="l">wiki 就是一個 git repo，版本歷史 / branching / 協作全部免費——這是選 markdown 而非資料庫的核心理由。</td></tr>
+<tr><td class="l">Obsidian</td><td class="l">當「IDE」：graph view 看拓撲（誰是 hub、誰是孤兒）、Web Clipper 把網頁轉 markdown、Dataview 對 frontmatter 查詢、Marp 直接產投影片。</td></tr>
+<tr><td class="l" style="white-space:nowrap"><code>qmd</code>（選用）</td><td class="l">規模變大後接上：本地 BM25 + vector hybrid search + LLM re-rank，CLI/MCP 皆可。作者是 Shopify CEO Tobi Lütke，GitHub 近 28k stars，真實熱門工具。</td></tr>
+</table>
+</div>
+
+<h2>工程師觀點</h2>
+<div class="card">
+<h3>👍 好在哪</h3>
+<ul>
+<li><b>用寫入放大換查詢品質</b>：跨文件關係推理做一次、寫死進頁面，之後查詢是讀取。這是資料庫設計的經典 trade-off，只是換成用 LLM 當 ETL。</li>
+<li><b>零基礎設施起步</b>：markdown + git + grep 就能跑，不用 vector DB、不用 embedding pipeline。對單人 PKM / 小型研究，摩擦力極低。</li>
+<li><b>人機分工用了三十年的隱喻</b>：人做判斷、LLM 做記帳。用「維基管理員」這個直覺概念，讓非工程背景的人也能理解「我在跟一個永遠不會累的助手合作」。</li>
+</ul>
+<h3>⚠️ 取捨與隱憂<span class="note">（多數來自社群生產環境回饋，非原文提及）</span></h3>
+<table>
+<colgroup><col style="width:20%"><col><col></colgroup>
+<tr><th class="l">隱憂</th><th class="l">具體表現</th><th class="l">緩解方式</th></tr>
+<tr><td class="l"><b>偏誤 / 幻覺累積</b></td><td class="l">幻覺寫進 wiki 後，下次查詢讀到「被自己污染過的二手資料」，錯誤被當既定事實複合，比單次幻覺更難發現。</td><td class="l">頁面標「verify against source」逼 agent 對照原文——但快取成本翻倍。有實測：per-entity 頁反而比原檔還大，改用一張密集表格更有效率。</td></tr>
+<tr><td class="l"><b>Drift（漂移）</b><br>最大殺手</td><td class="l">ingest 時 under-update 交叉引用，頁面悄悄過時；自由格式連結幾年內就腐化。</td><td class="l">把 lint 從「選用」變強制排程；用 typed entity + 明確 schema 取代自由文字連結。</td></tr>
+<tr><td class="l"><b>實體去重</b></td><td class="l">「新資訊該併入既有實體頁，還是開新頁」是 write-time 最難的判斷，易產生重複頁或誤合併。</td><td class="l">尚無公認解法，目前最開放的問題。</td></tr>
+<tr><td class="l"><b>多人協作撞車</b></td><td class="l">沒有 authorship 邊界和 review gate，共享 wiki 會腐爛。</td><td class="l">生產案例採 PR review、每層一個 writer、來源用 <code>file@SHA:lines</code> 版本釘選而非複製全文。</td></tr>
+<tr><td class="l"><b>規模上限</b></td><td class="l">index.md 過數百頁後需另搭 qmd，等於還是要碰基礎設施。</td><td class="l">用版本釘選路徑代替複製原文、用蒸餾版取代原始雜訊格式。</td></tr>
+</table>
+</div>
+
+<div class="kbox">
+<div class="kcard"><div class="kt">KP1 · 本質是 write-time ETL</div><div class="kd">把跨文件推理攤到寫入，查詢變讀取。用寫入放大換查詢品質與延遲。</div></div>
+<div class="kcard"><div class="kt">KP2 · Query = 寫作</div><div class="kd">好答案要歸檔回 wiki 變新頁，這是跟 RAG 最大的行為差異。</div></div>
+<div class="kcard"><div class="kt">KP3 · Lint 不能省</div><div class="kd">Karpathy 列為選用，但社群公認最不該跳過——不 lint，wiki 就漂移腐化。</div></div>
+<div class="kcard"><div class="kt">KP4 · 解的是意志力，不是技術</div><div class="kd">它處理的是人類維護知識庫半途而廢的問題，不是檢索演算法問題。</div></div>
+</div>
+
+<h2>什麼時候用、什麼時候別用</h2>
+<div class="card">
+<p><b class="win">適合</b>：個人研究型 PKM、長期主題追蹤（產業/公司深度研究）、閱讀陪伴。這類場景「查詢頻率遠高於寫入頻率、且容忍少量漂移」，正是甜蜜點。<span class="note">（本站自己在跑的股票 wiki 就是同一個模式的實例。）</span></p>
+<p><b class="lose">不適合</b>：需要嚴格事實可追溯、監管合規（金融/醫療決策依據）不能容忍 LLM 摘要層介入原文與結論之間——除非搭版本釘選引用；純一次性、不會重複查詢的任務也不值得付 ingest 的寫入成本。</p>
+</div>
+
+<h2>跟既有方案怎麼選</h2>
+<div class="card">
+<table>
+<tr><th class="l">方案</th><th class="l">何時選它而非 LLM Wiki</th></tr>
+<tr><td class="l"><b>傳統 RAG / Vector DB</b></td><td class="l">資料變動快、不會重複查同一批知識、或資料量大到 wiki 化的寫入成本划不來。</td></tr>
+<tr><td class="l"><b>GraphRAG</b>（微軟）</td><td class="l">要的是「自動化廣度」而非「人指導的深度」；不在意可讀性、只要檢索品質。</td></tr>
+<tr><td class="l"><b>Obsidian + Dataview（純手動）</b></td><td class="l">資料量小、你就想自己整理、不信任 LLM 寫入知識庫。</td></tr>
+<tr><td class="l"><b>NotebookLM / 檔案上傳</b></td><td class="l">臨時性任務、不打算長期累積、怕 wiki 漂移風險。</td></tr>
+<tr><td class="l"><b>qmd</b></td><td class="l"><b>不是替代品，是互補</b>——wiki 超過 index.md 手動維護規模（數百頁）時接上當搜尋層。</td></tr>
+</table>
+</div>
+
+<div class="foot"><b>資料來源</b>:<a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener">Karpathy · LLM Wiki gist</a>（原文逐字）。社群 drift/成本回饋為 gist 留言二手整理。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資或技術選型建議。</div>
+</div></body></html>
