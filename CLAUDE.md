@@ -63,6 +63,46 @@ posts/<slug>.html       每篇文章一檔，slug 用 kebab-case
 
 資料多時用頁尾 `<script>` 把陣列 render 成卡片/表格（見 `gooaye-ep673-stocks.html`），不要手刻幾十張卡片。
 
+## 能畫圖就畫圖
+
+**能用圖說明的就畫圖**，方便讀者理解。流程、架構、循環、A vs B 的對比，圖一定比一段文字好讀。
+一篇文章通常值得 2–3 張圖，放在對應段落 `card` 的最前面（圖先，表格/文字在後）。
+
+畫法：**直接手寫 inline `<svg>`**，包在 `<div class="fig" style="overflow-x:auto;margin:2px 0 18px">` 裡。
+不要用 excalidraw / mermaid / 任何繪圖庫或圖檔——那些跟不了主題變數，dark mode 會爆掉，也違反「不加依賴」。
+
+```html
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="…一句話講完這張圖的結論…">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <rect x="20" y="60" width="120" height="34" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="80" y="82" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">框</text>
+  <line x1="142" y1="77" x2="180" y2="77" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+</svg>
+</div>
+```
+
+規則：
+- 顏色一律 `var(--…)`，跟文字同一套：`--surface2/--border/--ink/--ink2/--ink3`；語氣用 `--win/--lose/--mid/--turn` + `*bg`/`*bd`（例：貴的步驟用 lose、便宜的用 win）。
+- `viewBox` 固定 `0 0 760 <h>`，配 `width:100%;min-width:600px;height:auto` → 桌機自適應、手機橫向捲動。
+- `role="img"` + `aria-label` 用**一句話寫出這張圖的結論**，不是「流程圖」。
+- **同一頁多張圖，`marker` 的 id 必須不同**（`ah`/`ah2`/`ah3`），否則會互相蓋掉。
+- 中英兩版都要有圖；**英文字串較長，容易撞版或超出 viewBox**，英文版常需要自己的座標，不能照抄中文版。
+
+畫完一定要在瀏覽器實看（中英 × light/dark × 寬窄），別只靠座標腦補。可用這段抓文字超框/重疊：
+
+```js
+document.querySelectorAll('.fig svg').forEach(svg => {
+  const vb = svg.viewBox.baseVal;
+  svg.querySelectorAll('text').forEach(t => { const b = t.getBBox();
+    if (b.x < vb.x || b.x + b.width > vb.x + vb.width) console.log('超出 viewBox:', t.textContent); });
+});
+```
+
+範例見 `posts/karpathy-llm-wiki.html`（RAG vs Wiki 對比、三層架構閉環、三操作循環）。
+
 ## 把新文章掛上首頁
 
 改 `index.html`，在 `#grid` 加一張卡片：
@@ -81,7 +121,8 @@ posts/<slug>.html       每篇文章一檔，slug 用 kebab-case
 
 - `data-cat` / `data-title` / `data-excerpt` 餵給 `site.js` 的分類+搜尋，務必填。
 - **若是新分類**：在 `.toolbar` 加一顆 `<button class="chip" data-cat="分類名">分類名</button>`。chip 是 data-driven，加了就能用，不用改 JS。同時在 `site.js` 的 `CATL` 補上該分類的中英標籤。
-- `#hero`（`.featured`）精選位**自動選最新一篇**（依卡片 `.pc-date` 日期），不用手改；把新卡片放 `#grid` 最前面即可。
+- `#hero`（`.featured`）精選位**自動選最新一篇**（依卡片 `.pc-date` 日期），不用手改。
+- 首頁卡片顯示順序由 `site.js` 依 `.pc-date` **自動新→舊排序**（rule-based，見 `initHome()`），新卡片加進 `#grid` 時位置不影響顯示順序，放哪裡都可以。
 
 ### 站是雙語的，一篇要掛四處
 

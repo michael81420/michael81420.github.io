@@ -5,6 +5,7 @@
 var POSTS=[
   {slug:'openwiki',                   cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep680-stocks',        cat:'股癌podcast分析', zh:'股癌 EP680 · 個股觀點整理',          en:'Gooaye EP680 · Stock Notes'},
   {slug:'gooaye-ep679-stocks',        cat:'股癌podcast分析', zh:'股癌 EP679 · 個股觀點整理',          en:'Gooaye EP679 · Stock Notes'},
   {slug:'gooaye-ep678-stocks',        cat:'股癌podcast分析', zh:'股癌 EP678 · 個股觀點整理',          en:'Gooaye EP678 · Stock Notes'},
   {slug:'gooaye-ep677-stocks',        cat:'股癌podcast分析', zh:'股癌 EP677 · 個股觀點整理',          en:'Gooaye EP677 · Stock Notes'},
@@ -99,11 +100,13 @@ function initHome(){
   var hero=document.getElementById('hero');
   var empty=document.getElementById('empty');
   var cat='全部',q='';
-  // 自動把最新一篇（依 .pc-date）填進精選
   function dateNum(c){var p=(c.querySelector('.pc-date')||{}).textContent||'';var m=p.match(/\d+/g)||[];return (+m[0]||0)*10000+(+m[1]||0)*100+(+m[2]||0);}
+  // 卡片一律依 .pc-date 新→舊排序（rule-based，不依賴 HTML 裡的手動擺放順序）
+  var sorted=[].slice.call(grid.querySelectorAll('.post-card')).sort(function(a,b){return dateNum(b)-dateNum(a);});
+  sorted.forEach(function(c){grid.appendChild(c);});
+  // 自動把最新一篇填進精選
   if(hero){
-    var cards=[].slice.call(grid.querySelectorAll('.post-card'));
-    var latest=cards.sort(function(a,b){return dateNum(b)-dateNum(a);})[0];
+    var latest=sorted[0];
     if(latest){
       hero.href=latest.getAttribute('href');
       hero.querySelector('.kicker').textContent=(LANG==='en'?'Featured · ':'精選 · ')+catLabel(latest.dataset.cat);
