@@ -170,7 +170,7 @@ function initArticle(){
   rail.appendChild(nav);
 
   // 依 POSTS 出現順序分組
-  var order=[],groups={};
+  var order=[],groups={},activeBox=null;
   POSTS.forEach(function(p){
     if(!groups[p.cat]){groups[p.cat]=[];order.push(p.cat);}
     groups[p.cat].push(p);
@@ -187,7 +187,8 @@ function initArticle(){
     btn.addEventListener('click',function(){g.classList.toggle('collapsed');});
     g.appendChild(btn);
     var box=document.createElement('div');
-    box.className='rail-items';
+    var scrollable=items.length>5;
+    box.className='rail-items'+(scrollable?' scroll':''); // 每類最多顯示5篇，其餘用滑動看
     items.forEach(function(p){
       var a=document.createElement('a');
       a.className='rail-item'+(p.slug===slug?' active':'');
@@ -195,8 +196,16 @@ function initArticle(){
       a.textContent=LANG==='en'?p.en:p.zh;
       box.appendChild(a);
     });
-    g.appendChild(box);
+    if(scrollable){
+      var scrollWrap=document.createElement('div');
+      scrollWrap.className='rail-scrollwrap';
+      scrollWrap.appendChild(box);
+      g.appendChild(scrollWrap);
+    }else{
+      g.appendChild(box);
+    }
     nav.appendChild(g);
+    if(hasActive)activeBox=box;
   });
 
   // 把標題（含標誌線）以下的內容搬進置中內文欄，左側放清單，右側對稱留白
@@ -211,6 +220,16 @@ function initArticle(){
   cols.appendChild(rail);
   cols.appendChild(body);
   wrap.appendChild(cols);
+
+  // 捲動當前文章所在分類清單，讓 active 項目落在可視區中間
+  // (offsetTop 是相對最近的 positioned 祖先 .rail，不是這個 box，所以用 getBoundingClientRect 算相對位置)
+  if(activeBox){
+    var activeEl=activeBox.querySelector('.rail-item.active');
+    if(activeEl){
+      var relTop=activeEl.getBoundingClientRect().top-activeBox.getBoundingClientRect().top+activeBox.scrollTop;
+      activeBox.scrollTop=relTop-activeBox.clientHeight/2+activeEl.clientHeight/2;
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded',function(){
