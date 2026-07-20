@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://michael81420.github.io/sitemap.xml
