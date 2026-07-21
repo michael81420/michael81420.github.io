@@ -3,6 +3,8 @@
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    順序＝首頁卡片順序（新→舊）。cat 用首頁 data-cat 的正規中文值。 */
 var POSTS=[
+  {slug:'react-learn-guide',          cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
+  {slug:'javascript-learn-guide',     cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
   {slug:'openwiki',                   cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
   {slug:'gooaye-ep680-stocks',        cat:'股癌podcast分析', zh:'股癌 EP680 · 個股觀點整理',          en:'Gooaye EP680 · Stock Notes'},
@@ -21,6 +23,7 @@ var CATL={
   '全部':            {zh:'全部',            en:'All'},
   '股癌podcast分析': {zh:'股癌podcast分析', en:'Gooaye Podcast'},
   'AI 技術分享':     {zh:'AI 技術分享',     en:'AI Notes'},
+  '前端開發':        {zh:'前端開發',        en:'Frontend'},
   '旅遊':            {zh:'旅遊',            en:'Travel'}
 };
 var LANG=(document.documentElement.getAttribute('lang')||'').toLowerCase().indexOf('en')===0?'en':'zh';

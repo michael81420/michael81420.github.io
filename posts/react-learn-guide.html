@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React．完全上手：什麼時候用、怎麼用（一篇讀完）</title>
+<meta name="description" content="照 react.dev 官方學習路線走一遍 React，但每段都回答「何時該用」與「怎麼用對」：元件、JSX、useState、state 快照與批次、提升 state、Context、useReducer、ref、useEffect 何時該用又何時千萬別用。附可點擊互動示範與流程圖。">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="react-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>React．完全上手：什麼時候用、怎麼用</h1>
+<div class="sub">照 <b>react.dev 官方學習路線</b>走一遍，但每一段都只回答兩個問題：這東西<b>「何時該用」</b>、以及<b>「怎麼用對」</b>。<br>附可點擊的互動示範與流程圖——看完能建立完整心智模型，而不是一知半解。</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://zh-hans.react.dev/learn" target="_blank" rel="noopener">來源:react.dev/learn ↗</a>
+<span class="badge">對象:React 18 / 19</span>
+<span class="badge">整理日:2026-07-21</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 何時用</a>
+  <a href="#c1">1 描述 UI</a>
+  <a href="#c2">2 加入互動</a>
+  <a href="#c3">3 管理 state</a>
+  <a href="#c4">4 逃生艙</a>
+  <a href="#c5">5 速查表</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 一句話心智模型：<span class="win">畫面 = f(state)</span>。</p>
+<p>你<b>不直接改畫面（DOM）</b>，而是改 <b>state（狀態）</b>；React 幫你重新執行元件、算出畫面差異、再更新 DOM。整個框架都在服務這一條規則。</p>
+<p>官方學習路線四個階段，學完就能寫 production：<b>① 描述 UI → ② 加入互動 → ③ 管理 state → ④ 逃生艙</b>。</p>
+<p class="note">★ 90% 的 React bug 只來自兩件事沒想清楚：<b>state 該放在哪一層</b>、以及<b>什麼時候「不要」用 useEffect</b>。這篇每一章都給你可以照著走的判斷樹。</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · React 到底解決什麼、何時才該用</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 的單向資料流：改 state 觸發重新 render，React 更新 DOM，使用者互動再呼叫 setState 改 state，形成一個閉環。">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="34" y="40" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="109" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">state</text>
+<text x="109" y="80" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">狀態（唯一真相）</text>
+<rect x="305" y="40" width="150" height="52" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">元件函式 render</text>
+<text x="380" y="80" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">算出畫面該長怎樣</text>
+<rect x="576" y="40" width="150" height="52" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="651" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">畫面 UI</text>
+<text x="651" y="80" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">React 更新真實 DOM</text>
+<line x1="184" y1="66" x2="303" y2="66" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<line x1="455" y1="66" x2="574" y2="66" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<rect x="576" y="168" width="150" height="46" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="651" y="196" text-anchor="middle" style="fill:var(--ink);font:600 12.5px sans-serif">使用者互動 onClick…</text>
+<rect x="305" y="168" width="150" height="46" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="380" y="189" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">setState()</text>
+<text x="380" y="205" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">排入下一次更新</text>
+<line x1="651" y1="92" x2="651" y2="166" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<line x1="574" y1="191" x2="457" y2="191" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<path d="M305 191 L109 191 L109 94" style="fill:none;stroke:var(--accent);stroke-width:1.6" marker-end="url(#ah)"/>
+<text x="200" y="184" text-anchor="middle" style="fill:var(--accent);font:600 11px sans-serif">改 state → 重跑一輪</text>
+</svg>
+</div>
+<p><b>React 是什麼</b>：一套用「元件（component）」組畫面的函式庫。每個元件是一個回傳畫面的 JS 函式，可以帶自己的狀態、可以重用。你只負責「描述每個 state 下畫面長怎樣」，剩下的 DOM 操作 React 全包。</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">✅ 適合用 React</div><div class="kd">畫面會隨資料/互動<b>頻繁變化</b>、狀態多且互相牽動、UI 要重用（後台、SaaS、儀表板、互動性強的前端 App）。</div></div>
+<div class="kcard"><div class="kt">🤔 不必上 React</div><div class="kd">純靜態內容頁、只有一兩個小互動——原生 HTML/CSS/JS 就夠了（<b>像你正在看的這個站</b> 😉）。硬上框架只是增加依賴。</div></div>
+</div>
+<p class="note">判斷準則一句話：<b>互動狀態的複雜度</b>決定要不要 React。狀態越多、越會互相影響，React 幫你省的手動 DOM 同步就越多。</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · 描述 UI — 畫面長什麼樣</h2>
+<div class="card">
+<h3>1.1 元件與 JSX：畫面就是回傳 markup 的函式</h3>
+<p>元件是<b>大寫開頭</b>、回傳 JSX 的 JS 函式。JSX 讓你在 JS 裡直接寫 HTML 般的標記，用大括號 <code>{ }</code> 塞進任何 JS 值或表達式。</p>
+<pre><code><span class="k">function</span> Welcome() {
+  <span class="k">const</span> name = <span class="s">"Michael"</span>;
+  <span class="k">return</span> &lt;h1&gt;Hi, {name}!&lt;/h1&gt;;   <span class="c">// { } 裡放 JS</span>
+}
+<span class="c">// 用法：像 HTML 標籤一樣被別的元件嵌進去</span>
+&lt;Welcome /&gt;</code></pre>
+<p><b>何時該拆成新元件</b>：一段 JSX <b>重複出現</b>、或一個元件長到「一眼看不完 / 同時管太多事」，就抽出來。不用一開始就過度切割——重複或變複雜時再拆。</p>
+</div>
+<div class="card">
+<h3>1.2 Props：父傳子的唯讀資料（單向由上往下）</h3>
+<p>Props 是父元件傳給子元件的參數，<b>子元件不能改它</b>。這是 React 「資料單向流」的一半：資料永遠由上往下傳。</p>
+<pre><code><span class="k">function</span> Avatar({ name, size }) {   <span class="c">// 從 props 解構</span>
+  <span class="k">return</span> &lt;img alt={name} width={size} /&gt;;
+}
+&lt;Avatar name=<span class="s">"Michael"</span> size={48} /&gt;   <span class="c">// 父層決定值</span></code></pre>
+<p><b>何時用</b>：子元件需要顯示或客製化父層的資料時。想「往上傳」怎麼辦？父層傳一個 <b>函式</b> 當 prop 下去，子層呼叫它（見 3.3 提升 state）。</p>
+</div>
+<div class="card">
+<h3>1.3 條件渲染 &amp; 清單：key 為何不能用陣列 index</h3>
+<pre><code><span class="c">// 條件：用 &amp;&amp; 或三元運算</span>
+{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+<span class="c">// 清單：map 出來，每個都要穩定唯一的 key</span>
+{users.map(u =&gt; &lt;Row <span class="ok">key={u.id}</span> user={u} /&gt;)}   <span class="c">// ✅ 用資料 id</span>
+{users.map((u, i) =&gt; &lt;Row <span class="bad">key={i}</span> user={u} /&gt;)}   <span class="c">// ❌ 用 index</span></code></pre>
+<p><b>key 是什麼</b>：React 用 key 認出「重新 render 前後，哪個項目是同一個」。<b>為什麼不能用 index</b>：清單一旦<b>重排、插入、刪除</b>，同一筆資料的 index 會變，React 會把畫面狀態（例如輸入框裡打到一半的字、勾選狀態）<b>綁到錯的項目</b>上。</p>
+<table>
+<tr><th>清單情況</th><th>key 該用什麼</th></tr>
+<tr><td>資料有唯一 id</td><td class="win">用 id（最佳）</td></tr>
+<tr><td>沒有 id 但穩定不重排</td><td class="mid">index 勉強可以</td></tr>
+<tr><td>會排序 / 增刪 / 篩選</td><td class="lose">絕對不要用 index</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>1.4 保持元件純淨（pure）</h3>
+<p>元件在 render 時應該<b>只根據 props 和 state 算出畫面</b>，不去改外部變數、不做網路請求之類的 side effect（那些留給事件或 Effect）。</p>
+<p><b>為什麼重要</b>：純函式 → 同樣輸入得同樣輸出 → 可預測、可快取、可被 React 安全地重跑。React 的嚴格模式（Strict Mode）故意在開發時<b>把每個元件呼叫兩次</b>來抓不純的元件，純的元件跑兩次結果一樣、不會爆。</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · 加入互動 — 讓畫面會動</h2>
+<div class="card">
+<h3>2.1 事件：傳「函式本身」，不是呼叫結果</h3>
+<pre><code>&lt;button onClick={handleClick}&gt;按我&lt;/button&gt;    <span class="c">// ✅ 傳函式</span>
+&lt;button onClick={handleClick()}&gt;按我&lt;/button&gt;  <span class="c">// ❌ render 時就被呼叫了</span></code></pre>
+</div>
+<div class="card">
+<h3>2.2 useState：元件的「記憶」</h3>
+<p>畫面要會變，就需要一個「跨 re-render 還記得」的值，這就是 state。用一般變數不行——一般變數每次 render 都被重設，而且改它<b>不會觸發畫面更新</b>。</p>
+<pre><code><span class="k">const</span> [count, setCount] = useState(0);
+<span class="c">//     ↑目前值   ↑改它的函式   ↑初始值</span>
+<span class="k">function</span> handleClick() { setCount(count + 1); }</code></pre>
+<p><code>setCount</code> 做兩件事：記住新值、並<b>排一次 re-render</b>。下面這顆按鈕就是這樣運作的：</p>
+<div class="demo" id="d-count">
+<div class="demo-h">互動：useState = 元件的記憶</div>
+<div class="demo-row">
+<button data-act="inc">count + 1</button>
+<span class="big-num" data-out>0</span>
+<span class="lbl">按下去 → <code>setCount</code> → 元件函式重新執行 → 畫面更新。用普通變數的話，這個數字永遠是 0。</span>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> Counter() {
+  <span class="k">const</span> [count, setCount] = useState(0);
+  <span class="k">return</span> (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      count + 1 → {count}
+    &lt;/button&gt;
+  );
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>2.3 render &amp; commit：畫面更新的三步驟</h3>
+<div class="fig">
+<svg viewBox="0 0 760 150" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 更新畫面的三步驟：觸發（初次載入或 setState）、渲染（呼叫你的元件函式算出畫面）、提交（把差異寫進真實 DOM）。">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="24" y="42" width="212" height="64" rx="11" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">① 觸發 Trigger</text>
+<text x="130" y="88" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">初次載入 或 setState</text>
+<rect x="274" y="42" width="212" height="64" rx="11" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="380" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">② 渲染 Render</text>
+<text x="380" y="88" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">React 呼叫你的元件函式</text>
+<rect x="524" y="42" width="212" height="64" rx="11" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="630" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">③ 提交 Commit</text>
+<text x="630" y="88" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">把差異寫進真實 DOM</text>
+<line x1="236" y1="74" x2="272" y2="74" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<line x1="486" y1="74" x2="522" y2="74" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+</svg>
+</div>
+<p>重點：<b>「渲染」只是 React 呼叫你的函式算出一份「畫面該長怎樣」的描述</b>，還沒碰到瀏覽器。只有「提交」時 React 才動真實 DOM，而且只改<b>有變的部分</b>。這就是為什麼你不用自己 <code>document.getElementById</code>。</p>
+</div>
+<div class="card">
+<h3>2.4 ★ state 是一張「快照」，加上批次更新</h3>
+<p>最反直覺、也最多人踩的一點：<b>在同一次事件裡，state 變數是固定的快照</b>。<code>setCount</code> 不會馬上改掉當下這行的 <code>count</code>，它只是登記「下一次 render 請用新值」。</p>
+<pre><code><span class="c">// count 現在是 0</span>
+setCount(count + 1); <span class="c">// 排入：用 0+1</span>
+setCount(count + 1); <span class="c">// count 還是快照 0 → 又排入 0+1</span>
+setCount(count + 1); <span class="c">// 一樣 0+1 → 結果只 +1！</span>
+
+<span class="c">// 想連續加？用 updater 函式，拿到的是「前一次的結果」</span>
+setCount(c =&gt; c + 1); <span class="c">// 0→1</span>
+setCount(c =&gt; c + 1); <span class="c">// 1→2</span>
+setCount(c =&gt; c + 1); <span class="c">// 2→3  ✅ 真的 +3</span></code></pre>
+<p>親手點點看差別——同樣「呼叫三次」，結果差很多：</p>
+<div class="demo" id="d-batch">
+<div class="demo-h">互動：快照 vs updater 函式（一次事件呼叫三次 setState）</div>
+<div class="demo-row">
+<span class="big-num" data-out>0</span>
+<button data-act="stale">setCount(count+1) × 3</button>
+<button class="ghost" data-act="fresh">setCount(c =&gt; c+1) × 3</button>
+<button class="ghost" data-act="reset">歸零</button>
+</div>
+<div class="msg" data-msg>先按左邊那顆——雖然呼叫三次，卻只 +1。</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> BatchDemo() {
+  <span class="k">const</span> [count, setCount] = useState(0);
+  <span class="k">return</span> (&lt;&gt;
+    &lt;span&gt;{count}&lt;/span&gt;
+    &lt;button onClick={() =&gt; {
+      setCount(count + 1); <span class="c">// 三次讀同一張快照</span>
+      setCount(count + 1);
+      setCount(count + 1); <span class="c">// → 只 +1</span>
+    }}&gt;count+1 × 3&lt;/button&gt;
+    &lt;button onClick={() =&gt; {
+      setCount(c =&gt; c + 1); <span class="c">// 拿前一次結果</span>
+      setCount(c =&gt; c + 1);
+      setCount(c =&gt; c + 1); <span class="c">// → +3</span>
+    }}&gt;c =&gt; c+1 × 3&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<p class="note">同一批 setState 會被 React <b>批次（batch）</b>成一次 render，效能才好。你要的是<b>累加</b>（updater 函式）還是<b>覆寫</b>（直接給值），自己選對就不會出錯。</p>
+</div>
+<div class="card">
+<h3>2.5 更新物件 / 陣列 state：不可變（immutable）</h3>
+<p>物件和陣列型的 state <b>不要就地改（mutate）</b>，要產生一個新的傳進去。</p>
+<pre><code><span class="c">// ❌ 就地改，React 偵測不到、畫面不更新</span>
+<span class="bad">user.age = 30; setUser(user);</span>
+<span class="bad">list.push(item); setList(list);</span>
+
+<span class="c">// ✅ 產生新物件 / 新陣列</span>
+setUser(<span class="ok">{ ...user, age: 30 }</span>);
+setList(<span class="ok">[...list, item]</span>);</code></pre>
+<p><b>為什麼</b>：React 靠比較「新舊 state 是不是同一個 reference」來決定要不要 re-render。你就地改，reference 沒變，React 以為沒事，畫面就不動。</p>
+<table>
+<tr><th>你想做</th><th>不可變寫法</th></tr>
+<tr><td>加到尾端</td><td><code>[...arr, x]</code></td></tr>
+<tr><td>刪掉某筆</td><td><code>arr.filter(a =&gt; a.id !== id)</code></td></tr>
+<tr><td>改某筆</td><td><code>arr.map(a =&gt; a.id===id ? {...a, ...patch} : a)</code></td></tr>
+<tr><td>改物件某欄</td><td><code>{ ...obj, key: value }</code></td></tr>
+</table>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · 管理 state — 放哪一層、怎麼組織</h2>
+<div class="card">
+<p>這章是 React 的<b>真正難點</b>，也是判斷力的分水嶺。先給你一張總地圖：一個 state 該放在哪裡，照這棵樹走。</p>
+<div class="fig">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="state 放哪裡的決策樹：只有自己用就放本地 useState；兄弟元件共用就提升到共同父層；很多層都要讀就用 Context；更新邏輯複雜就用 useReducer。">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="230" y="12" width="300" height="42" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13.5px sans-serif">這個 state 誰需要讀 / 改？</text>
+<rect x="24" y="92" width="300" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="117" style="fill:var(--ink2);font:12.5px sans-serif">只有這個元件自己</text>
+<rect x="404" y="92" width="332" height="40" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="420" y="117" style="fill:var(--ink);font:600 12.5px sans-serif">→ useState 放在元件裡（本地）</text>
+<rect x="24" y="144" width="300" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="169" style="fill:var(--ink2);font:12.5px sans-serif">兩個以上兄弟元件要共用</text>
+<rect x="404" y="144" width="332" height="40" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="420" y="169" style="fill:var(--ink);font:600 12.5px sans-serif">→ 提升到最近共同父層（lift up）</text>
+<rect x="24" y="196" width="300" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="221" style="fill:var(--ink2);font:12.5px sans-serif">很多層、很多元件都要讀</text>
+<rect x="404" y="196" width="332" height="40" rx="9" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="420" y="221" style="fill:var(--ink);font:600 12.5px sans-serif">→ 用 Context 供給，免一路傳 props</text>
+<rect x="24" y="248" width="300" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="273" style="fill:var(--ink2);font:12.5px sans-serif">更新動作多、轉移邏輯複雜</text>
+<rect x="404" y="248" width="332" height="40" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="420" y="273" style="fill:var(--ink);font:600 12.5px sans-serif">→ 用 useReducer（可搭 Context）</text>
+<path d="M300 54 L174 54 L174 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="324" y1="112" x2="402" y2="112" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="324" y1="164" x2="402" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="324" y1="216" x2="402" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="324" y1="268" x2="402" y2="268" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+</svg>
+</div>
+</div>
+<div class="card">
+<h3>3.1 用 state 反映輸入（controlled component）</h3>
+<p>React 的招牌思路：<b>畫面是 state 的函式</b>。輸入框不自己記值，而是 <code>value</code> 綁 state、<code>onChange</code> 改 state。試著在下面打字：</p>
+<div class="demo" id="d-ctrl">
+<div class="demo-h">互動：受控輸入 — 畫面永遠跟著 state</div>
+<div class="demo-row">
+<input type="text" data-in placeholder="打點字…">
+<span class="lbl">→ 即時大寫鏡像：</span>
+<span class="big-num" data-mirror style="font-size:20px">—</span>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> Mirror() {
+  <span class="k">const</span> [text, setText] = useState(<span class="s">""</span>);
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;
+    &lt;span&gt;{text.toUpperCase()}&lt;/span&gt;   <span class="c">// 衍生值直接算</span>
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>3.2 選對 state 結構（三原則）</h3>
+<ul>
+<li><b>能算出來的不要存</b>：<code>fullName</code> 由 <code>first + last</code> 算，render 時算就好，別另開一個 state（會不同步）。</li>
+<li><b>不要重複</b>：同一份資料只留一份真相，其他地方引用它。</li>
+<li><b>盡量扁平</b>：深層巢狀的 state 更新起來很痛，攤平比較好改。</li>
+</ul>
+</div>
+<div class="card">
+<h3>3.3 提升 state（lifting state up）</h3>
+<p>兩個兄弟元件要共用同一份資料時，把 state <b>移到它們最近的共同父層</b>，父層用 props 把值傳下去、用 callback 把改動收上來。下面的滑桿是父層的 state，兩個子元件同步讀它：</p>
+<div class="demo" id="d-lift">
+<div class="demo-h">互動：提升 state — 一份來源，兩個子元件同步</div>
+<div class="demo-row">
+<input type="range" min="0" max="100" value="25" data-range>
+<div class="bar"><i data-bar style="width:25%"></i></div>
+</div>
+<div class="demo-row" style="margin-top:14px">
+<div class="child"><div class="n" data-a>25°C</div><div class="t">子元件 A · 攝氏</div></div>
+<div class="child"><div class="n" data-b>77°F</div><div class="t">子元件 B · 華氏</div></div>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> Thermo() {
+  <span class="k">const</span> [temp, setTemp] = useState(25); <span class="c">// state 提升到父層</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input type=<span class="s">"range"</span> value={temp}
+           onChange={e =&gt; setTemp(+e.target.value)} /&gt;
+    &lt;Celsius value={temp} /&gt;     <span class="c">// 兩個子元件讀</span>
+    &lt;Fahrenheit value={temp} /&gt;  <span class="c">// 同一份來源</span>
+  &lt;/&gt;);
+}
+<span class="k">const</span> Celsius = ({ value }) =&gt; &lt;div&gt;{value}°C&lt;/div&gt;;
+<span class="k">const</span> Fahrenheit = ({ value }) =&gt; &lt;div&gt;{Math.round(value*9/5+32)}°F&lt;/div&gt;;</code></pre></details>
+</div>
+<p class="note">state 提升後，兩個子元件永遠一致——因為它們讀的是<b>同一個</b>來源，不是各自複製一份。</p>
+</div>
+<div class="card">
+<h3>3.4 保留與重置 state</h3>
+<p>state 綁在「元件在畫面樹裡的<b>位置</b>」。同一個位置、同一種元件 → React <b>保留</b> state；換掉 <code>key</code> → React 把它當成新元件、<b>重置</b> state。</p>
+<pre><code><span class="c">// 切換使用者時想清空表單？換 key 逼它重置</span>
+&lt;ProfileForm key={userId} /&gt;</code></pre>
+</div>
+<div class="card">
+<h3>3.5 useReducer：把複雜的更新邏輯集中</h3>
+<p>當一個 state 有<b>很多種更新動作</b>、邏輯散在各個 handler 裡時，把它換成 reducer：所有「怎麼變」集中在一個函式，元件只負責 <code>dispatch</code> 一個 action。</p>
+<div class="demo" id="d-red">
+<div class="demo-h">互動：useReducer — 元件只 dispatch，邏輯集中在 reducer</div>
+<div class="demo-row">
+<span class="big-num" data-out>0</span>
+<button data-type="inc">dispatch(+1)</button>
+<button class="ghost" data-type="dec">dispatch(−1)</button>
+<button class="ghost" data-type="reset">reset</button>
+</div>
+<div class="log" data-log></div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> reducer(state, action) {
+  <span class="k">switch</span> (action.type) {
+    <span class="k">case</span> <span class="s">"inc"</span>:   <span class="k">return</span> { count: state.count + 1 };
+    <span class="k">case</span> <span class="s">"dec"</span>:   <span class="k">return</span> { count: state.count - 1 };
+    <span class="k">case</span> <span class="s">"reset"</span>: <span class="k">return</span> { count: 0 };
+    <span class="k">default</span>:      <span class="k">return</span> state;
+  }
+}
+<span class="k">function</span> Counter() {
+  <span class="k">const</span> [state, dispatch] = useReducer(reducer, { count: 0 });
+  <span class="k">return</span> (&lt;&gt;
+    &lt;span&gt;{state.count}&lt;/span&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"inc"</span> })}&gt;+1&lt;/button&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"dec"</span> })}&gt;−1&lt;/button&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"reset"</span> })}&gt;reset&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>3.6 Context：跨多層傳同一份資料</h3>
+<p>當很多層、很多元件都要讀同一份「全站級」資料（主題、登入者、語系），一路用 props 傳很痛苦（叫 <b>prop drilling</b>）。Context 讓你在上層 <code>Provider</code> 一次供給，下面任何深度的元件用 <code>useContext</code> 直接拿。</p>
+<p class="note"><b>何時用</b>：資料是「很多元件共享的全站設定」。<b>別濫用</b>——不是所有 state 都塞 Context，那會讓每次變動牽動一大片重繪。多數 state 用本地 + 提升就好。</p>
+</div>
+<div class="card">
+<h3>3.7 Reducer + Context = 輕量全域狀態</h3>
+<p>把 <b>useReducer 的 state/dispatch</b> 放進 <b>Context</b>，就得到一個不用裝任何套件的輕量全域狀態方案：邏輯集中（reducer）、供給廣（context）。多數中小型 App 用這組就夠，不必急著上 Redux/Zustand。</p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · 逃生艙 — 需要跳出 React 模型時</h2>
+<div class="card">
+<p>「逃生艙（Escape Hatches）」是你需要碰觸 React 之外的世界（DOM、計時器、網路、第三方 lib）時用的工具。它們很強，但也最容易被<b>誤用</b>——尤其 <code>useEffect</code>。</p>
+</div>
+<div class="card">
+<h3>4.1 ref：存一個「不影響畫面」的值 / 抓 DOM</h3>
+<p><code>useRef</code> 給你一個 re-render 之間會保留、但<b>改它不會觸發 render</b> 的盒子。用來存不該影響畫面的東西（計時器 id、上一個值），或抓真實 DOM 節點（<code>focus()</code>、量尺寸、播放影片）。</p>
+<p>下面對比 state 和 ref 的差別——注意按 ref 那顆時，畫面「不動」：</p>
+<div class="demo" id="d-ref">
+<div class="demo-h">互動：ref vs state — 誰會觸發 render？</div>
+<div class="demo-row">
+<span class="kv"><b data-renders>0</b><span>次 render</span></span>
+<span class="kv">state: <b data-state>0</b></span>
+<span class="kv">ref: <b data-ref>0</b></span>
+</div>
+<div class="demo-row" style="margin-top:12px">
+<button data-act="state">setState + 1</button>
+<button class="ghost" data-act="ref">ref.current + 1</button>
+</div>
+<div class="msg" data-hint>按 <b>setState+1</b>：畫面立刻更新。按 <b>ref+1</b>：畫面不會動。</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> RefVsState() {
+  <span class="k">const</span> [state, setState] = useState(0);
+  <span class="k">const</span> ref = useRef(0);
+  console.log(<span class="s">"render"</span>); <span class="c">// 只有 setState 會讓元件重跑這行</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;p&gt;state: {state} · ref: {ref.current}&lt;/p&gt;
+    &lt;button onClick={() =&gt; setState(state + 1)}&gt;setState + 1&lt;/button&gt;
+    &lt;button onClick={() =&gt; { ref.current += 1; }}&gt;ref + 1&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<pre><code><span class="k">const</span> ref = useRef(0);
+ref.current += 1;        <span class="c">// 改它 → 不 re-render</span>
+inputRef.current.focus(); <span class="c">// 抓 DOM 節點直接操作</span></code></pre>
+</div>
+<div class="card">
+<h3>4.2 useEffect：跟「外部系統」同步</h3>
+<p>Effect 是 React <b>把畫面提交到 DOM 之後</b>才跑的 side effect，專門用來跟 React 以外的系統同步：訂閱事件、開/關計時器、連 WebSocket、操作非 React 的 DOM 函式庫。</p>
+<div class="fig">
+<svg viewBox="0 0 760 190" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Effect 的生命週期：掛載時執行 setup，依賴改變時先 cleanup 再 setup，卸載時執行 cleanup。">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<line x1="40" y1="95" x2="720" y2="95" style="stroke:var(--border);stroke-width:2"/>
+<rect x="40" y="74" width="140" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="110" y="92" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">掛載 Mount</text>
+<text x="110" y="107" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">執行 setup</text>
+<rect x="300" y="44" width="160" height="34" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="380" y="66" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">先 cleanup 舊的</text>
+<rect x="300" y="112" width="160" height="34" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="134" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">再 setup 新的</text>
+<text x="380" y="30" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">依賴改變 →</text>
+<rect x="580" y="74" width="140" height="42" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="650" y="92" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">卸載 Unmount</text>
+<text x="650" y="107" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">執行 cleanup</text>
+<line x1="180" y1="95" x2="298" y2="70" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="460" y1="129" x2="578" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+</svg>
+</div>
+<pre><code>useEffect(() =&gt; {
+  <span class="k">const</span> id = setInterval(tick, 1000); <span class="c">// setup</span>
+  <span class="k">return</span> () =&gt; clearInterval(id);        <span class="c">// cleanup（一定要收）</span>
+}, [<span class="c">/* 依賴：用到的 reactive 值都要列 */</span>]);</code></pre>
+<p><b>依賴陣列</b>要誠實列出 Effect 內用到的每個 props/state，官方 ESLint 規則會幫你抓漏。每次依賴變，React 會<b>先 cleanup 上一輪、再 setup 這一輪</b>——所以清理函式一定要寫（不然計時器、訂閱會越積越多）。</p>
+</div>
+<div class="card">
+<h3>4.3 ★ 你可能不需要 Effect（最重要的一節）</h3>
+<p>新手最大的坑：<b>把什麼都塞進 useEffect</b>。官方專門寫了一頁「You Might Not Need an Effect」。判斷你要做的事本質屬於哪一種：</p>
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="你可能不需要 Effect 的判斷：能從現有 props/state 算出的值就在 render 時算、不要 Effect；回應使用者操作就寫在事件 handler、不要 Effect；只有跟外部系統同步才用 Effect。">
+<defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="180" y="10" width="400" height="40" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="35" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">你想在 Effect 裡做的事，本質是哪一種？</text>
+<rect x="20" y="86" width="330" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="106" style="fill:var(--ink2);font:12px sans-serif">能用現有 props/state 算出來的值</text>
+<text x="36" y="123" style="fill:var(--ink3);font:11px sans-serif">（fullName、篩選後清單…）</text>
+<rect x="392" y="86" width="344" height="46" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="408" y="106" style="fill:var(--ink);font:600 12px sans-serif">❌ 不要 Effect</text>
+<text x="408" y="123" style="fill:var(--ink2);font:11.5px sans-serif">render 時直接算（貴的話 useMemo）</text>
+<rect x="20" y="142" width="330" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="162" style="fill:var(--ink2);font:12px sans-serif">回應某個使用者操作</text>
+<text x="36" y="179" style="fill:var(--ink3);font:11px sans-serif">（送出表單、點按鈕…）</text>
+<rect x="392" y="142" width="344" height="46" rx="9" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="408" y="162" style="fill:var(--ink);font:600 12px sans-serif">❌ 不要 Effect</text>
+<text x="408" y="179" style="fill:var(--ink2);font:11.5px sans-serif">寫在事件 handler 裡</text>
+<rect x="20" y="198" width="330" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="218" style="fill:var(--ink2);font:12px sans-serif">跟 React 以外的系統同步</text>
+<text x="36" y="235" style="fill:var(--ink3);font:11px sans-serif">（訂閱 / 網路 / 計時器 / 非 React DOM）</text>
+<rect x="392" y="198" width="344" height="46" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="408" y="225" style="fill:var(--ink);font:700 12.5px sans-serif">✅ 這才用 Effect</text>
+<line x1="350" y1="109" x2="390" y2="109" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<line x1="350" y1="165" x2="390" y2="165" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<line x1="350" y1="221" x2="390" y2="221" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M300 50 L185 50 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+</svg>
+</div>
+<p>下面示範最常見的誤用：把「由 first + last 算出的 fullName」塞進 Effect，會多一次 render（畫面可能閃一下）。打字看 render 次數，勾選框切換兩種寫法：</p>
+<div class="demo" id="d-eff">
+<div class="demo-h">互動：算得出來的值，不要用 Effect</div>
+<div class="demo-row">
+<input type="text" data-first placeholder="名" style="width:110px">
+<input type="text" data-last placeholder="姓" style="width:110px">
+<span class="lbl">→ 全名：</span><b data-full style="color:var(--accent)">—</b>
+</div>
+<div class="demo-row" style="margin-top:12px">
+<span class="kv">render 次數：<b data-rc>0</b></span>
+<label class="sw"><input type="checkbox" data-effmode> 模擬「用 Effect 派生」（每次多一輪 render）</label>
+</div>
+<div class="msg" data-msg>直接在 render 時算 <code>full = first + last</code>：一次 render 就好。勾起來看 Effect 版怎麼多花一倍。</div>
+<details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
+<pre><code><span class="k">function</span> NameForm() {
+  <span class="k">const</span> [first, setFirst] = useState(<span class="s">""</span>);
+  <span class="k">const</span> [last, setLast] = useState(<span class="s">""</span>);
+  <span class="k">const</span> full = (first + <span class="s">" "</span> + last).trim(); <span class="c">// ✅ render 時算，不用 Effect</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input value={first} onChange={e =&gt; setFirst(e.target.value)} /&gt;
+    &lt;input value={last}  onChange={e =&gt; setLast(e.target.value)} /&gt;
+    &lt;b&gt;{full}&lt;/b&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<pre><code><span class="c">// ❌ 用 Effect 派生 state：多一次 render、容易不同步</span>
+<span class="bad">const [full, setFull] = useState("");
+useEffect(() =&gt; { setFull(first + " " + last); }, [first, last]);</span>
+
+<span class="c">// ✅ render 時直接算就好</span>
+<span class="ok">const full = first + " " + last;</span></code></pre>
+</div>
+<div class="card">
+<h3>4.4 自訂 Hook：把有狀態的邏輯抽出來重用</h3>
+<p>當多個元件需要「同一段帶 state/Effect 的邏輯」（例如 <code>useOnlineStatus</code>、<code>useFetch</code>），把它抽成一個 <code>useXxx</code> 函式。自訂 Hook 只是<b>把 built-in Hook 組起來的函式</b>，慣例以 <code>use</code> 開頭，讓 React 認得。</p>
+<pre><code><span class="k">function</span> useOnlineStatus() {
+  <span class="k">const</span> [online, setOnline] = useState(navigator.onLine);
+  useEffect(() =&gt; {
+    <span class="k">const</span> on = () =&gt; setOnline(true), off = () =&gt; setOnline(false);
+    window.addEventListener(<span class="s">"online"</span>, on);
+    window.addEventListener(<span class="s">"offline"</span>, off);
+    <span class="k">return</span> () =&gt; { <span class="c">/* 記得移除監聽 */</span> };
+  }, []);
+  <span class="k">return</span> online;
+}</code></pre>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · 決策速查表（把整篇濃縮成三張表）</h2>
+<div class="card">
+<h3>我想存一個值，該用什麼？</h3>
+<table>
+<tr><th>需求</th><th>用</th></tr>
+<tr><td>改了要更新畫面</td><td class="win">useState</td></tr>
+<tr><td>改了<b>不要</b>更新畫面（計時器 id、DOM 節點、上一個值）</td><td class="mid">useRef</td></tr>
+<tr><td>能從別的 state/props 算出來</td><td class="lose">別存！render 時算（貴才 useMemo）</td></tr>
+<tr><td>render 之間不用保留的暫時值</td><td>一般區域變數就好</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>這個 state 該放哪一層？</h3>
+<table>
+<tr><th>誰要用</th><th>放哪</th></tr>
+<tr><td>只有這個元件</td><td class="win">本地 useState</td></tr>
+<tr><td>兩個兄弟元件共用</td><td>提升到共同父層</td></tr>
+<tr><td>很多層、很多元件共享（主題/登入者/語系）</td><td>Context</td></tr>
+<tr><td>更新動作多、邏輯複雜</td><td>useReducer（可搭 Context）</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>我想「做某件事」，該寫在哪？</h3>
+<table>
+<tr><th>做的事</th><th>寫在哪</th></tr>
+<tr><td>回應使用者操作（送出、點擊、輸入）</td><td class="win">事件 handler</td></tr>
+<tr><td>算一個由現有資料衍生的值</td><td>render 期間直接算</td></tr>
+<tr><td>跟外部系統同步（訂閱/網路/計時器/非 React DOM）</td><td class="mid">useEffect（記得寫 cleanup）</td></tr>
+</table>
+<p class="note">背下這三張表 + 前面五張圖，你對 React 的判斷力就贏過大半「會用但說不清為什麼」的人了。接著就是照 <a href="https://zh-hans.react.dev/learn" target="_blank" rel="noopener">react.dev/learn</a> 動手做每一頁的小練習，把肌肉記憶練起來。</p>
+</div>
+
+<div class="foot"><b>資料來源</b>：React 官方文件 react.dev/learn（Describing the UI／Adding Interactivity／Managing State／Escape Hatches 四大章）。<br><b>說明</b>：本頁互動示範為<b>原生 JavaScript 手寫</b>、用來演示 React 概念的行為（本站為純靜態站，未載入 React 本體），行為刻意對齊 React 語意但非 React 執行結果。<br><b>免責聲明</b>:本頁為個人學習筆記,如有疏漏以官方文件為準。</div>
+
+<script>
+// 每個 demo 各自一個函式作用域，避免變數互相覆蓋。
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  function demo(id,fn){var el=document.getElementById(id);if(el)fn(el);}
+  demo('d-count',function(el){var n=0,out=$('[data-out]',el);
+    $('[data-act=inc]',el).onclick=function(){out.textContent=++n;};});
+  demo('d-batch',function(el){var count=0,out=$('[data-out]',el),msg=$('[data-msg]',el);
+    function set(v){count=v;out.textContent=v;}
+    $('[data-act=stale]',el).onclick=function(){var snap=count;set(snap+1);
+      msg.innerHTML='呼叫三次 <code>setCount(count+1)</code>，但這次事件裡的 <code>count</code> 是同一張快照（'+snap+'），三次都算成 '+(snap+1)+' → 只 <b>+1</b>。';};
+    $('[data-act=fresh]',el).onclick=function(){var c=count;c=c+1;c=c+1;c=c+1;set(c);
+      msg.innerHTML='呼叫三次 <code>setCount(c =&gt; c+1)</code>，每次拿到「前一次的結果」→ 連續 +1+1+1 = <b>+3</b>。';};
+    $('[data-act=reset]',el).onclick=function(){set(0);msg.textContent='已歸零。';};});
+  demo('d-ref',function(el){var renders=0,sC=0,fC=0;
+    var rE=$('[data-renders]',el),sE=$('[data-state]',el),fE=$('[data-ref]',el),h=$('[data-hint]',el);
+    function render(){renders++;rE.textContent=renders;sE.textContent=sC;fE.textContent=fC;}
+    render();
+    $('[data-act=state]',el).onclick=function(){sC++;render();h.innerHTML='setState → 觸發一次 render，畫面同步更新（順便把 ref 的最新值也一起畫上來）。';};
+    $('[data-act=ref]',el).onclick=function(){fC++;h.innerHTML='ref 其實已經是 <b>'+fC+'</b> 了，但畫面上的 ref 數字沒動 —— 改 ref <b>不觸發 render</b>。按一下 setState+1，就會看到它跳上來。';};});
+  demo('d-lift',function(el){var r=$('[data-range]',el),a=$('[data-a]',el),b=$('[data-b]',el),bar=$('[data-bar]',el);
+    function upd(){var v=+r.value;a.textContent=v+'°C';b.textContent=Math.round(v*9/5+32)+'°F';bar.style.width=v+'%';}
+    r.oninput=upd;upd();});
+  demo('d-eff',function(el){var f=$('[data-first]',el),l=$('[data-last]',el),full=$('[data-full]',el),rc=$('[data-rc]',el),chk=$('[data-effmode]',el),rn=0;
+    function upd(){rn+=chk.checked?2:1;rc.textContent=rn;full.textContent=((f.value+' '+l.value).trim())||'—';}
+    f.oninput=upd;l.oninput=upd;});
+  demo('d-red',function(el){var out=$('[data-out]',el),log=$('[data-log]',el),st={count:0};
+    function reducer(s,a){switch(a.type){case 'inc':return{count:s.count+1};case 'dec':return{count:s.count-1};case 'reset':return{count:0};default:return s;}}
+    function dispatch(a){st=reducer(st,a);out.textContent=st.count;
+      var d=document.createElement('div');d.textContent='dispatch({type:"'+a.type+'"})  →  count = '+st.count;log.insertBefore(d,log.firstChild);}
+    el.querySelectorAll('[data-type]').forEach(function(btn){btn.onclick=function(){dispatch({type:btn.getAttribute('data-type')});};});});
+  demo('d-ctrl',function(el){var i=$('[data-in]',el),o=$('[data-mirror]',el);
+    i.oninput=function(){o.textContent=i.value.toUpperCase()||'—';};});
+})();
+</script>
+
+<script>
+// 章節快速跳轉列：捲動時高亮目前所在章節（沿用旅遊文章 daynav 慣例）
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>

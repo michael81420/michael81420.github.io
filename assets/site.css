@@ -54,7 +54,8 @@ input{font-family:inherit;outline:none}
   stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
 #showAll.open svg{transform:rotate(180deg)}
 #showAll:hover{color:var(--accent)}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:6px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:6px 0;
+  position:sticky;top:0;z-index:30;background:var(--bg)}
 .tb-actions{display:flex;align-items:center;gap:10px}
 /* 語言切換鈕（中/EN）— 沿用 theme-toggle 視覺，較寬以容文字 */
 .lang-toggle{height:38px;min-width:42px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;
@@ -202,8 +203,11 @@ tr:hover td{background:var(--surface2)}
 .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--border);color:var(--ink3);font-size:12px}
 
 /* 旅遊文章：日程快速跳轉 + 圖片 */
-.daynav{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;gap:8px;
+.daynav{position:sticky;top:-3px;z-index:31;display:flex;flex-wrap:wrap;gap:8px;
   padding:11px 0;margin:6px 0;background:var(--bg);border-bottom:1px solid var(--border)}
+/* 章節導覽借用右側空白欄（比內文寬），捲動後卡在 topbar 那一行，
+   右邊留白讓開語言/主題鈕 */
+.article-body > .daynav{margin-right:-132px}
 .daynav a{font-size:13px;font-weight:600;color:var(--ink2);background:var(--surface);
   border:1px solid var(--border);border-radius:999px;padding:7px 14px;white-space:nowrap}
 .daynav a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
@@ -225,7 +229,7 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
    ============================================================ */
 .article-cols{display:grid;grid-template-columns:210px minmax(0,1fr) 210px;gap:32px;align-items:start;margin-top:10px}
 .article-body{min-width:0}
-.rail{position:sticky;top:20px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
+.rail{position:sticky;top:70px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
 .rail-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding:0 4px}
 .rail nav{display:flex;flex-direction:column;gap:4px}
 .rail-toggle{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border-radius:8px;padding:8px 6px;color:var(--ink)}
@@ -253,6 +257,7 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
 @media(max-width:980px){
   .article-cols{grid-template-columns:1fr;gap:0}
   .rail{position:static;margin:0 0 18px}
+  .article-body > .daynav{margin-right:0}
 }
 
 /* ============================================================
@@ -301,3 +306,54 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
 .about-skills .sk-tags span{display:inline-flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--ink);background:var(--surface2);border-radius:12px;padding:12px 14px}
 .about-skills .sk-tags svg{width:28px;height:28px;fill:currentColor;flex:none}
 @media(max-width:680px){.about-skills .sk-grid{grid-template-columns:1fr}}
+
+/* ============================================================
+   技術文章：程式碼區塊 + 可點擊互動 demo（走主題變數，可重用）
+   ============================================================ */
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;
+  background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:1px 5px;color:var(--accent)}
+pre{background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;
+  overflow-x:auto;margin:12px 0}
+pre code{background:none;border:0;padding:0;color:var(--ink);font-size:12.8px;line-height:1.7;white-space:pre}
+pre .c{color:var(--ink3)}                 /* 註解 */
+pre .k{color:var(--turn);font-weight:600} /* 關鍵字 */
+pre .s{color:var(--win)}                   /* 字串 */
+pre .bad{color:var(--lose)}                /* 反例 */
+pre .ok{color:var(--win)}                  /* 正解 */
+
+.demo{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:16px 18px;margin:16px 0}
+.demo-h{font-size:11.5px;font-weight:700;letter-spacing:.05em;color:var(--ink3);text-transform:uppercase;
+  margin-bottom:13px;display:flex;align-items:center;gap:7px}
+.demo-h::before{content:'▶';font-size:9px;color:var(--accent)}
+.demo-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.demo button{background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;transition:opacity .15s}
+.demo button:hover{opacity:.88}
+.demo button.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--ink3)}
+.demo button.ghost:hover{border-color:var(--accent);opacity:1}
+.demo .big-num{font-size:34px;font-weight:800;color:var(--accent);min-width:56px;text-align:center;font-variant-numeric:tabular-nums}
+.demo .lbl{font-size:12.5px;color:var(--ink2);line-height:1.55}
+.demo .kv{font-size:14px;color:var(--ink);display:inline-flex;align-items:baseline;gap:6px}
+.demo .kv b{font-size:20px;color:var(--accent);font-variant-numeric:tabular-nums}
+.demo .kv span{font-size:12px;color:var(--ink3)}
+.demo input[type=range]{accent-color:var(--accent);width:200px}
+.demo input[type=text]{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:14px;color:var(--ink);width:150px}
+.demo .child{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;text-align:center;min-width:110px}
+.demo .child .n{font-size:22px;font-weight:800;color:var(--ink)}
+.demo .child .t{font-size:11px;color:var(--ink3);margin-top:2px}
+.demo .bar{height:10px;background:var(--border);border-radius:6px;overflow:hidden;flex:1;min-width:120px}
+.demo .bar>i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .1s}
+.demo .msg{margin-top:12px;font-size:12.5px;color:var(--ink2);line-height:1.6;min-height:18px}
+.demo .log{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink2);background:var(--surface);
+  border:1px solid var(--border);border-radius:8px;padding:9px 11px;max-height:104px;overflow-y:auto;margin-top:12px}
+.demo .sw{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);cursor:pointer}
+.demo .sw input{accent-color:var(--accent)}
+.fig{overflow-x:auto;margin:2px 0 18px}
+/* 可展開程式碼：互動 demo 底部「看 React 完整寫法」 */
+.code-fold{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
+.code-fold>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;
+  font-size:12.5px;font-weight:700;color:var(--accent);user-select:none}
+.code-fold>summary::-webkit-details-marker{display:none}
+.code-fold>summary::before{content:'\203A';font-size:15px;font-weight:800;transition:transform .15s;display:inline-block}
+.code-fold[open]>summary::before{transform:rotate(90deg)}
+.code-fold>summary:hover{text-decoration:underline}
+.code-fold pre{background:var(--surface);margin:10px 0 2px}

@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>React．Properly: When to Use What, and How (one read)</title>
+<meta name="description" content="Walk the official react.dev learning path, but every section answers two questions only: when should you use this, and how do you use it right — components, JSX, useState, state snapshots & batching, lifting state, Context, useReducer, refs, and when useEffect is right vs. when to never use it. With clickable demos and flowcharts.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="react-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>React．Properly: When to Use What, and How</h1>
+<div class="sub">A walk through the <b>official react.dev learning path</b> — but every section answers only two questions: <b>when should you use this</b>, and <b>how do you use it right</b>.<br>With clickable demos and flowcharts, so you finish with a full mental model, not a fuzzy one.</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://react.dev/learn" target="_blank" rel="noopener">Source: react.dev/learn ↗</a>
+<span class="badge">For: React 18 / 19</span>
+<span class="badge">Compiled: 2026-07-21</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 When</a>
+  <a href="#c1">1 Describe UI</a>
+  <a href="#c2">2 Interactivity</a>
+  <a href="#c3">3 Managing State</a>
+  <a href="#c4">4 Escape Hatches</a>
+  <a href="#c5">5 Cheat Sheet</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 One-line mental model: <span class="win">UI = f(state)</span>.</p>
+<p>You <b>never touch the DOM directly</b>. You change <b>state</b>; React re-runs your component, diffs the result, and updates the DOM. The entire framework exists to serve this one rule.</p>
+<p>The official path has four stages, and finishing them is enough to ship production code: <b>① Describing the UI → ② Adding Interactivity → ③ Managing State → ④ Escape Hatches</b>.</p>
+<p class="note">★ 90% of React bugs come from two things you didn't think through: <b>which layer the state belongs on</b>, and <b>when NOT to use useEffect</b>. Every chapter below gives you a decision tree you can follow.</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · What React actually solves, and when to reach for it</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React's one-way data flow: changing state triggers a re-render, React updates the DOM, a user interaction calls setState which changes state, closing the loop.">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="24" y="40" width="170" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="109" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">state</text>
+<text x="109" y="80" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">single source of truth</text>
+<rect x="300" y="40" width="170" height="52" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="385" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Component (render)</text>
+<text x="385" y="80" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">computes the UI</text>
+<rect x="566" y="40" width="170" height="52" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="651" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">UI</text>
+<text x="651" y="80" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">React updates the DOM</text>
+<line x1="194" y1="66" x2="298" y2="66" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<line x1="470" y1="66" x2="564" y2="66" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<rect x="566" y="168" width="170" height="46" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="651" y="196" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">user interaction (onClick…)</text>
+<rect x="300" y="168" width="170" height="46" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="385" y="189" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">setState()</text>
+<text x="385" y="205" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">queues an update</text>
+<line x1="651" y1="92" x2="651" y2="166" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<line x1="564" y1="191" x2="472" y2="191" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+<path d="M300 191 L109 191 L109 94" style="fill:none;stroke:var(--accent);stroke-width:1.6" marker-end="url(#ah)"/>
+<text x="200" y="184" text-anchor="middle" style="fill:var(--accent);font:600 11px sans-serif">change state → re-run</text>
+</svg>
+</div>
+<p><b>What React is</b>: a library for building UIs out of <b>components</b>. Each component is a JS function that returns some UI, can hold its own state, and can be reused. You only describe "what the UI looks like for each state"; React handles all the DOM work.</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">✅ Reach for React when</div><div class="kd">the UI <b>changes often</b> with data/interaction, there's a lot of interdependent state, and UI needs reuse (admin panels, SaaS, dashboards, highly interactive front-ends).</div></div>
+<div class="kcard"><div class="kt">🤔 You don't need React when</div><div class="kd">it's a static content page with one or two small interactions — plain HTML/CSS/JS is enough (<b>like the site you're reading</b> 😉). A framework there is just added dependency.</div></div>
+</div>
+<p class="note">The rule in one line: <b>the complexity of your interactive state</b> decides whether you need React. The more state you have and the more it interacts, the more manual DOM syncing React saves you.</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · Describing the UI — what the screen looks like</h2>
+<div class="card">
+<h3>1.1 Components &amp; JSX: the UI is a function that returns markup</h3>
+<p>A component is a <b>capitalized</b> JS function that returns JSX. JSX lets you write HTML-like markup inside JS, and curly braces <code>{ }</code> drop in any JS value or expression.</p>
+<pre><code><span class="k">function</span> Welcome() {
+  <span class="k">const</span> name = <span class="s">"Michael"</span>;
+  <span class="k">return</span> &lt;h1&gt;Hi, {name}!&lt;/h1&gt;;   <span class="c">// { } holds JS</span>
+}
+<span class="c">// Usage: nested like an HTML tag by another component</span>
+&lt;Welcome /&gt;</code></pre>
+<p><b>When to extract a new component</b>: a chunk of JSX <b>repeats</b>, or a component grows too big to read at a glance / does too many things. Don't over-split up front — extract when it repeats or gets complex.</p>
+</div>
+<div class="card">
+<h3>1.2 Props: read-only data from parent to child (one-way, top-down)</h3>
+<p>Props are the arguments a parent passes to a child, and <b>the child can't change them</b>. This is half of React's one-way data flow: data always flows down.</p>
+<pre><code><span class="k">function</span> Avatar({ name, size }) {   <span class="c">// destructure props</span>
+  <span class="k">return</span> &lt;img alt={name} width={size} /&gt;;
+}
+&lt;Avatar name=<span class="s">"Michael"</span> size={48} /&gt;   <span class="c">// parent sets the values</span></code></pre>
+<p><b>When to use</b>: whenever a child needs to display or customize the parent's data. Need to pass something "up"? The parent passes a <b>function</b> as a prop and the child calls it (see 3.3, lifting state).</p>
+</div>
+<div class="card">
+<h3>1.3 Conditional rendering &amp; lists: why key must not be the array index</h3>
+<pre><code><span class="c">// Conditions: use &amp;&amp; or a ternary</span>
+{isLoggedIn &amp;&amp; &lt;Dashboard /&gt;}
+{isLoggedIn ? &lt;Dashboard /&gt; : &lt;Login /&gt;}
+
+<span class="c">// Lists: map, and give each a stable unique key</span>
+{users.map(u =&gt; &lt;Row <span class="ok">key={u.id}</span> user={u} /&gt;)}   <span class="c">// ✅ data id</span>
+{users.map((u, i) =&gt; &lt;Row <span class="bad">key={i}</span> user={u} /&gt;)}   <span class="c">// ❌ index</span></code></pre>
+<p><b>What a key is</b>: React uses it to recognize "which item is the same one across re-renders." <b>Why not the index</b>: once a list is <b>reordered, inserted into, or filtered</b>, an item's index shifts, and React attaches UI state (half-typed input, checkbox state) to the <b>wrong item</b>.</p>
+<table>
+<tr><th>List situation</th><th>What to use for key</th></tr>
+<tr><td>Data has a unique id</td><td class="win">Use the id (best)</td></tr>
+<tr><td>No id but never reorders</td><td class="mid">Index is tolerable</td></tr>
+<tr><td>Sorted / inserted / filtered</td><td class="lose">Never use the index</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>1.4 Keeping components pure</h3>
+<p>During render, a component should <b>compute its UI from props and state only</b> — not mutate outside variables, not make network requests (leave those to events or Effects).</p>
+<p><b>Why it matters</b>: a pure function gives the same output for the same input → predictable, cacheable, safe for React to re-run. Strict Mode deliberately <b>calls each component twice</b> in development to catch impure ones; a pure component runs twice with identical results and doesn't break.</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · Adding Interactivity — making the UI move</h2>
+<div class="card">
+<h3>2.1 Events: pass the function itself, not the result of calling it</h3>
+<pre><code>&lt;button onClick={handleClick}&gt;Click&lt;/button&gt;    <span class="c">// ✅ pass the function</span>
+&lt;button onClick={handleClick()}&gt;Click&lt;/button&gt;  <span class="c">// ❌ called during render</span></code></pre>
+</div>
+<div class="card">
+<h3>2.2 useState: a component's "memory"</h3>
+<p>For the UI to change, you need a value that "survives across re-renders" — that's state. A normal variable won't do: it resets on every render, and changing it <b>won't trigger a UI update</b>.</p>
+<pre><code><span class="k">const</span> [count, setCount] = useState(0);
+<span class="c">//     ↑current  ↑setter  ↑initial value</span>
+<span class="k">function</span> handleClick() { setCount(count + 1); }</code></pre>
+<p><code>setCount</code> does two things: remember the new value, and <b>schedule a re-render</b>. This button works exactly that way:</p>
+<div class="demo" id="d-count">
+<div class="demo-h">Interactive: useState = a component's memory</div>
+<div class="demo-row">
+<button data-act="inc">count + 1</button>
+<span class="big-num" data-out>0</span>
+<span class="lbl">Click → <code>setCount</code> → the component re-runs → UI updates. With a plain variable, this number would be stuck at 0.</span>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> Counter() {
+  <span class="k">const</span> [count, setCount] = useState(0);
+  <span class="k">return</span> (
+    &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+      count + 1 → {count}
+    &lt;/button&gt;
+  );
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>2.3 Render &amp; commit: the three steps of a UI update</h3>
+<div class="fig">
+<svg viewBox="0 0 760 150" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The three steps React takes to update the UI: trigger (initial load or setState), render (React calls your component to compute the UI), commit (React writes the changes to the real DOM).">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="24" y="42" width="212" height="64" rx="11" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">① Trigger</text>
+<text x="130" y="88" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">initial load or setState</text>
+<rect x="274" y="42" width="212" height="64" rx="11" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="380" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">② Render</text>
+<text x="380" y="88" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">React calls your component</text>
+<rect x="524" y="42" width="212" height="64" rx="11" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="630" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">③ Commit</text>
+<text x="630" y="88" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">writes changes to the DOM</text>
+<line x1="236" y1="74" x2="272" y2="74" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<line x1="486" y1="74" x2="522" y2="74" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+</svg>
+</div>
+<p>Key point: <b>"render" is just React calling your function to produce a description of what the UI should look like</b> — it hasn't touched the browser yet. Only at "commit" does React touch the real DOM, and only the <b>parts that changed</b>. That's why you never call <code>document.getElementById</code> yourself.</p>
+</div>
+<div class="card">
+<h3>2.4 ★ State is a "snapshot", plus batching</h3>
+<p>The most counter-intuitive part, and the one people trip on most: <b>within a single event, a state variable is a fixed snapshot</b>. <code>setCount</code> does not change the <code>count</code> on the current line — it only registers "use the new value on the next render."</p>
+<pre><code><span class="c">// count is currently 0</span>
+setCount(count + 1); <span class="c">// queue: use 0+1</span>
+setCount(count + 1); <span class="c">// count is still the snapshot 0 → queue 0+1</span>
+setCount(count + 1); <span class="c">// same 0+1 → net result is only +1!</span>
+
+<span class="c">// Want to accumulate? Use an updater — it gets the previous result</span>
+setCount(c =&gt; c + 1); <span class="c">// 0→1</span>
+setCount(c =&gt; c + 1); <span class="c">// 1→2</span>
+setCount(c =&gt; c + 1); <span class="c">// 2→3  ✅ actually +3</span></code></pre>
+<p>Click and feel the difference — same "call it three times", very different result:</p>
+<div class="demo" id="d-batch">
+<div class="demo-h">Interactive: snapshot vs updater (three setState calls in one event)</div>
+<div class="demo-row">
+<span class="big-num" data-out>0</span>
+<button data-act="stale">setCount(count+1) × 3</button>
+<button class="ghost" data-act="fresh">setCount(c =&gt; c+1) × 3</button>
+<button class="ghost" data-act="reset">reset</button>
+</div>
+<div class="msg" data-msg>Press the left one first — three calls, yet only +1.</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> BatchDemo() {
+  <span class="k">const</span> [count, setCount] = useState(0);
+  <span class="k">return</span> (&lt;&gt;
+    &lt;span&gt;{count}&lt;/span&gt;
+    &lt;button onClick={() =&gt; {
+      setCount(count + 1); <span class="c">// same snapshot all 3 times</span>
+      setCount(count + 1);
+      setCount(count + 1); <span class="c">// → only +1</span>
+    }}&gt;count+1 × 3&lt;/button&gt;
+    &lt;button onClick={() =&gt; {
+      setCount(c =&gt; c + 1); <span class="c">// gets the previous result</span>
+      setCount(c =&gt; c + 1);
+      setCount(c =&gt; c + 1); <span class="c">// → +3</span>
+    }}&gt;c =&gt; c+1 × 3&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<p class="note">A batch of setStates is <b>batched</b> by React into a single render, for performance. Whether you want to <b>accumulate</b> (updater) or <b>overwrite</b> (pass a value) is your call — pick right and you won't get bitten.</p>
+</div>
+<div class="card">
+<h3>2.5 Updating object / array state: immutably</h3>
+<p><b>Don't mutate</b> object or array state in place — produce a new one and pass it in.</p>
+<pre><code><span class="c">// ❌ mutate in place: React can't detect it, UI won't update</span>
+<span class="bad">user.age = 30; setUser(user);</span>
+<span class="bad">list.push(item); setList(list);</span>
+
+<span class="c">// ✅ produce a new object / array</span>
+setUser(<span class="ok">{ ...user, age: 30 }</span>);
+setList(<span class="ok">[...list, item]</span>);</code></pre>
+<p><b>Why</b>: React decides whether to re-render by checking if the new and old state are the <b>same reference</b>. Mutate in place and the reference doesn't change, so React thinks nothing happened and the UI stays put.</p>
+<table>
+<tr><th>You want to</th><th>Immutable way</th></tr>
+<tr><td>Append</td><td><code>[...arr, x]</code></td></tr>
+<tr><td>Remove one</td><td><code>arr.filter(a =&gt; a.id !== id)</code></td></tr>
+<tr><td>Update one</td><td><code>arr.map(a =&gt; a.id===id ? {...a, ...patch} : a)</code></td></tr>
+<tr><td>Change an object field</td><td><code>{ ...obj, key: value }</code></td></tr>
+</table>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · Managing State — which layer, how to organize</h2>
+<div class="card">
+<p>This chapter is React's <b>real difficulty</b>, and where judgment separates people. Here's the master map first: which layer a piece of state belongs on — just follow the tree.</p>
+<div class="fig">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision tree for where state lives: only this component uses it, keep it local with useState; siblings share it, lift to the common parent; many layers read it, use Context; complex update logic, use useReducer.">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="220" y="12" width="320" height="42" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13.5px sans-serif">Who reads / changes this state?</text>
+<rect x="24" y="92" width="330" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="117" style="fill:var(--ink2);font:12.5px sans-serif">Only this component itself</text>
+<rect x="434" y="92" width="302" height="40" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="450" y="117" style="fill:var(--ink);font:600 12.5px sans-serif">→ useState, local to the component</text>
+<rect x="24" y="144" width="330" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="169" style="fill:var(--ink2);font:12.5px sans-serif">Two+ sibling components share it</text>
+<rect x="434" y="144" width="302" height="40" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="450" y="169" style="fill:var(--ink);font:600 12.5px sans-serif">→ Lift to closest common parent</text>
+<rect x="24" y="196" width="330" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="221" style="fill:var(--ink2);font:12.5px sans-serif">Many layers / components read it</text>
+<rect x="434" y="196" width="302" height="40" rx="9" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="450" y="221" style="fill:var(--ink);font:600 12.5px sans-serif">→ Provide via Context</text>
+<rect x="24" y="248" width="330" height="40" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="40" y="273" style="fill:var(--ink2);font:12.5px sans-serif">Many actions, complex logic</text>
+<rect x="434" y="248" width="302" height="40" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="450" y="273" style="fill:var(--ink);font:600 12.5px sans-serif">→ useReducer (optionally + Context)</text>
+<path d="M300 54 L189 54 L189 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="354" y1="112" x2="432" y2="112" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="354" y1="164" x2="432" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="354" y1="216" x2="432" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="354" y1="268" x2="432" y2="268" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+</svg>
+</div>
+</div>
+<div class="card">
+<h3>3.1 Reflecting input with state (controlled components)</h3>
+<p>React's signature idea: <b>the UI is a function of state</b>. An input doesn't keep its own value; its <code>value</code> is bound to state and <code>onChange</code> updates state. Try typing:</p>
+<div class="demo" id="d-ctrl">
+<div class="demo-h">Interactive: controlled input — the UI always follows state</div>
+<div class="demo-row">
+<input type="text" data-in placeholder="type something…">
+<span class="lbl">→ live uppercase mirror:</span>
+<span class="big-num" data-mirror style="font-size:20px">—</span>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> Mirror() {
+  <span class="k">const</span> [text, setText] = useState(<span class="s">""</span>);
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input value={text} onChange={e =&gt; setText(e.target.value)} /&gt;
+    &lt;span&gt;{text.toUpperCase()}&lt;/span&gt;   <span class="c">// derived value, computed inline</span>
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>3.2 Choosing the state structure (three rules)</h3>
+<ul>
+<li><b>Don't store what you can compute</b>: <code>fullName</code> comes from <code>first + last</code> — compute it during render, don't keep a separate state (it'll go out of sync).</li>
+<li><b>Don't duplicate</b>: keep one source of truth for each piece of data; reference it elsewhere.</li>
+<li><b>Keep it flat</b>: deeply nested state is painful to update; flatten it.</li>
+</ul>
+</div>
+<div class="card">
+<h3>3.3 Lifting state up</h3>
+<p>When two sibling components need to share the same data, <b>move the state to their closest common parent</b>. The parent passes the value down via props and receives changes back via a callback. The slider below is the parent's state; two children read it in sync:</p>
+<div class="demo" id="d-lift">
+<div class="demo-h">Interactive: lifting state — one source, two children in sync</div>
+<div class="demo-row">
+<input type="range" min="0" max="100" value="25" data-range>
+<div class="bar"><i data-bar style="width:25%"></i></div>
+</div>
+<div class="demo-row" style="margin-top:14px">
+<div class="child"><div class="n" data-a>25°C</div><div class="t">Child A · Celsius</div></div>
+<div class="child"><div class="n" data-b>77°F</div><div class="t">Child B · Fahrenheit</div></div>
+</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> Thermo() {
+  <span class="k">const</span> [temp, setTemp] = useState(25); <span class="c">// state lifted to the parent</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input type=<span class="s">"range"</span> value={temp}
+           onChange={e =&gt; setTemp(+e.target.value)} /&gt;
+    &lt;Celsius value={temp} /&gt;     <span class="c">// both children read</span>
+    &lt;Fahrenheit value={temp} /&gt;  <span class="c">// the same source</span>
+  &lt;/&gt;);
+}
+<span class="k">const</span> Celsius = ({ value }) =&gt; &lt;div&gt;{value}°C&lt;/div&gt;;
+<span class="k">const</span> Fahrenheit = ({ value }) =&gt; &lt;div&gt;{Math.round(value*9/5+32)}°F&lt;/div&gt;;</code></pre></details>
+</div>
+<p class="note">Once lifted, the two children are always consistent — because they read the <b>same</b> source, not private copies.</p>
+</div>
+<div class="card">
+<h3>3.4 Preserving and resetting state</h3>
+<p>State is tied to a component's <b>position</b> in the UI tree. Same position, same component type → React <b>preserves</b> the state; change the <code>key</code> → React treats it as a new component and <b>resets</b> the state.</p>
+<pre><code><span class="c">// Want to clear the form when switching users? Change the key.</span>
+&lt;ProfileForm key={userId} /&gt;</code></pre>
+</div>
+<div class="card">
+<h3>3.5 useReducer: centralize complex update logic</h3>
+<p>When one piece of state has <b>many kinds of updates</b> scattered across handlers, switch it to a reducer: all the "how it changes" lives in one function, and the component just <code>dispatch</code>es an action.</p>
+<div class="demo" id="d-red">
+<div class="demo-h">Interactive: useReducer — the component only dispatches, logic lives in the reducer</div>
+<div class="demo-row">
+<span class="big-num" data-out>0</span>
+<button data-type="inc">dispatch(+1)</button>
+<button class="ghost" data-type="dec">dispatch(−1)</button>
+<button class="ghost" data-type="reset">reset</button>
+</div>
+<div class="log" data-log></div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> reducer(state, action) {
+  <span class="k">switch</span> (action.type) {
+    <span class="k">case</span> <span class="s">"inc"</span>:   <span class="k">return</span> { count: state.count + 1 };
+    <span class="k">case</span> <span class="s">"dec"</span>:   <span class="k">return</span> { count: state.count - 1 };
+    <span class="k">case</span> <span class="s">"reset"</span>: <span class="k">return</span> { count: 0 };
+    <span class="k">default</span>:      <span class="k">return</span> state;
+  }
+}
+<span class="k">function</span> Counter() {
+  <span class="k">const</span> [state, dispatch] = useReducer(reducer, { count: 0 });
+  <span class="k">return</span> (&lt;&gt;
+    &lt;span&gt;{state.count}&lt;/span&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"inc"</span> })}&gt;+1&lt;/button&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"dec"</span> })}&gt;−1&lt;/button&gt;
+    &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"reset"</span> })}&gt;reset&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+</div>
+<div class="card">
+<h3>3.6 Context: pass the same data through many layers</h3>
+<p>When many layers and many components need the same "app-wide" data (theme, current user, locale), threading it through props is painful (called <b>prop drilling</b>). Context lets you provide it once at a top-level <code>Provider</code>, and any component below — at any depth — grabs it with <code>useContext</code>.</p>
+<p class="note"><b>When to use</b>: data that's "shared app-wide config." <b>Don't overuse it</b> — not every piece of state belongs in Context, or a single change re-renders a huge subtree. Most state is fine as local + lifted.</p>
+</div>
+<div class="card">
+<h3>3.7 Reducer + Context = lightweight global state</h3>
+<p>Put a <b>useReducer's state/dispatch</b> into <b>Context</b> and you get a lightweight global-state solution with zero libraries: centralized logic (reducer), broad reach (context). Most small-to-mid apps are fine with this combo — no need to rush to Redux/Zustand.</p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · Escape Hatches — when you need to step outside React</h2>
+<div class="card">
+<p>"Escape hatches" are the tools for when you must touch the world outside React (the DOM, timers, network, third-party libs). They're powerful — and the easiest to <b>misuse</b>, especially <code>useEffect</code>.</p>
+</div>
+<div class="card">
+<h3>4.1 refs: hold a value that doesn't affect the UI / grab a DOM node</h3>
+<p><code>useRef</code> gives you a box that persists across re-renders but <b>changing it doesn't trigger a render</b>. Use it for things that shouldn't affect the UI (a timer id, the previous value), or to grab a real DOM node (<code>focus()</code>, measure, play a video).</p>
+<p>Below contrasts state and ref — notice the UI "doesn't move" when you click the ref button:</p>
+<div class="demo" id="d-ref">
+<div class="demo-h">Interactive: ref vs state — which one triggers a render?</div>
+<div class="demo-row">
+<span class="kv"><b data-renders>0</b><span>renders</span></span>
+<span class="kv">state: <b data-state>0</b></span>
+<span class="kv">ref: <b data-ref>0</b></span>
+</div>
+<div class="demo-row" style="margin-top:12px">
+<button data-act="state">setState + 1</button>
+<button class="ghost" data-act="ref">ref.current + 1</button>
+</div>
+<div class="msg" data-hint>Press <b>setState+1</b>: the UI updates instantly. Press <b>ref+1</b>: the UI won't move.</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> RefVsState() {
+  <span class="k">const</span> [state, setState] = useState(0);
+  <span class="k">const</span> ref = useRef(0);
+  console.log(<span class="s">"render"</span>); <span class="c">// only setState makes this line run again</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;p&gt;state: {state} · ref: {ref.current}&lt;/p&gt;
+    &lt;button onClick={() =&gt; setState(state + 1)}&gt;setState + 1&lt;/button&gt;
+    &lt;button onClick={() =&gt; { ref.current += 1; }}&gt;ref + 1&lt;/button&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<pre><code><span class="k">const</span> ref = useRef(0);
+ref.current += 1;         <span class="c">// change it → no re-render</span>
+inputRef.current.focus(); <span class="c">// grab a DOM node, operate directly</span></code></pre>
+</div>
+<div class="card">
+<h3>4.2 useEffect: synchronize with an "external system"</h3>
+<p>An Effect is a side effect React runs <b>after it commits to the DOM</b>, specifically to sync with systems outside React: subscribing to events, starting/stopping timers, connecting a WebSocket, driving a non-React DOM library.</p>
+<div class="fig">
+<svg viewBox="0 0 760 190" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An Effect's lifecycle: on mount it runs setup, when dependencies change it cleans up the old one then sets up the new, and on unmount it runs cleanup.">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<line x1="40" y1="95" x2="720" y2="95" style="stroke:var(--border);stroke-width:2"/>
+<rect x="40" y="74" width="150" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="115" y="92" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">Mount</text>
+<text x="115" y="107" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">run setup</text>
+<rect x="300" y="44" width="170" height="34" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="385" y="66" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">clean up old first</text>
+<rect x="300" y="112" width="170" height="34" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="385" y="134" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">then setup new</text>
+<text x="385" y="30" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">deps changed →</text>
+<rect x="570" y="74" width="150" height="42" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="645" y="92" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">Unmount</text>
+<text x="645" y="107" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">run cleanup</text>
+<line x1="190" y1="95" x2="298" y2="70" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="470" y1="129" x2="568" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+</svg>
+</div>
+<pre><code>useEffect(() =&gt; {
+  <span class="k">const</span> id = setInterval(tick, 1000); <span class="c">// setup</span>
+  <span class="k">return</span> () =&gt; clearInterval(id);        <span class="c">// cleanup (always clean up)</span>
+}, [<span class="c">/* deps: list every reactive value you use */</span>]);</code></pre>
+<p>The <b>dependency array</b> must honestly list every prop/state used inside the Effect; the official ESLint rule catches omissions. Each time a dep changes, React <b>cleans up the previous run, then sets up this one</b> — so always write the cleanup (or timers and subscriptions pile up).</p>
+</div>
+<div class="card">
+<h3>4.3 ★ You Might Not Need an Effect (the most important section)</h3>
+<p>The biggest beginner trap: <b>stuffing everything into useEffect</b>. The docs devote a whole page to "You Might Not Need an Effect." Figure out which kind of thing you're actually doing:</p>
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Deciding you might not need an Effect: a value derivable from props/state should be computed during render, not an Effect; responding to a user action goes in the event handler, not an Effect; only syncing with an external system is a real Effect.">
+<defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="170" y="10" width="420" height="40" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="35" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">What are you trying to do inside the Effect?</text>
+<rect x="20" y="86" width="340" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="106" style="fill:var(--ink2);font:12px sans-serif">A value derivable from props/state</text>
+<text x="36" y="123" style="fill:var(--ink3);font:11px sans-serif">(fullName, filtered list…)</text>
+<rect x="400" y="86" width="336" height="46" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="416" y="106" style="fill:var(--ink);font:600 12px sans-serif">❌ Not an Effect</text>
+<text x="416" y="123" style="fill:var(--ink2);font:11.5px sans-serif">compute during render (useMemo if costly)</text>
+<rect x="20" y="142" width="340" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="162" style="fill:var(--ink2);font:12px sans-serif">Responding to a user action</text>
+<text x="36" y="179" style="fill:var(--ink3);font:11px sans-serif">(submit form, click…)</text>
+<rect x="400" y="142" width="336" height="46" rx="9" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="416" y="162" style="fill:var(--ink);font:600 12px sans-serif">❌ Not an Effect</text>
+<text x="416" y="179" style="fill:var(--ink2);font:11.5px sans-serif">put it in the event handler</text>
+<rect x="20" y="198" width="340" height="46" rx="9" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="36" y="218" style="fill:var(--ink2);font:12px sans-serif">Sync with a system outside React</text>
+<text x="36" y="235" style="fill:var(--ink3);font:10.5px sans-serif">(subscription / network / timer / non-React DOM)</text>
+<rect x="400" y="198" width="336" height="46" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="416" y="225" style="fill:var(--ink);font:700 12.5px sans-serif">✅ This is what Effect is for</text>
+<line x1="360" y1="109" x2="398" y2="109" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<line x1="360" y1="165" x2="398" y2="165" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<line x1="360" y1="221" x2="398" y2="221" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M300 50 L185 50 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+</svg>
+</div>
+<p>Below is the most common misuse: putting "fullName, derived from first + last" into an Effect, which adds an extra render (the UI can flicker). Type and watch the render count; toggle the checkbox to switch between the two approaches:</p>
+<div class="demo" id="d-eff">
+<div class="demo-h">Interactive: a value you can compute is not an Effect</div>
+<div class="demo-row">
+<input type="text" data-first placeholder="first" style="width:110px">
+<input type="text" data-last placeholder="last" style="width:110px">
+<span class="lbl">→ full name:</span><b data-full style="color:var(--accent)">—</b>
+</div>
+<div class="demo-row" style="margin-top:12px">
+<span class="kv">renders: <b data-rc>0</b></span>
+<label class="sw"><input type="checkbox" data-effmode> simulate "derive via Effect" (one extra render each time)</label>
+</div>
+<div class="msg" data-msg>Computing <code>full = first + last</code> during render: one render. Tick the box to see the Effect version cost twice as much.</div>
+<details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
+<pre><code><span class="k">function</span> NameForm() {
+  <span class="k">const</span> [first, setFirst] = useState(<span class="s">""</span>);
+  <span class="k">const</span> [last, setLast] = useState(<span class="s">""</span>);
+  <span class="k">const</span> full = (first + <span class="s">" "</span> + last).trim(); <span class="c">// ✅ computed in render, no Effect</span>
+  <span class="k">return</span> (&lt;&gt;
+    &lt;input value={first} onChange={e =&gt; setFirst(e.target.value)} /&gt;
+    &lt;input value={last}  onChange={e =&gt; setLast(e.target.value)} /&gt;
+    &lt;b&gt;{full}&lt;/b&gt;
+  &lt;/&gt;);
+}</code></pre></details>
+</div>
+<pre><code><span class="c">// ❌ deriving state via Effect: extra render, easy to desync</span>
+<span class="bad">const [full, setFull] = useState("");
+useEffect(() =&gt; { setFull(first + " " + last); }, [first, last]);</span>
+
+<span class="c">// ✅ just compute it during render</span>
+<span class="ok">const full = first + " " + last;</span></code></pre>
+</div>
+<div class="card">
+<h3>4.4 Custom Hooks: extract stateful logic for reuse</h3>
+<p>When several components need "the same chunk of stateful/Effect logic" (say <code>useOnlineStatus</code>, <code>useFetch</code>), extract it into a <code>useXxx</code> function. A custom Hook is just <b>a function that composes built-in Hooks</b>, named with a <code>use</code> prefix so React recognizes it.</p>
+<pre><code><span class="k">function</span> useOnlineStatus() {
+  <span class="k">const</span> [online, setOnline] = useState(navigator.onLine);
+  useEffect(() =&gt; {
+    <span class="k">const</span> on = () =&gt; setOnline(true), off = () =&gt; setOnline(false);
+    window.addEventListener(<span class="s">"online"</span>, on);
+    window.addEventListener(<span class="s">"offline"</span>, off);
+    <span class="k">return</span> () =&gt; { <span class="c">/* remember to remove listeners */</span> };
+  }, []);
+  <span class="k">return</span> online;
+}</code></pre>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · Decision cheat sheets (the whole article in three tables)</h2>
+<div class="card">
+<h3>I want to store a value — what do I use?</h3>
+<table>
+<tr><th>Need</th><th>Use</th></tr>
+<tr><td>Changing it should update the UI</td><td class="win">useState</td></tr>
+<tr><td>Changing it should <b>not</b> update the UI (timer id, DOM node, previous value)</td><td class="mid">useRef</td></tr>
+<tr><td>Derivable from other state/props</td><td class="lose">Don't store! Compute in render (useMemo if costly)</td></tr>
+<tr><td>Temporary value not needed across renders</td><td>A plain local variable</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>Which layer does this state belong on?</h3>
+<table>
+<tr><th>Who needs it</th><th>Where it goes</th></tr>
+<tr><td>Only this component</td><td class="win">Local useState</td></tr>
+<tr><td>Two siblings share it</td><td>Lift to common parent</td></tr>
+<tr><td>Many layers/components share (theme/user/locale)</td><td>Context</td></tr>
+<tr><td>Many actions, complex logic</td><td>useReducer (optionally + Context)</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>I want to "do something" — where does it go?</h3>
+<table>
+<tr><th>The thing</th><th>Where</th></tr>
+<tr><td>Respond to a user action (submit, click, type)</td><td class="win">Event handler</td></tr>
+<tr><td>Compute a value derived from existing data</td><td>During render</td></tr>
+<tr><td>Sync with an external system (subscription/network/timer/non-React DOM)</td><td class="mid">useEffect (write the cleanup)</td></tr>
+</table>
+<p class="note">Memorize these three tables plus the five diagrams above, and your React judgment already beats most people who "use it but can't say why." From there, just do the little exercises on each page of <a href="https://react.dev/learn" target="_blank" rel="noopener">react.dev/learn</a> to build the muscle memory.</p>
+</div>
+
+<div class="foot"><b>Source</b>: the official React docs, react.dev/learn (the four chapters: Describing the UI / Adding Interactivity / Managing State / Escape Hatches).<br><b>Note</b>: the interactive demos here are <b>hand-written vanilla JavaScript</b> that illustrate React's behavior (this is a purely static site with no React loaded); their behavior deliberately mirrors React's semantics but is not React's actual output.<br><b>Disclaimer</b>: this page is a personal study note; where it falls short, defer to the official docs.</div>
+
+<script>
+// Each demo gets its own function scope so variables never clash.
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  function demo(id,fn){var el=document.getElementById(id);if(el)fn(el);}
+  demo('d-count',function(el){var n=0,out=$('[data-out]',el);
+    $('[data-act=inc]',el).onclick=function(){out.textContent=++n;};});
+  demo('d-batch',function(el){var count=0,out=$('[data-out]',el),msg=$('[data-msg]',el);
+    function set(v){count=v;out.textContent=v;}
+    $('[data-act=stale]',el).onclick=function(){var snap=count;set(snap+1);
+      msg.innerHTML='Called <code>setCount(count+1)</code> three times, but <code>count</code> in this event is the same snapshot ('+snap+'), so all three computed '+(snap+1)+' → only <b>+1</b>.';};
+    $('[data-act=fresh]',el).onclick=function(){var c=count;c=c+1;c=c+1;c=c+1;set(c);
+      msg.innerHTML='Called <code>setCount(c =&gt; c+1)</code> three times, each getting "the previous result" → +1+1+1 = <b>+3</b>.';};
+    $('[data-act=reset]',el).onclick=function(){set(0);msg.textContent='Reset.';};});
+  demo('d-ref',function(el){var renders=0,sC=0,fC=0;
+    var rE=$('[data-renders]',el),sE=$('[data-state]',el),fE=$('[data-ref]',el),h=$('[data-hint]',el);
+    function render(){renders++;rE.textContent=renders;sE.textContent=sC;fE.textContent=fC;}
+    render();
+    $('[data-act=state]',el).onclick=function(){sC++;render();h.innerHTML='setState → one render, UI updates in sync (and paints the ref\'s latest value along the way).';};
+    $('[data-act=ref]',el).onclick=function(){fC++;h.innerHTML='The ref is actually <b>'+fC+'</b> now, but the ref number on screen didn\'t move — changing a ref <b>doesn\'t trigger a render</b>. Press setState+1 and you\'ll see it jump up.';};});
+  demo('d-lift',function(el){var r=$('[data-range]',el),a=$('[data-a]',el),b=$('[data-b]',el),bar=$('[data-bar]',el);
+    function upd(){var v=+r.value;a.textContent=v+'°C';b.textContent=Math.round(v*9/5+32)+'°F';bar.style.width=v+'%';}
+    r.oninput=upd;upd();});
+  demo('d-eff',function(el){var f=$('[data-first]',el),l=$('[data-last]',el),full=$('[data-full]',el),rc=$('[data-rc]',el),chk=$('[data-effmode]',el),rn=0;
+    function upd(){rn+=chk.checked?2:1;rc.textContent=rn;full.textContent=((f.value+' '+l.value).trim())||'—';}
+    f.oninput=upd;l.oninput=upd;});
+  demo('d-red',function(el){var out=$('[data-out]',el),log=$('[data-log]',el),st={count:0};
+    function reducer(s,a){switch(a.type){case 'inc':return{count:s.count+1};case 'dec':return{count:s.count-1};case 'reset':return{count:0};default:return s;}}
+    function dispatch(a){st=reducer(st,a);out.textContent=st.count;
+      var d=document.createElement('div');d.textContent='dispatch({type:"'+a.type+'"})  →  count = '+st.count;log.insertBefore(d,log.firstChild);}
+    el.querySelectorAll('[data-type]').forEach(function(btn){btn.onclick=function(){dispatch({type:btn.getAttribute('data-type')});};});});
+  demo('d-ctrl',function(el){var i=$('[data-in]',el),o=$('[data-mirror]',el);
+    i.oninput=function(){o.textContent=i.value.toUpperCase()||'—';};});
+})();
+</script>
+
+<script>
+// Chapter quick-jump bar: highlight the current chapter on scroll (same daynav pattern as the travel post)
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>

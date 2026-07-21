@@ -21,6 +21,15 @@ posts/<slug>.html       每篇文章一檔，slug 用 kebab-case
 
 ## 文章頁範本
 
+### 標題一律 `主體．本次說明`
+
+分隔符用**全形句點 `．`**，不是 `·` 也不是 `:`。前面是這篇在講的主體（工具／框架／語言／節目名），後面是這次要說明什麼。
+
+```
+JavaScript．從零到會用          React．完全上手：什麼時候用、怎麼用
+JavaScript．From Zero          React．Properly: When to Use What, and How
+```
+
 每篇 `posts/<slug>.html` 的骨架（路徑用 `../` 因為在子目錄）：
 
 ```html
@@ -102,6 +111,16 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 ```
 
 範例見 `posts/karpathy-llm-wiki.html`（RAG vs Wiki 對比、三層架構閉環、三操作循環）。
+
+## 寫個股要帶族群
+
+寫個股筆記時不要只講單一支，對它所屬的**同族群概念股**（同一題材／概念下的其他個股）也要展開，**廣度要夠**——把該族群裡值得一提的都帶到，不是只點兩三支。主標的分析完後、頁尾之前，固定插一段「同族群概念股掃描」：
+
+1. 一句話定義族群——這支歸在哪個題材／概念（如 CoWoS、矽光子、重電），範圍畫清楚。
+2. 一張族群表——同題材下值得提的個股逐一列，欄位固定：`代號/名稱 · 族群裡的定位 · 相對強弱（龍頭/跟漲/落後）· forward PE 或估值差異 · 一句話看法`。資料多就照本檔慣例用頁尾 `<script>` render 成 `<table>` 或 `cards>scard`，不手刻。
+3. （可選）族群關係圖——族群內若有分工／強弱結構，補一張 inline `<svg>` 放該段 `card` 最前面。
+
+估值走 invest-playbook：forward PE 不用 trailing，先判族群循環烈度。範圍只做同族群概念股；上下游／競爭同業／跨市場對標不強制，除非另外指示。
 
 ## 把新文章掛上首頁
 
