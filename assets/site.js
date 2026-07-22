@@ -7,6 +7,7 @@ var POSTS=[
   {slug:'javascript-learn-guide',     cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
   {slug:'openwiki',                   cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep681-stocks',        cat:'股癌podcast分析', zh:'股癌 EP681 · 個股觀點整理',          en:'Gooaye EP681 · Stock Notes'},
   {slug:'gooaye-ep680-stocks',        cat:'股癌podcast分析', zh:'股癌 EP680 · 個股觀點整理',          en:'Gooaye EP680 · Stock Notes'},
   {slug:'gooaye-ep679-stocks',        cat:'股癌podcast分析', zh:'股癌 EP679 · 個股觀點整理',          en:'Gooaye EP679 · Stock Notes'},
   {slug:'gooaye-ep678-stocks',        cat:'股癌podcast分析', zh:'股癌 EP678 · 個股觀點整理',          en:'Gooaye EP678 · Stock Notes'},
