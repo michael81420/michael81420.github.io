@@ -260,6 +260,15 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
   .article-body > .daynav{margin-right:0}
 }
 
+/* 手機閱讀微調（選項 A）：內距收緊、標題內文字級縮小、左側文章樹隱藏（回列表用返回鈕） */
+@media(max-width:680px){
+  .wrap{padding:12px 14px 60px}
+  .wrap header{padding:22px 8px 20px}
+  .wrap header h1{font-size:22px}
+  .wrap header .sub{font-size:14px}
+  .rail{display:none}
+}
+
 /* ============================================================
    關於我頁（about.html / about.en.html）— 時間軸履歷
    ============================================================ */
