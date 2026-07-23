@@ -145,12 +145,13 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 
 ### 站是雙語的，一篇要掛四處
 
-每篇文章有中英兩檔（`posts/<slug>.html` + `posts/<slug>.en.html`），首頁也有兩份（`index.html` + `index.en.html`）。掛一篇新文章要同步：
+每篇文章有中英兩檔（`posts/<slug>.html` + `posts/<slug>.en.html`），首頁也有兩份（`index.html` + `index.en.html`）。掛一篇新文章要同步五處：
 
 1. `posts/<slug>.html` — 中文頁（body 加 `data-slug="<slug>"`，topbar 需 `lang-toggle` 按鈕）。
 2. `posts/<slug>.en.html` — 英文頁（`<html lang="en">`、back 鈕指 `../index.en.html`、`lang-toggle` 文字為「中」）。兩檔 `data-slug` 必須一致，lang-toggle 才切得過去。
 3. `index.html` 與 `index.en.html` 各加一張 `post-card`（各自語言的 title/excerpt，`href` 指對應語言檔；`data-cat` 兩邊都用**中文**正規值）。
 4. **`site.js` 最上面的 `POSTS` 陣列加一筆**（`slug`/`cat`/`zh`/`en`）—— 這是左側全文章樹的唯一事實來源，漏了進頁時左欄選不到當前文章。順序新→舊。
+5. **`sitemap.xml` 加兩行**（中英各一 `<url><loc>…</loc></url>`）—— 漏了搜尋引擎收錄不到新頁。`robots.txt` 只指 sitemap、不列個別頁，不用動。
 
 ## 不要做的事
 
