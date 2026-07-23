@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeScript．把型別補進 JavaScript：從標註到泛型</title>
+<meta name="description" content="會一點 JavaScript 就能上手 TypeScript：型別標註與推論、interface 與 type、聯合型別與字面量、型別窄化、函式型別、泛型、和 DOM／API／第三方套件打交道，最後是 tsconfig 與常見坑。每段都配圖解、可執行範例與可點擊互動 demo，看完就寫得出型別安全的程式。">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="typescript-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>TypeScript．把型別補進 JavaScript</h1>
+<div class="sub">TypeScript 就是 <b>JavaScript 加上一層型別</b>——會一點 JS 就能無痛接上。<br>從「型別標註是什麼」一路到「泛型怎麼用對」，每一段都有<b>圖解 + 可直接跑的範例 + 可點擊的互動 demo</b>，看完你寫的不再是「希望它會動」，而是<b>編譯器先幫你抓錯</b>的程式。</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://www.typescriptlang.org/docs/handbook/intro.html" target="_blank" rel="noopener">來源:TypeScript Handbook ↗</a>
+<span class="badge">對象:會一點 JS 的人</span>
+<span class="badge">版本:TypeScript 5.x</span>
+<span class="badge">整理日:2026-07-24</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 開始</a>
+  <a href="#c1">1 型別標註</a>
+  <a href="#c2">2 物件的形狀</a>
+  <a href="#c3">3 聯合與窄化</a>
+  <a href="#c4">4 函式型別</a>
+  <a href="#c5">5 泛型</a>
+  <a href="#c6">6 真實世界</a>
+  <a href="#c7">7 tsconfig 與坑</a>
+  <a href="#c8">8 速查表</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 一句話心智模型：<span class="win">TypeScript = JavaScript + 一層「編譯時才存在」的型別檢查</span>。</p>
+<p>型別<b>不會被打包進去跑</b>——<code>tsc</code> 檢查完就把型別全部擦掉，最後產出的是普通 JavaScript。所以 TS 幫你的是<b>寫程式的當下</b>（編輯器紅線、自動補全、重構安全），而不是執行的時候。這點想通，後面全部好懂。</p>
+<p><b>建議的學習順序（也就是本篇的章節）</b>：型別標註 → 物件形狀（interface/type）→ 聯合與窄化 → 函式型別 → 泛型 → 和真實世界打交道 → tsconfig 與坑。<b>先別碰泛型</b>，把前三章的「形狀」概念打穩，第 5 章才不會覺得像天書。</p>
+<p class="note">★ 學 TS 最快的方法是<b>在 <a href="https://www.typescriptlang.org/play" target="_blank" rel="noopener">TypeScript Playground</a> 邊看邊打</b>。它會即時標紅線、告訴你推論出的型別、還能看編譯後的 JS。本篇每段程式碼都可以貼進去看。</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · 開始之前 — TypeScript 是什麼、為什麼要它</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的學習路線：先學型別標註，再學物件形狀與聯合窄化，接著函式型別，然後才是泛型，最後才碰真實世界的 DOM、API 與設定，每一站都是下一站的地基。">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">型別的核心概念（先打穩這幾章）</text>
+<rect x="30" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="105" y="60" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">1 型別標註</text>
+<text x="105" y="78" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">標註與推論</text>
+<rect x="222" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="297" y="60" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">2 物件形狀</text>
+<text x="297" y="78" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">interface / type</text>
+<rect x="414" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="489" y="60" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">3 聯合與窄化</text>
+<text x="489" y="78" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">union、narrowing</text>
+<rect x="606" y="38" width="130" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="671" y="60" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">4 函式型別</text>
+<text x="671" y="78" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">參數、回傳</text>
+<line x1="180" y1="64" x2="220" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="372" y1="64" x2="412" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="564" y1="64" x2="604" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<path d="M671 90 L671 122 L380 122 L380 152" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="176" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">進階與落地</text>
+<rect x="120" y="190" width="180" height="52" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="210" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">5 泛型</text>
+<text x="210" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">一份程式吃多型別</text>
+<rect x="330" y="190" width="180" height="52" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="420" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">6 真實世界</text>
+<text x="420" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">DOM、API、@types</text>
+<rect x="540" y="190" width="160" height="52" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="620" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">7 設定與坑</text>
+<text x="620" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">tsconfig、strict</text>
+<line x1="300" y1="216" x2="328" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="510" y1="216" x2="538" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<rect x="120" y="258" width="580" height="30" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="410" y="278" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">前 4 章講的都是「形狀」，泛型只是把形狀變成可帶入的參數 — 別急著跳</text>
+</svg>
+</div>
+<h3>0.1 TypeScript 到底是什麼</h3>
+<p>TypeScript 是 <b>JavaScript 的超集（superset）</b>：任何合法的 JS 都是合法的 TS。它只做一件事——<b>在你寫程式時，多一層「型別檢查」</b>。檢查完，<code>tsc</code> 會把所有型別標註<b>擦掉</b>，產出的就是瀏覽器／Node 能直接跑的普通 JavaScript。</p>
+<div class="fig">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的編譯流程：你寫帶型別的 .ts 檔，tsc 先做型別檢查抓錯，通過後把型別全部擦掉，產出普通的 .js 檔真正在瀏覽器或 Node 執行，型別不會進到執行階段。">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="24" y="60" width="170" height="78" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="109" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">你寫的 .ts</text>
+<text x="109" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">JS + 型別標註</text>
+<text x="109" y="125" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">const n: number = 1</text>
+<rect x="266" y="60" width="200" height="78" rx="12" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="366" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">tsc 編譯器</text>
+<text x="366" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">① 型別檢查（抓錯）</text>
+<text x="366" y="125" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">② 把型別擦掉</text>
+<rect x="538" y="60" width="198" height="78" rx="12" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="637" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">產出的 .js</text>
+<text x="637" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">普通 JavaScript</text>
+<text x="637" y="125" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">const n = 1  ← 沒型別了</text>
+<line x1="194" y1="99" x2="264" y2="99" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<line x1="466" y1="99" x2="536" y2="99" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<text x="230" y="90" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">檢查</text>
+<text x="501" y="90" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">擦掉型別</text>
+<rect x="266" y="158" width="200" height="30" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="366" y="178" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">型別對不上 → 這裡就紅線報錯</text>
+<path d="M366 138 L366 156" style="fill:none;stroke:var(--lose)" marker-end="url(#ah2)"/>
+<text x="637" y="176" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">執行時完全看不到型別</text>
+</svg>
+</div>
+<p class="note">★ 一個關鍵結論：<b>TS 的型別在執行時完全不存在</b>。所以你<b>不能</b>用型別在跑的時候做判斷（例如「如果 x 是 User 型別就…」），要判斷值長怎樣得靠 JS 本來就有的 <code>typeof</code>／<code>in</code>／<code>Array.isArray</code>（第 3 章）。</p>
+</div>
+
+<div class="card">
+<h3>0.2 為什麼值得學 — 一個範例就懂</h3>
+<p>同一段邏輯，JS 要跑起來、真的踩到才知道錯；TS 在你打字的當下就畫紅線：</p>
+<pre><code><span class="c">// JavaScript：完全合法，跑起來才炸</span>
+<span class="k">function</span> total(cart) {
+  <span class="k">return</span> cart.reduce((sum, item) =&gt; sum + item.price, 0);
+}
+total({ price: 100 });     <span class="c">// ❌ 執行時：cart.reduce is not a function（傳錯型別了）</span>
+
+<span class="c">// TypeScript：打字當下就報錯，根本跑不到那一行</span>
+<span class="k">function</span> total(cart: <span class="k">{ price: number }[]</span>): number {
+  <span class="k">return</span> cart.reduce((sum, item) =&gt; sum + item.price, 0);
+}
+<span class="bad">total({ price: 100 });</span>     <span class="c">// ❌ 紅線：Argument of type '{price:number}' is not assignable to '{price:number}[]'</span>
+total([{ price: 100 }]);   <span class="c">// ✅ 傳陣列才對</span></code></pre>
+<p>TS 幫你的其實是三件事，且都發生在<b>執行之前</b>：</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">① 提早抓錯</div><div class="kd">傳錯型別、拼錯屬性名、忘記處理 <code>undefined</code>——編輯器當場紅線，不用等跑到才發現。</div><div class="ke">大專案 90% 的低級 bug 都是這類</div></div>
+<div class="kcard"><div class="kt">② 自動補全</div><div class="kd">編輯器知道每個變數的形狀，打 <code>.</code> 就跳出所有可用屬性／方法，不用回頭翻文件。</div><div class="ke">型別就是「跟著程式走的文件」</div></div>
+<div class="kcard"><div class="kt">③ 重構有底氣</div><div class="kd">改一個欄位名字，所有用到的地方立刻標紅，改到全綠就對了。沒有型別時這是惡夢。</div><div class="ke">敢改大程式，靠的就是這個</div></div>
+</div>
+</div>
+
+<div class="card">
+<h3>0.3 十秒開始寫 — 不用裝任何東西</h3>
+<p>打開 <a href="https://www.typescriptlang.org/play" target="_blank" rel="noopener">TypeScript Playground</a>，左邊打 TS、右邊即時看編譯出的 JS，滑鼠移到變數上會顯示型別，錯的地方直接紅線。本篇每段都能貼進去玩。</p>
+<p>要在本機的專案裡跑，只有三步：</p>
+<pre><code><span class="c"># ① 裝 TypeScript</span>
+npm install -D typescript
+
+<span class="c"># ② 產生設定檔 tsconfig.json（第 7 章會講裡面設什麼）</span>
+npx tsc --init
+
+<span class="c"># ③ 編譯：把 .ts 變成 .js</span>
+npx tsc            <span class="c"># 或 npx tsc --watch 邊改邊自動編譯</span></code></pre>
+<p class="note">★ 實務上你很少手動 <code>tsc</code>。用 Vite／Next.js 這類工具時，型別檢查是編輯器（VS Code 內建）＋打包工具一起做的。剛學階段，<b>Playground 或 VS Code 開一個 .ts 檔就夠了</b>，別急著配置一堆東西。</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · 型別標註 — 告訴 TS「這是什麼」</h2>
+<div class="card">
+<h3>1.1 標註的寫法：冒號加型別，但能不標就不標</h3>
+<p>型別標註就是在名字後面加 <code>: 型別</code>。但 TS 很聰明——<b>大部分時候它自己推得出來，你不用標</b>。</p>
+<pre><code><span class="c">// 標註：變數、參數、回傳值都在名字後面加 : 型別</span>
+<span class="k">let</span> name: <span class="k">string</span> = <span class="s">"Michael"</span>;
+<span class="k">let</span> age: <span class="k">number</span> = 30;
+<span class="k">let</span> ok: <span class="k">boolean</span> = <span class="k">true</span>;
+
+<span class="c">// ✅ 但這行的 : string 是多餘的 —— 右邊是字串，TS 自己就推出來了</span>
+<span class="k">let</span> city = <span class="s">"Taipei"</span>;        <span class="c">// TS 推論：city 是 string</span>
+<span class="bad">city = 101;</span>                 <span class="c">// ❌ 紅線：Type 'number' is not assignable to 'string'</span>
+
+<span class="c">// 準則：初始化時讓 TS 推論，不確定或沒初始值時才手動標</span>
+<span class="k">let</span> score;                  <span class="c">// 沒給值 → 型別是 any（危險，見 1.3）</span>
+<span class="k">let</span> score2: <span class="k">number</span>;         <span class="c">// ✅ 之後才賦值，就先標清楚</span></code></pre>
+<p><b>什麼時候該標、什麼時候讓它推</b>——這是新手最容易糾結的地方，記住一句話就好：</p>
+<table>
+<tr><th>情況</th><th>怎麼做</th><th>為什麼</th></tr>
+<tr><td>宣告時就有初始值</td><td class="win">別標，讓它推</td><td>標了是重複，改值還要改兩處</td></tr>
+<tr><td>函式的<b>參數</b></td><td class="lose">一定要標</td><td>TS 推不出你打算餵什麼進來</td></tr>
+<tr><td>函式的<b>回傳值</b></td><td>建議標</td><td>寫錯回傳時當場報錯，而不是傳到別處才爆</td></tr>
+<tr><td>先宣告後賦值</td><td class="lose">要標</td><td>否則會變成 any</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>1.2 常用型別：原始型別、陣列、物件</h3>
+<pre><code><span class="c">// ── 原始型別（跟 JS 的 typeof 對得上）──</span>
+<span class="k">string</span>   <span class="k">number</span>   <span class="k">boolean</span>   <span class="k">null</span>   <span class="k">undefined</span>
+
+<span class="c">// ── 陣列：兩種寫法，意思一樣，選一種用到底 ──</span>
+<span class="k">let</span> nums: <span class="k">number[]</span> = [1, 2, 3];
+<span class="k">let</span> tags: <span class="k">Array&lt;string&gt;</span> = [<span class="s">"js"</span>, <span class="s">"ts"</span>];   <span class="c">// 泛型寫法，第 5 章會懂</span>
+<span class="bad">nums.push("4");</span>              <span class="c">// ❌ 陣列裡只能放 number</span>
+
+<span class="c">// ── 物件：直接把「形狀」寫出來 ──</span>
+<span class="k">let</span> user: <span class="k">{ name: string; age: number }</span> = { name: <span class="s">"Michael"</span>, age: 30 };
+user.name;                    <span class="c">// ✅ string，打 . 會自動補全</span>
+<span class="bad">user.email;</span>                  <span class="c">// ❌ 紅線：形狀上沒有 email 這個屬性</span>
+
+<span class="c">// ── 元組 tuple：固定長度、每格型別固定的陣列 ──</span>
+<span class="k">let</span> point: <span class="k">[number, number]</span> = [10, 20];   <span class="c">// 座標、React 的 useState 回傳就是這個</span></code></pre>
+<p class="note">★ 物件形狀直接寫在標註裡很快就會變得又臭又長，而且無法重用。所以真實世界都用 <b>interface / type 幫形狀取名字</b>——這是第 2 章的主角。</p>
+<div class="demo" id="d-infer">
+<div class="demo-h">互動：型別推論 — TS 自己看右邊推出什麼型別</div>
+<div class="demo-row">
+<button data-infer='const x = 42'>const x = 42</button>
+<button data-infer='const s = "hi"'>const s = "hi"</button>
+<button data-infer='const arr = [1, 2, 3]'>const arr = [1,2,3]</button>
+<button data-infer='const mix = [1, "a"]'>const mix = [1,"a"]</button>
+<button data-infer='let n = 1'>let n = 1</button>
+<button class="ghost" data-infer='const o = { a: 1, b: "x" }'>const o = {a:1,b:"x"}</button>
+</div>
+<div class="msg" data-msg>點一個，看 TS 在你沒標註時<b>自己推</b>出什麼型別。<code>const</code> 和 <code>let</code> 推的還不一樣——這正是為什麼常常不用手標。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>1.3 三個特殊型別：any、unknown、never</h3>
+<p>這三個是 TS 特有、JS 沒有的概念，搞懂它們就懂了 TS 的「安全」是什麼意思。</p>
+<pre><code><span class="c">// any：關掉型別檢查。它是 TS 世界的逃生門，也是最大的坑。</span>
+<span class="k">let</span> a: <span class="k">any</span> = 42;
+a.foo.bar.baz();              <span class="c">// ⚠ TS 完全不擋，跑起來直接炸。用 any = 放棄保護</span>
+
+<span class="c">// unknown：「我還不知道是什麼」——比 any 安全，用之前一定要先確認</span>
+<span class="k">let</span> u: <span class="k">unknown</span> = fetchData();
+<span class="bad">u.toUpperCase();</span>             <span class="c">// ❌ 紅線：得先縮小型別才能用</span>
+<span class="k">if</span> (<span class="k">typeof</span> u === <span class="s">"string"</span>) {
+  u.toUpperCase();            <span class="c">// ✅ 確認過是 string，這裡就安全</span>
+}
+
+<span class="c">// never：「不可能發生」——函式永遠不回傳、或窮舉檢查用（第 3 章會再遇到）</span>
+<span class="k">function</span> fail(msg: <span class="k">string</span>): <span class="k">never</span> { <span class="k">throw new</span> Error(msg); }</code></pre>
+<p><b>準則</b>：<span class="lose">能不用 <code>any</code> 就不用</span>。真的不知道型別（例如剛 <code>JSON.parse</code> 出來的東西）用 <code>unknown</code>，逼自己在使用前先檢查。把 <code>any</code> 當成「我這裡放棄了」的自白，越少越好。</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · 物件的形狀 — interface 與 type</h2>
+<div class="card">
+<h3>2.1 幫形狀取個名字</h3>
+<p>與其每次都把物件形狀寫一長串，不如取個名字重複用。兩種工具：<code>interface</code> 和 <code>type</code>。</p>
+<pre><code><span class="c">// interface：描述物件形狀，最常見</span>
+<span class="k">interface</span> User {
+  name: <span class="k">string</span>;
+  age: <span class="k">number</span>;
+  email?: <span class="k">string</span>;          <span class="c">// ? = 可選，可以沒有</span>
+  <span class="k">readonly</span> id: <span class="k">number</span>;      <span class="c">// readonly = 只讀，建立後不能改</span>
+}
+
+<span class="c">// type：型別別名，能做的更多（不只物件）</span>
+<span class="k">type</span> User = {
+  name: <span class="k">string</span>;
+  age: <span class="k">number</span>;
+};
+
+<span class="c">// 用法一樣：拿名字當標註</span>
+<span class="k">function</span> greet(u: User): <span class="k">string</span> {
+  <span class="k">return</span> <span class="s">`Hi, ${u.name}`</span>;   <span class="c">// 打 u. 會自動補出 name / age / email / id</span>
+}
+
+<span class="k">const</span> me: User = { name: <span class="s">"Michael"</span>, age: 30, id: 1 };
+<span class="bad">me.id = 2;</span>                   <span class="c">// ❌ readonly，不能改</span></code></pre>
+</div>
+
+<div class="card">
+<h3>2.2 結構型別（鴨子型別）— TS 最重要的直覺</h3>
+<p>TS 判斷「型別對不對」看的是<b>形狀，不是名字</b>。只要一個物件有 User 需要的所有屬性，它<b>就是</b> User——不用刻意宣告「我是 User」。這叫結構型別（structural typing），俗稱鴨子型別。</p>
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="結構型別：TS 看形狀不看名字，一個物件只要有 name 和 age 兩個屬性就算符合 User，多帶一個屬性也照樣通過；少一個屬性才會被擋下來。">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="300" y="16" width="160" height="70" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">要求的形狀 User</text>
+<text x="380" y="60" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">name: string</text>
+<text x="380" y="77" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">age: number</text>
+<rect x="24" y="128" width="216" height="100" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="132" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name, age }</text>
+<text x="132" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">剛好兩個都有</text>
+<text x="132" y="206" text-anchor="middle" style="fill:var(--win);font:700 12.5px sans-serif">✓ 通過</text>
+<rect x="272" y="128" width="216" height="100" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name, age, city }</text>
+<text x="380" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">多帶一個 city 也沒關係</text>
+<text x="380" y="206" text-anchor="middle" style="fill:var(--win);font:700 12.5px sans-serif">✓ 通過（形狀夠了）</text>
+<rect x="520" y="128" width="216" height="100" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="628" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name }</text>
+<text x="628" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">少了 age</text>
+<text x="628" y="206" text-anchor="middle" style="fill:var(--lose);font:700 12.5px sans-serif">✗ 被擋（形狀不足）</text>
+<line x1="330" y1="86" x2="150" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="380" y1="86" x2="380" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="430" y1="86" x2="610" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+</svg>
+</div>
+<pre><code><span class="k">interface</span> User { name: <span class="k">string</span>; age: <span class="k">number</span>; }
+
+<span class="k">function</span> greet(u: User) { <span class="k">return</span> u.name; }
+
+<span class="k">const</span> a = { name: <span class="s">"A"</span>, age: 30 };
+greet(a);                     <span class="c">// ✅ 形狀對，不用寫「a 是 User」</span>
+
+<span class="k">const</span> b = { name: <span class="s">"B"</span>, age: 25, city: <span class="s">"Taipei"</span> };
+greet(b);                     <span class="c">// ✅ 多帶 city 也通過，用得到的都在</span>
+
+<span class="k">const</span> c = { name: <span class="s">"C"</span> };
+<span class="bad">greet(c);</span>                    <span class="c">// ❌ 少了 age，形狀不足</span></code></pre>
+<p class="note">★ 有個例外要知道：<b>直接傳「物件字面量」時，多帶的屬性反而會被擋</b>（叫 excess property check），<code>greet({ name:"A", age:30, city:"x" })</code> 會紅線。這是 TS 貼心地提醒你「city 可能是打錯的屬性名」。先存進變數再傳（像上面的 <code>b</code>）就不會擋。</p>
+</div>
+
+<div class="card">
+<h3>2.3 interface 還是 type？九成情況隨便你</h3>
+<p>兩者高度重疊，別在這糾結太久。一個簡單準則：<b>描述物件用 <code>interface</code>，其他一律用 <code>type</code></b>。</p>
+<table>
+<tr><th></th><th>interface</th><th>type</th></tr>
+<tr><td>描述物件形狀</td><td class="win">✓ 可以</td><td class="win">✓ 可以</td></tr>
+<tr><td>聯合型別 <code>A | B</code></td><td class="lose">✗ 不行</td><td class="win">✓ 只有它能</td></tr>
+<tr><td>幫原始型別／元組取名</td><td class="lose">✗ 不行</td><td class="win">✓ <code>type ID = string</code></td></tr>
+<tr><td>延伸</td><td><code>extends</code></td><td><code>&amp;</code> 交集</td></tr>
+<tr><td>同名自動合併</td><td class="win">會（適合擴充第三方型別）</td><td class="lose">不會（重複定義報錯）</td></tr>
+</table>
+<pre><code><span class="c">// 描述物件 → interface（可 extends 繼承）</span>
+<span class="k">interface</span> Animal { name: <span class="k">string</span>; }
+<span class="k">interface</span> Dog <span class="k">extends</span> Animal { breed: <span class="k">string</span>; }
+
+<span class="c">// 聯合、別名 → 只能用 type</span>
+<span class="k">type</span> Status = <span class="s">"idle"</span> | <span class="s">"loading"</span> | <span class="s">"done"</span>;   <span class="c">// 第 3 章的字面量聯合</span>
+<span class="k">type</span> ID = <span class="k">string</span> | <span class="k">number</span>;
+<span class="k">type</span> Dog = Animal &amp; { breed: <span class="k">string</span> };            <span class="c">// & 是交集，等於合併形狀</span></code></pre>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · 聯合、字面量與窄化 — TS 最好用的地方</h2>
+<div class="card">
+<h3>3.1 聯合型別：「是這個，或那個」</h3>
+<p>用 <code>|</code> 把幾個型別串起來，表示「可能是其中任一個」。這是 TS 表達力最強、也最貼近真實資料的功能。</p>
+<pre><code><span class="k">type</span> ID = <span class="k">string</span> | <span class="k">number</span>;      <span class="c">// id 可能是字串或數字</span>
+<span class="k">let</span> id: ID = 101;
+id = <span class="s">"A-101"</span>;                  <span class="c">// ✅ 兩種都行</span>
+<span class="bad">id = true;</span>                   <span class="c">// ❌ boolean 不在聯合裡</span>
+
+<span class="c">// 最常見用途：一個值可能沒有</span>
+<span class="k">function</span> find(id: number): User | <span class="k">undefined</span> {  <span class="c">// 找不到就回 undefined</span>
+  <span class="k">return</span> users.find(u =&gt; u.id === id);
+}</code></pre>
+<p>但聯合型別有個限制：<b>只能用「每個成員都保證有」的東西</b>。因為 TS 不知道現在到底是哪一個：</p>
+<pre><code><span class="k">function</span> pad(value: <span class="k">string</span> | <span class="k">number</span>) {
+  <span class="bad">value.toUpperCase();</span>        <span class="c">// ❌ number 沒有 toUpperCase，不能保證</span>
+  value.toString();            <span class="c">// ✅ string 和 number 都有 toString</span>
+}</code></pre>
+</div>
+
+<div class="card">
+<h3>3.2 型別窄化 — 聯合型別的正確用法</h3>
+<p>要用聯合型別裡「某一種特有」的東西，得先讓 TS 確定現在是哪一種。方法就是用 <b>JS 本來就有的判斷</b>——TS 看得懂這些判斷，會在對應的分支裡自動把型別「窄化」成更具體的那個。</p>
+<div class="fig">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="型別窄化：一個 string 或 number 的聯合值，經過 typeof 判斷後分成兩條路，走進 string 分支時 TS 就確定它是 string，可以安全用字串方法，走進 number 分支則確定是 number。">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="270" y="16" width="220" height="56" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">value: string | number</text>
+<text x="380" y="60" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">現在還不知道是哪一種</text>
+<rect x="260" y="104" width="240" height="34" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="126" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">if (typeof value === "string")</text>
+<line x1="380" y1="72" x2="380" y2="102" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<rect x="60" y="168" width="290" height="76" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="205" y="192" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">true 分支：value 是 string</text>
+<text x="205" y="212" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">value.toUpperCase() ✓ 安全</text>
+<text x="205" y="230" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">TS 已窄化，補全只剩字串方法</text>
+<rect x="410" y="168" width="290" height="76" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="555" y="192" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">else 分支：value 是 number</text>
+<text x="555" y="212" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">value.toFixed(2) ✓ 安全</text>
+<text x="555" y="230" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">剩下的只可能是 number</text>
+<path d="M340 138 L210 166" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<path d="M420 138 L550 166" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<text x="250" y="156" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">true</text>
+<text x="510" y="156" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">false</text>
+</svg>
+</div>
+<pre><code><span class="k">function</span> pad(value: <span class="k">string</span> | <span class="k">number</span>) {
+  <span class="k">if</span> (<span class="k">typeof</span> value === <span class="s">"string"</span>) {
+    <span class="k">return</span> value.toUpperCase();  <span class="c">// ✅ 這裡 TS 確定 value 是 string</span>
+  }
+  <span class="k">return</span> value.toFixed(2);       <span class="c">// ✅ 剩下的只可能是 number</span>
+}</code></pre>
+<p><b>四種最常用的窄化工具</b>，全都是 JS 原生語法，TS 只是「看得懂」：</p>
+<table>
+<tr><th>工具</th><th>用來窄化</th><th>例子</th></tr>
+<tr><td><code>typeof</code></td><td>原始型別</td><td><code>typeof x === "string"</code></td></tr>
+<tr><td><code>in</code></td><td>物件有沒有某屬性</td><td><code>"swim" in animal</code></td></tr>
+<tr><td><code>instanceof</code></td><td>是不是某 class 的實例</td><td><code>err instanceof Error</code></td></tr>
+<tr><td><code>=== 字面量</code></td><td>判別聯合（見 3.3）</td><td><code>shape.kind === "circle"</code></td></tr>
+</table>
+<div class="demo" id="d-narrow">
+<div class="demo-h">互動：窄化 — 同一個聯合值，走進哪個分支</div>
+<div class="demo-row">
+<span class="lbl"><code>value: string | number | boolean</code>，餵：</span>
+<button data-val='"hello"'>"hello"</button>
+<button data-val='42'>42</button>
+<button data-val='true'>true</button>
+</div>
+<div class="msg" data-msg>點一個值，看 <code>typeof</code> 判斷後 TS 把它<b>窄化</b>成哪個具體型別，以及在那個分支裡哪些方法變成安全可用。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>3.3 字面量型別與判別聯合 — 狀態管理的神器</h3>
+<p>型別不只可以是 <code>string</code>，還可以精確到<b>某個特定的字串值</b>。這在描述「有限的幾種狀態」時無敵好用。</p>
+<pre><code><span class="c">// 字面量型別：只能是這幾個字串之一</span>
+<span class="k">type</span> Status = <span class="s">"idle"</span> | <span class="s">"loading"</span> | <span class="s">"success"</span> | <span class="s">"error"</span>;
+<span class="k">let</span> s: Status = <span class="s">"loading"</span>;
+<span class="bad">s = "loadng";</span>                <span class="c">// ❌ 拼錯字當場被抓，這就是它的價值</span>
+
+<span class="c">// 判別聯合（discriminated union）：用一個共同的「標籤」欄位區分</span>
+<span class="k">type</span> Shape =
+  | { kind: <span class="s">"circle"</span>; radius: <span class="k">number</span> }
+  | { kind: <span class="s">"rect"</span>; width: <span class="k">number</span>; height: <span class="k">number</span> };
+
+<span class="k">function</span> area(shape: Shape): <span class="k">number</span> {
+  <span class="k">switch</span> (shape.kind) {              <span class="c">// 用 kind 這個標籤窄化</span>
+    <span class="k">case</span> <span class="s">"circle"</span>: <span class="k">return</span> Math.PI * shape.radius ** 2;   <span class="c">// ✅ 這裡只有 radius</span>
+    <span class="k">case</span> <span class="s">"rect"</span>:   <span class="k">return</span> shape.width * shape.height;      <span class="c">// ✅ 這裡只有 width/height</span>
+  }
+}</code></pre>
+<p class="note">★ 判別聯合是 TS 建模真實資料的最佳武器：API 回傳的「成功 or 失敗」、Redux／useReducer 的 action、UI 的載入狀態，全都適合。<b>看到「一個值有好幾種互斥的形態」，就想到它。</b></p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · 函式型別 — 標好參數與回傳</h2>
+<div class="card">
+<h3>4.1 參數與回傳值</h3>
+<pre><code><span class="c">// 參數一定要標，回傳值建議標（讓 TS 幫你確認寫對）</span>
+<span class="k">function</span> add(a: <span class="k">number</span>, b: <span class="k">number</span>): <span class="k">number</span> {
+  <span class="k">return</span> a + b;
+}
+
+<span class="c">// 箭頭函式一樣</span>
+<span class="k">const</span> mul = (a: <span class="k">number</span>, b: <span class="k">number</span>): <span class="k">number</span> =&gt; a * b;
+
+<span class="c">// 可選參數 ? / 預設值 / 其餘參數（跟 JS 一樣，只是多了型別）</span>
+<span class="k">function</span> greet(name: <span class="k">string</span>, greeting: <span class="k">string</span> = <span class="s">"Hi"</span>, ...tags: <span class="k">string[]</span>) {
+  <span class="k">return</span> <span class="s">`${greeting}, ${name}`</span>;
+}
+greet(<span class="s">"Michael"</span>);            <span class="c">// ✅ greeting 有預設、tags 可以沒有</span>
+
+<span class="c">// 不回傳東西的函式：回傳型別是 void</span>
+<span class="k">function</span> log(msg: <span class="k">string</span>): <span class="k">void</span> {
+  console.log(msg);
+}</code></pre>
+</div>
+
+<div class="card">
+<h3>4.2 把「函式本身」的型別寫出來</h3>
+<p>函式在 JS 裡是值，可以當參數傳、被回傳（高階函式）。在 TS 裡，這個「函式值」也有型別，寫法是 <code>(參數: 型別) =&gt; 回傳型別</code>。</p>
+<pre><code><span class="c">// 幫 callback 標型別：這是標註函式最常見的場合</span>
+<span class="k">function</span> onClick(handler: <span class="k">(event: string) =&gt; void</span>) {
+  handler(<span class="s">"clicked"</span>);
+}
+
+<span class="c">// 用 type 幫函式型別取名，重複用</span>
+<span class="k">type</span> Reducer = (acc: <span class="k">number</span>, cur: <span class="k">number</span>) =&gt; <span class="k">number</span>;
+<span class="k">const</span> sum: Reducer = (a, b) =&gt; a + b;   <span class="c">// a、b 不用再標，型別從 Reducer 推來</span>
+
+<span class="c">// 陣列方法的 callback：TS 自動幫你推好參數型別，通常不用標</span>
+[1, 2, 3].map(n =&gt; n * 2);              <span class="c">// n 自動是 number，打 n. 有補全</span></code></pre>
+<p class="note">★ 注意上面 <code>const sum: Reducer = (a, b) =&gt; …</code>，<code>a</code> 和 <code>b</code> 沒有標型別卻不報錯——因為 TS 從左邊的 <code>Reducer</code> 反推出來了。這叫<b>上下文推論</b>：型別資訊會從「被賦值的地方」流進函式參數，所以很多 callback 你根本不用標。</p>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · 泛型 — 一份程式碼，安全地吃多種型別</h2>
+<div class="card">
+<p>泛型（generics）是新手覺得最玄的一關，但動機其實很單純：<b>你想寫一個能處理多種型別的函式，又不想放棄型別安全（用 <code>any</code>）</b>。泛型就是「把型別當成參數傳進去」。</p>
+<h3>5.1 為什麼需要泛型</h3>
+<pre><code><span class="c">// 想寫一個「回傳傳進來的東西」的函式。用 any？型別就丟了：</span>
+<span class="k">function</span> identity(x: <span class="k">any</span>): <span class="k">any</span> { <span class="k">return</span> x; }
+<span class="k">const</span> a = identity(42);       <span class="c">// a 是 any ❌ 打 a. 沒補全，數字方法也不檢查</span>
+
+<span class="c">// 泛型：用 &lt;T&gt; 把「進來什麼型別」記住，原封不動帶到回傳</span>
+<span class="k">function</span> identity&lt;<span class="k">T</span>&gt;(x: <span class="k">T</span>): <span class="k">T</span> { <span class="k">return</span> x; }
+<span class="k">const</span> b = identity(42);       <span class="c">// b 是 number ✅ TS 自動推 T = number</span>
+<span class="k">const</span> c = identity(<span class="s">"hi"</span>);     <span class="c">// c 是 string ✅ 同一份程式，型別各自保留</span></code></pre>
+<div class="fig">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="泛型像一個透明的容器：你放 number 進去，型別 T 就被記成 number，拿出來還是 number；放 string 進去 T 就是 string，拿出來還是 string。同一份程式碼，型別原封不動穿過去。">
+<defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="290" y="88" width="180" height="54" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="380" y="111" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">identity&lt;T&gt;(x: T): T</text>
+<text x="380" y="130" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">T = 進來什麼，就記成什麼</text>
+<rect x="30" y="30" width="150" height="34" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="105" y="52" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">放進 42（number）</text>
+<rect x="30" y="166" width="150" height="34" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="105" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">放進 "hi"（string）</text>
+<rect x="580" y="30" width="150" height="34" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="655" y="52" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">拿出 number ✓</text>
+<rect x="580" y="166" width="150" height="34" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="655" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">拿出 string ✓</text>
+<path d="M180 47 L290 100" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M180 183 L290 130" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M470 100 L580 47" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M470 130 L580 183" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<text x="380" y="205" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">同一份程式碼，型別原封不動穿過去 — 這就是泛型</text>
+</svg>
+</div>
+<div class="demo" id="d-generic">
+<div class="demo-h">互動：泛型 identity — 進什麼型別，出什麼型別</div>
+<div class="demo-row">
+<span class="lbl"><code>identity&lt;T&gt;(x)</code>，餵：</span>
+<button data-g='42|number'>42</button>
+<button data-g='"hi"|string'>"hi"</button>
+<button data-g='true|boolean'>true</button>
+<button data-g='[1,2,3]|number[]'>[1,2,3]</button>
+</div>
+<div class="msg" data-msg>看 TS 怎麼自動推出 <code>T</code>，並把它原封不動帶到回傳型別。對比 <code>any</code>：<code>any</code> 這裡會把型別資訊全丟掉。</div>
+</div>
+</div>
+
+<div class="card">
+<h3>5.2 你天天在用泛型，只是沒發現</h3>
+<p>其實你早就在用泛型了——JS 內建型別大多是泛型的，只是型別自動被推出來：</p>
+<pre><code>Array&lt;number&gt;                 <span class="c">// 就是 number[]，「裝 number 的陣列」</span>
+Promise&lt;User&gt;                 <span class="c">// 「未來會給你一個 User 的 Promise」</span>
+Map&lt;string, number&gt;           <span class="c">// key 是 string、value 是 number 的 Map</span>
+
+<span class="c">// 自己寫泛型函式時，&lt;T&gt; 也能有多個、也能加限制</span>
+<span class="k">function</span> firstKey&lt;<span class="k">T</span> <span class="k">extends</span> <span class="k">object</span>&gt;(obj: <span class="k">T</span>): <span class="k">keyof</span> <span class="k">T</span> {
+  <span class="k">return</span> Object.keys(obj)[0] <span class="k">as keyof</span> <span class="k">T</span>;   <span class="c">// T extends object = 限制 T 一定是物件</span>
+}</code></pre>
+<p><b>四個天天會用到的內建工具型別</b>（TS 內建的泛型，拿現有型別加工出新型別）：</p>
+<table>
+<tr><th>工具型別</th><th>做什麼</th><th>例子</th></tr>
+<tr><td><code>Partial&lt;T&gt;</code></td><td>把所有屬性變可選</td><td>更新函式的參數：<code>Partial&lt;User&gt;</code></td></tr>
+<tr><td><code>Pick&lt;T, K&gt;</code></td><td>只挑幾個屬性</td><td><code>Pick&lt;User, "name"&gt;</code></td></tr>
+<tr><td><code>Omit&lt;T, K&gt;</code></td><td>排除幾個屬性</td><td><code>Omit&lt;User, "id"&gt;</code></td></tr>
+<tr><td><code>Record&lt;K, V&gt;</code></td><td>做一個 key→value 的物件型別</td><td><code>Record&lt;string, number&gt;</code></td></tr>
+</table>
+<p class="note">★ 泛型不用一次全懂。剛學階段，<b>看得懂 <code>Array&lt;T&gt;</code>、<code>Promise&lt;T&gt;</code>、會用 <code>Partial</code>／<code>Pick</code>／<code>Omit</code> 就夠了</b>。自己寫泛型函式的需求，通常要到你在做共用工具或函式庫時才出現。</p>
+</div>
+
+<h2 id="c6" class="day-anchor">6 · 和真實世界打交道 — DOM、API、第三方套件</h2>
+<div class="card">
+<h3>6.1 DOM：TS 知道 querySelector 可能找不到</h3>
+<p>TS 幫 DOM API 都標好了型別，所以它<b>會逼你面對「元素可能不存在」</b>——這正是很多 JS 執行時錯誤的來源。</p>
+<pre><code><span class="c">// querySelector 的回傳型別是 Element | null（可能找不到）</span>
+<span class="k">const</span> btn = document.querySelector(<span class="s">"#save"</span>);
+<span class="bad">btn.addEventListener(...);</span>    <span class="c">// ❌ 紅線：btn 可能是 null</span>
+
+<span class="c">// ✅ 解法一：先檢查（最安全，首選）</span>
+<span class="k">if</span> (btn) btn.addEventListener(<span class="s">"click"</span>, ...);
+
+<span class="c">// ✅ 解法二：型別斷言，告訴 TS「我確定它在、而且是 button」</span>
+<span class="k">const</span> input = document.querySelector(<span class="s">"#name"</span>) <span class="k">as</span> HTMLInputElement;
+input.value;                  <span class="c">// ✅ 現在 TS 知道有 .value（一般 Element 沒有）</span>
+
+<span class="c">// 非空斷言 ! ：「我保證這裡不是 null」——方便但有風險，用前想清楚</span>
+<span class="k">const</span> el = document.querySelector(<span class="s">"#app"</span>)<span class="ok">!</span>;   <span class="c">// 若真的是 null，執行時還是會炸</span></code></pre>
+<p class="note">★ <code>as</code>（型別斷言）和 <code>!</code>（非空斷言）是<b>你在對 TS 說「相信我」</b>。它們<b>不會產生任何執行時檢查</b>，只是關掉編譯器的抱怨。斷言錯了，執行時一樣爆。所以能用 <code>if</code> 檢查就別用斷言——把斷言留給「你比 TS 更確定」的少數場合。</p>
+</div>
+
+<div class="card">
+<h3>6.2 處理 API 回傳：unknown + 守衛，別直接信</h3>
+<p>從網路來的資料，TS <b>無法</b>在編譯時知道它長怎樣（型別在執行時不存在，記得嗎）。<code>fetch</code> 的 <code>.json()</code> 回傳的是 <code>any</code>／<code>Promise&lt;any&gt;</code>，這是個陷阱——等於悄悄關掉了型別檢查。</p>
+<pre><code><span class="k">async function</span> loadUser(id: <span class="k">number</span>): Promise&lt;User | <span class="k">null</span>&gt; {
+  <span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">`/api/user/${id}`</span>);
+  <span class="k">if</span> (!res.ok) <span class="k">return null</span>;
+
+  <span class="k">const</span> data: <span class="k">unknown</span> = <span class="k">await</span> res.json();   <span class="c">// ✅ 標成 unknown，逼自己驗證</span>
+
+  <span class="c">// 用守衛確認形狀對，才敢當成 User 回傳</span>
+  <span class="k">if</span> (isUser(data)) <span class="k">return</span> data;         <span class="c">// ✅ 這之後 data 被窄化成 User</span>
+  <span class="k">return null</span>;
+}
+
+<span class="c">// 型別守衛：回傳 `x is User`，TS 就會據此窄化型別</span>
+<span class="k">function</span> isUser(x: <span class="k">unknown</span>): x <span class="k">is</span> User {
+  <span class="k">return</span> <span class="k">typeof</span> x === <span class="s">"object"</span> &amp;&amp; x !== <span class="k">null</span> &amp;&amp; <span class="s">"name"</span> <span class="k">in</span> x;
+}</code></pre>
+<p class="note">★ 實務上大家會用 <b><a href="https://zod.dev" target="_blank" rel="noopener">Zod</a></b> 這類函式庫，寫一次 schema 就同時得到「執行時驗證」和「TS 型別」，不用手刻守衛。但先懂 <code>unknown</code> + 守衛的原理，再用工具才不會把它當魔法。</p>
+</div>
+
+<div class="card">
+<h3>6.3 第三方套件的型別 — @types 是什麼</h3>
+<pre><code><span class="c">// 有些套件自帶型別，裝了就有（現在多數新套件都這樣）</span>
+npm install zod              <span class="c"># 自帶 .d.ts，import 進來就有補全</span>
+
+<span class="c">// 老套件沒自帶型別，要另外裝社群維護的 @types</span>
+npm install lodash
+npm install -D <span class="ok">@types/lodash</span>    <span class="c"># DefinitelyTyped 提供的型別定義</span></code></pre>
+<p>如果 <code>import</code> 一個套件時 TS 抱怨「找不到型別宣告」，九成就是要裝對應的 <code>@types/xxx</code>。裝了還是沒有，才需要自己寫 <code>.d.ts</code>——但那是進階需求，剛學不用管。</p>
+</div>
+
+<h2 id="c7" class="day-anchor">7 · tsconfig 與常見的坑</h2>
+<div class="card">
+<h3>7.1 tsconfig：一個設定值最重要 — strict</h3>
+<p><code>tsconfig.json</code> 選項很多，但剛開始你只需要認得一個：<b><code>"strict": true</code></b>。它一次打開所有嚴格檢查，是 TS 能真正保護你的前提。</p>
+<pre><code>{
+  <span class="s">"compilerOptions"</span>: {
+    <span class="ok">"strict": true</span>,            <span class="c">// ★ 最重要：打開全部嚴格檢查，新專案一律開</span>
+    <span class="s">"target"</span>: <span class="s">"ES2020"</span>,        <span class="c">// 編譯成哪個 JS 版本</span>
+    <span class="s">"module"</span>: <span class="s">"ESNext"</span>,        <span class="c">// 用哪種模組語法</span>
+    <span class="s">"moduleResolution"</span>: <span class="s">"Bundler"</span>,
+    <span class="s">"noEmit"</span>: <span class="k">true</span>            <span class="c">// 只檢查不產出（交給 Vite 等工具打包時常這樣）</span>
+  }
+}</code></pre>
+<p class="note">★ <code>strict</code> 裡面最有感的是 <b><code>strictNullChecks</code></b>：打開後 <code>null</code> 和 <code>undefined</code> 不再能隨便塞進任何型別，逼你正面處理「可能沒有值」的情況。這一條擋掉的 bug 比其他全部加起來還多。<b>千萬別為了少幾條紅線把 strict 關掉。</b></p>
+</div>
+
+<div class="card">
+<h3>7.2 六個一定會踩到的坑</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">1. 用 any 把型別「修掉」</div><div class="kd">紅線煩就標 <code>any</code>——等於把 TS 關掉。真的不知道型別用 <code>unknown</code>，逼自己檢查。</div><div class="ke">開 noImplicitAny，不讓 any 偷偷出現</div></div>
+<div class="kcard"><div class="kt">2. 以為型別執行時還在</div><div class="kd">型別編譯後就擦掉了，不能 <code>if (x is User)</code>。要判斷值得用 <code>typeof</code>／<code>in</code>／守衛。</div><div class="ke">型別只在編譯時，執行時是普通 JS</div></div>
+<div class="kcard"><div class="kt">3. 斷言 as 當成轉型</div><div class="kd"><code>as</code> 不做任何執行時檢查，只是叫 TS 閉嘴。斷言錯了照樣炸。能檢查就別斷言。</div><div class="ke">as 是「相信我」，不是「轉成」</div></div>
+<div class="kcard"><div class="kt">4. 忽略 null / undefined</div><div class="kd">開了 strict 後 <code>obj.a.b</code> 常被擋，因為 <code>a</code> 可能沒有。用 <code>?.</code> 和先檢查來處理，別用 <code>!</code> 硬壓。</div><div class="ke">紅線是在幫你，不是找碴</div></div>
+<div class="kcard"><div class="kt">5. 型別寫得比程式還複雜</div><div class="kd">泛型、條件型別玩過頭，沒人看得懂。型別是為了好懂，不是炫技，簡單能表達就好。</div><div class="ke">看不懂的型別 = 新的技術債</div></div>
+<div class="kcard"><div class="kt">6. 關掉 strict 圖方便</div><div class="kd">為了少報幾個錯把 strict 關掉，等於花了 TS 的成本卻不拿它的好處。新專案一律開。</div><div class="ke">strict off = 只有語法沒有保護</div></div>
+</div>
+</div>
+
+<h2 id="c8" class="day-anchor">8 · 速查表與下一步</h2>
+<div class="card">
+<h3>8.1 語法速查</h3>
+<table>
+<tr><th>想做的事</th><th>怎麼寫</th></tr>
+<tr><td>標註變數</td><td><code>const x: number = 1</code>（有初始值時通常可省）</td></tr>
+<tr><td>陣列</td><td><code>number[]</code> 或 <code>Array&lt;number&gt;</code></td></tr>
+<tr><td>物件形狀</td><td><code>interface User { name: string; age?: number }</code></td></tr>
+<tr><td>可選 / 唯讀</td><td><code>email?: string</code> / <code>readonly id: number</code></td></tr>
+<tr><td>聯合型別</td><td><code>type ID = string | number</code></td></tr>
+<tr><td>字面量聯合</td><td><code>type Status = "idle" | "done"</code></td></tr>
+<tr><td>窄化</td><td><code>if (typeof x === "string") …</code></td></tr>
+<tr><td>函式</td><td><code>(a: number, b: number): number =&gt; a + b</code></td></tr>
+<tr><td>函式型別</td><td><code>type Fn = (x: number) =&gt; void</code></td></tr>
+<tr><td>泛型函式</td><td><code>function id&lt;T&gt;(x: T): T { return x }</code></td></tr>
+<tr><td>加工既有型別</td><td><code>Partial&lt;T&gt;</code> / <code>Pick&lt;T,K&gt;</code> / <code>Omit&lt;T,K&gt;</code></td></tr>
+<tr><td>型別斷言</td><td><code>el as HTMLInputElement</code>（少用）</td></tr>
+<tr><td>不確定的值</td><td><code>unknown</code>（不是 <code>any</code>）</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>8.2 接下來學什麼</h3>
+<table>
+<tr><th>方向</th><th>學什麼</th><th>什麼時候</th></tr>
+<tr><td>寫前端</td><td><b>React + TypeScript</b>（props、state 都標型別）</td><td>會了基礎，馬上就想用在真實專案</td></tr>
+<tr><td>執行時驗證</td><td><b>Zod</b>（schema 同時給你驗證和型別）</td><td>開始接 API、處理表單輸入時</td></tr>
+<tr><td>寫後端</td><td><b>Node.js + TypeScript</b>、Hono / Nest</td><td>想寫型別安全的 API</td></tr>
+<tr><td>更深的型別</td><td>泛型限制、條件型別、mapped types</td><td>寫共用工具或函式庫，且真的需要時</td></tr>
+</table>
+<p class="note">★ <b>學 TS 的最好方式是直接用在專案裡</b>，不要空學語法。強烈建議搭配本站的 <a href="react-learn-guide.html">React 完全上手</a>——React + TS 是現在前端最主流的組合，兩篇一起看，型別和框架的坑會同時通。JS 底子還不穩的話，先補 <a href="javascript-learn-guide.html">JavaScript 從零到會用</a>，TS 的型別是加在 JS 之上的，JS 沒懂型別也標不對。</p>
+</div>
+
+<div class="foot"><b>資料來源</b>：TypeScript 官方 Handbook（Everyday Types／Narrowing／Functions／Object Types／Generics／Type Manipulation）、tsconfig 參考文件，以及 TypeScript 5.x 的行為。<br><b>說明</b>：本頁互動示範為<b>原生 JavaScript 手寫</b>，模擬 TS 編譯器的型別推論與窄化結果以利理解；程式碼範例可直接貼進 TypeScript Playground 執行。<br><b>免責聲明</b>:本頁為個人學習筆記,如有疏漏以 TypeScript 官方文件為準。</div>
+
+<script>
+// 每個 demo 各自一個函式作用域，避免變數互相覆蓋。互動內容模擬 TS 編譯器的推論結果。
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  function demo(id,fn){var el=document.getElementById(id);if(el)fn(el);}
+
+  // 1. 型別推論
+  demo('d-infer',function(el){
+    var msg=$('[data-msg]',el);
+    var TBL={
+      'const x = 42':            ['number','<code>const</code> 綁定不會被重新賦值，TS 推成最精確的 <b>number</b>（不是字面量 42，因為 number 不玩字面量收窄，除非是 string 那類）。'],
+      'const s = "hi"':          ['"hi"','<code>const</code> 的字串會被推成<b>字面量型別 "hi"</b>，比 string 更精確 —— 這就是為什麼 <code>as const</code> 那麼好用。'],
+      'const arr = [1, 2, 3]':   ['number[]','陣列被推成 <b>number[]</b>：裡面全是 number，長度不固定。'],
+      'const mix = [1, "a"]':    ['(number | string)[]','混了兩種型別 → 推成 <b>(number | string)[]</b>，取每格型別的聯合。'],
+      'let n = 1':               ['number','<code>let</code> 之後可能被改，所以放寬推成 <b>number</b>（不收窄成字面量 1），這樣才能再賦別的數字。'],
+      'const o = { a: 1, b: "x" }':['{ a: number; b: string }','物件被推成<b>形狀 { a: number; b: string }</b> —— 每個屬性各自推型別。']
+    };
+    el.querySelectorAll('[data-infer]').forEach(function(b){
+      b.onclick=function(){
+        var code=b.getAttribute('data-infer'); var r=TBL[code];
+        msg.innerHTML='<code>'+code.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code><br>TS 推論型別 → <b class="win">'+r[0].replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b><br>'+r[1];
+      };
+    });
+  });
+
+  // 2. 窄化
+  demo('d-narrow',function(el){
+    var msg=$('[data-msg]',el);
+    var TBL={
+      '"hello"':['string','value.toUpperCase() ✓　value.length ✓','number 的 toFixed 這裡就<b class="lose">不能</b>用 —— TS 已確定它是 string。'],
+      '42':     ['number','value.toFixed(2) ✓　value * 2 ✓','走進 <code>else</code>（typeof 不是 string 也不是 boolean），剩下只可能是 number。'],
+      'true':   ['boolean','!value ✓　value && ... ✓','boolean 分支：字串／數字的方法通通不能用，符合它真正的能力。']
+    };
+    el.querySelectorAll('[data-val]').forEach(function(b){
+      b.onclick=function(){
+        var v=b.getAttribute('data-val'); var r=TBL[v];
+        msg.innerHTML='餵入 <code>'+v.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code>　<code>typeof</code> 判斷後窄化成 → <b class="win">'+r[0]+'</b><br>這個分支裡安全可用：<code>'+r[1]+'</code><br>'+r[2];
+      };
+    });
+  });
+
+  // 3. 泛型 identity
+  demo('d-generic',function(el){
+    var msg=$('[data-msg]',el);
+    el.querySelectorAll('[data-g]').forEach(function(b){
+      b.onclick=function(){
+        var parts=b.getAttribute('data-g').split('|'); var val=parts[0], t=parts[1];
+        var vt=t.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        msg.innerHTML='<code>const r = identity('+val.replace(/</g,'&lt;').replace(/>/g,'&gt;')+')</code><br>'+
+          'TS 自動推 <b>T = '+vt+'</b>，回傳型別也是 <b class="win">'+vt+'</b> —— 型別原封不動穿過去。<br>'+
+          '對比 <code>identity(x: any): any</code>：那樣 r 會變成 <b class="lose">any</b>，型別資訊全丟。';
+      };
+    });
+  });
+})();
+</script>
+
+<script>
+// 章節快速跳轉列：捲動時高亮目前所在章節。
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>

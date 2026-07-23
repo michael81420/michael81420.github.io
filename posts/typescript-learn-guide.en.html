@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TypeScript．Types on Top of JavaScript: From Annotations to Generics</title>
+<meta name="description" content="Know some JavaScript? Pick up TypeScript: type annotations and inference, interface vs type, unions and literals, narrowing, function types, generics, working with the DOM / APIs / third-party packages, and finally tsconfig and common traps. Every section pairs a diagram with runnable examples and clickable demos.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="typescript-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>TypeScript．Types on Top of JavaScript</h1>
+<div class="sub">TypeScript is just <b>JavaScript plus a layer of types</b> — if you know a little JS, you're already most of the way there.<br>From "what is a type annotation" all the way to "how to use generics right", every section pairs a <b>diagram, a runnable example, and a clickable demo</b> — so you stop writing "I hope this works" and start writing code the compiler checks <i>before</i> it runs.</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://www.typescriptlang.org/docs/handbook/intro.html" target="_blank" rel="noopener">Source: TypeScript Handbook ↗</a>
+<span class="badge">For: people who know some JS</span>
+<span class="badge">Version: TypeScript 5.x</span>
+<span class="badge">Compiled: 2026-07-24</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 Start</a>
+  <a href="#c1">1 Annotations</a>
+  <a href="#c2">2 Object Shapes</a>
+  <a href="#c3">3 Unions &amp; Narrowing</a>
+  <a href="#c4">4 Function Types</a>
+  <a href="#c5">5 Generics</a>
+  <a href="#c6">6 Real World</a>
+  <a href="#c7">7 tsconfig &amp; Traps</a>
+  <a href="#c8">8 Cheat Sheet</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 One-line mental model: <span class="win">TypeScript = JavaScript + a layer of type checking that only exists at compile time</span>.</p>
+<p>Types <b>are never shipped or run</b> — <code>tsc</code> checks them and then <b>erases them all</b>, emitting plain JavaScript. So TS helps you <b>while you write</b> (red squiggles, autocomplete, safe refactors), not while it runs. Get that, and everything else clicks.</p>
+<p><b>The recommended order (also this article's chapters)</b>: annotations → object shapes (interface/type) → unions &amp; narrowing → function types → generics → the real world → tsconfig &amp; traps. <b>Leave generics for later.</b> Nail the "shape" idea in the first three chapters and chapter 5 won't read like hieroglyphics.</p>
+<p class="note">★ The fastest way to learn TS is to <b>type while you read in the <a href="https://www.typescriptlang.org/play" target="_blank" rel="noopener">TypeScript Playground</a></b>. It squiggles errors live, shows you the inferred types, and reveals the compiled JS. Every code block here can be pasted in.</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · Before You Start — What TypeScript Is and Why You Want It</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript learning path: annotations first, then object shapes and union narrowing, then function types, then generics, and only then the real-world DOM, APIs and config — each stop is the foundation for the next.">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">Core type ideas — nail these first</text>
+<rect x="24" y="38" width="160" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="104" y="60" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">1 Annotations</text>
+<text x="104" y="78" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">annotate &amp; infer</text>
+<rect x="216" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="291" y="60" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">2 Object Shapes</text>
+<text x="291" y="78" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">interface / type</text>
+<rect x="398" y="38" width="160" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="478" y="60" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">3 Unions/Narrowing</text>
+<text x="478" y="78" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">union, narrowing</text>
+<rect x="590" y="38" width="146" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="663" y="60" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">4 Function Types</text>
+<text x="663" y="78" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">params, returns</text>
+<line x1="184" y1="64" x2="214" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="366" y1="64" x2="396" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="558" y1="64" x2="588" y2="64" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<path d="M663 90 L663 122 L380 122 L380 152" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="176" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">Advanced &amp; putting it to work</text>
+<rect x="70" y="190" width="200" height="52" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="170" y="212" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">5 Generics</text>
+<text x="170" y="230" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">one code, many types</text>
+<rect x="290" y="190" width="200" height="52" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="390" y="212" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">6 Real World</text>
+<text x="390" y="230" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">DOM, APIs, @types</text>
+<rect x="510" y="190" width="190" height="52" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="605" y="212" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">7 Config &amp; Traps</text>
+<text x="605" y="230" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">tsconfig, strict</text>
+<line x1="270" y1="216" x2="288" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="490" y1="216" x2="508" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<rect x="70" y="258" width="630" height="30" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="385" y="278" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">Chapters 1–4 are all about "shape"; generics just turn a shape into a parameter — don't rush ahead</text>
+</svg>
+</div>
+<h3>0.1 What TypeScript actually is</h3>
+<p>TypeScript is a <b>superset of JavaScript</b>: any valid JS is valid TS. It does exactly one thing — it adds a <b>type-checking layer while you write</b>. Once it checks out, <code>tsc</code> <b>erases</b> every annotation and emits plain JavaScript that browsers and Node run directly.</p>
+<div class="fig">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript compile pipeline: you write a typed .ts file, tsc first type-checks it to catch errors, then erases every type and emits a plain .js file that actually runs in the browser or Node — types never reach runtime.">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="60" width="188" height="78" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="114" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Your .ts</text>
+<text x="114" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">JS + type annotations</text>
+<text x="114" y="125" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">const n: number = 1</text>
+<rect x="280" y="60" width="200" height="78" rx="12" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="380" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">tsc compiler</text>
+<text x="380" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">① type-check (catch errors)</text>
+<text x="380" y="125" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">② erase the types</text>
+<rect x="552" y="60" width="188" height="78" rx="12" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="646" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Emitted .js</text>
+<text x="646" y="107" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">plain JavaScript</text>
+<text x="646" y="125" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">const n = 1  ← no type</text>
+<line x1="208" y1="99" x2="278" y2="99" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<line x1="480" y1="99" x2="550" y2="99" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+<text x="243" y="90" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">check</text>
+<text x="515" y="90" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">erase</text>
+<rect x="280" y="158" width="200" height="30" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="380" y="178" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">type mismatch → squiggle right here</text>
+<path d="M380 138 L380 156" style="fill:none;stroke:var(--lose)" marker-end="url(#ah2)"/>
+<text x="646" y="176" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">no types at runtime at all</text>
+</svg>
+</div>
+<p class="note">★ One crucial takeaway: <b>types do not exist at runtime</b>. So you <b>cannot</b> branch on a type while the code runs ("if x is a User, then…"). To check what a value actually is, use plain JS — <code>typeof</code> / <code>in</code> / <code>Array.isArray</code> (chapter 3).</p>
+</div>
+
+<div class="card">
+<h3>0.2 Why it's worth it — one example</h3>
+<p>Same logic. In JS it runs and blows up only when you hit the bad path; in TS the squiggle appears the instant you type:</p>
+<pre><code><span class="c">// JavaScript: perfectly legal, explodes at runtime</span>
+<span class="k">function</span> total(cart) {
+  <span class="k">return</span> cart.reduce((sum, item) =&gt; sum + item.price, 0);
+}
+total({ price: 100 });     <span class="c">// ❌ at runtime: cart.reduce is not a function (wrong type passed)</span>
+
+<span class="c">// TypeScript: error as you type — you never reach that line</span>
+<span class="k">function</span> total(cart: <span class="k">{ price: number }[]</span>): number {
+  <span class="k">return</span> cart.reduce((sum, item) =&gt; sum + item.price, 0);
+}
+<span class="bad">total({ price: 100 });</span>     <span class="c">// ❌ squiggle: Argument of type '{price:number}' is not assignable to '{price:number}[]'</span>
+total([{ price: 100 }]);   <span class="c">// ✅ pass an array</span></code></pre>
+<p>What TS really buys you is three things, all <b>before</b> the code runs:</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">① Catch bugs early</div><div class="kd">Wrong type, misspelled property, forgotten <code>undefined</code> — squiggled on the spot, not discovered when it crashes.</div><div class="ke">90% of dumb bugs in big projects are this kind</div></div>
+<div class="kcard"><div class="kt">② Autocomplete</div><div class="kd">The editor knows every variable's shape, so typing <code>.</code> lists every property/method — no flipping back to docs.</div><div class="ke">Types are documentation that travels with the code</div></div>
+<div class="kcard"><div class="kt">③ Fearless refactors</div><div class="kd">Rename a field and every use lights up red; fix until all green and you're done. Without types this is a nightmare.</div><div class="ke">This is what lets you change big code confidently</div></div>
+</div>
+</div>
+
+<div class="card">
+<h3>0.3 Write your first line in ten seconds — nothing to install</h3>
+<p>Open the <a href="https://www.typescriptlang.org/play" target="_blank" rel="noopener">TypeScript Playground</a>: type TS on the left, see the compiled JS live on the right, hover a variable to see its type, and errors squiggle in place. Every snippet here can be pasted in.</p>
+<p>To run it in a local project, three steps:</p>
+<pre><code><span class="c"># ① install TypeScript</span>
+npm install -D typescript
+
+<span class="c"># ② generate tsconfig.json (chapter 7 covers what goes in it)</span>
+npx tsc --init
+
+<span class="c"># ③ compile: turn .ts into .js</span>
+npx tsc            <span class="c"># or npx tsc --watch to recompile on save</span></code></pre>
+<p class="note">★ In practice you rarely run <code>tsc</code> by hand. With tools like Vite / Next.js, type-checking is done by your editor (VS Code has it built in) plus the bundler. When you're starting out, <b>the Playground or a single .ts file in VS Code is enough</b> — don't rush into configuring things.</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · Annotations — Telling TS "This Is What This Is"</h2>
+<div class="card">
+<h3>1.1 How to annotate — but don't, when you don't have to</h3>
+<p>An annotation is just <code>: Type</code> after a name. But TS is smart — <b>most of the time it figures the type out and you don't annotate at all</b>.</p>
+<pre><code><span class="c">// Annotate variables, params, return values with : Type after the name</span>
+<span class="k">let</span> name: <span class="k">string</span> = <span class="s">"Michael"</span>;
+<span class="k">let</span> age: <span class="k">number</span> = 30;
+<span class="k">let</span> ok: <span class="k">boolean</span> = <span class="k">true</span>;
+
+<span class="c">// ✅ but the : string here is redundant — the right side is a string, TS infers it</span>
+<span class="k">let</span> city = <span class="s">"Taipei"</span>;        <span class="c">// TS infers: city is string</span>
+<span class="bad">city = 101;</span>                 <span class="c">// ❌ squiggle: Type 'number' is not assignable to 'string'</span>
+
+<span class="c">// Rule: let TS infer on initialization; annotate only when unsure or no initial value</span>
+<span class="k">let</span> score;                  <span class="c">// no value → type is any (dangerous, see 1.3)</span>
+<span class="k">let</span> score2: <span class="k">number</span>;         <span class="c">// ✅ assigned later, so state it up front</span></code></pre>
+<p><b>When to annotate vs. let it infer</b> — the thing beginners agonize over. One line settles it:</p>
+<table>
+<tr><th>Situation</th><th>Do</th><th>Why</th></tr>
+<tr><td>Has an initial value</td><td class="win">Don't — let it infer</td><td>Annotating repeats yourself; changing the value means changing two places</td></tr>
+<tr><td>Function <b>parameters</b></td><td class="lose">Always annotate</td><td>TS can't guess what you'll feed in</td></tr>
+<tr><td>Function <b>return value</b></td><td>Recommended</td><td>A wrong return errors here, not somewhere downstream</td></tr>
+<tr><td>Declared, assigned later</td><td class="lose">Annotate</td><td>Otherwise it becomes any</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>1.2 Everyday types: primitives, arrays, objects</h3>
+<pre><code><span class="c">// ── Primitives (they line up with JS's typeof) ──</span>
+<span class="k">string</span>   <span class="k">number</span>   <span class="k">boolean</span>   <span class="k">null</span>   <span class="k">undefined</span>
+
+<span class="c">// ── Arrays: two spellings, same meaning — pick one and stick with it ──</span>
+<span class="k">let</span> nums: <span class="k">number[]</span> = [1, 2, 3];
+<span class="k">let</span> tags: <span class="k">Array&lt;string&gt;</span> = [<span class="s">"js"</span>, <span class="s">"ts"</span>];   <span class="c">// the generic spelling; chapter 5</span>
+<span class="bad">nums.push("4");</span>              <span class="c">// ❌ only numbers allowed in here</span>
+
+<span class="c">// ── Objects: just write out the "shape" ──</span>
+<span class="k">let</span> user: <span class="k">{ name: string; age: number }</span> = { name: <span class="s">"Michael"</span>, age: 30 };
+user.name;                    <span class="c">// ✅ string, and typing . autocompletes</span>
+<span class="bad">user.email;</span>                  <span class="c">// ❌ squiggle: no email property on this shape</span>
+
+<span class="c">// ── Tuple: fixed length, fixed type per slot ──</span>
+<span class="k">let</span> point: <span class="k">[number, number]</span> = [10, 20];   <span class="c">// coords; React's useState returns one</span></code></pre>
+<p class="note">★ Writing object shapes inline gets long and ugly fast, and you can't reuse it. So real code names shapes with <b>interface / type</b> — the star of chapter 2.</p>
+<div class="demo" id="d-infer">
+<div class="demo-h">Interactive: inference — what TS figures out from the right side</div>
+<div class="demo-row">
+<button data-infer='const x = 42'>const x = 42</button>
+<button data-infer='const s = "hi"'>const s = "hi"</button>
+<button data-infer='const arr = [1, 2, 3]'>const arr = [1,2,3]</button>
+<button data-infer='const mix = [1, "a"]'>const mix = [1,"a"]</button>
+<button data-infer='let n = 1'>let n = 1</button>
+<button class="ghost" data-infer='const o = { a: 1, b: "x" }'>const o = {a:1,b:"x"}</button>
+</div>
+<div class="msg" data-msg>Pick one to see what TS <b>infers</b> when you don't annotate. <code>const</code> and <code>let</code> infer differently — which is exactly why you often don't annotate by hand.</div>
+</div>
+</div>
+
+<div class="card">
+<h3>1.3 Three special types: any, unknown, never</h3>
+<p>These three are TS-only concepts JS never had. Understanding them is understanding what "safety" means in TS.</p>
+<pre><code><span class="c">// any: turns type checking OFF. TS's escape hatch — and its biggest trap.</span>
+<span class="k">let</span> a: <span class="k">any</span> = 42;
+a.foo.bar.baz();              <span class="c">// ⚠ TS says nothing; explodes at runtime. any = giving up protection</span>
+
+<span class="c">// unknown: "I don't know yet" — safer than any, must check before use</span>
+<span class="k">let</span> u: <span class="k">unknown</span> = fetchData();
+<span class="bad">u.toUpperCase();</span>             <span class="c">// ❌ squiggle: narrow it first</span>
+<span class="k">if</span> (<span class="k">typeof</span> u === <span class="s">"string"</span>) {
+  u.toUpperCase();            <span class="c">// ✅ confirmed string, safe here</span>
+}
+
+<span class="c">// never: "can't happen" — function that never returns, or exhaustiveness checks (ch.3)</span>
+<span class="k">function</span> fail(msg: <span class="k">string</span>): <span class="k">never</span> { <span class="k">throw new</span> Error(msg); }</code></pre>
+<p><b>The rule</b>: <span class="lose">avoid <code>any</code> whenever you can</span>. When you genuinely don't know a type (say, fresh out of <code>JSON.parse</code>), use <code>unknown</code> and force yourself to check before using it. Treat <code>any</code> as a confession that you gave up right here — the less of it, the better.</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · Object Shapes — interface and type</h2>
+<div class="card">
+<h3>2.1 Give a shape a name</h3>
+<p>Rather than spelling out an object shape every time, name it and reuse it. Two tools: <code>interface</code> and <code>type</code>.</p>
+<pre><code><span class="c">// interface: describes an object shape, the most common tool</span>
+<span class="k">interface</span> User {
+  name: <span class="k">string</span>;
+  age: <span class="k">number</span>;
+  email?: <span class="k">string</span>;          <span class="c">// ? = optional, may be absent</span>
+  <span class="k">readonly</span> id: <span class="k">number</span>;      <span class="c">// readonly = can't reassign after creation</span>
+}
+
+<span class="c">// type: a type alias — can do more than just objects</span>
+<span class="k">type</span> User = {
+  name: <span class="k">string</span>;
+  age: <span class="k">number</span>;
+};
+
+<span class="c">// Same usage: use the name as an annotation</span>
+<span class="k">function</span> greet(u: User): <span class="k">string</span> {
+  <span class="k">return</span> <span class="s">`Hi, ${u.name}`</span>;   <span class="c">// typing u. autocompletes name / age / email / id</span>
+}
+
+<span class="k">const</span> me: User = { name: <span class="s">"Michael"</span>, age: 30, id: 1 };
+<span class="bad">me.id = 2;</span>                   <span class="c">// ❌ readonly, can't change</span></code></pre>
+</div>
+
+<div class="card">
+<h3>2.2 Structural typing (duck typing) — TS's most important intuition</h3>
+<p>TS decides whether a type fits by its <b>shape, not its name</b>. If an object has all the properties User needs, it <b>is</b> a User — no need to declare "I am a User". This is structural typing, a.k.a. duck typing.</p>
+<div class="fig">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Structural typing: TS looks at shape, not name — an object with name and age satisfies User, an extra property is still fine, and only a missing property gets rejected.">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="300" y="16" width="160" height="70" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Required shape: User</text>
+<text x="380" y="60" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">name: string</text>
+<text x="380" y="77" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">age: number</text>
+<rect x="24" y="128" width="216" height="100" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="132" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name, age }</text>
+<text x="132" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">has exactly both</text>
+<text x="132" y="206" text-anchor="middle" style="fill:var(--win);font:700 12.5px sans-serif">✓ passes</text>
+<rect x="272" y="128" width="216" height="100" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name, age, city }</text>
+<text x="380" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">an extra city is fine</text>
+<text x="380" y="206" text-anchor="middle" style="fill:var(--win);font:700 12.5px sans-serif">✓ passes (shape covered)</text>
+<rect x="520" y="128" width="216" height="100" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="628" y="152" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">{ name }</text>
+<text x="628" y="174" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">age missing</text>
+<text x="628" y="206" text-anchor="middle" style="fill:var(--lose);font:700 12.5px sans-serif">✗ rejected (short)</text>
+<line x1="330" y1="86" x2="150" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="380" y1="86" x2="380" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="430" y1="86" x2="610" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+</svg>
+</div>
+<pre><code><span class="k">interface</span> User { name: <span class="k">string</span>; age: <span class="k">number</span>; }
+
+<span class="k">function</span> greet(u: User) { <span class="k">return</span> u.name; }
+
+<span class="k">const</span> a = { name: <span class="s">"A"</span>, age: 30 };
+greet(a);                     <span class="c">// ✅ shape matches; no "a is User" needed</span>
+
+<span class="k">const</span> b = { name: <span class="s">"B"</span>, age: 25, city: <span class="s">"Taipei"</span> };
+greet(b);                     <span class="c">// ✅ extra city is fine; everything needed is there</span>
+
+<span class="k">const</span> c = { name: <span class="s">"C"</span> };
+<span class="bad">greet(c);</span>                    <span class="c">// ❌ age missing, shape too short</span></code></pre>
+<p class="note">★ One exception to know: <b>passing an object literal directly, extra properties ARE rejected</b> (excess property check). <code>greet({ name:"A", age:30, city:"x" })</code> squiggles — TS is helpfully warning that <code>city</code> might be a typo. Store it in a variable first (like <code>b</code> above) and it passes.</p>
+</div>
+
+<div class="card">
+<h3>2.3 interface or type? For 90% of cases, either</h3>
+<p>They overlap heavily — don't agonize. A simple rule: <b>use <code>interface</code> for object shapes, <code>type</code> for everything else</b>.</p>
+<table>
+<tr><th></th><th>interface</th><th>type</th></tr>
+<tr><td>Describe object shape</td><td class="win">✓ yes</td><td class="win">✓ yes</td></tr>
+<tr><td>Union <code>A | B</code></td><td class="lose">✗ no</td><td class="win">✓ only this one</td></tr>
+<tr><td>Name a primitive/tuple</td><td class="lose">✗ no</td><td class="win">✓ <code>type ID = string</code></td></tr>
+<tr><td>Extend</td><td><code>extends</code></td><td><code>&amp;</code> intersection</td></tr>
+<tr><td>Auto-merge same name</td><td class="win">Yes (good for augmenting 3rd-party types)</td><td class="lose">No (duplicate = error)</td></tr>
+</table>
+<pre><code><span class="c">// Object shapes → interface (can extends)</span>
+<span class="k">interface</span> Animal { name: <span class="k">string</span>; }
+<span class="k">interface</span> Dog <span class="k">extends</span> Animal { breed: <span class="k">string</span>; }
+
+<span class="c">// Unions, aliases → type only</span>
+<span class="k">type</span> Status = <span class="s">"idle"</span> | <span class="s">"loading"</span> | <span class="s">"done"</span>;   <span class="c">// the literal union of ch.3</span>
+<span class="k">type</span> ID = <span class="k">string</span> | <span class="k">number</span>;
+<span class="k">type</span> Dog = Animal &amp; { breed: <span class="k">string</span> };            <span class="c">// & is intersection = merged shape</span></code></pre>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · Unions, Literals &amp; Narrowing — Where TS Shines</h2>
+<div class="card">
+<h3>3.1 Union types: "this, or that"</h3>
+<p>Join a few types with <code>|</code> to mean "could be any one of these". It's TS's most expressive feature and the one closest to how real data behaves.</p>
+<pre><code><span class="k">type</span> ID = <span class="k">string</span> | <span class="k">number</span>;      <span class="c">// id could be a string or a number</span>
+<span class="k">let</span> id: ID = 101;
+id = <span class="s">"A-101"</span>;                  <span class="c">// ✅ both allowed</span>
+<span class="bad">id = true;</span>                   <span class="c">// ❌ boolean isn't in the union</span>
+
+<span class="c">// The most common use: a value that might be absent</span>
+<span class="k">function</span> find(id: number): User | <span class="k">undefined</span> {  <span class="c">// returns undefined if not found</span>
+  <span class="k">return</span> users.find(u =&gt; u.id === id);
+}</code></pre>
+<p>But a union has one restriction: <b>you can only use what every member is guaranteed to have</b>, because TS doesn't yet know which one it is:</p>
+<pre><code><span class="k">function</span> pad(value: <span class="k">string</span> | <span class="k">number</span>) {
+  <span class="bad">value.toUpperCase();</span>        <span class="c">// ❌ number has no toUpperCase; not guaranteed</span>
+  value.toString();            <span class="c">// ✅ both string and number have toString</span>
+}</code></pre>
+</div>
+
+<div class="card">
+<h3>3.2 Narrowing — the right way to use a union</h3>
+<p>To use something specific to one member of a union, first prove to TS which one it is. You do that with <b>the checks JS already has</b> — TS understands them and automatically "narrows" the type inside the matching branch.</p>
+<div class="fig">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Narrowing: a string-or-number union value splits into two paths after a typeof check — inside the string branch TS knows it is a string and string methods are safe, inside the number branch it is a number.">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="270" y="16" width="220" height="56" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">value: string | number</text>
+<text x="380" y="60" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">don't yet know which</text>
+<rect x="260" y="104" width="240" height="34" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="126" text-anchor="middle" style="fill:var(--ink);font:600 11.5px sans-serif">if (typeof value === "string")</text>
+<line x1="380" y1="72" x2="380" y2="102" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<rect x="50" y="168" width="300" height="76" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="200" y="192" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">true branch: value is string</text>
+<text x="200" y="212" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">value.toUpperCase() ✓ safe</text>
+<text x="200" y="230" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">narrowed — autocomplete is string-only</text>
+<rect x="410" y="168" width="300" height="76" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="560" y="192" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">else branch: value is number</text>
+<text x="560" y="212" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">value.toFixed(2) ✓ safe</text>
+<text x="560" y="230" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">only number can be left</text>
+<path d="M340 138 L205 166" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<path d="M420 138 L555 166" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<text x="248" y="156" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">true</text>
+<text x="512" y="156" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">false</text>
+</svg>
+</div>
+<pre><code><span class="k">function</span> pad(value: <span class="k">string</span> | <span class="k">number</span>) {
+  <span class="k">if</span> (<span class="k">typeof</span> value === <span class="s">"string"</span>) {
+    <span class="k">return</span> value.toUpperCase();  <span class="c">// ✅ TS knows value is string here</span>
+  }
+  <span class="k">return</span> value.toFixed(2);       <span class="c">// ✅ only number can be left</span>
+}</code></pre>
+<p><b>The four most common narrowing tools</b> — all native JS syntax; TS just "reads" them:</p>
+<table>
+<tr><th>Tool</th><th>Narrows</th><th>Example</th></tr>
+<tr><td><code>typeof</code></td><td>primitives</td><td><code>typeof x === "string"</code></td></tr>
+<tr><td><code>in</code></td><td>does an object have a property</td><td><code>"swim" in animal</code></td></tr>
+<tr><td><code>instanceof</code></td><td>instance of a class</td><td><code>err instanceof Error</code></td></tr>
+<tr><td><code>=== literal</code></td><td>discriminated union (3.3)</td><td><code>shape.kind === "circle"</code></td></tr>
+</table>
+<div class="demo" id="d-narrow">
+<div class="demo-h">Interactive: narrowing — same union value, which branch</div>
+<div class="demo-row">
+<span class="lbl"><code>value: string | number | boolean</code>, feed:</span>
+<button data-val='"hello"'>"hello"</button>
+<button data-val='42'>42</button>
+<button data-val='true'>true</button>
+</div>
+<div class="msg" data-msg>Pick a value to see what TS <b>narrows</b> it to after a <code>typeof</code> check, and which methods become safe to use in that branch.</div>
+</div>
+</div>
+
+<div class="card">
+<h3>3.3 Literal types &amp; discriminated unions — the state-modeling superpower</h3>
+<p>A type doesn't have to be <code>string</code> — it can be pinned to <b>one specific string value</b>. That's unbeatable for describing "a finite set of states".</p>
+<pre><code><span class="c">// Literal types: can only be one of these strings</span>
+<span class="k">type</span> Status = <span class="s">"idle"</span> | <span class="s">"loading"</span> | <span class="s">"success"</span> | <span class="s">"error"</span>;
+<span class="k">let</span> s: Status = <span class="s">"loading"</span>;
+<span class="bad">s = "loadng";</span>                <span class="c">// ❌ typo caught on the spot — that's the value</span>
+
+<span class="c">// Discriminated union: tell members apart by a shared "tag" field</span>
+<span class="k">type</span> Shape =
+  | { kind: <span class="s">"circle"</span>; radius: <span class="k">number</span> }
+  | { kind: <span class="s">"rect"</span>; width: <span class="k">number</span>; height: <span class="k">number</span> };
+
+<span class="k">function</span> area(shape: Shape): <span class="k">number</span> {
+  <span class="k">switch</span> (shape.kind) {              <span class="c">// narrow via the kind tag</span>
+    <span class="k">case</span> <span class="s">"circle"</span>: <span class="k">return</span> Math.PI * shape.radius ** 2;   <span class="c">// ✅ only radius here</span>
+    <span class="k">case</span> <span class="s">"rect"</span>:   <span class="k">return</span> shape.width * shape.height;      <span class="c">// ✅ only width/height here</span>
+  }
+}</code></pre>
+<p class="note">★ Discriminated unions are TS's best weapon for modeling real data: an API's "success or failure", a Redux / useReducer action, a UI loading state — all fit. <b>See "one value with several mutually exclusive shapes" and reach for it.</b></p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · Function Types — Annotating Params and Returns</h2>
+<div class="card">
+<h3>4.1 Parameters and return values</h3>
+<pre><code><span class="c">// Always annotate params; annotating the return is recommended (TS confirms you got it right)</span>
+<span class="k">function</span> add(a: <span class="k">number</span>, b: <span class="k">number</span>): <span class="k">number</span> {
+  <span class="k">return</span> a + b;
+}
+
+<span class="c">// Arrow functions the same</span>
+<span class="k">const</span> mul = (a: <span class="k">number</span>, b: <span class="k">number</span>): <span class="k">number</span> =&gt; a * b;
+
+<span class="c">// Optional ? / default / rest params (just like JS, plus types)</span>
+<span class="k">function</span> greet(name: <span class="k">string</span>, greeting: <span class="k">string</span> = <span class="s">"Hi"</span>, ...tags: <span class="k">string[]</span>) {
+  <span class="k">return</span> <span class="s">`${greeting}, ${name}`</span>;
+}
+greet(<span class="s">"Michael"</span>);            <span class="c">// ✅ greeting has a default, tags can be absent</span>
+
+<span class="c">// A function that returns nothing: return type is void</span>
+<span class="k">function</span> log(msg: <span class="k">string</span>): <span class="k">void</span> {
+  console.log(msg);
+}</code></pre>
+</div>
+
+<div class="card">
+<h3>4.2 Typing "the function itself"</h3>
+<p>In JS a function is a value — passed as an argument, returned as a result (higher-order functions). In TS that function value has a type too, written <code>(param: Type) =&gt; ReturnType</code>.</p>
+<pre><code><span class="c">// Typing a callback — the most common place you annotate a function</span>
+<span class="k">function</span> onClick(handler: <span class="k">(event: string) =&gt; void</span>) {
+  handler(<span class="s">"clicked"</span>);
+}
+
+<span class="c">// Name a function type with type, and reuse it</span>
+<span class="k">type</span> Reducer = (acc: <span class="k">number</span>, cur: <span class="k">number</span>) =&gt; <span class="k">number</span>;
+<span class="k">const</span> sum: Reducer = (a, b) =&gt; a + b;   <span class="c">// a, b need no annotation — inferred from Reducer</span>
+
+<span class="c">// Array method callbacks: TS infers the param types for you, usually no annotation</span>
+[1, 2, 3].map(n =&gt; n * 2);              <span class="c">// n is automatically number, . autocompletes</span></code></pre>
+<p class="note">★ Note above: in <code>const sum: Reducer = (a, b) =&gt; …</code>, <code>a</code> and <code>b</code> aren't annotated yet don't error — TS reads them back from the <code>Reducer</code> on the left. This is <b>contextual typing</b>: type info flows from "where it's assigned" into the parameters, which is why so many callbacks need no annotation.</p>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · Generics — One Codebase, Safely, for Many Types</h2>
+<div class="card">
+<p>Generics feel like the mystical chapter, but the motivation is plain: <b>you want a function that handles many types without giving up type safety (i.e. without <code>any</code>)</b>. Generics are "passing the type in as a parameter".</p>
+<h3>5.1 Why you need generics</h3>
+<pre><code><span class="c">// Want a "return whatever you got" function. any? You just threw the type away:</span>
+<span class="k">function</span> identity(x: <span class="k">any</span>): <span class="k">any</span> { <span class="k">return</span> x; }
+<span class="k">const</span> a = identity(42);       <span class="c">// a is any ❌ no autocomplete, no number checks</span>
+
+<span class="c">// Generics: capture "what type came in" with &lt;T&gt; and carry it to the return unchanged</span>
+<span class="k">function</span> identity&lt;<span class="k">T</span>&gt;(x: <span class="k">T</span>): <span class="k">T</span> { <span class="k">return</span> x; }
+<span class="k">const</span> b = identity(42);       <span class="c">// b is number ✅ TS infers T = number</span>
+<span class="k">const</span> c = identity(<span class="s">"hi"</span>);     <span class="c">// c is string ✅ same code, each keeps its type</span></code></pre>
+<div class="fig">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Generics are like a transparent container: put a number in and the type T is remembered as number, so what comes out is number; put a string in and T is string, so out comes a string. Same code, the type passes through untouched.">
+<defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="285" y="88" width="190" height="54" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="380" y="111" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">identity&lt;T&gt;(x: T): T</text>
+<text x="380" y="130" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">T = whatever came in</text>
+<rect x="24" y="30" width="156" height="34" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="102" y="52" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">put in 42 (number)</text>
+<rect x="24" y="166" width="156" height="34" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="102" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">put in "hi" (string)</text>
+<rect x="580" y="30" width="156" height="34" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="658" y="52" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">out comes number ✓</text>
+<rect x="580" y="166" width="156" height="34" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="658" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">out comes string ✓</text>
+<path d="M180 47 L285 100" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M180 183 L285 130" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M475 100 L580 47" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M475 130 L580 183" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<text x="380" y="205" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">same code, the type passes through untouched — that's a generic</text>
+</svg>
+</div>
+<div class="demo" id="d-generic">
+<div class="demo-h">Interactive: generic identity — type in, same type out</div>
+<div class="demo-row">
+<span class="lbl"><code>identity&lt;T&gt;(x)</code>, feed:</span>
+<button data-g='42|number'>42</button>
+<button data-g='"hi"|string'>"hi"</button>
+<button data-g='true|boolean'>true</button>
+<button data-g='[1,2,3]|number[]'>[1,2,3]</button>
+</div>
+<div class="msg" data-msg>Watch TS infer <code>T</code> and carry it to the return type unchanged. Contrast with <code>any</code>: that would throw all the type info away here.</div>
+</div>
+</div>
+
+<div class="card">
+<h3>5.2 You use generics daily without noticing</h3>
+<p>You've been using generics all along — most built-in JS types are generic, the type just gets inferred:</p>
+<pre><code>Array&lt;number&gt;                 <span class="c">// same as number[], "an array of numbers"</span>
+Promise&lt;User&gt;                 <span class="c">// "a Promise that will give you a User"</span>
+Map&lt;string, number&gt;           <span class="c">// a Map with string keys and number values</span>
+
+<span class="c">// In your own generic functions, &lt;T&gt; can be multiple, and can be constrained</span>
+<span class="k">function</span> firstKey&lt;<span class="k">T</span> <span class="k">extends</span> <span class="k">object</span>&gt;(obj: <span class="k">T</span>): <span class="k">keyof</span> <span class="k">T</span> {
+  <span class="k">return</span> Object.keys(obj)[0] <span class="k">as keyof</span> <span class="k">T</span>;   <span class="c">// T extends object = constrain T to be an object</span>
+}</code></pre>
+<p><b>Four built-in utility types you'll use daily</b> (TS's built-in generics that reshape existing types):</p>
+<table>
+<tr><th>Utility type</th><th>What it does</th><th>Example</th></tr>
+<tr><td><code>Partial&lt;T&gt;</code></td><td>Make all properties optional</td><td>Update function args: <code>Partial&lt;User&gt;</code></td></tr>
+<tr><td><code>Pick&lt;T, K&gt;</code></td><td>Keep only a few properties</td><td><code>Pick&lt;User, "name"&gt;</code></td></tr>
+<tr><td><code>Omit&lt;T, K&gt;</code></td><td>Drop a few properties</td><td><code>Omit&lt;User, "id"&gt;</code></td></tr>
+<tr><td><code>Record&lt;K, V&gt;</code></td><td>Make a key→value object type</td><td><code>Record&lt;string, number&gt;</code></td></tr>
+</table>
+<p class="note">★ You don't need all of generics at once. Early on, <b>reading <code>Array&lt;T&gt;</code> and <code>Promise&lt;T&gt;</code> and using <code>Partial</code> / <code>Pick</code> / <code>Omit</code> is plenty</b>. The need to write your own generic functions usually shows up only when you build shared utilities or libraries.</p>
+</div>
+
+<h2 id="c6" class="day-anchor">6 · The Real World — DOM, APIs, Third-Party Packages</h2>
+<div class="card">
+<h3>6.1 The DOM: TS knows querySelector might find nothing</h3>
+<p>TS types the DOM APIs for you, so it <b>forces you to face "the element might not exist"</b> — the exact source of countless JS runtime errors.</p>
+<pre><code><span class="c">// querySelector returns Element | null (might find nothing)</span>
+<span class="k">const</span> btn = document.querySelector(<span class="s">"#save"</span>);
+<span class="bad">btn.addEventListener(...);</span>    <span class="c">// ❌ squiggle: btn could be null</span>
+
+<span class="c">// ✅ Fix 1: check first (safest, preferred)</span>
+<span class="k">if</span> (btn) btn.addEventListener(<span class="s">"click"</span>, ...);
+
+<span class="c">// ✅ Fix 2: type assertion — tell TS "I'm sure it's there, and it's a button"</span>
+<span class="k">const</span> input = document.querySelector(<span class="s">"#name"</span>) <span class="k">as</span> HTMLInputElement;
+input.value;                  <span class="c">// ✅ now TS knows about .value (a plain Element has none)</span>
+
+<span class="c">// Non-null assertion ! : "I promise this isn't null" — handy but risky, think first</span>
+<span class="k">const</span> el = document.querySelector(<span class="s">"#app"</span>)<span class="ok">!</span>;   <span class="c">// if it really is null, still crashes at runtime</span></code></pre>
+<p class="note">★ <code>as</code> (type assertion) and <code>!</code> (non-null assertion) are <b>you saying "trust me" to TS</b>. They add <b>no runtime check</b> at all — they just silence the compiler. If the assertion is wrong, it still blows up at runtime. So prefer an <code>if</code> check over an assertion — save assertions for the few cases where you genuinely know more than TS.</p>
+</div>
+
+<div class="card">
+<h3>6.2 API responses: unknown + guards, don't just trust it</h3>
+<p>For data off the network, TS <b>can't</b> know its shape at compile time (types don't exist at runtime, remember). <code>fetch</code>'s <code>.json()</code> returns <code>any</code> / <code>Promise&lt;any&gt;</code> — a trap that quietly turns type checking off.</p>
+<pre><code><span class="k">async function</span> loadUser(id: <span class="k">number</span>): Promise&lt;User | <span class="k">null</span>&gt; {
+  <span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">`/api/user/${id}`</span>);
+  <span class="k">if</span> (!res.ok) <span class="k">return null</span>;
+
+  <span class="k">const</span> data: <span class="k">unknown</span> = <span class="k">await</span> res.json();   <span class="c">// ✅ type it unknown to force validation</span>
+
+  <span class="c">// Confirm the shape with a guard before returning it as a User</span>
+  <span class="k">if</span> (isUser(data)) <span class="k">return</span> data;         <span class="c">// ✅ data is narrowed to User after this</span>
+  <span class="k">return null</span>;
+}
+
+<span class="c">// Type guard: returns `x is User`, so TS narrows based on it</span>
+<span class="k">function</span> isUser(x: <span class="k">unknown</span>): x <span class="k">is</span> User {
+  <span class="k">return</span> <span class="k">typeof</span> x === <span class="s">"object"</span> &amp;&amp; x !== <span class="k">null</span> &amp;&amp; <span class="s">"name"</span> <span class="k">in</span> x;
+}</code></pre>
+<p class="note">★ In practice people use libraries like <b><a href="https://zod.dev" target="_blank" rel="noopener">Zod</a></b>: write a schema once and get both runtime validation and a TS type, no hand-written guard. But understand the <code>unknown</code> + guard principle first, so the tool isn't magic.</p>
+</div>
+
+<div class="card">
+<h3>6.3 Third-party types — what @types is</h3>
+<pre><code><span class="c">// Some packages ship their own types — install and you have them (most new ones do)</span>
+npm install zod              <span class="c"># ships .d.ts; import and you get autocomplete</span>
+
+<span class="c">// Older packages don't; install the community-maintained @types separately</span>
+npm install lodash
+npm install -D <span class="ok">@types/lodash</span>    <span class="c"># type definitions from DefinitelyTyped</span></code></pre>
+<p>If TS complains "could not find a declaration file" when you <code>import</code> a package, nine times out of ten you just need the matching <code>@types/xxx</code>. Only if that still doesn't help do you write your own <code>.d.ts</code> — but that's advanced; ignore it while learning.</p>
+</div>
+
+<h2 id="c7" class="day-anchor">7 · tsconfig and Common Traps</h2>
+<div class="card">
+<h3>7.1 tsconfig: one setting matters most — strict</h3>
+<p><code>tsconfig.json</code> has many options, but at first you only need to recognize one: <b><code>"strict": true</code></b>. It turns on all the strict checks at once and is the precondition for TS actually protecting you.</p>
+<pre><code>{
+  <span class="s">"compilerOptions"</span>: {
+    <span class="ok">"strict": true</span>,            <span class="c">// ★ most important: all strict checks on; always on for new projects</span>
+    <span class="s">"target"</span>: <span class="s">"ES2020"</span>,        <span class="c">// which JS version to compile to</span>
+    <span class="s">"module"</span>: <span class="s">"ESNext"</span>,        <span class="c">// which module syntax</span>
+    <span class="s">"moduleResolution"</span>: <span class="s">"Bundler"</span>,
+    <span class="s">"noEmit"</span>: <span class="k">true</span>            <span class="c">// only check, don't emit (common when a bundler like Vite handles output)</span>
+  }
+}</code></pre>
+<p class="note">★ The most impactful part of <code>strict</code> is <b><code>strictNullChecks</code></b>: with it on, <code>null</code> and <code>undefined</code> can no longer slip into any type, forcing you to handle "might be absent" head-on. This one flag stops more bugs than all the rest combined. <b>Never turn strict off to kill a few squiggles.</b></p>
+</div>
+
+<div class="card">
+<h3>7.2 Six traps you'll definitely hit</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">1. "Fixing" types with any</div><div class="kd">Annoyed by squiggles, you slap on <code>any</code> — that's turning TS off. If you truly don't know the type, use <code>unknown</code> and force a check.</div><div class="ke">Enable noImplicitAny so any can't sneak in</div></div>
+<div class="kcard"><div class="kt">2. Thinking types exist at runtime</div><div class="kd">Types are erased after compile — no <code>if (x is User)</code>. To check a value, use <code>typeof</code> / <code>in</code> / a guard.</div><div class="ke">Types are compile-time only; runtime is plain JS</div></div>
+<div class="kcard"><div class="kt">3. Treating as as a cast</div><div class="kd"><code>as</code> does no runtime check — it just tells TS to hush. A wrong assertion still crashes. Prefer a check when you can.</div><div class="ke">as means "trust me", not "convert to"</div></div>
+<div class="kcard"><div class="kt">4. Ignoring null / undefined</div><div class="kd">With strict on, <code>obj.a.b</code> is often blocked because <code>a</code> might be absent. Handle it with <code>?.</code> and checks, don't force it with <code>!</code>.</div><div class="ke">The squiggle is helping, not nitpicking</div></div>
+<div class="kcard"><div class="kt">5. Types more complex than the code</div><div class="kd">Overdo generics and conditional types and nobody can read them. Types exist to clarify, not to show off — keep it simple.</div><div class="ke">Unreadable types are fresh technical debt</div></div>
+<div class="kcard"><div class="kt">6. Turning strict off for convenience</div><div class="kd">Disabling strict to dodge a few errors pays TS's cost without taking its benefit. Always on for new projects.</div><div class="ke">strict off = syntax only, no protection</div></div>
+</div>
+</div>
+
+<h2 id="c8" class="day-anchor">8 · Cheat Sheet &amp; What's Next</h2>
+<div class="card">
+<h3>8.1 Syntax cheat sheet</h3>
+<table>
+<tr><th>What you want</th><th>How to write it</th></tr>
+<tr><td>Annotate a variable</td><td><code>const x: number = 1</code> (usually skippable when it has a value)</td></tr>
+<tr><td>Array</td><td><code>number[]</code> or <code>Array&lt;number&gt;</code></td></tr>
+<tr><td>Object shape</td><td><code>interface User { name: string; age?: number }</code></td></tr>
+<tr><td>Optional / readonly</td><td><code>email?: string</code> / <code>readonly id: number</code></td></tr>
+<tr><td>Union type</td><td><code>type ID = string | number</code></td></tr>
+<tr><td>Literal union</td><td><code>type Status = "idle" | "done"</code></td></tr>
+<tr><td>Narrowing</td><td><code>if (typeof x === "string") …</code></td></tr>
+<tr><td>Function</td><td><code>(a: number, b: number): number =&gt; a + b</code></td></tr>
+<tr><td>Function type</td><td><code>type Fn = (x: number) =&gt; void</code></td></tr>
+<tr><td>Generic function</td><td><code>function id&lt;T&gt;(x: T): T { return x }</code></td></tr>
+<tr><td>Reshape a type</td><td><code>Partial&lt;T&gt;</code> / <code>Pick&lt;T,K&gt;</code> / <code>Omit&lt;T,K&gt;</code></td></tr>
+<tr><td>Type assertion</td><td><code>el as HTMLInputElement</code> (use sparingly)</td></tr>
+<tr><td>An uncertain value</td><td><code>unknown</code> (not <code>any</code>)</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>8.2 What to learn next</h3>
+<table>
+<tr><th>Direction</th><th>Learn</th><th>When</th></tr>
+<tr><td>Frontend</td><td><b>React + TypeScript</b> (typed props and state)</td><td>Once you've got the basics, immediately use it for real</td></tr>
+<tr><td>Runtime validation</td><td><b>Zod</b> (a schema gives you validation and a type)</td><td>When you start hitting APIs and handling form input</td></tr>
+<tr><td>Backend</td><td><b>Node.js + TypeScript</b>, Hono / Nest</td><td>When you want type-safe APIs</td></tr>
+<tr><td>Deeper types</td><td>Generic constraints, conditional types, mapped types</td><td>Building shared utilities or a library, and only when you truly need it</td></tr>
+</table>
+<p class="note">★ <b>The best way to learn TS is to use it in a real project</b>, not to memorize syntax in a vacuum. Pair this with the site's <a href="react-learn-guide.en.html">React, Properly</a> — React + TS is today's mainstream frontend combo, and read together the type traps and the framework traps clear up at once. If your JS is still shaky, shore up <a href="javascript-learn-guide.en.html">JavaScript From Zero</a> first — TS types sit on top of JS, and without solid JS you can't annotate correctly.</p>
+</div>
+
+<div class="foot"><b>Sources</b>: the official TypeScript Handbook (Everyday Types / Narrowing / Functions / Object Types / Generics / Type Manipulation), the tsconfig reference, and TypeScript 5.x behavior.<br><b>Note</b>: the interactive demos on this page are <b>hand-written vanilla JavaScript</b> that simulate the TS compiler's inference and narrowing to aid understanding; the code samples can be pasted straight into the TypeScript Playground.<br><b>Disclaimer</b>: this page is personal study notes; where it falls short, defer to the official TypeScript documentation.</div>
+
+<script>
+// Each demo gets its own function scope so variables don't clash. The interactions simulate the TS compiler's inference.
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s);};
+  function demo(id,fn){var el=document.getElementById(id);if(el)fn(el);}
+
+  // 1. Type inference
+  demo('d-infer',function(el){
+    var msg=$('[data-msg]',el);
+    var TBL={
+      'const x = 42':            ['number','A <code>const</code> binding is never reassigned, so TS infers the most precise <b>number</b> (numbers aren\'t literal-narrowed the way strings are).'],
+      'const s = "hi"':          ['"hi"','A <code>const</code> string is inferred as the <b>literal type "hi"</b>, more precise than string — which is exactly why <code>as const</code> is so handy.'],
+      'const arr = [1, 2, 3]':   ['number[]','Inferred as <b>number[]</b>: all numbers inside, length not fixed.'],
+      'const mix = [1, "a"]':    ['(number | string)[]','Two types mixed → inferred as <b>(number | string)[]</b>, the union of each slot\'s type.'],
+      'let n = 1':               ['number','A <code>let</code> can be reassigned, so TS widens to <b>number</b> (not the literal 1) so you can assign other numbers later.'],
+      'const o = { a: 1, b: "x" }':['{ a: number; b: string }','Inferred as the <b>shape { a: number; b: string }</b> — each property inferred on its own.']
+    };
+    el.querySelectorAll('[data-infer]').forEach(function(b){
+      b.onclick=function(){
+        var code=b.getAttribute('data-infer'); var r=TBL[code];
+        msg.innerHTML='<code>'+code.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code><br>TS infers → <b class="win">'+r[0].replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b><br>'+r[1];
+      };
+    });
+  });
+
+  // 2. Narrowing
+  demo('d-narrow',function(el){
+    var msg=$('[data-msg]',el);
+    var TBL={
+      '"hello"':['string','value.toUpperCase() ✓　value.length ✓','number\'s toFixed is <b class="lose">not</b> usable here — TS has fixed it as string.'],
+      '42':     ['number','value.toFixed(2) ✓　value * 2 ✓','Falls to <code>else</code> (typeof is neither string nor boolean); only number can be left.'],
+      'true':   ['boolean','!value ✓　value && ... ✓','The boolean branch: string/number methods are all off-limits, matching what it can really do.']
+    };
+    el.querySelectorAll('[data-val]').forEach(function(b){
+      b.onclick=function(){
+        var v=b.getAttribute('data-val'); var r=TBL[v];
+        msg.innerHTML='Feed <code>'+v.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</code>　after the <code>typeof</code> check, narrowed to → <b class="win">'+r[0]+'</b><br>Safe to use in this branch: <code>'+r[1]+'</code><br>'+r[2];
+      };
+    });
+  });
+
+  // 3. Generic identity
+  demo('d-generic',function(el){
+    var msg=$('[data-msg]',el);
+    el.querySelectorAll('[data-g]').forEach(function(b){
+      b.onclick=function(){
+        var parts=b.getAttribute('data-g').split('|'); var val=parts[0], t=parts[1];
+        var vt=t.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        msg.innerHTML='<code>const r = identity('+val.replace(/</g,'&lt;').replace(/>/g,'&gt;')+')</code><br>'+
+          'TS infers <b>T = '+vt+'</b>, and the return type is also <b class="win">'+vt+'</b> — the type passes through untouched.<br>'+
+          'Contrast <code>identity(x: any): any</code>: there r would become <b class="lose">any</b>, all type info lost.';
+      };
+    });
+  });
+})();
+</script>
+
+<script>
+// Chapter quick-jump bar: highlight the current section on scroll.
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>

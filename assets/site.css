@@ -349,6 +349,10 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .demo .child{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;text-align:center;min-width:110px}
 .demo .child .n{font-size:22px;font-weight:800;color:var(--ink)}
 .demo .child .t{font-size:11px;color:var(--ink3);margin-top:2px}
+.demo .child.hot{background:var(--winbg);border-color:var(--winbd)}
+.demo .child[data-inner]{background:var(--surface2)}
+.demo .child[data-outer],.demo .child[data-inner]{cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.demo .child[data-outer]:hover,.demo .child[data-inner]:hover{border-color:var(--winbd);box-shadow:0 0 0 1px var(--winbd)}
 .demo .bar{height:10px;background:var(--border);border-radius:6px;overflow:hidden;flex:1;min-width:120px}
 .demo .bar>i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .1s}
 .demo .msg{margin-top:12px;font-size:12.5px;color:var(--ink2);line-height:1.6;min-height:18px}

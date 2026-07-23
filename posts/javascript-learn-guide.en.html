@@ -448,6 +448,7 @@ draw({ color: <span class="s">"blue"</span>, x: 10 });
 <tr><td><code>filter</code></td><td>Keep the ones that match</td><td>New array (shorter)</td><td class="win">No</td></tr>
 <tr><td><code>find</code></td><td>First match</td><td>The element / undefined</td><td class="win">No</td></tr>
 <tr><td><code>reduce</code></td><td>Fold the array into one value</td><td>Anything</td><td class="win">No</td></tr>
+<tr><td colspan="4" style="font-size:.86em;color:var(--ink2);background:var(--midbg)"><span style="color:var(--accent);font-size:.85em">▶</span> <code>reduce((acc, cur) =&gt; …, initial)</code>: <b><code>acc</code></b> the accumulator, the previous round's return value (always <code>return</code> it, or the next round gets <code>undefined</code>) · <b><code>cur</code></b> the current element · <b><code>initial</code></b> the seed value, <b>always pass it</b>, an empty array with no seed throws</td></tr>
 <tr><td><code>some</code> / <code>every</code></td><td>Any match / all match</td><td>boolean</td><td class="win">No</td></tr>
 <tr><td><code>forEach</code></td><td>Run a side effect per element</td><td>undefined</td><td class="win">No</td></tr>
 <tr><td><code>push</code>/<code>pop</code>/<code>sort</code>/<code>reverse</code>/<code>splice</code></td><td>Add, remove, reorder</td><td>Varies</td><td class="lose">Yes ⚠</td></tr>
@@ -460,6 +461,7 @@ nums.find(n =&gt; n &gt; 3);             <span class="c">// 4</span>
 nums.reduce((sum, n) =&gt; sum + n, 0); <span class="c">// 15  (0 is the seed — always pass it)</span>
 nums.some(n =&gt; n &gt; 4);             <span class="c">// true</span>
 nums.every(n =&gt; n &gt; 0);            <span class="c">// true</span>
+nums.forEach(n =&gt; console.log(n));  <span class="c">// prints 1,2,3,4,5; returns undefined</span>
 
 <span class="c">// Chain them like an assembly line — the nicest part of JS</span>
 <span class="k">const</span> users = [
@@ -475,7 +477,7 @@ nums.every(n =&gt; n &gt; 0);            <span class="c">// true</span>
 <span class="c">// ⚠ sort mutates AND sorts as strings by default!</span>
 <span class="bad">[10, 9, 1].sort()</span>                  <span class="c">// [1, 10, 9] ← not what you wanted</span>
 <span class="ok">[10, 9, 1].toSorted((a,b) =&gt; a-b)</span>  <span class="c">// [1, 9, 10] ← comparator, and no mutation</span></code></pre>
-<div class="demo" id="d-arr">
+<p class="note">★ The roles in <code>toSorted</code>'s comparator: <code>toSorted((a, b) =&gt; …)</code>. <b><code>a</code>, <code>b</code></b> are two elements being compared; the <b>number you return</b> decides the order: <b>negative</b> → a goes first, <b>positive</b> → a goes after, <b>0</b> → leave them. So <code>(a,b) =&gt; a-b</code> is exactly numeric order. (With no comparator, <code>sort()</code> converts elements to strings first, so <code>"10"</code> comes before <code>"9"</code> — char <code>'1'</code> &lt; <code>'9'</code>.) Use <code>toSorted</code> over <code>sort</code> to <b>not mutate the original</b> (it returns a sorted copy).</p><div class="demo" id="d-arr">
 <div class="demo-h">Interactive: the array-method assembly line</div>
 <div class="demo-row">
 <span class="lbl"><code>[1,2,3,4,5,6]</code> through:</span>
@@ -554,6 +556,44 @@ el.dataset.id;                    <span class="c">// maps to data-id="…" in th
 li.textContent = <span class="s">"New item"</span>;
 document.querySelector(<span class="s">"#list"</span>).appendChild(li);
 li.remove();                      <span class="c">// delete itself</span></code></pre>
+
+<div class="demo">
+<div class="demo-h">Example: same input, <code>textContent</code> treats it as text, <code>innerHTML</code> as a tag</div>
+<div style="font-size:13px;color:var(--ink2);margin-bottom:8px">Say the user input is <code>&lt;b style="color:var(--lose)"&gt;I am injected red text&lt;/b&gt;</code></div>
+<div class="demo-row" style="gap:10px;align-items:stretch">
+  <div style="flex:1;min-width:150px">
+    <div class="t" style="margin-bottom:5px">el.textContent = input <span class="win">safe</span></div>
+    <div class="child" style="min-height:26px;word-break:break-all;color:var(--ink2)">&lt;b style="color:var(--lose)"&gt;I am injected red text&lt;/b&gt;</div>
+  </div>
+  <div style="flex:1;min-width:150px">
+    <div class="t" style="margin-bottom:5px">el.innerHTML = input <span class="lose">risky</span></div>
+    <div class="child" style="min-height:26px;word-break:break-all"><b style="color:var(--lose)">I am injected red text</b></div>
+  </div>
+</div>
+<div class="msg">The left side keeps the whole string as <b>text</b>, brackets shown verbatim; the right side <b>parses it as HTML</b>, so the red line appears. If that string were user input and read <code>&lt;img src=x onerror=…&gt;</code> or <code>&lt;script&gt;</code>, the code would run = XSS. <b>Always use <code>textContent</code> for user input.</b></div>
+</div>
+
+<div class="demo" id="d-dom">
+<div class="demo-h">Interactive: pick an element, change it with different APIs — each button is a line from above</div>
+<div class="demo-row">
+<div class="child" data-live style="min-width:200px;text-align:left">
+  <div data-title style="font-weight:700;font-size:15px">I'm a &lt;div&gt;</div>
+  <ul data-list style="list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px"></ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+  <div class="demo-row" style="gap:8px">
+    <button data-act="text">textContent</button>
+    <button data-act="hot" class="ghost">classList.toggle</button>
+    <button data-act="color" class="ghost">style.color</button>
+  </div>
+  <div class="demo-row" style="gap:8px">
+    <input type="text" data-input placeholder="item text" style="width:120px">
+    <button data-act="add">createElement + appendChild</button>
+  </div>
+</div>
+</div>
+<div class="msg" data-log><code>document.querySelector</code> grabs the div on the left; each button runs the matching line above. Items you add have an ✕ that calls <code>.remove()</code> on themselves.</div>
+</div>
 </div>
 
 <div class="card">
@@ -581,11 +621,11 @@ list.addEventListener(<span class="s">"click"</span>, (e) =&gt; {
   console.log(<span class="s">"clicked"</span>, item.dataset.id);
 });</code></pre>
 <div class="demo" id="d-event">
-<div class="demo-h">Interactive: bubbling — one click, three listeners fire</div>
+<div class="demo-h">Interactive: bubbling — one click, three listeners fire (the div blank areas are clickable too)</div>
 <div class="demo-row">
 <div class="child" data-outer style="padding:18px 20px;min-width:230px">
   <div class="t" style="margin-bottom:8px">outer div (has a listener)</div>
-  <div class="child" data-inner style="background:var(--surface2)">
+  <div class="child" data-inner>
     <div class="t" style="margin-bottom:6px">inner div (has a listener)</div>
     <button data-btn>Click me</button>
   </div>
@@ -628,8 +668,8 @@ list.addEventListener(<span class="s">"click"</span>, (e) =&gt; {
 <text x="246" y="96" text-anchor="middle" style="fill:var(--ink3);font:10px sans-serif">hand off</text>
 <line x1="380" y1="140" x2="380" y2="176" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
 <path d="M482 214 L554 194" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
-<path d="M538 130 L232 62" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
-<text x="380" y="26" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">back onto the stack → which is why async output always comes last</text>
+<path d="M640 94 C640 10 300 10 122 40" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<text x="150" y="32" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">back onto the stack</text>
 </svg>
 </div>
 <pre><code>console.log(<span class="s">"1"</span>);
@@ -733,6 +773,34 @@ const c = await fetchC();   // and another → 3s total</span>
 <div class="kcard"><div class="kt">5. innerHTML with user input</div><div class="kd">That's an open door for XSS. For plain text, always <code>textContent</code>.</div><div class="ke">textContent is the safe default</div></div>
 <div class="kcard"><div class="kt">6. Comparing with ==</div><div class="kd">Nobody remembers the coercion rules. Use <code>===</code>. The one useful exception: <code>x == null</code> catches null and undefined together.</div><div class="ke">Turn on ESLint's eqeqeq rule and forget about it</div></div>
 </div>
+
+<p style="margin-top:20px"><b>Trap 1, expanded　how <code>this</code> gets lost, and the fix</b></p>
+<pre><code><span class="k">const</span> counter = {
+  count: <span class="k">0</span>,
+  start() {                       <span class="c">// method = normal function → this = counter</span>
+    setInterval(<span class="ok">() =&gt;</span> {           <span class="c">// callback = arrow → keeps the outer this</span>
+      <span class="k">this</span>.count++;
+      console.log(<span class="k">this</span>.count);    <span class="c">// 1, 2, 3…</span>
+    }, <span class="k">1000</span>);
+  }
+};
+
+<span class="c">// ❌ common mistake: callback as a normal function, and this is gone</span>
+<span class="bad">setInterval(function () { this.count++; }, 1000);</span>  <span class="c">// this isn't counter → NaN</span></code></pre>
+
+<p style="margin-top:16px"><b>Trap 2, expanded　how floats are usually handled</b></p>
+<pre><code><span class="k">0.1</span> + <span class="k">0.2</span>;                 <span class="c">// 0.30000000000000004</span>
+
+<span class="c">// Display: round to the digits you need</span>
+(<span class="k">0.1</span> + <span class="k">0.2</span>).toFixed(<span class="k">2</span>);              <span class="c">// "0.30" (string)</span>
+Math.round((<span class="k">0.1</span> + <span class="k">0.2</span>) * <span class="k">100</span>) / <span class="k">100</span>;    <span class="c">// 0.3 (number)</span>
+
+<span class="c">// Compare: use a tolerance, never ===</span>
+Math.abs(<span class="k">0.1</span> + <span class="k">0.2</span> - <span class="k">0.3</span>) &lt; <span class="ok">Number.EPSILON</span>;   <span class="c">// true</span>
+
+<span class="c">// Money: store and compute in integer cents, divide back only at the end</span>
+<span class="k">const</span> cents = <span class="k">1010</span> + <span class="k">2050</span>;                <span class="c">// 3060 cents</span>
+<span class="s">`$${(cents / 100).toFixed(2)}`</span>;             <span class="c">// "$30.60"</span></code></pre>
 </div>
 
 <h2 id="c8" class="day-anchor">8 · Cheat Sheet and What's Next</h2>
@@ -759,15 +827,7 @@ const c = await fetchC();   // and another → 3s total</span>
 </div>
 
 <div class="card">
-<h3>8.2 Practice path — build these in order, or none of it sticks</h3>
-<p>Reading this makes you <i>familiar</i>; <b>building makes you capable</b>. Four projects by difficulty, all in vanilla JS — do not touch a framework yet:</p>
-<div class="kbox">
-<div class="kcard"><div class="kt">① Counter + theme toggle</div><div class="kd">Practises DOM selection, events, classList, localStorage. Exactly what the button in this page's top-right corner does.</div><div class="ke">Uses: chapters 1, 5</div></div>
-<div class="kcard"><div class="kt">② To-do list</div><div class="kd">Practises array CRUD, rendering with map, event delegation, and separating data from view. The canonical JS exercise.</div><div class="ke">Uses: chapters 4, 5</div></div>
-<div class="kcard"><div class="kt">③ Consume a public API</div><div class="kd">Fetch real data, handle loading and error states, render the result as a list. Your first genuine async work.</div><div class="ke">Uses: chapter 6</div></div>
-<div class="kcard"><div class="kt">④ Search + filter + sort</div><div class="kd">Combine ①②③ and add debouncing. Finish this and you can write production frontend code.</div><div class="ke">Uses: everything</div></div>
-</div>
-<h3 style="margin-top:18px">Where to go next</h3>
+<h3>8.2 Where to go next</h3>
 <table>
 <tr><th>Direction</th><th>Learn</th><th>When</th></tr>
 <tr><td>More robust code</td><td><b>TypeScript</b> (types on top of JS)</td><td>Past a few hundred lines, or once others touch the code</td></tr>
@@ -836,13 +896,40 @@ const c = await fetchC();   // and another → 3s total</span>
     show();
   });
 
+  // 3b. DOM sandbox
+  demo('d-dom',function(el){
+    var box=$('[data-live]',el), title=$('[data-title]',el), list=$('[data-list]',el),
+        input=$('[data-input]',el), msg=$('[data-log]',el), n=0,
+        titles=["I'm a <div>",'Title changed','Changed again!'], ti=0;
+    $('[data-act=text]',el).onclick=function(){
+      ti=(ti+1)%titles.length; title.textContent=titles[ti];
+      var t=titles[ti].replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      msg.innerHTML='<code>title.textContent = "'+t+'"</code> — plain text, safe (even <code>&lt;div&gt;</code> shows verbatim, not treated as a tag). Switch to <code>innerHTML</code> with user input and you get an XSS hole.';};
+    $('[data-act=hot]',el).onclick=function(){
+      var on=box.classList.toggle('hot');
+      msg.innerHTML='<code>box.classList.toggle("hot")</code> → class is now '+(on?'<b class="win">on</b>':'<b class="lose">off</b>')+', styled from CSS. Toggle classes rather than writing inline styles.';};
+    $('[data-act=color]',el).onclick=function(){
+      var had=title.style.color!==''; title.style.color=had?'':'var(--accent)';
+      msg.innerHTML='<code>title.style.color = "'+(had?'':'var(--accent)')+'"</code> — an inline style. Use sparingly; styling belongs in CSS.';};
+    $('[data-act=add]',el).onclick=function(){
+      var v=(input.value||'').trim()||('New item '+(++n));
+      var li=document.createElement('li');
+      li.style.cssText='display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;font-size:13px';
+      var span=document.createElement('span'); span.textContent=v;
+      var x=document.createElement('button'); x.textContent='✕'; x.className='ghost'; x.style.cssText='padding:0 7px;font-size:13px;line-height:1.4';
+      x.onclick=function(){li.remove(); msg.innerHTML='<code>li.remove()</code> — the element takes itself out of the DOM.';};
+      li.appendChild(span); li.appendChild(x); list.appendChild(li); input.value='';
+      msg.innerHTML='<code>createElement("li")</code> → set <code>textContent</code> → <code>list.appendChild(li)</code>. New element is in the DOM; hit ✕ to <code>.remove()</code> it.';};
+  });
+
   // 4. Event bubbling
   demo('d-event',function(el){
-    var log=$('[data-log]',el), lines=[];
-    function put(t){lines.unshift(t);if(lines.length>4)lines.pop();log.innerHTML=lines.join('<br>');}
-    $('[data-btn]',el).addEventListener('click',function(){put('① <b class="win">&lt;button&gt;</b> received the click (it is e.target)');});
-    $('[data-inner]',el).addEventListener('click',function(e){put('② inner div received it　e.target = <code>&lt;'+e.target.tagName.toLowerCase()+'&gt;</code>');});
-    $('[data-outer]',el).addEventListener('click',function(e){put('③ outer div received it　e.target = <code>&lt;'+e.target.tagName.toLowerCase()+'&gt;</code>　← delegation lives at this level');});
+    var log=$('[data-log]',el), lines=[], last=-1;
+    // all three handlers of one click bubble synchronously with the same timeStamp → a new click resets, push keeps bubbling order ①②③
+    function put(e,t){if(e.timeStamp!==last){last=e.timeStamp;lines=[];}lines.push(t);log.innerHTML=lines.join('<br>');}
+    $('[data-btn]',el).addEventListener('click',function(e){put(e,'① <b class="win">&lt;button&gt;</b> received the click (it is e.target)');});
+    $('[data-inner]',el).addEventListener('click',function(e){put(e,'② inner div received it　e.target = <code>&lt;'+e.target.tagName.toLowerCase()+'&gt;</code>');});
+    $('[data-outer]',el).addEventListener('click',function(e){put(e,'③ outer div received it　e.target = <code>&lt;'+e.target.tagName.toLowerCase()+'&gt;</code>　← delegation lives at this level');});
     $('[data-act=clear]',el).onclick=function(e){e.stopPropagation();lines=[];log.innerHTML='Cleared. <code>e.stopPropagation()</code> is what stops an event here instead of letting it bubble on.';};
   });
 
