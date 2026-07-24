@@ -190,6 +190,9 @@ tr:hover td{background:var(--surface2)}
 .kcard .kt{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px}
 .kcard .kd{font-size:12.5px;color:var(--ink2);line-height:1.55}
 .kcard .ke{font-size:11px;color:var(--win);margin-top:8px}
+.kcard.clk{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.kcard.clk:hover{border-color:var(--accent);transform:translateY(-1px)}
+.kcard.clk.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 
 .lead{display:inline-block;background:var(--losebg);color:var(--lose);border:1px solid var(--losebd);
   border-radius:8px;font-weight:700;padding:1px 9px;font-size:12px}

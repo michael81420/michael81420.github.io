@@ -583,8 +583,8 @@ li.remove();                      <span class="c">// delete itself</span></code>
 <div style="display:flex;flex-direction:column;gap:8px">
   <div class="demo-row" style="gap:8px">
     <button data-act="text">textContent</button>
-    <button data-act="hot" class="ghost">classList.toggle</button>
-    <button data-act="color" class="ghost">style.color</button>
+    <button data-act="hot">classList.toggle</button>
+    <button data-act="color">style.color</button>
   </div>
   <div class="demo-row" style="gap:8px">
     <input type="text" data-input placeholder="item text" style="width:120px">
@@ -765,16 +765,21 @@ const c = await fetchC();   // and another → 3s total</span>
 
 <div class="card">
 <h3>7.2 Six traps you will hit</h3>
-<div class="kbox">
-<div class="kcard"><div class="kt">1. <code>this</code> differs in arrow functions</div><div class="kd">A normal function's <code>this</code> depends on <i>who called it</i>; an arrow function has no <code>this</code> and borrows the enclosing one. <b>Normal functions for object methods, arrows for callbacks</b> — do that and you'll almost never be wrong.</div><div class="ke">obj.method(){…} ✓　callback: () =&gt; {} ✓</div></div>
-<div class="kcard"><div class="kt">2. Floats are imprecise</div><div class="kd"><code>0.1 + 0.2 !== 0.3</code> (it's 0.30000000000000004). Not a JS bug — every language's floats do this.</div><div class="ke">Store money as integer cents, never decimals</div></div>
-<div class="kcard"><div class="kt">3. Reading async results too early</div><div class="kd">Outside the <code>.then</code> / <code>await</code>, the value is undefined. <b>Use the data where you receive it.</b></div><div class="ke">A missing await is the single most common bug</div></div>
-<div class="kcard"><div class="kt">4. Array methods that mutate</div><div class="kd"><code>sort</code>／<code>reverse</code>／<code>splice</code> change in place. Copy first, or use the newer <code>toSorted</code>／<code>toReversed</code>.</div><div class="ke">[...arr].sort() or arr.toSorted()</div></div>
-<div class="kcard"><div class="kt">5. innerHTML with user input</div><div class="kd">That's an open door for XSS. For plain text, always <code>textContent</code>.</div><div class="ke">textContent is the safe default</div></div>
-<div class="kcard"><div class="kt">6. Comparing with ==</div><div class="kd">Nobody remembers the coercion rules. Use <code>===</code>. The one useful exception: <code>x == null</code> catches null and undefined together.</div><div class="ke">Turn on ESLint's eqeqeq rule and forget about it</div></div>
+<p class="note" style="margin-top:0">Click any card to see its actual code below.</p>
+<div class="kbox" id="pit-cards">
+<div class="kcard clk" data-pit="1"><div class="kt">1. <code>this</code> differs in arrow functions</div><div class="kd">A normal function's <code>this</code> depends on <i>who called it</i>; an arrow function has no <code>this</code> and borrows the enclosing one. <b>Normal functions for object methods, arrows for callbacks</b> — do that and you'll almost never be wrong.</div><div class="ke">obj.method(){…} ✓　callback: () =&gt; {} ✓</div></div>
+<div class="kcard clk" data-pit="2"><div class="kt">2. Floats are imprecise</div><div class="kd"><code>0.1 + 0.2 !== 0.3</code> (it's 0.30000000000000004). Not a JS bug — every language's floats do this.</div><div class="ke">Store money as integer cents, never decimals</div></div>
+<div class="kcard clk" data-pit="3"><div class="kt">3. Reading async results too early</div><div class="kd">Outside the <code>.then</code> / <code>await</code>, the value is undefined. <b>Use the data where you receive it.</b></div><div class="ke">A missing await is the single most common bug</div></div>
+<div class="kcard clk" data-pit="4"><div class="kt">4. Array methods that mutate</div><div class="kd"><code>sort</code>／<code>reverse</code>／<code>splice</code> change in place. Copy first, or use the newer <code>toSorted</code>／<code>toReversed</code>.</div><div class="ke">[...arr].sort() or arr.toSorted()</div></div>
+<div class="kcard clk" data-pit="5"><div class="kt">5. innerHTML with user input</div><div class="kd">That's an open door for XSS. For plain text, always <code>textContent</code>.</div><div class="ke">textContent is the safe default</div></div>
+<div class="kcard clk" data-pit="6"><div class="kt">6. Comparing with ==</div><div class="kd">Nobody remembers the coercion rules. Use <code>===</code>. The one useful exception: <code>x == null</code> catches null and undefined together.</div><div class="ke">Turn on ESLint's eqeqeq rule and forget about it</div></div>
 </div>
 
-<p style="margin-top:20px"><b>Trap 1, expanded　how <code>this</code> gets lost, and the fix</b></p>
+<div class="demo" id="pit-demo" style="margin-top:16px">
+<div class="demo-h">Interactive: click a card above for the example</div>
+<div class="msg" data-pit-empty style="margin-top:0">Click any card to see how that trap bites, and the fix.</div>
+
+<div data-pit-panel="1" hidden>
 <pre><code><span class="k">const</span> counter = {
   count: <span class="k">0</span>,
   start() {                       <span class="c">// method = normal function → this = counter</span>
@@ -787,8 +792,9 @@ const c = await fetchC();   // and another → 3s total</span>
 
 <span class="c">// ❌ common mistake: callback as a normal function, and this is gone</span>
 <span class="bad">setInterval(function () { this.count++; }, 1000);</span>  <span class="c">// this isn't counter → NaN</span></code></pre>
+</div>
 
-<p style="margin-top:16px"><b>Trap 2, expanded　how floats are usually handled</b></p>
+<div data-pit-panel="2" hidden>
 <pre><code><span class="k">0.1</span> + <span class="k">0.2</span>;                 <span class="c">// 0.30000000000000004</span>
 
 <span class="c">// Display: round to the digits you need</span>
@@ -801,6 +807,45 @@ Math.abs(<span class="k">0.1</span> + <span class="k">0.2</span> - <span class="
 <span class="c">// Money: store and compute in integer cents, divide back only at the end</span>
 <span class="k">const</span> cents = <span class="k">1010</span> + <span class="k">2050</span>;                <span class="c">// 3060 cents</span>
 <span class="s">`$${(cents / 100).toFixed(2)}`</span>;             <span class="c">// "$30.60"</span></code></pre>
+</div>
+
+<div data-pit-panel="3" hidden>
+<pre><code><span class="k">async function</span> load() {
+  <span class="k">const</span> r = <span class="k">await</span> fetch(<span class="s">"/api"</span>);
+  <span class="k">const</span> data = <span class="k">await</span> r.json();
+  <span class="k">return</span> data;              <span class="ok">// ✓ return/use it where you got it</span>
+}
+
+<span class="k">let</span> d;
+load().then(<span class="ok">v =&gt;</span> d = v);       <span class="c">// d is set later, inside then</span>
+<span class="bad">console.log(d);</span>              <span class="c">// ❌ undefined —— this line runs before then</span></code></pre>
+</div>
+
+<div data-pit-panel="4" hidden>
+<pre><code><span class="k">const</span> a = [<span class="k">3</span>, <span class="k">1</span>, <span class="k">2</span>];
+<span class="k">const</span> b = a.sort();       <span class="bad">// ❌ a got sorted too; b and a are the same array</span>
+a;                        <span class="c">// [1, 2, 3] —— original mutated</span>
+
+<span class="k">const</span> c = [<span class="ok">...a</span>].sort();  <span class="ok">// ✓ copy first, then sort</span>
+<span class="k">const</span> d = a.toSorted();   <span class="ok">// ✓ newer method, returns a new array, a untouched</span></code></pre>
+</div>
+
+<div data-pit-panel="5" hidden>
+<pre><code><span class="k">const</span> name = <span class="s">'&lt;img src=x onerror="alert(1)"&gt;'</span>;
+
+<span class="bad">box.innerHTML = name;</span>     <span class="c">// ❌ string parsed as HTML → the payload runs</span>
+<span class="ok">box.textContent = name;</span>   <span class="c">// ✓ shown as literal text, always safe</span></code></pre>
+</div>
+
+<div data-pit-panel="6" hidden>
+<pre><code><span class="k">0</span> == <span class="s">""</span>;      <span class="c">// true　❌ implicit coercion nobody remembers</span>
+<span class="k">0</span> == <span class="s">"0"</span>;     <span class="c">// true</span>
+<span class="s">""</span> == <span class="s">"0"</span>;    <span class="bad">// false ← the two above hold, this one doesn't</span>
+
+<span class="k">0</span> === <span class="s">""</span>;     <span class="ok">// false ✓ different types → false, always use ===</span>
+x == <span class="k">null</span>;    <span class="ok">// the one exception: catches null and undefined at once</span></code></pre>
+</div>
+</div>
 </div>
 
 <h2 id="c8" class="day-anchor">8 · Cheat Sheet and What's Next</h2>
@@ -983,6 +1028,21 @@ Math.abs(<span class="k">0.1</span> + <span class="k">0.2</span> - <span class="
       })();
     };
     $('[data-act=reset]',el).onclick=reset;
+  });
+
+  // 7. Six traps: click a card to show its example (single display area)
+  demo('pit-demo',function(demoEl){
+    var cards=document.getElementById('pit-cards'); if(!cards)return;
+    var empty=$('[data-pit-empty]',demoEl);
+    var panels=demoEl.querySelectorAll('[data-pit-panel]');
+    cards.querySelectorAll('.kcard[data-pit]').forEach(function(card){
+      card.onclick=function(){
+        var n=card.getAttribute('data-pit');
+        cards.querySelectorAll('.kcard').forEach(function(c){c.classList.toggle('on',c===card);});
+        empty.hidden=true;
+        panels.forEach(function(p){p.hidden=p.getAttribute('data-pit-panel')!==n;});
+      };
+    });
   });
 })();
 </script>

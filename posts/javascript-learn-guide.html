@@ -583,8 +583,8 @@ li.remove();                      <span class="c">// 刪掉自己</span></code><
 <div style="display:flex;flex-direction:column;gap:8px">
   <div class="demo-row" style="gap:8px">
     <button data-act="text">textContent</button>
-    <button data-act="hot" class="ghost">classList.toggle</button>
-    <button data-act="color" class="ghost">style.color</button>
+    <button data-act="hot">classList.toggle</button>
+    <button data-act="color">style.color</button>
   </div>
   <div class="demo-row" style="gap:8px">
     <input type="text" data-input placeholder="項目文字" style="width:120px">
@@ -765,16 +765,21 @@ const c = await fetchC();   // 再等 1 秒 → 共 3 秒</span>
 
 <div class="card">
 <h3>7.2 六個一定會踩到的坑</h3>
-<div class="kbox">
-<div class="kcard"><div class="kt">1. <code>this</code> 在箭頭函式裡不一樣</div><div class="kd">一般函式的 <code>this</code> 看「誰呼叫它」；箭頭函式沒有自己的 <code>this</code>，直接沿用外層。<b>物件的方法用一般函式，callback 用箭頭函式</b>，就幾乎不會出錯。</div><div class="ke">obj.method(){…} ✓　callback: () =&gt; {} ✓</div></div>
-<div class="kcard"><div class="kt">2. 浮點數不精確</div><div class="kd"><code>0.1 + 0.2 !== 0.3</code>（是 0.30000000000000004）。這不是 JS 的 bug，所有語言的浮點數都這樣。</div><div class="ke">錢的計算用「整數分」存，別用小數</div></div>
-<div class="kcard"><div class="kt">3. 非同步結果拿太早</div><div class="kd">在 <code>.then</code> / <code>await</code> 外面讀資料一定是 undefined。<b>資料在哪拿到，就在哪用</b>。</div><div class="ke">忘記 await 是最常見的單一錯誤</div></div>
-<div class="kcard"><div class="kt">4. 陣列方法改到原陣列</div><div class="kd"><code>sort</code>／<code>reverse</code>／<code>splice</code> 會就地改。要保留原本就先複製，或用新的 <code>toSorted</code>／<code>toReversed</code>。</div><div class="ke">[...arr].sort() 或 arr.toSorted()</div></div>
-<div class="kcard"><div class="kt">5. innerHTML 放使用者輸入</div><div class="kd">等於把 XSS 攻擊的門打開。純文字一律用 <code>textContent</code>。</div><div class="ke">textContent 是安全的預設</div></div>
-<div class="kcard"><div class="kt">6. 相等比較用 ==</div><div class="kd">隱式轉型的規則沒人記得住，直接用 <code>===</code>。唯一例外：<code>x == null</code> 可同時判 null 和 undefined。</div><div class="ke">開 ESLint 的 eqeqeq 規則自動擋</div></div>
+<p class="note" style="margin-top:0">點任一張卡，下面看它的實際程式碼。</p>
+<div class="kbox" id="pit-cards">
+<div class="kcard clk" data-pit="1"><div class="kt">1. <code>this</code> 在箭頭函式裡不一樣</div><div class="kd">一般函式的 <code>this</code> 看「誰呼叫它」；箭頭函式沒有自己的 <code>this</code>，直接沿用外層。<b>物件的方法用一般函式，callback 用箭頭函式</b>，就幾乎不會出錯。</div><div class="ke">obj.method(){…} ✓　callback: () =&gt; {} ✓</div></div>
+<div class="kcard clk" data-pit="2"><div class="kt">2. 浮點數不精確</div><div class="kd"><code>0.1 + 0.2 !== 0.3</code>（是 0.30000000000000004）。這不是 JS 的 bug，所有語言的浮點數都這樣。</div><div class="ke">錢的計算用「整數分」存，別用小數</div></div>
+<div class="kcard clk" data-pit="3"><div class="kt">3. 非同步結果拿太早</div><div class="kd">在 <code>.then</code> / <code>await</code> 外面讀資料一定是 undefined。<b>資料在哪拿到，就在哪用</b>。</div><div class="ke">忘記 await 是最常見的單一錯誤</div></div>
+<div class="kcard clk" data-pit="4"><div class="kt">4. 陣列方法改到原陣列</div><div class="kd"><code>sort</code>／<code>reverse</code>／<code>splice</code> 會就地改。要保留原本就先複製，或用新的 <code>toSorted</code>／<code>toReversed</code>。</div><div class="ke">[...arr].sort() 或 arr.toSorted()</div></div>
+<div class="kcard clk" data-pit="5"><div class="kt">5. innerHTML 放使用者輸入</div><div class="kd">等於把 XSS 攻擊的門打開。純文字一律用 <code>textContent</code>。</div><div class="ke">textContent 是安全的預設</div></div>
+<div class="kcard clk" data-pit="6"><div class="kt">6. 相等比較用 ==</div><div class="kd">隱式轉型的規則沒人記得住，直接用 <code>===</code>。唯一例外：<code>x == null</code> 可同時判 null 和 undefined。</div><div class="ke">開 ESLint 的 eqeqeq 規則自動擋</div></div>
 </div>
 
-<p style="margin-top:20px"><b>坑 1 展開　<code>this</code> 怎麼掉、怎麼修</b></p>
+<div class="demo" id="pit-demo" style="margin-top:16px">
+<div class="demo-h">互動：點上面的卡看範例</div>
+<div class="msg" data-pit-empty style="margin-top:0">點任一張卡，這裡顯示那個坑怎麼掉、怎麼修。</div>
+
+<div data-pit-panel="1" hidden>
 <pre><code><span class="k">const</span> counter = {
   count: <span class="k">0</span>,
   start() {                       <span class="c">// 方法用一般函式 → this = counter</span>
@@ -787,8 +792,9 @@ const c = await fetchC();   // 再等 1 秒 → 共 3 秒</span>
 
 <span class="c">// ❌ 常見錯法：callback 用一般函式，this 就掉了</span>
 <span class="bad">setInterval(function () { this.count++; }, 1000);</span>  <span class="c">// this 不是 counter → NaN</span></code></pre>
+</div>
 
-<p style="margin-top:16px"><b>坑 2 展開　浮點數通常怎麼處理</b></p>
+<div data-pit-panel="2" hidden>
 <pre><code><span class="k">0.1</span> + <span class="k">0.2</span>;                 <span class="c">// 0.30000000000000004</span>
 
 <span class="c">// 顯示：四捨五入到需要的位數</span>
@@ -801,6 +807,45 @@ Math.abs(<span class="k">0.1</span> + <span class="k">0.2</span> - <span class="
 <span class="c">// 錢：一律用「整數分」存與算，最後再除回來</span>
 <span class="k">const</span> cents = <span class="k">1010</span> + <span class="k">2050</span>;                <span class="c">// 3060 分</span>
 <span class="s">`$${(cents / 100).toFixed(2)}`</span>;             <span class="c">// "$30.60"</span></code></pre>
+</div>
+
+<div data-pit-panel="3" hidden>
+<pre><code><span class="k">async function</span> load() {
+  <span class="k">const</span> r = <span class="k">await</span> fetch(<span class="s">"/api"</span>);
+  <span class="k">const</span> data = <span class="k">await</span> r.json();
+  <span class="k">return</span> data;              <span class="ok">// ✓ 在拿到的地方回傳/使用</span>
+}
+
+<span class="k">let</span> d;
+load().then(<span class="ok">v =&gt;</span> d = v);       <span class="c">// then 之後才有值</span>
+<span class="bad">console.log(d);</span>              <span class="c">// ❌ undefined —— 這行比 then 先跑</span></code></pre>
+</div>
+
+<div data-pit-panel="4" hidden>
+<pre><code><span class="k">const</span> a = [<span class="k">3</span>, <span class="k">1</span>, <span class="k">2</span>];
+<span class="k">const</span> b = a.sort();       <span class="bad">// ❌ a 也被排掉了，b 跟 a 是同一個</span>
+a;                        <span class="c">// [1, 2, 3] —— 原陣列被改</span>
+
+<span class="k">const</span> c = [<span class="ok">...a</span>].sort();  <span class="ok">// ✓ 先複製再排</span>
+<span class="k">const</span> d = a.toSorted();   <span class="ok">// ✓ 新語法，回傳新陣列，a 不動</span></code></pre>
+</div>
+
+<div data-pit-panel="5" hidden>
+<pre><code><span class="k">const</span> name = <span class="s">'&lt;img src=x onerror="alert(1)"&gt;'</span>;
+
+<span class="bad">box.innerHTML = name;</span>     <span class="c">// ❌ 字串被當 HTML → 攻擊碼執行</span>
+<span class="ok">box.textContent = name;</span>   <span class="c">// ✓ 原樣顯示成文字，永遠安全</span></code></pre>
+</div>
+
+<div data-pit-panel="6" hidden>
+<pre><code><span class="k">0</span> == <span class="s">""</span>;      <span class="c">// true　❌ 隱式轉型，規則沒人記得住</span>
+<span class="k">0</span> == <span class="s">"0"</span>;     <span class="c">// true</span>
+<span class="s">""</span> == <span class="s">"0"</span>;    <span class="bad">// false ← 上兩個成立，這個卻不成立</span>
+
+<span class="k">0</span> === <span class="s">""</span>;     <span class="ok">// false ✓ 型別不同直接 false，永遠用 ===</span>
+x == <span class="k">null</span>;    <span class="ok">// 唯一例外：一次判掉 null 與 undefined</span></code></pre>
+</div>
+</div>
 </div>
 
 <h2 id="c8" class="day-anchor">8 · 速查表與下一步</h2>
@@ -983,6 +1028,21 @@ Math.abs(<span class="k">0.1</span> + <span class="k">0.2</span> - <span class="
       })();
     };
     $('[data-act=reset]',el).onclick=reset;
+  });
+
+  // 7. 六個坑：點卡片顯示對應範例（單一展示區）
+  demo('pit-demo',function(demoEl){
+    var cards=document.getElementById('pit-cards'); if(!cards)return;
+    var empty=$('[data-pit-empty]',demoEl);
+    var panels=demoEl.querySelectorAll('[data-pit-panel]');
+    cards.querySelectorAll('.kcard[data-pit]').forEach(function(card){
+      card.onclick=function(){
+        var n=card.getAttribute('data-pit');
+        cards.querySelectorAll('.kcard').forEach(function(c){c.classList.toggle('on',c===card);});
+        empty.hidden=true;
+        panels.forEach(function(p){p.hidden=p.getAttribute('data-pit-panel')!==n;});
+      };
+    });
   });
 })();
 </script>
