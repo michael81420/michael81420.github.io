@@ -9,8 +9,8 @@
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>股癌 EP676 · 個股觀點整理 <span style="font-size:16px;color:#3E8E5A">｜🐬</span></h1>
-<div class="sub">這集重點是 AI 供應鏈缺料的「傳導鏈」— 被動元件已噴出、功率元件/MOSFET 現在進行式、封裝測試是下一棒，並對 Meta 跨足 Neo Cloud、光通訊資金動向、驅動IC 等口播說法做<b style="color:#3E8E5A">實際數據查證</b>。<br>NotebookLM 逐字稿分析 ＋ FinMind/Futu 數字核實(截至 2026-07-03),非買賣建議。</div>
+<h1>股癌 EP676 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🐬</span></h1>
+<div class="sub">這集重點是 AI 供應鏈缺料的「傳導鏈」— 被動元件已噴出、功率元件/MOSFET 現在進行式、封裝測試是下一棒，並對 Meta 跨足 Neo Cloud、光通訊資金動向、驅動IC 等口播說法做<b style="color:var(--win)">實際數據查證</b>。<br>NotebookLM 逐字稿分析 ＋ FinMind/Futu 數字核實(截至 2026-07-03),非買賣建議。</div>
 <div style="margin-top:10px">
 <span class="badge new">來源:股癌 EP676 逐字稿分析</span>
 <span class="badge">整理日:2026-07-05</span>
@@ -58,7 +58,7 @@
 
 <h2>五、提到的個股</h2>
 <div id="cards"></div>
-<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:#4E83C4;font-weight:700">轉機偏多</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">轉機偏多</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
 
 <h2>六、Meta Neo Cloud 事件:美股兩日股價反應</h2>
 <div class="card">
@@ -112,7 +112,7 @@ const STOCKS=[
  {nm:'聯發科',code:'2454',mkt:'台股',tone:'neu',said:'歷史類比案例:當年靠AI故事在低點噴出、事後買不到便宜價。',chk:'FinMind:收 <b>4,195</b>(月跌 <b>−7.9%</b>,近5日反彈 +8.1%);純屬敘事類比,近一個月實際下跌,不宜誤讀成現在很強。',vd:'q'},
 ];
 const TONE={bull:['p-bull','看多'],turn:['p-turn','轉機偏多'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
-const VD={ok:['✅','#3E8E5A','屬實'],warn:['⚠️','#C24B3C','有出入/需留意'],na:['—','#9A917F','未給數字'],q:['❓','#BB7A1A','查不到/純敘事']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -132,6 +132,6 @@ const FACTS=[
  ['封裝報價大漲(30%~150%)','供應鏈耳語,斷貨漲價','逐字稿ASR誤聽風險高,屬產業轉述,無法查證精確數字','q'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

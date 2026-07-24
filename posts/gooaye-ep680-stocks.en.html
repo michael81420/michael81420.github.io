@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP680 · Stock Notes <span style="font-size:16px;color:#C24B3C">｜💔</span></h1>
+<h1>Gooaye EP680 · Stock Notes <span style="font-size:16px;color:var(--lose)">｜💔</span></h1>
 <div class="sub">The title has a broken heart, but the content is "TSMC's Q2 numbers check out line-by-line, yet the stock still sold off the day after earnings + the real driver is Korea's leveraged-ETF blowup, not a TSMC fundamentals problem + a forward-PE check shows TSMC's valuation isn't actually expensive + a listener Q&amp;A with two contrasting cases: Flexium has the data behind it, MediaTek's target price doesn't."<br>NotebookLM transcript analysis + Futu/FinMind data verified (TW through 2026-07-17 close). Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP680 (transcript analysis)</span>
@@ -59,7 +59,7 @@
 
 <h2>5. Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:#4E83C4;font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
+<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
 
 <h2>6. Key-number fact-check table</h2>
 <div class="card">
@@ -91,7 +91,7 @@ const STOCKS=[
  {nm:'Flexium',code:'6206',mkt:'TW',tone:'bull',said:'Record profits this year, software revenue up several-fold, but the stock keeps drifting lower — no share of the gains, full share of the pain.',chk:'✅Revenue/earnings growth checks out: monthly revenue NT$467m (Feb) → NT$610m (Jun), roughly +40-90% YoY; Q1 EPS up 10.6% YoY. Stock down 31% from its 52-week high of NT$172.5 to NT$119.0; trailing PER only 16.69x, cheap. The "several-fold software revenue growth" detail can\'t be isolated and verified separately.',vd:'ok'},
 ];
 const TONE={bull:['p-bull','bullish'],turn:['p-turn','watch/technical'],neu:['p-neu','neutral'],bear:['p-bear','soft / trim']};
-const VD={ok:['✅','#3E8E5A','true'],warn:['⚠️','#C24B3C','discrepancy/caution'],na:['—','#9A917F','no number given'],q:['❓','#BB7A1A','unverifiable/narrative']};
+const VD={ok:['✅','var(--win)','true'],warn:['⚠️','var(--lose)','discrepancy/caution'],na:['—','var(--ink3)','no number given'],q:['❓','var(--mid)','unverifiable/narrative']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -115,6 +115,6 @@ const FACTS=[
  ['MediaTek target price','NT$8,000-10,000','Current price NT$3,370, trailing PER already 53.71x, target would require PE of 130-160x — unsupported','warn'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What he said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

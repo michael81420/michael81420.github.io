@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP674 · Stock Notes <span style="font-size:16px;color:#3E8E5A">｜🦋</span></h1>
+<h1>Gooaye EP674 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🦋</span></h1>
 <div class="sub">Hsieh Meng-Kung's 2026 H1 performance review — trading history, recent correction analysis, and fact-checking of key on-air numbers.<br>Transcript insights compiled + Futu / FinMind data verified. Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP674 transcript (NotebookLM)</span>
@@ -64,7 +64,7 @@
 
 <h2>V. Stocks Mentioned</h2>
 <div id="cards"></div>
-<p class="note">Sentiment rating: <span class="win">Bullish</span> / <span style="color:#4E83C4;font-weight:700">Turning Bullish</span> / <span class="mid">Neutral</span> / <span class="lose">Bearish / Trimming</span>. Based on transcript tone interpretation, not investment advice.</p>
+<p class="note">Sentiment rating: <span class="win">Bullish</span> / <span style="color:var(--turn);font-weight:700">Turning Bullish</span> / <span class="mid">Neutral</span> / <span class="lose">Bearish / Trimming</span>. Based on transcript tone interpretation, not investment advice.</p>
 
 <h2>VI. Key Numbers Fact-Check</h2>
 <div class="card">
@@ -105,7 +105,7 @@ const STOCKS=[
  {nm:'EVOSIS Origin Technology',code:'7922',mkt:'TW',tone:'neu',said:"This episode's sponsor; largest EV charging network in Taiwan.",chk:'Not found on Futu/FinMind main board; may be listed on the emerging/startup market.',vd:'q'},
 ];
 const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Turning Bullish'],neu:['p-neu','Neutral'],bear:['p-bear','Bearish / Trimming']};
-const VD={ok:['✅','#3E8E5A','Verified'],warn:['⚠️','#C24B3C','Discrepancy'],na:['—','#9A917F','No data given'],q:['❓','#BB7A1A','Not found']};
+const VD={ok:['✅','var(--win)','Verified'],warn:['⚠️','var(--lose)','Discrepancy'],na:['—','var(--ink3)','No data given'],q:['❓','var(--mid)','Not found']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -125,6 +125,6 @@ const FACTS=[
  ['AI Server Memory BOM Share','30%','Industry claim; no independent data to verify','q'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What Was Said</th><th>Fact-Check Result</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

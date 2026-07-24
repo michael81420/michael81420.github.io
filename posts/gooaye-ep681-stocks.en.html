@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP681 · Stock Notes <span style="font-size:16px;color:#7A8C5A">｜🦉</span></h1>
+<h1>Gooaye EP681 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🦉</span></h1>
 <div class="sub">This episode is mostly "market read + capital-rotation observation": Taiwan's recent split tape — small-caps crushed while the index holds up — which he calls a "humanitarian corridor"; capital rotating out of high-multiple small-caps into TSMC, TAIEX futures, and "old-AI" ODMs as defensive large-caps. Specific events center on AMD's Advancing AI 2026, the Google Frozen v2 rumor, Yageo's capital-reduction controversy, and the substrate/passive/US power-semi groups.<br>NotebookLM transcript analysis + Futu/FinMind data verification. Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP681 (transcript analysis)</span>
@@ -60,7 +60,7 @@
 
 <h2>5. Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:#4E83C4;font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
+<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
 
 <h2>6. Key-number fact-check table</h2>
 <div class="card">
@@ -102,7 +102,7 @@ const STOCKS=[
  {nm:'Wolfspeed',code:'US.WOLF',mkt:'US',tone:'bear',said:'SiC leader, power semis.',chk:'⚠️Still tradable is true, but filed prepackaged Chapter 11 in 2025/6 and re-listed after restructuring in 2025/9 (debt cut 70%); still loss-making, -42% over the month, a high-volatility theme stock.',vd:'warn'},
 ];
 const TONE={bull:['p-bull','bullish'],turn:['p-turn','watch/technical'],neu:['p-neu','neutral'],bear:['p-bear','soft / trim']};
-const VD={ok:['✅','#3E8E5A','true'],warn:['⚠️','#C24B3C','discrepancy/caution'],na:['—','#9A917F','no number given'],q:['❓','#BB7A1A','unverifiable/narrative']};
+const VD={ok:['✅','var(--win)','true'],warn:['⚠️','var(--lose)','discrepancy/caution'],na:['—','var(--ink3)','no number given'],q:['❓','var(--mid)','unverifiable/narrative']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -126,6 +126,6 @@ const FACTS=[
  ['Yageo back-adjusted price','NT$2,000–3,000, peak over 4,000','Capital-reduction history/swings check out; FinMind free tier lacks back-adjusted prices, specific numbers unverifiable','warn'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What he said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

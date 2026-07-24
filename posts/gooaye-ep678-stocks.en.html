@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP678 · Stock Notes <span style="font-size:16px;color:#3E8E5A">｜🎮</span></h1>
+<h1>Gooaye EP678 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🎮</span></h1>
 <div class="sub">The title has a game controller, but there's almost no gaming stock here — the core threads are "a shift in market mood around the typhoon day + the narrative fight over Meta renting out idle compute + a broad-based semiconductor price-hike cycle + the optical 'copper vs light' route war."<br>NotebookLM transcript analysis + Futu/FinMind data verified (US through 2026-07-10, TW through 2026-07-09 close). Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP678 (transcript analysis)</span>
@@ -58,7 +58,7 @@
 
 <h2>5 · Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone: <span class="win">bullish</span> / <span style="color:#4E83C4;font-weight:700">watch / technical</span> / <span class="mid">neutral</span> / <span class="lose">cautious / trim</span>. Read from tone of voice, not investment advice.</p>
+<p class="note">Tone: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watch / technical</span> / <span class="mid">neutral</span> / <span class="lose">cautious / trim</span>. Read from tone of voice, not investment advice.</p>
 
 <h2>6 · Key-numbers fact-check</h2>
 <div class="card">
@@ -95,7 +95,7 @@ const STOCKS=[
  {nm:'Yuanta Taiwan 50',code:'0050',mkt:'TW ETF',tone:'bull',said:'Up 50-something % YTD; with retail in the money, they now support keeping the market open.',chk:'✅ True, conservative. Actual YTD ~58~61% (65.60~66.95 → 105.80 on 7/9), higher than stated.',vd:'ok'},
 ];
 const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Watch / technical'],neu:['p-neu','Neutral'],bear:['p-bear','Cautious / trim']};
-const VD={ok:['✅','#3E8E5A','Verified'],warn:['⚠️','#C24B3C','Discrepancy/caveat'],na:['—','#9A917F','No number given'],q:['❓','#BB7A1A','Not verifiable']};
+const VD={ok:['✅','var(--win)','Verified'],warn:['⚠️','var(--lose)','Discrepancy/caveat'],na:['—','var(--ink3)','No number given'],q:['❓','var(--mid)','Not verifiable']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -118,6 +118,6 @@ const FACTS=[
  ['Passives/lead-frame/packaging hikes','"Mother hen leads chicks," broad hikes','No specific tickers named; industry-trend explainer, not verifiable per-name','q'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What the video said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

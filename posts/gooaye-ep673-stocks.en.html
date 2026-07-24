@@ -9,8 +9,8 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP673 · Stock Commentary Digest <span style="font-size:16px;color:#3E8E5A">｜🥬</span></h1>
-<div class="sub">Every stock and company mentioned in this episode — his views, reasoning, and catalysts, compiled ticker by ticker.<br>A pure <b style="color:#3E8E5A">transcript-based opinion digest</b> — not a financial valuation analysis.</div>
+<h1>Gooaye EP673 · Stock Commentary Digest <span style="font-size:16px;color:var(--win)">｜🥬</span></h1>
+<div class="sub">Every stock and company mentioned in this episode — his views, reasoning, and catalysts, compiled ticker by ticker.<br>A pure <b style="color:var(--win)">transcript-based opinion digest</b> — not a financial valuation analysis.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP673 transcript (NotebookLM)</span>
 <span class="badge">Compiled: 2026-06-24</span>
@@ -30,7 +30,7 @@
 <h2>I. Sentiment Overview</h2>
 <div class="card">
 <div style="overflow-x:auto"><table id="sumTable"></table></div>
-<p class="note">Tone legend: <span class="win">Bullish</span> / <span style="color:#4E83C4;font-weight:700">Turning bullish</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious</span>. Based on transcript tone — not a buy/sell recommendation.</p>
+<p class="note">Tone legend: <span class="win">Bullish</span> / <span style="color:var(--turn);font-weight:700">Turning bullish</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious</span>. Based on transcript tone — not a buy/sell recommendation.</p>
 </div>
 
 <h2>II. Taiwan Stocks</h2>
@@ -98,10 +98,10 @@ render(TW,'twCards');render(US,'usCards');
 // sentiment overview table
 const ALL=[...TW.map(x=>({...x,mkt:'TW'})),...US.map(x=>({...x,mkt:'US'}))];
 const ord={bull:0,turn:1,neu:2,bear:3};
-const col={bull:'#3E8E5A',turn:'#4E83C4',neu:'#BB7A1A',bear:'#C24B3C'};
+const col={bull:'var(--win)',turn:'var(--turn)',neu:'var(--mid)',bear:'var(--lose)'};
 ALL.sort((a,b)=>ord[a.tone]-ord[b.tone]);
 document.getElementById('sumTable').innerHTML='<tr><th>Market</th><th>Name</th><th>Ticker</th><th>Tone</th><th>In a Nutshell</th></tr>'+
-ALL.map(s=>`<tr><td>${s.mkt}</td><td><b>${s.nm}</b></td><td style="color:#9A917F">${s.code}</td>
-<td style="color:${col[s.tone]};font-weight:700">${TONE[s.tone][1]}</td><td style="font-size:12px;color:#6E695F">${s.said}</td></tr>`).join('');
+ALL.map(s=>`<tr><td>${s.mkt}</td><td><b>${s.nm}</b></td><td style="color:var(--ink3)">${s.code}</td>
+<td style="color:${col[s.tone]};font-weight:700">${TONE[s.tone][1]}</td><td style="font-size:12px;color:var(--ink2)">${s.said}</td></tr>`).join('');
 </script>
 </div></body></html>

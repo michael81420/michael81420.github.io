@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>股癌 EP681 · 個股觀點整理 <span style="font-size:16px;color:#7A8C5A">｜🦉</span></h1>
+<h1>股癌 EP681 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🦉</span></h1>
 <div class="sub">本集核心是「盤面定性 + 資金輪動觀察」:近期台股「中小型股重挫、大盤指數相對抗跌」的分歧走勢,主持人稱之為「人道走廊」;資金從中小型高評價股撤往台積電、台指期、「老AI」ODM 等防禦性大型股。具體事件圍繞 AMD Advancing AI 2026、Google Frozen v2 傳聞、國巨減資爭議、載板/被動元件/美股功率半導體族群。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind 數字核實,非買賣建議。</div>
 <div style="margin-top:10px">
 <span class="badge new">來源:股癌 EP681 逐字稿分析</span>
@@ -60,7 +60,7 @@
 
 <h2>五、提到的個股</h2>
 <div id="cards"></div>
-<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:#4E83C4;font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
 
 <h2>六、關鍵數字查證表</h2>
 <div class="card">
@@ -102,7 +102,7 @@ const STOCKS=[
  {nm:'Wolfspeed',code:'US.WOLF',mkt:'美股',tone:'bear',said:'SiC 龍頭,功率半導體。',chk:'⚠️仍正常交易屬實,但 2025/6 申請破產重整、2025/9 完成重組後重新上市(降債 70%);仍虧損,近 1 個月 -42%,高波動題材股。',vd:'warn'},
 ];
 const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
-const VD={ok:['✅','#3E8E5A','屬實'],warn:['⚠️','#C24B3C','有出入/需留意'],na:['—','#9A917F','未給數字'],q:['❓','#BB7A1A','查不到/純敘事']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -126,6 +126,6 @@ const FACTS=[
  ['國巨還原股價','2000~3000、最高 4000 多','減資史/波動方向屬實;FinMind 免費層級無法取得還原股價,具體數字無法核實','warn'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

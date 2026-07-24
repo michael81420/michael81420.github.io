@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP679 · Stock Notes <span style="font-size:16px;color:#3E8E5A">｜🧌</span></h1>
+<h1>Gooaye EP679 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🧌</span></h1>
 <div class="sub">The title has a troll, but the content is hard-nosed positioning/flows — the core threads are "Korean retail's extreme leverage unwinding igniting a global risk-asset pullback + Taiwan brokers tightening margin lines across the board, yet margin balance falling only ~NT$14bn (a 'miracle bounce') + rotation across substrate/test/power-chip names." Stock picks are only a small slice at the end.<br>NotebookLM transcript analysis + Futu/FinMind data verified (TW through 2026-07-15 close). Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP679 (transcript analysis)</span>
@@ -71,7 +71,7 @@
 
 <h2>7. Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:#4E83C4;font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
+<p class="note">Tone scale: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watch/technical</span> / <span class="mid">neutral</span> / <span class="lose">soft / trim</span>. Inferred from spoken tone; not investment advice.</p>
 
 <h2>8. Key-number fact-check table</h2>
 <div class="card">
@@ -107,7 +107,7 @@ const STOCKS=[
  {nm:'Substrate/CCL group',code:'industry',mkt:'TW',tone:'neu',said:'The scarcest thing in the market, price-hike notices already numbing; but inventory high, valuation rich — an old story after years of bull run.',chk:'❓Industry-trend statement; direction matches public info (tight substrate supply, ABF hikes), but not verifiable via a single stock; the "Seng-Hong" order-shift detail is low-confidence and shouldn\'t be quoted directly.',vd:'q'},
 ];
 const TONE={bull:['p-bull','bullish'],turn:['p-turn','watch/technical'],neu:['p-neu','neutral'],bear:['p-bear','soft / trim']};
-const VD={ok:['✅','#3E8E5A','true'],warn:['⚠️','#C24B3C','discrepancy/caution'],na:['—','#9A917F','no number given'],q:['❓','#BB7A1A','unverifiable/narrative']};
+const VD={ok:['✅','var(--win)','true'],warn:['⚠️','var(--lose)','discrepancy/caution'],na:['—','var(--ink3)','no number given'],q:['❓','var(--mid)','unverifiable/narrative']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -131,6 +131,6 @@ const FACTS=[
  ['"Seng-Hong" supplier order-shift to TW','Order-shift tailwind','Transcript too noisy, company-name confidence low, not fully verifiable','q'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What he said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

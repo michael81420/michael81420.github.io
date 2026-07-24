@@ -9,8 +9,8 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP675 · Stock Notes <span style="font-size:16px;color:#3E8E5A">｜🎢</span></h1>
-<div class="sub">Hsieh Meng-Kung on "where capital rotates in July" — three themes: the passive-component price-hike wave, MOSFET / power-component shortage, and an IC-design rebound. With <b style="color:#3E8E5A">real-data fact-checking</b> of every stock and on-air claim.<br>Cross-referenced third-party summaries + FinMind TW data verified (through 2026-07-02). Not investment advice.</div>
+<h1>Gooaye EP675 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🎢</span></h1>
+<div class="sub">Hsieh Meng-Kung on "where capital rotates in July" — three themes: the passive-component price-hike wave, MOSFET / power-component shortage, and an IC-design rebound. With <b style="color:var(--win)">real-data fact-checking</b> of every stock and on-air claim.<br>Cross-referenced third-party summaries + FinMind TW data verified (through 2026-07-02). Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP675 (cross-referenced summaries)</span>
 <span class="badge">Compiled: 2026-07-03</span>
@@ -58,7 +58,7 @@
 
 <h2>5 · Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone: <span class="win">Bullish</span> / <span style="color:#4E83C4;font-weight:700">Turnaround-lean</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious / trimming</span>. Read from the summary's tone; not investment advice.</p>
+<p class="note">Tone: <span class="win">Bullish</span> / <span style="color:var(--turn);font-weight:700">Turnaround-lean</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious / trimming</span>. Read from the summary's tone; not investment advice.</p>
 
 <h2>6 · Key-number fact-check</h2>
 <div class="card">
@@ -105,7 +105,7 @@ const STOCKS=[
  {nm:'Alchip',code:'3661',mkt:'TW',tone:'bull',said:'3nm/2nm AI accelerators, capital rotating back.',chk:'FinMind: <b>4,895</b> (+7.0%), PE 71.7x; but monthly rev YoY <b>-33.5%</b>, purely on the AI ASIC narrative.',vd:'warn'},
 ];
 const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Turnaround-lean'],neu:['p-neu','Neutral'],bear:['p-bear','Cautious / trimming']};
-const VD={ok:['✅','#3E8E5A','Holds up'],warn:['⚠️','#C24B3C','Discrepancy'],na:['—','#9A917F','No number'],q:['❓','#BB7A1A','Not found']};
+const VD={ok:['✅','var(--win)','Holds up'],warn:['⚠️','var(--lose)','Discrepancy'],na:['—','var(--ink3)','No number'],q:['❓','var(--mid)','Not found']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -125,6 +125,6 @@ const FACTS=[
  ['"If YoY isn\'t 50%, you\'re nothing"','Bar set at 50%','Of 10, only GUC (+132%) clears it; Yageo close','warn'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What the episode said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

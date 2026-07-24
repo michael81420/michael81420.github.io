@@ -9,8 +9,8 @@
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>Gooaye EP676 · Stock Notes <span style="font-size:16px;color:#3E8E5A">｜🐬</span></h1>
-<div class="sub">This episode's core thread is the "transmission chain" of the AI supply-chain shortage — passive components already ran, power components/MOSFETs are the current leg, and OSAT (packaging &amp; test) is next up. With <b style="color:#3E8E5A">real-data fact-checking</b> of the claims on Meta's Neo Cloud pivot, optical-networking capital flows, and driver ICs.<br>NotebookLM transcript analysis + FinMind/Futu data verified (through 2026-07-03). Not investment advice.</div>
+<h1>Gooaye EP676 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🐬</span></h1>
+<div class="sub">This episode's core thread is the "transmission chain" of the AI supply-chain shortage — passive components already ran, power components/MOSFETs are the current leg, and OSAT (packaging &amp; test) is next up. With <b style="color:var(--win)">real-data fact-checking</b> of the claims on Meta's Neo Cloud pivot, optical-networking capital flows, and driver ICs.<br>NotebookLM transcript analysis + FinMind/Futu data verified (through 2026-07-03). Not investment advice.</div>
 <div style="margin-top:10px">
 <span class="badge new">Source: Gooaye EP676 (transcript analysis)</span>
 <span class="badge">Compiled: 2026-07-05</span>
@@ -58,7 +58,7 @@
 
 <h2>5 · Stocks mentioned</h2>
 <div id="cards"></div>
-<p class="note">Tone: <span class="win">Bullish</span> / <span style="color:#4E83C4;font-weight:700">Turnaround-lean</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious / trimming</span>. Read from on-air tone; not investment advice.</p>
+<p class="note">Tone: <span class="win">Bullish</span> / <span style="color:var(--turn);font-weight:700">Turnaround-lean</span> / <span class="mid">Neutral</span> / <span class="lose">Cautious / trimming</span>. Read from on-air tone; not investment advice.</p>
 
 <h2>6 · Meta Neo Cloud event: two-day US stock reaction</h2>
 <div class="card">
@@ -112,7 +112,7 @@ const STOCKS=[
  {nm:'MediaTek',code:'2454',mkt:'TW',tone:'neu',said:'Historical analogy: once ran on an AI narrative from a low, then couldn\'t be bought cheap again.',chk:'FinMind: <b>4,195</b> (1M <b>−7.9%</b>, 5D rebound +8.1%) — purely a narrative analogy; actually down over the past month, shouldn\'t be misread as "strong right now."',vd:'q'},
 ];
 const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Turnaround-lean'],neu:['p-neu','Neutral'],bear:['p-bear','Cautious / trimming']};
-const VD={ok:['✅','#3E8E5A','Holds up'],warn:['⚠️','#C24B3C','Discrepancy/caveat'],na:['—','#9A917F','No number'],q:['❓','#BB7A1A','Not found/narrative only']};
+const VD={ok:['✅','var(--win)','Holds up'],warn:['⚠️','var(--lose)','Discrepancy/caveat'],na:['—','var(--ink3)','No number'],q:['❓','var(--mid)','Not found/narrative only']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -132,6 +132,6 @@ const FACTS=[
  ['OSAT quotes up sharply (30%-150%)','Supply-chain chatter, shortages and hikes','High ASR mishearing risk in the transcript; secondhand industry talk, precise figures unverifiable','q'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What the episode said</th><th>Verification</th><th>Verdict</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>

@@ -9,7 +9,7 @@
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>股癌 EP680 · 個股觀點整理 <span style="font-size:16px;color:#C24B3C">｜💔</span></h1>
+<h1>股癌 EP680 · 個股觀點整理 <span style="font-size:16px;color:var(--lose)">｜💔</span></h1>
 <div class="sub">標題掛了心碎,內容其實是「台積電 Q2 財報數字逐項核實全對,法說會隔天股價卻仍重挫 ＋ 真正的主因是韓國槓桿 ETF 爆倉、不是台積電基本面出事 ＋ 用 forward PE 驗證台積電估值其實不貴 ＋ 聽眾 Q&amp;A 兩個對照組:飛捷有數據撐、聯發科目標價喊話沒有」。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind 數字核實(台股截至 2026-07-17 收盤),非買賣建議。</div>
 <div style="margin-top:10px">
 <span class="badge new">來源:股癌 EP680 逐字稿分析</span>
@@ -59,7 +59,7 @@
 
 <h2>五、提到的個股</h2>
 <div id="cards"></div>
-<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:#4E83C4;font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
 
 <h2>六、關鍵數字查證表</h2>
 <div class="card">
@@ -91,7 +91,7 @@ const STOCKS=[
  {nm:'飛捷科技',code:'6206',mkt:'台股',tone:'bull',said:'今年獲利創新高、軟體營收成長數倍,但股價一路陰跌,漲沒份跌有份。',chk:'✅營收/獲利成長屬實:月營收2月4.67億→6月6.10億,YoY約40-90%;Q1 EPS年增10.6%。股價從52週高點172.5元回檔至119.0元(-31%),Trailing PER僅16.69倍,估值便宜。「軟體營收數倍成長」細節無法單獨驗證。',vd:'ok'},
 ];
 const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
-const VD={ok:['✅','#3E8E5A','屬實'],warn:['⚠️','#C24B3C','有出入/需留意'],na:['—','#9A917F','未給數字'],q:['❓','#BB7A1A','查不到/純敘事']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
 const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
 STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
  const d=document.createElement('div');d.className='scard';
@@ -115,6 +115,6 @@ const FACTS=[
  ['聯發科目標價','8,000-10,000元','現價3,370元,Trailing PER已53.71倍,目標價需PE衝到130-160倍,缺乏支撐','warn'],
 ];
 document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
-FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:#6E695F">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
 </script>
 </div></body></html>
