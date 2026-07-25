@@ -102,6 +102,29 @@
 {users.map(u =&gt; &lt;Row <span class="ok">key={u.id}</span> user={u} /&gt;)}   <span class="c">// ✅ 用資料 id</span>
 {users.map((u, i) =&gt; &lt;Row <span class="bad">key={i}</span> user={u} /&gt;)}   <span class="c">// ❌ 用 index</span></code></pre>
 <p><b>key 是什麼</b>：React 用 key 認出「重新 render 前後，哪個項目是同一個」。<b>為什麼不能用 index</b>：清單一旦<b>重排、插入、刪除</b>，同一筆資料的 index 會變，React 會把畫面狀態（例如輸入框裡打到一半的字、勾選狀態）<b>綁到錯的項目</b>上。</p>
+
+<p><b>具體例子</b>：一個可刪除的清單，每列有自己的輸入框。</p>
+<pre><code><span class="k">const</span> [rows, setRows] = useState([
+  { id: <span class="s">'a'</span>, name: <span class="s">'小明'</span> },
+  { id: <span class="s">'b'</span>, name: <span class="s">'小華'</span> },
+  { id: <span class="s">'c'</span>, name: <span class="s">'小美'</span> },
+]);
+
+rows.map((r, i) =&gt; (
+  &lt;li <span class="bad">key={i}</span>&gt;                  <span class="c">// ❌ 換成 key={r.id} 就正確</span>
+    {r.name} &lt;input placeholder=<span class="s">"備註"</span> /&gt;   <span class="c">// 打的字存在 DOM 自己身上</span>
+    &lt;button onClick={() =&gt; remove(r.id)}&gt;刪&lt;/button&gt;
+  &lt;/li&gt;
+))</code></pre>
+<p>操作：在三個輸入框分別打上 <code>A</code>、<code>B</code>、<code>C</code>，然後<b>刪掉第一列（小明）</b>。畫面剩兩列，各自的輸入框裡會是什麼？</p>
+<table>
+<tr><th>刪掉小明後</th><th class="win">key={r.id}</th><th class="lose">key={i}</th></tr>
+<tr><td>第 1 列</td><td>小華 — <code>B</code> ✅</td><td>小華 — <code>A</code> ❌</td></tr>
+<tr><td>第 2 列</td><td>小美 — <code>C</code> ✅</td><td>小美 — <code>B</code> ❌</td></tr>
+</table>
+<p><b>為什麼</b>：刪掉後小華的 index 從 1 變成 0。用 index 當 key，React 看到的是「key=0 這一列還在，只是名字從小明變小華」，於是<b>沿用原本那個 DOM 輸入框</b>——裡面的 <code>A</code> 就留在小華身上了。用 <code>r.id</code> 當 key，React 看到的是「key=a 這一列消失了」，就把整列（含輸入框）一起移除，<code>B</code>、<code>C</code> 各自跟著自己的列走。</p>
+<p>同樣的錯位會發生在 checkbox 勾選、focus 位置、CSS 動畫、以及子元件自己的 <code>useState</code> 上——凡是<b>存在元件內部而不在你 state 陣列裡</b>的東西都會錯位。</p>
+
 <table>
 <tr><th>清單情況</th><th>key 該用什麼</th></tr>
 <tr><td>資料有唯一 id</td><td class="win">用 id（最佳）</td></tr>
@@ -184,7 +207,7 @@ setCount(c =&gt; c + 1); <span class="c">// 2→3  ✅ 真的 +3</span></code></
 <div class="demo-row">
 <span class="big-num" data-out>0</span>
 <button data-act="stale">setCount(count+1) × 3</button>
-<button class="ghost" data-act="fresh">setCount(c =&gt; c+1) × 3</button>
+<button data-act="fresh">setCount(c =&gt; c+1) × 3</button>
 <button class="ghost" data-act="reset">歸零</button>
 </div>
 <div class="msg" data-msg>先按左邊那顆——雖然呼叫三次，卻只 +1。</div>
@@ -252,7 +275,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <text x="40" y="273" style="fill:var(--ink2);font:12.5px sans-serif">更新動作多、轉移邏輯複雜</text>
 <rect x="404" y="248" width="332" height="40" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
 <text x="420" y="273" style="fill:var(--ink);font:600 12.5px sans-serif">→ 用 useReducer（可搭 Context）</text>
-<path d="M300 54 L174 54 L174 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<path d="M380 54 L380 72 L174 72 L174 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="324" y1="112" x2="402" y2="112" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="324" y1="164" x2="402" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="324" y1="216" x2="402" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
@@ -319,8 +342,33 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <h3>3.4 保留與重置 state</h3>
 <p>state 綁在「元件在畫面樹裡的<b>位置</b>」。同一個位置、同一種元件 → React <b>保留</b> state；換掉 <code>key</code> → React 把它當成新元件、<b>重置</b> state。</p>
-<pre><code><span class="c">// 切換使用者時想清空表單？換 key 逼它重置</span>
-&lt;ProfileForm key={userId} /&gt;</code></pre>
+<p><b>什麼時候會咬到你</b>：後台切換要編輯的使用者，表單裡上一個人打到一半的字沒清掉。</p>
+<pre><code><span class="k">function</span> ProfileForm() {
+  <span class="k">const</span> [nick, setNick] = useState(<span class="s">""</span>);   <span class="c">// 使用者打的字在這</span>
+  <span class="k">return</span> &lt;input value={nick} onChange={e =&gt; setNick(e.target.value)} /&gt;;
+}
+
+<span class="k">function</span> Admin() {
+  <span class="k">const</span> [userId, setUserId] = useState(1);
+  <span class="k">return</span> &lt;&gt;
+    &lt;select onChange={e =&gt; setUserId(+e.target.value)}&gt;…&lt;/select&gt;
+    <span class="bad">&lt;ProfileForm /&gt;</span>   <span class="c">// ❌ 換人了，上一個人打的字還留著</span>
+    <span class="ok">&lt;ProfileForm key={userId} /&gt;</span>   <span class="c">// ✅ key 一變 → 當成新元件 → state 歸零</span>
+  &lt;/&gt;;
+}</code></pre>
+<p><b>為什麼</b>：React 只看「這個位置上還是不是同一種元件」。<code>userId</code> 從 1 變 2，對 React 來說 <code>&lt;ProfileForm /&gt;</code> 還是待在 <code>Admin</code> 的同一個位置、還是同一種元件，所以 state 原封不動——它根本不知道你心裡換了一個人。給 <code>key</code> 就是明講「這是不同的一個」。</p>
+<p><b>反過來的坑</b>：位置變了，state 會被你不小心丟掉。</p>
+<pre><code><span class="c">// ❌ 兩個分支裡的 Form 在樹裡位置不同 → 切換時 state 全清空</span>
+{isWide ? &lt;div className=<span class="s">"col"</span>&gt;&lt;Form /&gt;&lt;/div&gt; : &lt;Form /&gt;}
+
+<span class="c">// ✅ 位置固定，只改外層樣式</span>
+&lt;div className={isWide ? <span class="s">"col"</span> : <span class="s">""</span>}&gt;&lt;Form /&gt;&lt;/div&gt;</code></pre>
+<table>
+<tr><th>你想要</th><th>怎麼做</th></tr>
+<tr><td>換使用者 / 換項目時清空</td><td class="win">給 <code>key={id}</code></td></tr>
+<tr><td>切 tab 但保留打到一半的字</td><td class="mid">別換 key，也別改元件位置</td></tr>
+<tr><td>切換時 state 莫名消失</td><td class="lose">檢查兩個分支是不是把元件放在不同位置</td></tr>
+</table>
 </div>
 <div class="card">
 <h3>3.5 useReducer：把複雜的更新邏輯集中</h3>
@@ -330,7 +378,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="demo-row">
 <span class="big-num" data-out>0</span>
 <button data-type="inc">dispatch(+1)</button>
-<button class="ghost" data-type="dec">dispatch(−1)</button>
+<button data-type="dec">dispatch(−1)</button>
 <button class="ghost" data-type="reset">reset</button>
 </div>
 <div class="log" data-log></div>
@@ -357,11 +405,60 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <h3>3.6 Context：跨多層傳同一份資料</h3>
 <p>當很多層、很多元件都要讀同一份「全站級」資料（主題、登入者、語系），一路用 props 傳很痛苦（叫 <b>prop drilling</b>）。Context 讓你在上層 <code>Provider</code> 一次供給，下面任何深度的元件用 <code>useContext</code> 直接拿。</p>
-<p class="note"><b>何時用</b>：資料是「很多元件共享的全站設定」。<b>別濫用</b>——不是所有 state 都塞 Context，那會讓每次變動牽動一大片重繪。多數 state 用本地 + 提升就好。</p>
+<p><b>prop drilling 長怎樣</b>：最深處的 <code>Button</code> 要用 <code>theme</code>，中間三層明明<b>自己用不到</b>，卻每一層都得宣告一次、再往下傳一次。</p>
+<pre><code><span class="c">// ❌ 中間層只是「幫忙運貨」，多一個設定就要動四個檔案</span>
+&lt;Page theme={theme}&gt;
+  &lt;Layout theme={theme}&gt;
+    &lt;Sidebar theme={theme}&gt;
+      &lt;Button theme={theme} /&gt;   <span class="c">// ← 只有這裡真的要用</span></code></pre>
+<p><b>Context 三步驟</b>：</p>
+<pre><code><span class="c">// 1. 建立一個 context（給預設值）</span>
+<span class="k">const</span> ThemeContext = createContext(<span class="s">"light"</span>);
+
+<span class="c">// 2. 上層供給一次，中間層什麼都不用寫</span>
+&lt;ThemeContext.Provider value={theme}&gt;
+  &lt;Page /&gt;     <span class="c">// Page / Layout / Sidebar 都不必再碰 theme</span>
+&lt;/ThemeContext.Provider&gt;
+
+<span class="c">// 3. 任何深度直接拿</span>
+<span class="k">function</span> Button() {
+  <span class="k">const</span> theme = useContext(ThemeContext);   <span class="c">// 不經過 props</span>
+  <span class="k">return</span> &lt;button className={theme}&gt;送出&lt;/button&gt;;
+}</code></pre>
+<p><b>代價是什麼</b>：兩件事。一是「這個值從哪來」變得不明顯——看 <code>Button</code> 的 props 再也看不出它吃了什麼。二是 <b><code>value</code> 一變，所有 <code>useContext</code> 它的元件都會重繪</b>，所以別把「每次打字都在變」的 state 塞進去。</p>
+<table>
+<tr><th>情況</th><th>用什麼</th></tr>
+<tr><td>只傳兩三層</td><td class="win">直接傳 props，比較好讀</td></tr>
+<tr><td>很多層、很多元件共讀，且很少變</td><td class="mid">Context（主題、登入者、語系）</td></tr>
+<tr><td>高頻變動的值（輸入框內容、滑鼠位置）</td><td class="lose">別放 Context，會拖垮一大片</td></tr>
+</table>
 </div>
 <div class="card">
 <h3>3.7 Reducer + Context = 輕量全域狀態</h3>
-<p>把 <b>useReducer 的 state/dispatch</b> 放進 <b>Context</b>，就得到一個不用裝任何套件的輕量全域狀態方案：邏輯集中（reducer）、供給廣（context）。多數中小型 App 用這組就夠，不必急著上 Redux/Zustand。</p>
+<p>3.5 的 reducer 把「怎麼變」集中了，但 <code>dispatch</code> 還是只有那個元件拿得到；3.6 的 Context 能供給很廣，但沒說怎麼「改」。<b>兩個湊起來</b>就是一套不用裝任何套件的全域狀態：邏輯集中在 reducer，state 和 dispatch 靠 Context 送到任何深度。</p>
+<pre><code><span class="k">const</span> TasksContext = createContext(null);
+<span class="k">const</span> DispatchContext = createContext(null);   <span class="c">// 刻意拆成兩個，原因見下</span>
+
+<span class="k">function</span> TasksProvider({ children }) {
+  <span class="k">const</span> [tasks, dispatch] = useReducer(tasksReducer, []);
+  <span class="k">return</span> (
+    &lt;TasksContext.Provider value={tasks}&gt;
+      &lt;DispatchContext.Provider value={dispatch}&gt;{children}&lt;/DispatchContext.Provider&gt;
+    &lt;/TasksContext.Provider&gt;
+  );
+}
+
+<span class="c">// 任何深度的元件：讀資料 / 發動作，兩邊都不用一路傳 props</span>
+<span class="k">function</span> TaskList() {
+  <span class="k">const</span> tasks = useContext(TasksContext);
+  <span class="k">return</span> tasks.map(t =&gt; &lt;li key={t.id}&gt;{t.text}&lt;/li&gt;);
+}
+<span class="k">function</span> AddButton() {
+  <span class="k">const</span> dispatch = useContext(DispatchContext);
+  <span class="k">return</span> &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"add"</span>, text: <span class="s">"新任務"</span> })}&gt;新增&lt;/button&gt;;
+}</code></pre>
+<p><b>為什麼拆成兩個 Context</b>：<code>dispatch</code> 這個函式從頭到尾<b>不會變</b>。把它獨立出來後，像 <code>AddButton</code> 這種「只發動作、不讀資料」的元件，就不會因為 <code>tasks</code> 每次更新而跟著重繪。合成一個 <code>{tasks, dispatch}</code> 物件也能動，但每次更新都產生新物件，所有訂閱者一起重繪。</p>
+<p class="note"><b>什麼時候才真的需要 Redux / Zustand</b>：要 middleware（log、非同步流程）、要 devtools 時光機、要細粒度訂閱（只訂一個欄位、避免整棵樹重繪）、或要持久化到 localStorage/URL。上面這組沒有這些，但多數中小型 App 也用不到——先用它，撞到牆再換。</p>
 </div>
 
 <h2 id="c4" class="day-anchor">4 · 逃生艙 — 需要跳出 React 模型時</h2>
@@ -381,7 +478,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 </div>
 <div class="demo-row" style="margin-top:12px">
 <button data-act="state">setState + 1</button>
-<button class="ghost" data-act="ref">ref.current + 1</button>
+<button data-act="ref">ref.current + 1</button>
 </div>
 <div class="msg" data-hint>按 <b>setState+1</b>：畫面立刻更新。按 <b>ref+1</b>：畫面不會動。</div>
 <details class="code-fold"><summary>&lt;/&gt; 展開：這個 demo 的 React 完整寫法</summary>
@@ -456,7 +553,7 @@ inputRef.current.focus(); <span class="c">// 抓 DOM 節點直接操作</span></
 <line x1="350" y1="109" x2="390" y2="109" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
 <line x1="350" y1="165" x2="390" y2="165" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
 <line x1="350" y1="221" x2="390" y2="221" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
-<path d="M300 50 L185 50 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M380 50 L380 68 L185 68 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
 </svg>
 </div>
 <p>下面示範最常見的誤用：把「由 first + last 算出的 fullName」塞進 Effect，會多一次 render（畫面可能閃一下）。打字看 render 次數，勾選框切換兩種寫法：</p>

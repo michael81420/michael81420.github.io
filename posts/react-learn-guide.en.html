@@ -102,6 +102,29 @@
 {users.map(u =&gt; &lt;Row <span class="ok">key={u.id}</span> user={u} /&gt;)}   <span class="c">// ✅ data id</span>
 {users.map((u, i) =&gt; &lt;Row <span class="bad">key={i}</span> user={u} /&gt;)}   <span class="c">// ❌ index</span></code></pre>
 <p><b>What a key is</b>: React uses it to recognize "which item is the same one across re-renders." <b>Why not the index</b>: once a list is <b>reordered, inserted into, or filtered</b>, an item's index shifts, and React attaches UI state (half-typed input, checkbox state) to the <b>wrong item</b>.</p>
+
+<p><b>A concrete example</b>: a deletable list where every row has its own input.</p>
+<pre><code><span class="k">const</span> [rows, setRows] = useState([
+  { id: <span class="s">'a'</span>, name: <span class="s">'Ann'</span> },
+  { id: <span class="s">'b'</span>, name: <span class="s">'Ben'</span> },
+  { id: <span class="s">'c'</span>, name: <span class="s">'Cal'</span> },
+]);
+
+rows.map((r, i) =&gt; (
+  &lt;li <span class="bad">key={i}</span>&gt;                  <span class="c">// ❌ key={r.id} would be correct</span>
+    {r.name} &lt;input placeholder=<span class="s">"note"</span> /&gt;   <span class="c">// typed text lives in the DOM node</span>
+    &lt;button onClick={() =&gt; remove(r.id)}&gt;Delete&lt;/button&gt;
+  &lt;/li&gt;
+))</code></pre>
+<p>Type <code>A</code>, <code>B</code>, <code>C</code> into the three inputs, then <b>delete the first row (Ann)</b>. Two rows are left — what is in their inputs?</p>
+<table>
+<tr><th>After deleting Ann</th><th class="win">key={r.id}</th><th class="lose">key={i}</th></tr>
+<tr><td>Row 1</td><td>Ben — <code>B</code> ✅</td><td>Ben — <code>A</code> ❌</td></tr>
+<tr><td>Row 2</td><td>Cal — <code>C</code> ✅</td><td>Cal — <code>B</code> ❌</td></tr>
+</table>
+<p><b>Why</b>: after the delete, Ben's index goes from 1 to 0. With the index as key, React sees "row key=0 is still there, its name just changed from Ann to Ben," so it <b>reuses that same DOM input</b> — and the <code>A</code> stays behind on Ben. With <code>r.id</code> as key, React sees "row key=a is gone," removes the whole row including its input, and <code>B</code> and <code>C</code> travel with their own rows.</p>
+<p>The same mismatch hits checkbox state, focus, CSS animations, and a child component's own <code>useState</code> — anything that <b>lives inside the component rather than in your state array</b>.</p>
+
 <table>
 <tr><th>List situation</th><th>What to use for key</th></tr>
 <tr><td>Data has a unique id</td><td class="win">Use the id (best)</td></tr>
@@ -184,7 +207,7 @@ setCount(c =&gt; c + 1); <span class="c">// 2→3  ✅ actually +3</span></code>
 <div class="demo-row">
 <span class="big-num" data-out>0</span>
 <button data-act="stale">setCount(count+1) × 3</button>
-<button class="ghost" data-act="fresh">setCount(c =&gt; c+1) × 3</button>
+<button data-act="fresh">setCount(c =&gt; c+1) × 3</button>
 <button class="ghost" data-act="reset">reset</button>
 </div>
 <div class="msg" data-msg>Press the left one first — three calls, yet only +1.</div>
@@ -252,7 +275,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <text x="40" y="273" style="fill:var(--ink2);font:12.5px sans-serif">Many actions, complex logic</text>
 <rect x="434" y="248" width="302" height="40" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
 <text x="450" y="273" style="fill:var(--ink);font:600 12.5px sans-serif">→ useReducer (optionally + Context)</text>
-<path d="M300 54 L189 54 L189 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<path d="M380 54 L380 72 L189 72 L189 90" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="354" y1="112" x2="432" y2="112" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="354" y1="164" x2="432" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
 <line x1="354" y1="216" x2="432" y2="216" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
@@ -319,8 +342,33 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <h3>3.4 Preserving and resetting state</h3>
 <p>State is tied to a component's <b>position</b> in the UI tree. Same position, same component type → React <b>preserves</b> the state; change the <code>key</code> → React treats it as a new component and <b>resets</b> the state.</p>
-<pre><code><span class="c">// Want to clear the form when switching users? Change the key.</span>
-&lt;ProfileForm key={userId} /&gt;</code></pre>
+<p><b>Where this bites you</b>: you switch which user you're editing, and the previous user's half-typed text is still sitting in the form.</p>
+<pre><code><span class="k">function</span> ProfileForm() {
+  <span class="k">const</span> [nick, setNick] = useState(<span class="s">""</span>);   <span class="c">// the typed text lives here</span>
+  <span class="k">return</span> &lt;input value={nick} onChange={e =&gt; setNick(e.target.value)} /&gt;;
+}
+
+<span class="k">function</span> Admin() {
+  <span class="k">const</span> [userId, setUserId] = useState(1);
+  <span class="k">return</span> &lt;&gt;
+    &lt;select onChange={e =&gt; setUserId(+e.target.value)}&gt;…&lt;/select&gt;
+    <span class="bad">&lt;ProfileForm /&gt;</span>   <span class="c">// ❌ new user, old text still there</span>
+    <span class="ok">&lt;ProfileForm key={userId} /&gt;</span>   <span class="c">// ✅ key changes → new component → state reset</span>
+  &lt;/&gt;;
+}</code></pre>
+<p><b>Why</b>: React only checks "is this still the same component type in the same position?" When <code>userId</code> goes 1 → 2, <code>&lt;ProfileForm /&gt;</code> is still the same type in the same slot of <code>Admin</code>, so its state is untouched — React has no idea you meant a different person. The <code>key</code> is you saying so explicitly.</p>
+<p><b>The reverse trap</b>: change the position and you throw state away by accident.</p>
+<pre><code><span class="c">// ❌ the two Forms sit at different positions → switching wipes the state</span>
+{isWide ? &lt;div className=<span class="s">"col"</span>&gt;&lt;Form /&gt;&lt;/div&gt; : &lt;Form /&gt;}
+
+<span class="c">// ✅ fixed position, only the wrapper's class changes</span>
+&lt;div className={isWide ? <span class="s">"col"</span> : <span class="s">""</span>}&gt;&lt;Form /&gt;&lt;/div&gt;</code></pre>
+<table>
+<tr><th>What you want</th><th>What to do</th></tr>
+<tr><td>Clear it when switching user / item</td><td class="win">Give it <code>key={id}</code></td></tr>
+<tr><td>Switch tabs but keep half-typed text</td><td class="mid">Don't change the key or the position</td></tr>
+<tr><td>State mysteriously vanishes on toggle</td><td class="lose">Check whether the two branches place the component differently</td></tr>
+</table>
 </div>
 <div class="card">
 <h3>3.5 useReducer: centralize complex update logic</h3>
@@ -330,7 +378,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="demo-row">
 <span class="big-num" data-out>0</span>
 <button data-type="inc">dispatch(+1)</button>
-<button class="ghost" data-type="dec">dispatch(−1)</button>
+<button data-type="dec">dispatch(−1)</button>
 <button class="ghost" data-type="reset">reset</button>
 </div>
 <div class="log" data-log></div>
@@ -357,11 +405,60 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <h3>3.6 Context: pass the same data through many layers</h3>
 <p>When many layers and many components need the same "app-wide" data (theme, current user, locale), threading it through props is painful (called <b>prop drilling</b>). Context lets you provide it once at a top-level <code>Provider</code>, and any component below — at any depth — grabs it with <code>useContext</code>.</p>
-<p class="note"><b>When to use</b>: data that's "shared app-wide config." <b>Don't overuse it</b> — not every piece of state belongs in Context, or a single change re-renders a huge subtree. Most state is fine as local + lifted.</p>
+<p><b>What prop drilling looks like</b>: only the deepest <code>Button</code> needs <code>theme</code>, but three layers that <b>never use it</b> each have to declare it and pass it down.</p>
+<pre><code><span class="c">// ❌ the middle layers are just freight forwarders</span>
+&lt;Page theme={theme}&gt;
+  &lt;Layout theme={theme}&gt;
+    &lt;Sidebar theme={theme}&gt;
+      &lt;Button theme={theme} /&gt;   <span class="c">// ← the only one that uses it</span></code></pre>
+<p><b>Context in three steps</b>:</p>
+<pre><code><span class="c">// 1. Create a context (with a default)</span>
+<span class="k">const</span> ThemeContext = createContext(<span class="s">"light"</span>);
+
+<span class="c">// 2. Provide it once up top; middle layers write nothing</span>
+&lt;ThemeContext.Provider value={theme}&gt;
+  &lt;Page /&gt;     <span class="c">// Page / Layout / Sidebar never touch theme</span>
+&lt;/ThemeContext.Provider&gt;
+
+<span class="c">// 3. Read it at any depth</span>
+<span class="k">function</span> Button() {
+  <span class="k">const</span> theme = useContext(ThemeContext);   <span class="c">// no props involved</span>
+  <span class="k">return</span> &lt;button className={theme}&gt;Submit&lt;/button&gt;;
+}</code></pre>
+<p><b>What it costs</b>: two things. "Where does this value come from" stops being obvious — <code>Button</code>'s props no longer tell you what it consumes. And <b>every component reading the context re-renders when <code>value</code> changes</b>, so don't put state that changes on every keystroke in there.</p>
+<table>
+<tr><th>Situation</th><th>What to use</th></tr>
+<tr><td>Two or three layers deep</td><td class="win">Just pass props — easier to read</td></tr>
+<tr><td>Many layers read it, and it rarely changes</td><td class="mid">Context (theme, current user, locale)</td></tr>
+<tr><td>High-frequency values (input text, mouse position)</td><td class="lose">Keep it out — it drags a whole subtree</td></tr>
+</table>
 </div>
 <div class="card">
 <h3>3.7 Reducer + Context = lightweight global state</h3>
-<p>Put a <b>useReducer's state/dispatch</b> into <b>Context</b> and you get a lightweight global-state solution with zero libraries: centralized logic (reducer), broad reach (context). Most small-to-mid apps are fine with this combo — no need to rush to Redux/Zustand.</p>
+<p>3.5's reducer centralized <i>how state changes</i>, but only that one component holds the <code>dispatch</code>. 3.6's Context reaches far, but says nothing about <i>changing</i> anything. <b>Combine them</b> and you get global state with zero libraries: logic centralized in the reducer, state and dispatch delivered to any depth by Context.</p>
+<pre><code><span class="k">const</span> TasksContext = createContext(null);
+<span class="k">const</span> DispatchContext = createContext(null);   <span class="c">// deliberately two — see below</span>
+
+<span class="k">function</span> TasksProvider({ children }) {
+  <span class="k">const</span> [tasks, dispatch] = useReducer(tasksReducer, []);
+  <span class="k">return</span> (
+    &lt;TasksContext.Provider value={tasks}&gt;
+      &lt;DispatchContext.Provider value={dispatch}&gt;{children}&lt;/DispatchContext.Provider&gt;
+    &lt;/TasksContext.Provider&gt;
+  );
+}
+
+<span class="c">// Any depth: read data, fire actions — no props threaded either way</span>
+<span class="k">function</span> TaskList() {
+  <span class="k">const</span> tasks = useContext(TasksContext);
+  <span class="k">return</span> tasks.map(t =&gt; &lt;li key={t.id}&gt;{t.text}&lt;/li&gt;);
+}
+<span class="k">function</span> AddButton() {
+  <span class="k">const</span> dispatch = useContext(DispatchContext);
+  <span class="k">return</span> &lt;button onClick={() =&gt; dispatch({ type: <span class="s">"add"</span>, text: <span class="s">"New task"</span> })}&gt;Add&lt;/button&gt;;
+}</code></pre>
+<p><b>Why two contexts</b>: <code>dispatch</code> is a function that <b>never changes</b>. Splitting it out means a component like <code>AddButton</code> — which only fires actions and never reads data — won't re-render every time <code>tasks</code> updates. One combined <code>{tasks, dispatch}</code> object works too, but it's a fresh object on every update, so every consumer re-renders.</p>
+<p class="note"><b>When you actually need Redux / Zustand</b>: middleware (logging, async flows), devtools time travel, fine-grained subscriptions (subscribe to one field instead of re-rendering the tree), or persistence to localStorage/URL. The combo above has none of that — but most small-to-mid apps never need it. Start here, switch when you hit the wall.</p>
 </div>
 
 <h2 id="c4" class="day-anchor">4 · Escape Hatches — when you need to step outside React</h2>
@@ -381,7 +478,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 </div>
 <div class="demo-row" style="margin-top:12px">
 <button data-act="state">setState + 1</button>
-<button class="ghost" data-act="ref">ref.current + 1</button>
+<button data-act="ref">ref.current + 1</button>
 </div>
 <div class="msg" data-hint>Press <b>setState+1</b>: the UI updates instantly. Press <b>ref+1</b>: the UI won't move.</div>
 <details class="code-fold"><summary>&lt;/&gt; Expand: the full React component behind this demo</summary>
@@ -456,7 +553,7 @@ inputRef.current.focus(); <span class="c">// grab a DOM node, operate directly</
 <line x1="360" y1="109" x2="398" y2="109" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
 <line x1="360" y1="165" x2="398" y2="165" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
 <line x1="360" y1="221" x2="398" y2="221" style="stroke:var(--ink3)" marker-end="url(#ah5)"/>
-<path d="M300 50 L185 50 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
+<path d="M380 50 L380 68 L185 68 L185 84" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah5)"/>
 </svg>
 </div>
 <p>Below is the most common misuse: putting "fullName, derived from first + last" into an Effect, which adds an extra render (the UI can flicker). Type and watch the render count; toggle the checkbox to switch between the two approaches:</p>

@@ -1,27 +1,31 @@
 /* 主題切換 + 語言切換 + 首頁分類/搜尋過濾 + 文章頁左側全文章樹。無框架，純原生。 */
 
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
-   順序＝首頁卡片順序（新→舊）。cat 用首頁 data-cat 的正規中文值。 */
+   d = 日期（同首頁 .pc-date），排序一律依 d 算，陣列擺放順序不影響顯示。
+   cat 用首頁 data-cat 的正規中文值。 */
 var POSTS=[
-  {slug:'typescript-learn-guide',     cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript'},
-  {slug:'react-learn-guide',          cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
-  {slug:'javascript-learn-guide',     cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
-  {slug:'openwiki',                   cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
-  {slug:'karpathy-llm-wiki',          cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
-  {slug:'gooaye-ep682-stocks',        cat:'股癌podcast分析', zh:'股癌 EP682 · 個股觀點整理',          en:'Gooaye EP682 · Stock Notes'},
-  {slug:'gooaye-ep681-stocks',        cat:'股癌podcast分析', zh:'股癌 EP681 · 個股觀點整理',          en:'Gooaye EP681 · Stock Notes'},
-  {slug:'gooaye-ep680-stocks',        cat:'股癌podcast分析', zh:'股癌 EP680 · 個股觀點整理',          en:'Gooaye EP680 · Stock Notes'},
-  {slug:'gooaye-ep679-stocks',        cat:'股癌podcast分析', zh:'股癌 EP679 · 個股觀點整理',          en:'Gooaye EP679 · Stock Notes'},
-  {slug:'gooaye-ep678-stocks',        cat:'股癌podcast分析', zh:'股癌 EP678 · 個股觀點整理',          en:'Gooaye EP678 · Stock Notes'},
-  {slug:'gooaye-ep677-stocks',        cat:'股癌podcast分析', zh:'股癌 EP677 · 個股觀點整理',          en:'Gooaye EP677 · Stock Notes'},
-  {slug:'gooaye-ep676-stocks',        cat:'股癌podcast分析', zh:'股癌 EP676 · 個股觀點整理',          en:'Gooaye EP676 · Stock Notes'},
-  {slug:'gooaye-ep675-stocks',        cat:'股癌podcast分析', zh:'股癌 EP675 · 個股觀點整理',          en:'Gooaye EP675 · Stock Notes'},
-  {slug:'gooaye-ep674-stocks',        cat:'股癌podcast分析', zh:'股癌 EP674 · 個股觀點整理',          en:'Gooaye EP674 · Stock Notes'},
-  {slug:'ponytail',                   cat:'AI 技術分享',     zh:'Ponytail · 讓 AI agent 別過度工程',   en:'Ponytail · Stop AI Agents Over-Engineering'},
-  {slug:'gooaye-ep673-stocks',        cat:'股癌podcast分析', zh:'股癌 EP673 · 個股觀點整理',          en:'Gooaye EP673 · Stock Notes'},
-  {slug:'power-semiconductor-ep672',  cat:'股癌podcast分析', zh:'股癌 EP672 · 個股觀點整理',          en:'Gooaye EP672 · Stock Notes'},
-  {slug:'nagoya-5d4n',                cat:'旅遊',           zh:'5天4夜 名古屋在地文化之旅',          en:'Nagoya 5-Day Local Culture Trip'}
+  {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
+  {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript'},
+  {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
+  {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
+  {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
+  {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep682-stocks',        d:'2026-07-25', cat:'股癌podcast分析', zh:'股癌 EP682 · 個股觀點整理',          en:'Gooaye EP682 · Stock Notes'},
+  {slug:'gooaye-ep681-stocks',        d:'2026-07-22', cat:'股癌podcast分析', zh:'股癌 EP681 · 個股觀點整理',          en:'Gooaye EP681 · Stock Notes'},
+  {slug:'gooaye-ep680-stocks',        d:'2026-07-18', cat:'股癌podcast分析', zh:'股癌 EP680 · 個股觀點整理',          en:'Gooaye EP680 · Stock Notes'},
+  {slug:'gooaye-ep679-stocks',        d:'2026-07-15', cat:'股癌podcast分析', zh:'股癌 EP679 · 個股觀點整理',          en:'Gooaye EP679 · Stock Notes'},
+  {slug:'gooaye-ep678-stocks',        d:'2026-07-12', cat:'股癌podcast分析', zh:'股癌 EP678 · 個股觀點整理',          en:'Gooaye EP678 · Stock Notes'},
+  {slug:'gooaye-ep677-stocks',        d:'2026-07-09', cat:'股癌podcast分析', zh:'股癌 EP677 · 個股觀點整理',          en:'Gooaye EP677 · Stock Notes'},
+  {slug:'gooaye-ep676-stocks',        d:'2026-07-05', cat:'股癌podcast分析', zh:'股癌 EP676 · 個股觀點整理',          en:'Gooaye EP676 · Stock Notes'},
+  {slug:'gooaye-ep675-stocks',        d:'2026-07-01', cat:'股癌podcast分析', zh:'股癌 EP675 · 個股觀點整理',          en:'Gooaye EP675 · Stock Notes'},
+  {slug:'gooaye-ep674-stocks',        d:'2026-06-27', cat:'股癌podcast分析', zh:'股癌 EP674 · 個股觀點整理',          en:'Gooaye EP674 · Stock Notes'},
+  {slug:'ponytail',                   d:'2026-06-26', cat:'AI 技術分享',     zh:'Ponytail · 讓 AI agent 別過度工程',   en:'Ponytail · Stop AI Agents Over-Engineering'},
+  {slug:'gooaye-ep673-stocks',        d:'2026-06-24', cat:'股癌podcast分析', zh:'股癌 EP673 · 個股觀點整理',          en:'Gooaye EP673 · Stock Notes'},
+  {slug:'power-semiconductor-ep672',  d:'2026-06-21', cat:'股癌podcast分析', zh:'股癌 EP672 · 個股觀點整理',          en:'Gooaye EP672 · Stock Notes'},
+  {slug:'nagoya-5d4n',                d:'2026-04-09', cat:'旅遊',           zh:'5天4夜 名古屋在地文化之旅',          en:'Nagoya 5-Day Local Culture Trip'}
 ];
+// 新→舊。分組時「首次出現順序」即等於分類最新文章的先後，分類展開順序因此自動跟著更新時間走。
+POSTS.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
 var CATL={
   '全部':            {zh:'全部',            en:'All'},
   '股癌podcast分析': {zh:'股癌podcast分析', en:'Gooaye Podcast'},
@@ -110,9 +114,16 @@ function initHome(){
   var hero=document.getElementById('hero');
   var empty=document.getElementById('empty');
   var cat='全部',q='';
-  function dateNum(c){var p=(c.querySelector('.pc-date')||{}).textContent||'';var m=p.match(/\d+/g)||[];return (+m[0]||0)*10000+(+m[1]||0)*100+(+m[2]||0);}
-  // 卡片一律依 .pc-date 新→舊排序（rule-based，不依賴 HTML 裡的手動擺放順序）
-  var sorted=[].slice.call(grid.querySelectorAll('.post-card')).sort(function(a,b){return dateNum(b)-dateNum(a);});
+  // 日期單一來源＝POSTS.d，卡片的 .pc-date 由此填入（HTML 不再各寫一份）
+  var DATES={};POSTS.forEach(function(p){DATES[p.slug]=p.d;});
+  function dateOf(c){return DATES[(c.getAttribute('href')||'').replace(/^posts\//,'').replace(/(\.en)?\.html$/,'')]||'';}
+  var cards=[].slice.call(grid.querySelectorAll('.post-card'));
+  cards.forEach(function(c){
+    var el=c.querySelector('.pc-date'),d=dateOf(c);
+    if(el&&d)el.textContent=d.split('-').map(Number).join(' · '); // 2026-07-25 → 2026 · 7 · 25
+  });
+  // 卡片一律依日期新→舊排序（rule-based，不依賴 HTML 裡的手動擺放順序）
+  var sorted=cards.sort(function(a,b){return dateOf(b).localeCompare(dateOf(a));});
   sorted.forEach(function(c){grid.appendChild(c);});
   // 自動把最新一篇填進精選
   if(hero){
