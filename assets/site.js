@@ -2,11 +2,14 @@
 
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    d = 日期（同首頁 .pc-date），排序一律依 d 算，陣列擺放順序不影響顯示。
-   cat 用首頁 data-cat 的正規中文值。 */
+   cat 用首頁 data-cat 的正規中文值。
+   draft:1 = 草稿：不加首頁卡片、不加 sitemap，側欄也只在自己頁面出現 →
+   只有知道網址的人看得到（純靜態站無法真正上鎖）。
+   發佈時：刪掉 draft:1，再補 index 兩張卡片與 sitemap 兩行。 */
 var POSTS=[
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
-  {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript'},
-  {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
+  {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript', draft:1},
+  {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It', draft:1},
   {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
@@ -193,6 +196,7 @@ function initArticle(){
   // 依 POSTS 出現順序分組
   var order=[],groups={},activeBox=null;
   POSTS.forEach(function(p){
+    if(p.draft&&p.slug!==slug) return; // 草稿不進別人的側欄，只在自己頁面列出
     if(!groups[p.cat]){groups[p.cat]=[];order.push(p.cat);}
     groups[p.cat].push(p);
   });
