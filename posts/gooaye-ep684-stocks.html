@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP684 個股觀點整理 — 崩跌又暴力反彈的真兇找到了:AI 避險基金 Situational Awareness 4 成槓桿被追繳、組合折價賣給 Citadel、台股 7/31 單日 +7.98%,同一籃子七檔卻估值分化極大</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep684-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP684 · 個股觀點整理 <span style="font-size:16px;color:var(--turn)">｜🔦</span></h1>
+<div class="sub">EP683 說「找到三條導火線」,這集則直接<b>把兇手的名字講出來</b>:前 OpenAI 研究員 Leopold Aschenbrenner 的 AI 避險基金 Situational Awareness,用 4 成槓桿重壓 AI 基建股,7 月被保證金追繳、全數出清持股組合折價賣給 Citadel——這才是台股 7/17 到 7/31 那段崩跌與史詩級反彈的機制。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP684 逐字稿分析</span>
+<span class="badge">整理日:2026-08-01</span>
+<span class="badge">姊妹篇:EP683 個股觀點整理</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">🔦 <span class="win">這集把 EP683 的猜測補上了具名證據</span>。EP683 說「深跌不爆量 = 回吐不是斷頭」,主張賣壓不是基本面出事;EP684 直接指出賣壓來源:<b>Situational Awareness 基金 7 月單月 −67%、AUM 從 $450 億美元崩到約 $100 億美元</b>,被迫把整個公開持股組合折價賣給 Citadel(約 $160 億美元區塊交易)。經查證數字全數屬實。</p>
+<p class="big">📈 <span class="win">賣壓一被承接,行情就瞬間反轉成軋空</span>。台股 7/31 單日 <b>+3,186.45 點(+7.98%)</b>,美股 MU +18.3%、SNDK +26.0%、BE +26.5%(7/30 單日)。同一批股票前一週還在崩,說明這段波動的驅動力是<b>籌碼</b>,不是基本面。</p>
+<p class="big">⚠️ <span class="lose">但這集幾乎沒有個股分析</span>。實質展開的個股是零,點名的都是敘事脈絡中順帶提及。想拿這集當選股清單會落空——它的價值在解釋<b>「為什麼好公司股價照樣重摔又照樣噴出」</b>的機制。</p>
+<p class="big">🧩 <span class="mid">同一籃子 ≠ 同樣體質</span>。基金持股橫跨算力、記憶體儲存、資料中心能源與不動產、GPU 雲端租賃,被同一次降槓桿無差別錯殺,但估值分化極大:NVDA forward PE 百分位 6.4%、MU 4.8%、IRM 4.0%(便宜);WDC 79.6%、SNDK 76.4%(貴)。<b>一起跌不代表一起便宜。</b></p>
+<p class="note">★ 一處要打折扣:「基金自 2024 創立以來報酬 1000 多%」<span class="lose">查無來源</span>——可查到的一手數字只有「2026 上半年淨報酬 +439%」與「YTD +80%」,累計 1000%+ 找不到具名出處。同一段話裡精確與無法驗證的數字混在一起,是典型要逐句拆開看的例子。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP684 跟 EP673–683 那種「逐一評論一串個股」的格式差很多。這集的內容大致是:開場個人生活閒聊、<b>一段完整的總經/籌碼分析</b>(Situational Awareness 事件)、台股處置股與流動性機制的深度解析,以及大量聽眾 Q&amp;A(電競筆電、FIRE 退休、FCN 結構型商品、遊戲閒聊)。</p>
+<p><span class="lose">被實質展開分析的個股是零</span>,所有點名都是在敘述總經事件時順帶提到。所以這篇的重心放在「降槓桿傳導鏈」「時間軸驗證」「同族群估值分化」三段,個股卡片只作為佐證,不硬湊成選股清單。</p>
+<div class="quote">📌 <b>本集最值得記的一句</b>:主持人在節目後段反覆強調的「<b>進得去</b>和<b>出得來</b>是兩件事」。這句話同時解釋了 Situational Awareness 的崩潰(4 成槓桿進得去、被追繳時出不來)、台股處置股制度對大部位持有人的殺傷力,以及為什麼部位變大之後,<b>流動性風險比基本面風險更該優先管理</b>。</div>
+</div>
+
+<h2>二、真兇:一檔基金的強制降槓桿</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="這波崩跌的機制是 Situational Awareness 基金四成槓桿遭保證金追繳被迫全數出清 AI 基建持股,直到 Citadel 折價承接、賣壓瞬間消失,才反轉成軋空式反彈">
+  <defs><marker id="ah684a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">降槓桿傳導鏈:賣壓從哪裡來,又是怎麼消失的</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">關鍵數字經 CNBC / Bloomberg 報導查證屬實;轉折點在 Citadel 的折價承接</text>
+
+  <rect x="20" y="58" width="164" height="72" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="34" y="82" style="fill:var(--ink);font:700 12px sans-serif">① AI 股 7 月中齊跌</text>
+  <text x="34" y="102" style="fill:var(--ink2);font:400 11px sans-serif">韓國去槓桿、中國 DUV</text>
+  <text x="34" y="119" style="fill:var(--ink2);font:400 11px sans-serif">(見 EP683 三條導火線)</text>
+
+  <line x1="188" y1="94" x2="222" y2="94" style="stroke:var(--ink3)" marker-end="url(#ah684a)"/>
+
+  <rect x="226" y="58" width="164" height="72" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="240" y="82" style="fill:var(--ink);font:700 12px sans-serif">② 4 成槓桿被追繳</text>
+  <text x="240" y="102" style="fill:var(--ink2);font:400 11px sans-serif">Situational Awareness</text>
+  <text x="240" y="119" style="fill:var(--lose);font:600 11px sans-serif">7 月單月 −67%</text>
+
+  <line x1="394" y1="94" x2="428" y2="94" style="stroke:var(--ink3)" marker-end="url(#ah684a)"/>
+
+  <rect x="432" y="58" width="164" height="72" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="446" y="82" style="fill:var(--ink);font:700 12px sans-serif">③ 被迫全數出清</text>
+  <text x="446" y="102" style="fill:var(--ink2);font:400 11px sans-serif">AUM $450 億 → 約 $100 億</text>
+  <text x="446" y="119" style="fill:var(--lose);font:600 11px sans-serif">非自願賣壓灌進市場</text>
+
+  <path d="M596 94 L620 94 L620 172 L596 172" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah684a)"/>
+
+  <rect x="432" y="146" width="164" height="52" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="446" y="170" style="fill:var(--ink);font:700 12px sans-serif">④ Citadel 折價承接</text>
+  <text x="446" y="189" style="fill:var(--turn);font:600 11px sans-serif">約 $160 億區塊交易</text>
+
+  <line x1="428" y1="172" x2="394" y2="172" style="stroke:var(--ink3)" marker-end="url(#ah684a)"/>
+
+  <rect x="226" y="146" width="164" height="52" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="240" y="170" style="fill:var(--ink);font:700 12px sans-serif">⑤ 賣壓瞬間消失</text>
+  <text x="240" y="189" style="fill:var(--win);font:600 11px sans-serif">恐慌反轉成軋空</text>
+
+  <line x1="222" y1="172" x2="188" y2="172" style="stroke:var(--ink3)" marker-end="url(#ah684a)"/>
+
+  <rect x="20" y="146" width="164" height="52" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="34" y="170" style="fill:var(--ink);font:700 12px sans-serif">⑥ 台股 7/31 跟漲</text>
+  <text x="34" y="189" style="fill:var(--win);font:600 11px sans-serif">+3,186 點 · +7.98%</text>
+
+  <rect x="20" y="222" width="720" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="246" style="fill:var(--ink);font:700 12px sans-serif">結論:這整段波動的驅動力是「籌碼」,不是「基本面」</text>
+  <text x="36" y="266" style="fill:var(--ink2);font:400 11px sans-serif">同一批公司在兩週內先被無差別拋售、再被無差別搶回,期間沒有任何一份財報或產業數據改變。</text>
+</svg>
+</div>
+<p>主持人在節目裡把這條鏈講得很完整:Situational Awareness 是前 OpenAI 研究員 Leopold Aschenbrenner 於 2024 年創立的 AI 主題避險基金,用高達 <b>4 成槓桿</b>重壓 AI 基礎建設股。7 月 AI 股齊跌時,槓桿部位觸發保證金追繳,基金被迫<b>全數出清公開持股組合</b>,AUM 從約 <b>$450 億美元崩落至約 $100 億美元</b>,最終把整個組合以明顯折價賣給 Citadel(Ken Griffin),成交規模約 $160 億美元的區塊交易。</p>
+<div class="quote">✅ <b>數字逐項查證屬實</b>:基金 7 月單月 −67%、年初至今仍 +80%、AUM $45B → 約 $10B、Citadel「substantial discount」承接——CNBC 與 Bloomberg 的報導都對得上。這集在數字紀律上明顯優於 EP674(毛利率誇大)與 EP683(NVL72 規格記錯)。</div>
+<div class="quote">💡 <b>時間點值得記一筆</b>:主持人在 EP683 就已經猜測「這波下殺不一定跟基本面高度相關,可能是某個大部位的強制平倉」,而 EP684 播出時這個猜測被具名事件證實。<b>KOL 的猜測事後被驗證,這次值得加分</b>——但也要注意,這是「先有猜測、後有新聞」的一次命中,不是每次都會這樣。</div>
+<div class="quote">⚠️ <b>但這解釋的是「觸發機制」,不是「基本面」</b>:知道賣壓來自強制平倉,只回答了「為什麼跌這麼快又彈這麼兇」,沒有回答「這些公司值多少錢」。AI 基建的資本支出、記憶體/儲存的需求兌現度,仍要回到各公司財報獨立驗證。</div>
+</div>
+
+<h2>三、時間軸:台股怎麼被打下去又被拉上來</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 352" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="台股七月三次重挫累計超過六千五百點,直到 Citadel 承接基金持股後,7月31日單日反彈三千一百八十六點漲幅百分之七點九八">
+  <defs><marker id="ah684b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">加權指數 2026 年 7 月關鍵四天 · 單日漲跌點數</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 查證。三次重挫累計 −6,548 點,一天反彈就吃回近半</text>
+
+  <rect x="150" y="54" width="360" height="32" rx="7" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="164" y="75" style="fill:var(--ink);font:700 11px sans-serif">7/30 美股盤中:Citadel 折價承接基金持股組合</text>
+  <line x1="551" y1="86" x2="551" y2="104" style="stroke:var(--ink3)" marker-end="url(#ah684b)"/>
+
+  <line x1="60" y1="210" x2="740" y2="210" style="stroke:var(--border)"/>
+  <text x="66" y="206" style="fill:var(--ink3);font:400 10px sans-serif">0</text>
+
+  <rect x="40" y="112" width="230" height="66" rx="7" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="54" y="134" style="fill:var(--ink);font:700 11px sans-serif">7/31 同日權值推手</text>
+  <text x="54" y="153" style="fill:var(--ink2);font:400 11px sans-serif">聯發科 2454 週五釋出優於預期 guidance</text>
+  <text x="54" y="170" style="fill:var(--win);font:700 11px sans-serif">+9.9%(3,235 → 3,555)</text>
+
+  <rect x="96" y="210" width="70" height="95" rx="4" style="fill:var(--lose);opacity:.85"/>
+  <text x="131" y="322" text-anchor="middle" style="fill:var(--ink2);font:600 11px sans-serif">7/17</text>
+  <text x="131" y="339" text-anchor="middle" style="fill:var(--lose);font:700 11px sans-serif">−2,954</text>
+
+  <rect x="236" y="210" width="70" height="65" rx="4" style="fill:var(--lose);opacity:.85"/>
+  <text x="271" y="322" text-anchor="middle" style="fill:var(--ink2);font:600 11px sans-serif">7/28</text>
+  <text x="271" y="339" text-anchor="middle" style="fill:var(--lose);font:700 11px sans-serif">−2,031</text>
+
+  <rect x="376" y="210" width="70" height="50" rx="4" style="fill:var(--lose);opacity:.85"/>
+  <text x="411" y="322" text-anchor="middle" style="fill:var(--ink2);font:600 11px sans-serif">7/29</text>
+  <text x="411" y="339" text-anchor="middle" style="fill:var(--lose);font:700 11px sans-serif">−1,564</text>
+  <text x="411" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">觸底 39,933</text>
+
+  <rect x="516" y="108" width="70" height="102" rx="4" style="fill:var(--win);opacity:.9"/>
+  <text x="551" y="322" text-anchor="middle" style="fill:var(--ink2);font:600 11px sans-serif">7/31</text>
+  <text x="551" y="339" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">+3,186</text>
+  <text x="594" y="128" style="fill:var(--win);font:700 13px sans-serif">+7.98%</text>
+  <text x="594" y="146" style="fill:var(--ink3);font:400 10px sans-serif">一天吃回近半跌幅</text>
+</svg>
+</div>
+<p>把日期攤開看,傳導路徑很乾淨:7 月連續三次重挫累計 <b>−6,548 點</b>,7/29 觸底 39,933;7/30 美股盤中 Citadel 承接的消息傳出,<b>台股 7/31 單日拉回 +3,186.45 點(+7.98%)</b>,一天吃回近半跌幅。同日聯發科(2454)因週五釋出的優於預期 guidance 單日 <b>+9.9%</b>(3,235 → 3,555),是把指數帶上去的關鍵權值推手。</p>
+<div class="quote">✅ <b>「昨天史詩級絕世大反彈、噴了 8% 9%」屬實</b>:FinMind 查證 7/31 單日 +7.98%,精確落在口播區間。「發哥禮拜五給了非常好的 guidance、把盤帶上去」也屬實,2454 當日 +9.9%。</div>
+<div class="quote">⚠️ <b>但這不等於「底部確認」</b>:EP683 的「爆量才是底」判別法,在這裡遇到一個變形——賣壓消失的原因不是散戶認輸賣完,而是<b>單一買家把整個組合吃下來</b>。這種底是被外力製造的,和自然換手完成的底不同,持續性需要後續量價自行驗證。</div>
+</div>
+
+<h2>四、同族群概念股掃描:AI 基建多單籃子</h2>
+<div class="card">
+<p><b>族群定義</b>:本集真正的「主標的」不是單一公司,而是 Situational Awareness 基金重壓的 <b>AI 基礎建設多單籃子</b>——橫跨「GPU 運算」「記憶體/儲存」「資料中心能源與不動產」「GPU 雲端租賃」四個環節。它們因<b>同一個槓桿事件</b>被無差別錯殺、又因<b>同一筆 Citadel 交易</b>被無差別軋空,是理解這波行情的核心族群。</p>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 428" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="同一檔基金的持股籃子橫跨算力記憶體資料中心能源與雲端租賃四個環節,被同一次降槓桿錯殺,但回檔幅度與估值百分位分化極大,不是鐵板一塊">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">同一次降槓桿錯殺 · 但體質完全不同</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu 查證 2026-08-01。每張卡=距 3 個月高點回檔 + forward PE 歷史估值百分位(愈低愈便宜)</text>
+
+  <rect x="20" y="58" width="170" height="26" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="105" y="76" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">GPU 運算</text>
+  <rect x="200" y="58" width="170" height="26" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="285" y="76" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">記憶體 / 儲存</text>
+  <rect x="380" y="58" width="170" height="26" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="465" y="76" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">資料中心能源 / 不動產</text>
+  <rect x="560" y="58" width="170" height="26" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="645" y="76" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">GPU 雲端租賃</text>
+
+  <rect x="20" y="92" width="170" height="66" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="34" y="114" style="fill:var(--ink);font:700 12px sans-serif">NVDA 輝達</text>
+  <text x="34" y="132" style="fill:var(--ink2);font:400 11px sans-serif">距高 −14.7%(最抗跌)</text>
+  <text x="34" y="149" style="fill:var(--win);font:700 11px sans-serif">19.9x · 百分位 6.4%</text>
+
+  <rect x="200" y="92" width="170" height="66" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="214" y="114" style="fill:var(--ink);font:700 12px sans-serif">MU 美光</text>
+  <text x="214" y="132" style="fill:var(--ink2);font:400 11px sans-serif">距高 −32.2%</text>
+  <text x="214" y="149" style="fill:var(--win);font:700 11px sans-serif">5.7x · 百分位 4.8%</text>
+
+  <rect x="200" y="164" width="170" height="66" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="214" y="186" style="fill:var(--ink);font:700 12px sans-serif">SNDK SanDisk</text>
+  <text x="214" y="204" style="fill:var(--ink2);font:400 11px sans-serif">距高 −48.0%(最深)</text>
+  <text x="214" y="221" style="fill:var(--lose);font:700 11px sans-serif">6.5x · 百分位 76.4%</text>
+
+  <rect x="200" y="236" width="170" height="66" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="214" y="258" style="fill:var(--ink);font:700 12px sans-serif">WDC 西部數據</text>
+  <text x="214" y="276" style="fill:var(--ink2);font:400 11px sans-serif">距高 −27.0%</text>
+  <text x="214" y="293" style="fill:var(--lose);font:700 11px sans-serif">33.9x · 百分位 79.6%</text>
+
+  <rect x="200" y="308" width="170" height="66" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="214" y="330" style="fill:var(--ink);font:700 12px sans-serif">SK Hynix(韓股)</text>
+  <text x="214" y="348" style="fill:var(--ink2);font:400 11px sans-serif">單日曾 −14.65%</text>
+  <text x="214" y="365" style="fill:var(--ink3);font:600 11px sans-serif">估值查無(不覆蓋韓股)</text>
+
+  <rect x="380" y="92" width="170" height="66" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="394" y="114" style="fill:var(--ink);font:700 12px sans-serif">BE 布魯姆能源</text>
+  <text x="394" y="132" style="fill:var(--ink2);font:400 11px sans-serif">距高 −40.5%</text>
+  <text x="394" y="149" style="fill:var(--mid);font:700 11px sans-serif">62.8x · 百分位 48.4%</text>
+
+  <rect x="380" y="164" width="170" height="66" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="394" y="186" style="fill:var(--ink);font:700 12px sans-serif">IRM 鐵山</text>
+  <text x="394" y="204" style="fill:var(--ink2);font:400 11px sans-serif">距高 −8.1%(次抗跌)</text>
+  <text x="394" y="221" style="fill:var(--win);font:700 11px sans-serif">62.2x · 百分位 4.0%</text>
+
+  <rect x="560" y="92" width="170" height="66" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="574" y="114" style="fill:var(--ink);font:700 12px sans-serif">CRWV CoreWeave</text>
+  <text x="574" y="132" style="fill:var(--ink2);font:400 11px sans-serif">距高 −48.0%(最深)</text>
+  <text x="574" y="149" style="fill:var(--turn);font:700 11px sans-serif">虧損 · PS 2.5x(1.6%)</text>
+
+  <rect x="20" y="390" width="350" height="26" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="195" y="408" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">綠=估值百分位低(相對自己歷史便宜)</text>
+  <rect x="380" y="390" width="350" height="26" rx="6" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="555" y="408" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">紅=跌了仍不便宜 · 同事件 ≠ 同體質</text>
+</svg>
+</div>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p class="note">跌幅為距近 3 個月高點回檔;PE 一律用 forward(Futu,2026-08-01);估值百分位為該檔 forward PE 的歷史分位。SK Hynix 因 Futu、FinMind 均不覆蓋韓股,估值欄位標記查無。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p>這張表最值得看的是<span class="lose">「一起跌」和「一起便宜」是兩回事</span>。SNDK 與 CRWV 同樣跌了 48%,但 SNDK 的 forward PE 百分位高達 <b>76.4%</b>(絕對倍數只有 6.5x,看起來很便宜——這正是<b>絕對倍數會誤導、要看百分位</b>的教科書案例);WDC 只跌 27%,估值百分位卻是全表最高的 <b>79.6%</b>。反過來,跌最少的 NVDA(−14.7%)和 IRM(−8.1%),估值百分位卻只有 6.4% 與 4.0%。</p>
+<p>IRM 是另一個要小心讀的例子:forward PE 62.2x 絕對數字很高,但它是 REIT,這類資產天生高 PE,<b>相對自己歷史的百分位只有 4.0%</b>。CRWV 則根本不該用 PE——公司仍在虧損,只能看 forward PS 2.5x(百分位 1.6%),而低 PS 對虧損公司不構成安全邊際,獲利品質才是關鍵。</p>
+<p>放在 EP683 的脈絡下,「AI 核心資產(NVDA/MU)估值百分位持續個位數」這件事已經連續多集成立。EP683 曾提出反方懷疑:這可能是<span class="mid">市場結構性重定價,而不是錯殺</span>。<b>本集沒有新增證據反駁這個疑慮</b>——用一次強制平倉解釋短期波動,並沒有回答估值中樞是否正在下移。</p>
+</div>
+
+<h2>五、台股處置股:懂規則的人才知道自己出不出得來</h2>
+<div class="card">
+<p>節目後段花了相當篇幅講台股處置股與流動性機制,結論可以濃縮成一句:<b>處置股制度對大部位持有人,是流動性陷阱,不是降溫機制</b>。當一檔股票被處置(改為分盤集合競價),成交頻率被大幅拉長,小部位持有人幾乎無感,但持有大部位的人會發現自己<span class="lose">根本賣不掉</span>——想砍的量會直接把價格砸穿。</p>
+<div class="quote">💡 <b>可操作的框架</b>:主持人的重點是「<b>進得去</b>和<b>出得來</b>是兩件事」。部位小的時候,流動性風險幾乎不存在,可以只看基本面;部位變大之後,<b>流動性風險要排在基本面風險前面管理</b>。這也是同一集裡 Situational Awareness 那條線的縮影——4 成槓桿買進去很容易,被追繳時要出來就是另一回事。</div>
+<div class="quote">⚠️ <b>適用範圍要自己調整</b>:這段內容基本上是大部位持有人的視角(台股處置股的單筆門檻對一般散戶而言相當遙遠)。對部位規模小的讀者,實用價值主要在<b>觀念</b>(理解為什麼有些股票會出現非理性的斷崖式下跌),而不是可以直接套用的操作。</div>
+</div>
+
+<h2>六、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。<b>本集個股評論密度極低,全部為脈絡性提及,沒有任何一檔被展開分析</b>,已於卡片中標明。</p>
+
+<h2>七、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:美股快照/K線/估值 — Futu OpenAPI;台股指數/股價 — FinMind;基金事件、Citadel 交易、黃崇仁辭世 — WebSearch(均為 2026-07 至 08 當期新聞)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>八、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p>本集最強的是<span class="win">數字紀律</span>。最容易被誇大的幾個數字——基金 YTD +80%、7 月單月 −67%、AUM $450 億崩到約 $100 億、Citadel 折價承接、聯發科週五 guidance 帶動 +9.9%、台股 7/31 +7.98%——<b>逐項查證全部精確吻合</b>。這比 EP674(毛利率誇大)、EP683(NVL72 規格 1:2 被說成 1:4)明顯進步。</p>
+<p>再來是<span class="win">猜測被事後驗證</span>。EP683 就已推測「這波下殺不一定跟基本面相關,可能是某個大部位的強制平倉」,EP684 播出時這個猜測被具名事件證實,而且時間點領先大部分中文財經媒體的報導。這次的推理鏈值得加分。</p>
+<p>處置股與流動性那一段有實務深度。「<b>進得去和出得來是兩件事</b>」「部位放大後流動性風險要排在基本面風險前面」是可操作的風控框架,不是空泛的心法。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">「基金自 2024 創立以來 1000 多% 報酬」查無來源</span>。能查到的一手數字只有「2026 上半年淨報酬 +439%」與「YTD +80%」;若把 2024–2025 的累計獲利也算進去,理論上不無可能超過 1000%,但目前找不到具名出處。這是本集唯一明顯的數字瑕疵——<b>同一段話裡精確與不可驗證的數字混在一起</b>,提醒聽眾不能因為前半段查得到就整段照收。</p>
+<p><span class="mid">點名人物帶八卦性質、且無佐證</span>。節目中提及「阿明」「高檔解質」「隔日沖鎖跌停」等說法,WebSearch 查無對應的真人真事與交易紀錄。這類內容屬社群風向敘事,<b>不宜當作對特定人物的可信指控</b>。</p>
+<p><span class="mid">「黃蟲人的股票氣氛對了就會賺錢」是個人經驗,不是方法論</span>。力積電(6770)與愛普(6531)近三個月跌幅落在 −20% 到 −44% 之間,波動風險遠高於這句話給人的印象。這段是在黃崇仁 7/31 辭世的脈絡下緬懷其操盤風格,不該當作標的推薦讀。</p>
+<h3>風險與反方觀點</h3>
+<p>最大的風險是<b>把「機制解釋」誤當成「買點訊號」</b>。知道賣壓來自強制平倉,只說明這波跌得快、彈得也快;它沒有回答 AI 基建的資本支出能否持續、記憶體/儲存的需求是否兌現。這些仍要回到財報獨立驗證。</p>
+<p>其次,EP683 提出的「估值中樞可能結構性下移」疑慮,<b>本集沒有新增證據反駁</b>。若那才是正解,那麼「NVDA/MU 估值百分位個位數」就不是買點,而是新常態的起點。特別是 MU——記憶體是強循環產業,<span class="lose">循環股在獲利高峰時 PE 最低</span>,forward PE 5.7x 可能是循環見頂的訊號,而不是便宜的證明。</p>
+<p>第三,7/31 的底是被單一買家(Citadel)製造出來的,不是自然換手完成的。EP683 的「爆量認輸才是底」判別法在這裡並不適用,這種底的持續性需要後續量價自行驗證,不能因為反彈猛就當作確認。</p>
+<h3>可信度結論</h3>
+<p>本集在<span class="win">總經事件敘事與已發生的市場數據</span>上紮實可信,查證通過率是近幾集最高的一集。但在<span class="lose">個股層面幾乎沒有素材</span>——沒有任何一檔被展開分析。<b>這集適合當作「這波暴力崩跌與反彈的根因解釋」來讀,而不是「這集該買什麼」</b>。若你是來找選股清單的,這集給不了。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP684</b>(<a href="https://www.youtube.com/watch?v=AmYcb52jMTU" target="_blank" rel="noopener">YouTube 原始連結</a>)。對 YouTube 自動語音辨識逐字稿做分析整理(整理日 2026-08-01)。逐字稿為自動 ASR,部分人名與術語辨識可能有誤,已於文中標註無法核實者。<br>
+<b>數字查證</b>:美股快照/K線/估值百分位(NVDA/MU/SNDK/WDC/BE/IRM/CRWV)— Futu OpenAPI;台股加權指數單日漲跌、2454/6770/6531 股價 — FinMind;Situational Awareness 基金報酬與 AUM、Citadel 區塊交易、黃崇仁辭世 — WebSearch(CNBC / Bloomberg 等 2026-07 至 08 當期報導)。SK Hynix(000660.KS)因 Futu/FinMind 均不覆蓋韓國市場,估值數據標記查無。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'NVIDIA',code:'US.NVDA',mkt:'美股',tone:'neu',said:'基金持股籃子成員,脈絡性提及。「這東西是好的東西,也不會因為行情反轉…就會轉口說它是不好的」——強調基本面認同不隨股價改口。',chk:'✅族群裡最抗跌:距 3 個月高點僅 −14.7%,forward PE 19.9x、估值百分位 6.4%。與 EP683 查證的 19.5x／3.2%、EP677 的 19.6x／2.8% 一脈相承,「AI 核心資產最便宜」連續多集成立。',vd:'ok'},
+ {nm:'Micron 美光',code:'US.MU',mkt:'美股',tone:'neu',said:'同為基金持股籃子成員,未單獨評論。',chk:'⚠️估值最便宜、波動也最大:距高 −32.2%,forward PE 5.7x、百分位 4.8%;7/30 單日反彈 +18.3%。但記憶體是強循環股,獲利高峰時 PE 本來就最低——低 PE 未必是便宜,也可能是循環見頂訊號。',vd:'warn'},
+ {nm:'SanDisk',code:'US.SNDK',mkt:'美股',tone:'neu',said:'基金持股籃子成員,脈絡性提及。',chk:'⚠️典型「數字小≠便宜」:距高 −48.0%(族群最深),forward PE 絕對值僅 6.5x,但<b>估值百分位高達 76.4%</b>。7/30 單日 +26.0%。只看倍數不看百分位會判斷完全相反。',vd:'warn'},
+ {nm:'Western Digital',code:'US.WDC',mkt:'美股',tone:'neu',said:'基金持股籃子成員,脈絡性提及。',chk:'⚠️跌得比較少、卻是全表最貴:距高 −27.0%,forward PE 33.9x、估值百分位 79.6%(族群最高)。與同屬儲存的 MU(4.8%)分化極大,證明「族群同漲同跌」是錯覺。7/30 單日 +15.4%。',vd:'warn'},
+ {nm:'SK Hynix',code:'000660.KS',mkt:'韓股',tone:'neu',said:'基金持股籃子成員;主持人自己也懷疑「搞不好就是韓國人先跳樓」引爆連鎖。',chk:'❓崩跌事件本身屬實(EP683 已查證單日 −14.65%),但 Futu/FinMind 均不覆蓋韓股,估值倍數無法獨立核實。「韓國先引爆」為主持人推測,非查證結論。',vd:'q'},
+ {nm:'Bloom Energy',code:'US.BE',mkt:'美股',tone:'neu',said:'基金持股籃子成員(資料中心供電/燃料電池),脈絡性提及。',chk:'✅深跌深彈屬實:距高 −40.5%,7/30 單日 <b>+26.5%</b>(族群最大單日反彈)。forward PE 62.8x、百分位 48.4%(中段)。資料中心能源敘事仍在,但波動性是族群數一數二大。',vd:'ok'},
+ {nm:'Iron Mountain',code:'US.IRM',mkt:'美股',tone:'neu',said:'基金持股籃子成員(資料中心不動產 REIT),脈絡性提及。',chk:'✅相對抗跌:距高僅 −8.1%。forward PE 62.2x 絕對數字高,但 REIT 天生高 PE,<b>百分位僅 4.0%</b>——用百分位而非絕對倍數判斷才有意義。',vd:'ok'},
+ {nm:'CoreWeave',code:'US.CRWV',mkt:'美股',tone:'turn',said:'基金持股籃子成員(GPU 雲端租賃 / Neocloud),脈絡性提及。',chk:'⚠️距高 −48.0%(與 SNDK 並列最深)。<b>仍在虧損,PE 為負、不適用 PE 估值</b>,只能看 forward PS 2.5x(百分位 1.6%)。同 EP678「ALAB 用 PS 估值＝獲利品質待確認」的教訓,低 PS 對虧損公司不構成安全邊際。',vd:'warn'},
+ {nm:'聯發科',code:'2454',mkt:'台股',tone:'bull',said:'「發哥在禮拜五又給了一個非常好的 guidance…下禮拜還是有蠻多新的動能有可能把這個盤帶上去」——視為台股 7/31 大反彈的關鍵推手。',chk:'✅屬實:2454 於 7/31 單日 <b>+9.9%</b>(3,235 → 3,555),同日加權指數 +7.98%。是本集唯一被明確看多、且事後有數字支撐的台股標的。',vd:'ok'},
+ {nm:'力積電',code:'6770',mkt:'台股',tone:'neu',said:'「黃蟲人(黃崇仁)的股票呢,就是氣氛對了上去就是會賺錢,雖然有時候會洗比較久」——在黃崇仁辭世的脈絡下緬懷其操盤風格。',chk:'⚠️黃崇仁 2026/7/31 辭世屬實(享壽 76,力晶集團創辦人)。但「氣氛對了就賺錢」是個人經驗非方法論:6770 近 3 個月跌幅落在 −20% 至 −44% 區間,波動風險遠高於這句話的印象。',vd:'warn'},
+ {nm:'愛普科技',code:'6531',mkt:'台股',tone:'neu',said:'與力積電並列提及,「像那時候愛普就洗好久好久」。',chk:'⚠️同上,屬懷念性提及非推薦。力晶集團體系、3D WoW 封裝技術。本集無任何基本面或估值討論,不構成可操作結論。',vd:'warn'},
+ {nm:'元大台灣50',code:'0050',mkt:'台股 ETF',tone:'neu',said:'聽眾問 FCN(結構型商品)掛勾 0050 是否可做。主持人建議買<b>原型產品</b>比結構型商品單純。',chk:'✅建議方向合理:FCN 屬結構型商品,收益上限固定但下檔風險完整承擔,對一般投資人而言複雜度與風險不對稱。「買原型」是保守且不需要額外知識門檻的答案,態度可取。',vd:'ok'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 同族群概念股掃描
+const GROUP=[
+ ['NVDA 輝達','GPU 運算核心','龍頭 · 最抗跌','−14.7%','19.9x · 百分位 6.4%','連續多集查證都在極低分位,族群裡防禦力最強'],
+ ['MU 美光','HBM / DRAM 記憶體','落後 · 深跌深彈','−32.2%','5.7x · 百分位 4.8%','全族群估值最便宜,但波動最劇烈;循環股低 PE 要小心'],
+ ['SNDK SanDisk','NAND 儲存','落後 · 跌幅最深','−48.0%','6.5x · 百分位 76.4%','絕對倍數小但百分位高,「數字小≠便宜」的教科書案例'],
+ ['WDC 西部數據','HDD 儲存','中段','−27.0%','33.9x · 百分位 79.6%','估值百分位全表最高;跌得比 MU 少、卻貴得多'],
+ ['000660 SK Hynix','HBM 記憶體龍頭','落後 · 韓股重災區','單日曾 −14.65%','查無(不覆蓋韓股)','主持人懷疑韓國去槓桿是這波傳導的起點之一'],
+ ['BE Bloom Energy','資料中心供電(燃料電池)','跟跌 · 彈幅最大','−40.5%','62.8x · 百分位 48.4%','7/30 單日 +26.5%;能源需求敘事在,但波動極大'],
+ ['IRM 鐵山','資料中心不動產 REIT','相對抗跌','−8.1%','62.2x · 百分位 4.0%','REIT 天生高 PE,要看百分位不看絕對倍數'],
+ ['CRWV CoreWeave','GPU 雲端租賃(Neocloud)','落後 · 跌幅最深','−48.0%','虧損 · PS 2.5x(百分位 1.6%)','虧損公司不該用 PE;低 PS 不構成安全邊際'],
+];
+document.getElementById('groupTable').innerHTML='<tr><th>代號/名稱</th><th>族群定位</th><th>相對強弱</th><th>距高點</th><th>Forward PE · 估值百分位</th><th>一句話看法</th></tr>'+
+GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td style="white-space:nowrap">${r[2]}</td><td style="color:var(--lose);font-weight:700;white-space:nowrap">${r[3]}</td><td style="white-space:nowrap">${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+// 數字查證表
+const FACTS=[
+ ['基金 7 月單月 −67%、YTD +80%','Situational Awareness 慘賠','CNBC/多方報導:「fell about 67% in July」「remained up about 80% for the year」,精確吻合','ok'],
+ ['AUM 從 $450 億崩到約 $100 億','「剩餘大概就是 100 多」','Bloomberg/CNBC:AUM $45B → 約 $10B,量級吻合','ok'],
+ ['組合折價賣給 Citadel','Ken Griffin 地板價承接','屬實:約 $160 億美元區塊交易,報導明載「substantial discount」','ok'],
+ ['基金自 2024 創立以來報酬 1000 多%','累計千倍級報酬','⚠️查無一手來源。只查到「2026 H1 淨報酬 +439%」,累計 1000%+ 無具名出處,精確度存疑','warn'],
+ ['台股「噴了 8% 9%」','7/31 史詩級反彈','FinMind:7/31 +3,186.45 點 <b>+7.98%</b>,精確落在口播區間','ok'],
+ ['7 月三次重挫','未給精確數字','FinMind:7/17 −2,953.71、7/28 −2,030.83、7/29 −1,564.18(觸底 39,933),累計 −6,548 點','ok'],
+ ['發哥 guidance 把盤帶上去','聯發科優於預期','FinMind:2454 於 7/31 單日 <b>+9.9%</b>(3,235→3,555),同日大盤 +7.98%,屬實','ok'],
+ ['AI 基建股深跌深彈','未給數字','Futu K 線:7/30 單日 MU +18.3%、SNDK +26.0%、WDC +15.4%、BE +26.5%,屬實','ok'],
+ ['黃崇仁辭世','力積電/愛普董事長','多方媒體確認 2026/7/31 睡夢中辭世,享壽 76,力晶集團創辦人,屬實','ok'],
+ ['「阿明」高檔解質 / 隔日沖鎖跌停','社群人物指涉','❓WebSearch 查無對應真人真事與交易紀錄,無法核實,屬社群風向敘事','q'],
+ ['天鑽法師仍偏多但被洗到','社群投資人觀點轉述','❓第三方觀點轉述,無公開紀錄可核對','q'],
+ ['台股 10 年線、5 年線終究會碰到','技術面長期論述','❓方向性描述,未給精確點位,不逐項認定','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
