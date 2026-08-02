@@ -81,6 +81,7 @@
 }
 <span class="c">// 用法：像 HTML 標籤一樣被別的元件嵌進去</span>
 &lt;Welcome /&gt;</code></pre>
+<p class="note">JSX <b>不是 HTML</b>，少數屬性名不一樣：<code>class</code> → <code>className</code>（<code>class</code> 在 JS 是保留字）、<code>for</code> → <code>htmlFor</code>、事件用駝峰 <code>onClick</code>、<code>style</code> 收物件不收字串（<code>style={{fontSize: 16}}</code>）。</p>
 <p><b>何時該拆成新元件</b>：一段 JSX <b>重複出現</b>、或一個元件長到「一眼看不完 / 同時管太多事」，就抽出來。不用一開始就過度切割——重複或變複雜時再拆。</p>
 </div>
 <div class="card">
@@ -601,6 +602,21 @@ useEffect(() =&gt; { setFull(first + " " + last); }, [first, last]);</span>
   }, []);
   <span class="k">return</span> online;
 }</code></pre>
+<p>用起來就一行。離線時把送出擋掉，網路回來自動復原——元件完全不用知道 <code>window.addEventListener</code> 的存在：</p>
+<pre><code><span class="k">function</span> CommentForm({ onSubmit }) {
+  <span class="k">const</span> online = useOnlineStatus();          <span class="c">// ← 只有這行跟連線有關</span>
+  <span class="k">const</span> [text, setText] = useState(<span class="s">""</span>);
+
+  <span class="k">return</span> (
+    &lt;form onSubmit={e =&gt; { e.preventDefault(); onSubmit(text); }}&gt;
+      &lt;textarea value={text} onChange={e =&gt; setText(e.target.value)} /&gt;
+      &lt;button type=<span class="s">"submit"</span> disabled={!online}&gt;
+        {online ? <span class="s">"送出"</span> : <span class="s">"離線中，無法送出"</span>}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+<p class="note">三個元件各自 <code>useOnlineStatus()</code>，各拿各的 <code>online</code> state，但訂閱邏輯只寫一份——這就是自訂 Hook 在做的事：<b>共用邏輯，不共用 state</b>。</p>
 </div>
 
 <h2 id="c5" class="day-anchor">5 · 決策速查表（把整篇濃縮成三張表）</h2>

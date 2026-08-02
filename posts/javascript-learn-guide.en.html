@@ -493,6 +493,48 @@ nums.forEach(n =&gt; console.log(n));  <span class="c">// prints 1,2,3,4,5; retu
 </div>
 </div>
 
+<div class="card">
+<h3>4.3 class — enough to read it</h3>
+<p><code>class</code> is a template for stamping out objects of the same shape. It <b>adds no new power</b>: underneath it is still the objects-plus-functions from 4.1, just with tidier syntax.</p>
+<pre><code><span class="k">class</span> Counter {
+  constructor(start = 0) {   <span class="c">// runs on new, does the setup</span>
+    <span class="k">this</span>.count = start;      <span class="c">// this = the object this new just made</span>
+  }
+  inc() { <span class="k">this</span>.count++; }    <span class="c">// a method, shared by every instance</span>
+}
+
+<span class="k">const</span> c = <span class="k">new</span> Counter(10);   <span class="c">// never forget new — it throws without it</span>
+c.inc();
+c.count;                     <span class="c">// 11</span></code></pre>
+
+<p><b>Who <code>this</code> points at</b> — the one rule actually worth memorizing. <code>this</code> does not care where the function was <b>written</b>, only how it is <b>called</b>: <b>whatever is left of the dot is <code>this</code></b>.</p>
+<pre><code><span class="ok">c.inc();</span>          <span class="c">// left of the dot is c → this = c  ✅</span>
+
+<span class="k">const</span> f = c.inc;   <span class="c">// pull the method out and there is no dot anymore</span>
+<span class="bad">f();</span>              <span class="c">// ❌ this is undefined → TypeError</span></code></pre>
+<p>Passing a method as a callback (<code>setTimeout(c.inc, 1000)</code>) breaks the exact same way — again, nothing left of the dot. For the fix, see <a href="#c7">trap 1 in 7.2</a>.</p>
+
+<p><b><code>extends</code>: what you actually inherit</b> — <code>class B extends A</code> means "B automatically has all of A's fields and methods, and then I add my own". <code>super(...)</code> calls the parent constructor, asking it to set up the inherited part first:</p>
+<pre><code><span class="k">class</span> ValidationError <span class="k">extends</span> Error {
+  constructor(field) {
+    <span class="k">super</span>(<span class="s">`${field} has the wrong format`</span>);   <span class="c">// calls Error's constructor: it sets message / stack</span>
+    <span class="k">this</span>.name  = <span class="s">"ValidationError"</span>;
+    <span class="k">this</span>.field = field;                     <span class="c">// this line is yours — Error has no field</span>
+  }
+}
+
+<span class="k">try</span> { <span class="k">throw</span> <span class="k">new</span> ValidationError(<span class="s">"email"</span>); }
+<span class="k">catch</span> (e) {
+  e.message;   <span class="c">// "email has the wrong format"  ← inherited, set by super()</span>
+  e.stack;     <span class="c">// where the error was thrown       ← inherited, free</span>
+  e.field;     <span class="c">// "email"                          ← yours</span>
+
+  e <span class="k">instanceof</span> Error;             <span class="c">// true ← it extends Error, so it counts as one</span>
+  e <span class="k">instanceof</span> ValidationError;   <span class="c">// true ← but you can still tell which failure it was</span>
+}</code></pre>
+<p>Those three <code>e.xxx</code> lines are all "inheritance" means: <code>message</code> and <code>stack</code> exist without you writing a line, because <code>extends Error</code> hands them over; <code>field</code> is the part you added.</p>
+</div>
+
 <h2 id="c5" class="day-anchor">5 · DOM &amp; Events — Making the Page Move</h2>
 <div class="card">
 <p>Everything so far was the language core, identical in Node.js. This chapter is <b>browser-only</b>: the DOM is the tree the browser builds from your HTML, and JS reads and writes the page through it.</p>

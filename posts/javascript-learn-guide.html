@@ -494,6 +494,48 @@ nums.forEach(n =&gt; console.log(n));  <span class="c">// 逐一印出 1,2,3,4,5
 </div>
 </div>
 
+<div class="card">
+<h3>4.3 class — 讀得懂就好</h3>
+<p><code>class</code> 是「量產同一種物件」的模板。它<b>沒有帶來新能力</b>：底下還是 4.1 那種物件加函式，只是語法整齊一點。</p>
+<pre><code><span class="k">class</span> Counter {
+  constructor(start = 0) {   <span class="c">// new 的時候自動跑，負責初始化</span>
+    <span class="k">this</span>.count = start;      <span class="c">// this = 這次 new 出來的那個物件</span>
+  }
+  inc() { <span class="k">this</span>.count++; }    <span class="c">// 方法，所有實例共用同一份</span>
+}
+
+<span class="k">const</span> c = <span class="k">new</span> Counter(10);   <span class="c">// new 不能忘，忘了會報錯</span>
+c.inc();
+c.count;                     <span class="c">// 11</span></code></pre>
+
+<p><b><code>this</code> 指向誰</b>——這才是真正要記的一條。<code>this</code> 不看你在哪裡「寫」，看這個函式怎麼被「呼叫」：<b>點的左邊是誰，<code>this</code> 就是誰</b>。</p>
+<pre><code><span class="ok">c.inc();</span>          <span class="c">// 點的左邊是 c → this = c  ✅</span>
+
+<span class="k">const</span> f = c.inc;   <span class="c">// 把方法單獨拆出來，就沒有「點的左邊」了</span>
+<span class="bad">f();</span>              <span class="c">// ❌ this 是 undefined → TypeError</span></code></pre>
+<p>把方法傳進 callback（<code>setTimeout(c.inc, 1000)</code>）是同一種斷法——一樣沒有點的左邊。怎麼修見 <a href="#c7">7.2 的第 1 個坑</a>。</p>
+
+<p><b><code>extends</code>：繼承到什麼</b>——<code>class B extends A</code> 就是「B 自動擁有 A 的全部欄位與方法，然後我再加自己的」。<code>super(...)</code> 是呼叫父層的 constructor，請它先把繼承來的部分設好：</p>
+<pre><code><span class="k">class</span> ValidationError <span class="k">extends</span> Error {
+  constructor(field) {
+    <span class="k">super</span>(<span class="s">`${field} 格式不對`</span>);   <span class="c">// 呼叫 Error 的 constructor，它負責設好 message / stack</span>
+    <span class="k">this</span>.name  = <span class="s">"ValidationError"</span>;
+    <span class="k">this</span>.field = field;             <span class="c">// 這行是自己加的，Error 沒有 field</span>
+  }
+}
+
+<span class="k">try</span> { <span class="k">throw</span> <span class="k">new</span> ValidationError(<span class="s">"email"</span>); }
+<span class="k">catch</span> (e) {
+  e.message;   <span class="c">// "email 格式不對"   ← 繼承來的，super() 幫你設的</span>
+  e.stack;     <span class="c">// 錯誤發生的位置      ← 繼承來的，白拿</span>
+  e.field;     <span class="c">// "email"           ← 自己加的</span>
+
+  e <span class="k">instanceof</span> Error;             <span class="c">// true ← 繼承自 Error，所以也算是 Error</span>
+  e <span class="k">instanceof</span> ValidationError;   <span class="c">// true ← 但能再精準分辨是哪一種錯</span>
+}</code></pre>
+<p>三行 <code>e.xxx</code> 就是「繼承」的全部意思：<code>message</code>、<code>stack</code> 你一行沒寫卻有，因為 <code>extends Error</code> 白送；<code>field</code> 是你自己加上去的。</p>
+</div>
+
 <h2 id="c5" class="day-anchor">5 · DOM 與事件 — 讓網頁真的動起來</h2>
 <div class="card">
 <p>到這裡為止都是「語言核心」，換到 Node.js 也一樣。這一章是<b>瀏覽器專屬</b>：DOM 是瀏覽器把 HTML 解析成的一棵樹，JS 透過它讀寫畫面。</p>

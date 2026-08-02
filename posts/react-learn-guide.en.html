@@ -81,6 +81,7 @@
 }
 <span class="c">// Usage: nested like an HTML tag by another component</span>
 &lt;Welcome /&gt;</code></pre>
+<p class="note">JSX <b>is not HTML</b> — a few attribute names differ: <code>class</code> → <code>className</code> (<code>class</code> is a reserved word in JS), <code>for</code> → <code>htmlFor</code>, events are camelCase <code>onClick</code>, and <code>style</code> takes an object, not a string (<code>style={{fontSize: 16}}</code>).</p>
 <p><b>When to extract a new component</b>: a chunk of JSX <b>repeats</b>, or a component grows too big to read at a glance / does too many things. Don't over-split up front — extract when it repeats or gets complex.</p>
 </div>
 <div class="card">
@@ -601,6 +602,21 @@ useEffect(() =&gt; { setFull(first + " " + last); }, [first, last]);</span>
   }, []);
   <span class="k">return</span> online;
 }</code></pre>
+<p>Using it is one line. Block submit while offline, recover automatically when the network is back — the component never needs to know <code>window.addEventListener</code> exists:</p>
+<pre><code><span class="k">function</span> CommentForm({ onSubmit }) {
+  <span class="k">const</span> online = useOnlineStatus();          <span class="c">// ← the only connectivity-aware line</span>
+  <span class="k">const</span> [text, setText] = useState(<span class="s">""</span>);
+
+  <span class="k">return</span> (
+    &lt;form onSubmit={e =&gt; { e.preventDefault(); onSubmit(text); }}&gt;
+      &lt;textarea value={text} onChange={e =&gt; setText(e.target.value)} /&gt;
+      &lt;button type=<span class="s">"submit"</span> disabled={!online}&gt;
+        {online ? <span class="s">"Submit"</span> : <span class="s">"Offline — can't submit"</span>}
+      &lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+<p class="note">Three components each call <code>useOnlineStatus()</code> and each get their own <code>online</code> state, but the subscription logic is written once — that's what a custom Hook does: <b>share the logic, not the state</b>.</p>
 </div>
 
 <h2 id="c5" class="day-anchor">5 · Decision cheat sheets (the whole article in three tables)</h2>

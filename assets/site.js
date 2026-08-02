@@ -3,13 +3,13 @@
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    d = 日期（同首頁 .pc-date），排序一律依 d 算，陣列擺放順序不影響顯示。
    cat 用首頁 data-cat 的正規中文值。
-   draft:1 = 草稿：不加首頁卡片、不加 sitemap，側欄也只在自己頁面出現 →
+   draft:1 = 草稿：首頁卡片線上自動隱藏（本機預覽仍可見），側欄也只在自己頁面出現 →
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
-   發佈時：刪掉 draft:1，再補 index 兩張卡片與 sitemap 兩行。 */
+   發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
   {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript', draft:1},
-  {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It', draft:1},
+  {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
   {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
@@ -39,6 +39,8 @@ var CATL={
   '旅遊':            {zh:'旅遊',            en:'Travel'}
 };
 var LANG=(document.documentElement.getAttribute('lang')||'').toLowerCase().indexOf('en')===0?'en':'zh';
+// 本機預覽（file:// 或 localhost）：草稿一併顯示，方便發佈前看版。線上永遠隱藏。
+var LOCAL=location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
 function catLabel(c){return (CATL[c]||{})[LANG]||c;}
 
 /* 語言切換：跳到對應的 .en.html / .html 版本（平行英文檔架構）。 */
@@ -120,9 +122,18 @@ function initHome(){
   var empty=document.getElementById('empty');
   var cat='全部',q='';
   // 日期單一來源＝POSTS.d，卡片的 .pc-date 由此填入（HTML 不再各寫一份）
-  var DATES={};POSTS.forEach(function(p){DATES[p.slug]=p.d;});
-  function dateOf(c){return DATES[(c.getAttribute('href')||'').replace(/^posts\//,'').replace(/(\.en)?\.html$/,'')]||'';}
-  var cards=[].slice.call(grid.querySelectorAll('.post-card'));
+  var DATES={},DRAFT={};POSTS.forEach(function(p){DATES[p.slug]=p.d;if(p.draft)DRAFT[p.slug]=1;});
+  function slugOf(c){return (c.getAttribute('href')||'').replace(/^posts\//,'').replace(/(\.en)?\.html$/,'');}
+  function dateOf(c){return DATES[slugOf(c)]||'';}
+  // 草稿卡片：線上直接從 DOM 拿掉，本機預覽保留並標記，方便發佈前看版。
+  // → 發佈只要刪 POSTS 那筆的 draft:1，首頁卡片自己就會出現（HTML 不用動）。
+  var cards=[].slice.call(grid.querySelectorAll('.post-card')).filter(function(c){
+    if(!DRAFT[slugOf(c)]) return true;
+    if(!LOCAL){grid.removeChild(c);return false;}
+    c.dataset.draft='1';
+    c.querySelector('.pc-cat').textContent+=(LANG==='en'?' · Draft':' · 草稿');
+    return true;
+  });
   cards.forEach(function(c){
     var el=c.querySelector('.pc-date'),d=dateOf(c);
     if(el&&d)el.textContent=d.split('-').map(Number).join(' · '); // 2026-07-25 → 2026 · 7 · 25
@@ -132,7 +143,7 @@ function initHome(){
   sorted.forEach(function(c){grid.appendChild(c);});
   // 自動把最新一篇填進精選
   if(hero){
-    var latest=sorted[0];
+    var latest=sorted.filter(function(c){return !c.dataset.draft;})[0]; // 草稿不佔精選位
     if(latest){
       hero.href=latest.getAttribute('href');
       hero.querySelector('.kicker').textContent=(LANG==='en'?'Featured · ':'精選 · ')+catLabel(latest.dataset.cat);
@@ -198,7 +209,7 @@ function initArticle(){
   // 依 POSTS 出現順序分組
   var order=[],groups={},activeBox=null;
   POSTS.forEach(function(p){
-    if(p.draft&&p.slug!==slug) return; // 草稿不進別人的側欄，只在自己頁面列出
+    if(p.draft&&!LOCAL&&p.slug!==slug) return; // 草稿不進別人的側欄，只在自己頁面列出（本機除外）
     if(!groups[p.cat]){groups[p.cat]=[];order.push(p.cat);}
     groups[p.cat].push(p);
   });
