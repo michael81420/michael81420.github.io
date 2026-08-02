@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CUDA．A GPU Programming Path from Zero</title>
+<meta name="description" content="Assuming you already have a working CUDA environment, this is purely how to write it: the execution model (thread/block/grid), memory hierarchy and coalescing, shared memory tiling, warps and reductions, reading which bound you're in, all the way to how softmax and flash attention are written. Every section pairs a diagram with a compilable example.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="cuda-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>CUDA．A GPU Programming Path from Zero</h1>
+<div class="sub">Assuming you already have a working CUDA environment, this is purely about <b>how to write it</b> — what to learn first, what next, every concept paired with a diagram and a compilable example.<br>From a 20-line kernel to understanding why flash attention saves data movement rather than compute.</div>
+<div style="margin-top:10px">
+<span class="badge new">For:programmers who've never touched a GPU</span>
+<span class="badge">Prereq:C pointers</span>
+<span class="badge">Environment:CUDA Toolkit installed</span>
+<span class="badge">Written:2026-08-03</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 First kernel</a>
+  <a href="#c1">1 Mental model</a>
+  <a href="#c2">2 Execution model</a>
+  <a href="#c3">3 Memory hierarchy</a>
+  <a href="#c4">4 Warps &amp; reduction</a>
+  <a href="#c5">5 Which bound</a>
+  <a href="#c6">6 Real kernels</a>
+  <a href="#c7">7 Resources &amp; traps</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 The mental model in one line: <span class="win">writing CUDA is not about how to compute — it's about how data moves</span>.</p>
+<p>A GPU has compute to spare; the bottleneck is almost always memory. The classic beginner failure is spending all the time on <b>syntax</b> (<code>&lt;&lt;&lt;&gt;&gt;&gt;</code>, <code>cudaMalloc</code>), producing a kernel that works but is slower than the CPU, and then giving up. The time actually belongs in <b>chapter 3, the memory hierarchy</b>.</p>
+<p><b>Suggested order (which is this article's outline)</b>: first kernel → mental model → execution model → <b>memory hierarchy</b> → warps and reduction → which bound you're in → real kernels.</p>
+<p><b>The one thing that matters most</b>: <b>do not skip chapter 3</b>. 90% of performance problems are memory problems, and every other chapter is in service of it.</p>
+<p class="note">★ This assumes you already have a working CUDA environment (an NVIDIA GPU plus the CUDA Toolkit, with <code>nvcc --version</code> responding). Save every example as a <code>.cu</code> file and compile it with <code>nvcc</code>.</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · Your first kernel — what a CUDA program looks like</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 265" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The CUDA learning path: shore up C pointers first, then the execution model and the memory hierarchy which is the most important stage, then warps and reductions, reading which bound you are in, and only at the end hand-written real kernels.">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">Foundations (skipping these costs double later)</text>
+<rect x="30" y="38" width="200" height="58" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Prereq · C pointers</text>
+<text x="130" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">malloc / free, addresses</text>
+<rect x="280" y="38" width="200" height="58" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">1 · Execution model</text>
+<text x="380" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">thread / block / grid</text>
+<rect x="530" y="38" width="200" height="58" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="630" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">2 · Memory hierarchy ★</text>
+<text x="630" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">shared memory, coalescing</text>
+<line x1="232" y1="67" x2="278" y2="67" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="482" y1="67" x2="528" y2="67" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<path d="M630 98 L630 128 L130 128 L130 158" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="124" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">now chase performance</text>
+<rect x="30" y="160" width="200" height="58" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="130" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">3 · Warps &amp; reduction</text>
+<text x="130" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">32 threads in lockstep</text>
+<rect x="280" y="160" width="200" height="58" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="380" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">4 · Which bound</text>
+<text x="380" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Nsight, roofline</text>
+<rect x="530" y="160" width="200" height="58" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="630" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">5 · Real kernels</text>
+<text x="630" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">softmax, attention</text>
+<line x1="232" y1="189" x2="278" y2="189" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="482" y1="189" x2="528" y2="189" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="246" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">★ The memory hierarchy is the center of gravity — everything else serves it</text>
+</svg>
+</div>
+
+<h3>The skeleton of a CUDA program</h3>
+<p>Every CUDA program is the same four steps: <b>allocate on the host (CPU) → copy to the device (GPU) → launch a kernel → copy the result back</b>. Every chapter after this is just about writing that middle step better.</p>
+<p>Save this as <code>add.cu</code>:</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+
+<span class="k">__global__</span> void add(<span class="k">const</span> float* a, <span class="k">const</span> float* b, float* c, int n){
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  <span class="k">if</span> (i &lt; n) c[i] = a[i] + b[i];   <span class="c">// never skip the bounds check: threads almost always &gt; n</span>
+}
+
+int main(){
+  int n = 1&lt;&lt;20;  size_t bytes = n * sizeof(float);
+  float *ha = (float*)malloc(bytes), *hb = (float*)malloc(bytes), *hc = (float*)malloc(bytes);
+  <span class="k">for</span> (int i=0;i&lt;n;i++){ ha[i]=1.0f; hb[i]=2.0f; }
+
+  float *da,*db,*dc;
+  cudaMalloc(&amp;da,bytes); cudaMalloc(&amp;db,bytes); cudaMalloc(&amp;dc,bytes);
+  cudaMemcpy(da,ha,bytes,cudaMemcpyHostToDevice);
+  cudaMemcpy(db,hb,bytes,cudaMemcpyHostToDevice);
+
+  add&lt;&lt;&lt;(n+255)/256, 256&gt;&gt;&gt;(da,db,dc,n);   <span class="c">// &lt;&lt;&lt;how many blocks, threads per block&gt;&gt;&gt;</span>
+  cudaMemcpy(hc,dc,bytes,cudaMemcpyDeviceToHost);
+
+  printf(<span class="s">"c[0]=%f  c[n-1]=%f\n"</span>, hc[0], hc[n-1]);   <span class="c">// both should be 3.0</span>
+  <span class="k">return</span> 0;
+}</code></pre>
+
+<pre><code>nvcc -O2 add.cu -o add &amp;&amp; ./add</code></pre>
+
+<p class="note">★ Printing <code>c[0]=3.000000</code> means it worked. Those 20 lines already contain the entire CUDA skeleton — everything that follows just rewrites the <code>add</code> kernel itself.</p>
+
+<h3>Prerequisite: only C pointers</h3>
+<p>The amount of C you need is surprisingly small: <b>pointers, <code>malloc</code>/<code>free</code>, arrays and address arithmetic</b>. That's it. You do <b>not</b> need C++ (templates, STL, RAII are all irrelevant at first), and you do <b>not</b> need operating systems or compiler knowledge.</p>
+<p>But you genuinely can't skip this part. CUDA moves memory by hand from start to finish. If pointers are shaky, chapter 2's <code>cudaMemcpy</code> becomes a magic incantation you copy without understanding, and chapter 3's shared memory will stop you dead. If your background is mostly Python or JavaScript, <b>spend 2–3 days on pointers first</b> — it's the highest-return few days on the whole path.</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · Mental model — why GPUs are fast, and why they often aren't</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A CPU uses a few strong cores to make one task fast while a GPU uses thousands of weak cores to do the same thing at once, so a GPU only pays off when the data is large and every element does identical work.">
+<text x="190" y="32" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">CPU · a few strong cores</text>
+<rect x="40" y="46" width="300" height="150" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="58" y="64" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="197" y="64" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="58" y="132" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="197" y="132" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="120" y="98" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="259" y="98" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="120" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="259" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="190" y="218" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Big caches, branch prediction, out-of-order</text>
+<text x="190" y="236" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">Built to make one thing fast</text>
+<text x="570" y="32" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">GPU · thousands of weak cores</text>
+<rect x="420" y="46" width="300" height="150" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
+<g style="fill:var(--winbg);stroke:var(--winbd)">
+<rect x="440" y="62" width="22" height="22" rx="3"/><rect x="466" y="62" width="22" height="22" rx="3"/><rect x="492" y="62" width="22" height="22" rx="3"/><rect x="518" y="62" width="22" height="22" rx="3"/><rect x="544" y="62" width="22" height="22" rx="3"/><rect x="570" y="62" width="22" height="22" rx="3"/><rect x="596" y="62" width="22" height="22" rx="3"/><rect x="622" y="62" width="22" height="22" rx="3"/><rect x="648" y="62" width="22" height="22" rx="3"/><rect x="674" y="62" width="22" height="22" rx="3"/>
+<rect x="440" y="90" width="22" height="22" rx="3"/><rect x="466" y="90" width="22" height="22" rx="3"/><rect x="492" y="90" width="22" height="22" rx="3"/><rect x="518" y="90" width="22" height="22" rx="3"/><rect x="544" y="90" width="22" height="22" rx="3"/><rect x="570" y="90" width="22" height="22" rx="3"/><rect x="596" y="90" width="22" height="22" rx="3"/><rect x="622" y="90" width="22" height="22" rx="3"/><rect x="648" y="90" width="22" height="22" rx="3"/><rect x="674" y="90" width="22" height="22" rx="3"/>
+<rect x="440" y="118" width="22" height="22" rx="3"/><rect x="466" y="118" width="22" height="22" rx="3"/><rect x="492" y="118" width="22" height="22" rx="3"/><rect x="518" y="118" width="22" height="22" rx="3"/><rect x="544" y="118" width="22" height="22" rx="3"/><rect x="570" y="118" width="22" height="22" rx="3"/><rect x="596" y="118" width="22" height="22" rx="3"/><rect x="622" y="118" width="22" height="22" rx="3"/><rect x="648" y="118" width="22" height="22" rx="3"/><rect x="674" y="118" width="22" height="22" rx="3"/>
+<rect x="440" y="146" width="22" height="22" rx="3"/><rect x="466" y="146" width="22" height="22" rx="3"/><rect x="492" y="146" width="22" height="22" rx="3"/><rect x="518" y="146" width="22" height="22" rx="3"/><rect x="544" y="146" width="22" height="22" rx="3"/><rect x="570" y="146" width="22" height="22" rx="3"/><rect x="596" y="146" width="22" height="22" rx="3"/><rect x="622" y="146" width="22" height="22" rx="3"/><rect x="648" y="146" width="22" height="22" rx="3"/><rect x="674" y="146" width="22" height="22" rx="3"/>
+</g>
+<text x="570" y="185" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">…each one slow and dumb, but there are thousands</text>
+<text x="570" y="218" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Small caches, no branch prediction, in-order</text>
+<text x="570" y="236" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">Built to do ten thousand identical things at once</text>
+</svg>
+</div>
+
+<h3>Where the speed comes from</h3>
+<p>A CPU is designed to <b>minimise the latency of one task</b>: huge caches, branch prediction, out-of-order execution — all of it spent making a single instruction stream run as fast as possible. A GPU inverts that. It spends those transistors on <b>more cores</b>, aiming for <b>total throughput</b>.</p>
+<p>The consequence is simple: <b>a GPU only pays off when you have a lot of independent data all doing the same thing.</b> Adding 10 numbers? The CPU wins outright — just moving the data across PCIe loses the race. Adding 100 million numbers? The GPU is an order of magnitude ahead.</p>
+
+<h3>Three numbers to memorise on day one</h3>
+<p>Using an <b>NVIDIA T4</b> as the example (other cards have different numbers, but the ratio holds):</p>
+<table>
+<tr><th>Item</th><th>Number</th><th>What it means</th></tr>
+<tr><td>Memory bandwidth</td><td class="win">~320 GB/s</td><td>How much data you can pull from VRAM per second — <b>usually your actual ceiling</b></td></tr>
+<tr><td>FP32 compute</td><td>~8.1 TFLOPS</td><td>How many floating-point operations per second</td></tr>
+<tr><td>Ratio</td><td class="lose">~100 : 1</td><td>For every float fetched from memory, the GPU has time for ~100 operations</td></tr>
+</table>
+<p>That last row is <b>the single most important line in this article</b>. It means that if your kernel does only one or two operations per float loaded — vector add is exactly this — then 99% of your compute sits idle and <b>you are memory-bound</b>. The only way to optimise such a kernel is to move less data, or move it more cleverly. Making the arithmetic faster does nothing.</p>
+<p>The vast majority of real kernels (elementwise ops, softmax, layernorm, much of attention) are memory-bound. That's why chapter 3 is the one that matters.</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · Execution model — threads, blocks, grids</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The CUDA execution hierarchy of grid, block and thread maps one-to-one onto the memory hierarchy of global, shared and registers, each level smaller, more private and faster than the one above.">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="175" y="34" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Execution (how you split work)</text>
+<text x="585" y="34" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Memory (who sees it, how fast)</text>
+<rect x="60" y="52" width="230" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="175" y="72" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Grid · the whole kernel</text>
+<text x="175" y="90" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">all threads in one launch</text>
+<rect x="470" y="52" width="230" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="585" y="72" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Global memory · GBs</text>
+<text x="585" y="90" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">visible to all · ~100s of cycles</text>
+<rect x="60" y="122" width="230" height="50" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="175" y="142" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Block · a group of threads</text>
+<text x="175" y="160" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">up to 1024, can sync together</text>
+<rect x="470" y="122" width="230" height="50" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="585" y="142" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Shared memory · tens of KB</text>
+<text x="585" y="160" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">per block · ~100× faster</text>
+<rect x="60" y="192" width="230" height="50" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="175" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Thread · one lane</text>
+<text x="175" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">the kernel code you write</text>
+<rect x="470" y="192" width="230" height="50" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="585" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Registers · a few hundred</text>
+<text x="585" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">private to one thread · fastest</text>
+<line x1="292" y1="77" x2="466" y2="77" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="292" y1="147" x2="466" y2="147" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="292" y1="217" x2="466" y2="217" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<text x="379" y="70" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">uses</text>
+<text x="379" y="140" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">uses</text>
+<text x="379" y="210" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">uses</text>
+</svg>
+</div>
+
+<h3>There's really only one idea here</h3>
+<p>When you write a CUDA kernel you write <b>what one thread does</b>, and the GPU runs a few million copies of it at once. So the first thing every thread does is <b>ask who it is</b>:</p>
+<pre><code>int i = blockIdx.x * blockDim.x + threadIdx.x;
+<span class="c">//    ↑ which block am I in  ↑ threads per block  ↑ my index inside the block</span></code></pre>
+<p>That line is CUDA's loop counter. Where a CPU writes <code>for(i=0;i&lt;n;i++)</code>, a GPU flattens the loop and hands each <code>i</code> to its own thread.</p>
+
+<h3>Three things people trip over</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">The bounds check is not optional</div><div class="kd">Block count rounds up (<code>(n+255)/256</code>), so you almost always launch more threads than <code>n</code>. Without <code>if (i &lt; n)</code> you write out of bounds — and it <b>won't necessarily crash</b>. It may just quietly corrupt other memory.</div></div>
+<div class="kcard"><div class="kt">Kernel launches are asynchronous</div><div class="kd"><code>add&lt;&lt;&lt;…&gt;&gt;&gt;()</code> returns immediately and the CPU keeps going. To time anything you need <code>cudaDeviceSynchronize()</code> first, otherwise you measure how long it took to <i>queue</i> the work and get an absurd 0.01 ms.</div></div>
+<div class="kcard"><div class="kt">CUDA errors are silent</div><div class="kd">A failing kernel throws nothing — it just sets an error flag. <b>Add a checking macro on day one</b>, or you will spend hours debugging a kernel that never ran.</div></div>
+</div>
+
+<pre><code><span class="c">// Paste this in from day one. It saves more time than you'd guess.</span>
+#define CUDA_CHECK(x) do { cudaError_t e = (x); \
+  <span class="k">if</span> (e != cudaSuccess) { \
+    fprintf(stderr, <span class="s">"CUDA error %s at %s:%d\n"</span>, cudaGetErrorString(e), __FILE__, __LINE__); \
+    exit(1); } } <span class="k">while</span>(0)
+
+CUDA_CHECK(cudaMalloc(&amp;da, bytes));
+add&lt;&lt;&lt;grid, block&gt;&gt;&gt;(da, db, dc, n);
+CUDA_CHECK(cudaGetLastError());        <span class="c">// catches launch failures (e.g. block too large)</span>
+CUDA_CHECK(cudaDeviceSynchronize());   <span class="c">// catches runtime failures (e.g. out-of-bounds access)</span></code></pre>
+
+<h3>Choosing a block size</h3>
+<p>Don't overthink it: <b>256</b>. It's a multiple of the warp size (32), works nearly everywhere, and is the community default. Once you can read which bound you're in (chapter 5), come back and try 128 or 512. Tuning it before then is wasted effort.</p>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · Memory hierarchy — the center of gravity ★</h2>
+<div class="card">
+<p class="big">If you only have time for one chapter, make it this one.</p>
+<p>As established: compute-to-bandwidth is 100:1. So all of CUDA optimisation reduces to <b>two moves</b> — ① <b>make every fetch a full fetch</b> (coalescing), and ② <b>reuse what you fetched before throwing it away</b> (shared memory tiling).</p>
+
+<h3>① Coalescing — make every fetch a full fetch</h3>
+<div class="fig">
+<svg viewBox="0 0 760 225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="When the 32 threads of a warp read contiguous addresses the hardware merges them into a single memory transaction, but with strided addresses it must issue many transactions and more than half of what it fetches goes unused, wasting bandwidth.">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="185" y="26" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">✓ Coalesced access</text>
+<rect x="44" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="116" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="188" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="260" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="71" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t0</text>
+<text x="143" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t1</text>
+<text x="215" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t2</text>
+<text x="287" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t3</text>
+<line x1="71" y1="70" x2="62" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="143" y1="70" x2="98" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="215" y1="70" x2="134" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="287" y1="70" x2="170" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<rect x="42" y="126" width="150" height="32" rx="5" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:2"/>
+<g style="fill:none;stroke:var(--winbd)">
+<rect x="46" y="130" width="32" height="24" rx="3"/><rect x="82" y="130" width="32" height="24" rx="3"/><rect x="118" y="130" width="32" height="24" rx="3"/><rect x="154" y="130" width="32" height="24" rx="3"/>
+</g>
+<g style="fill:none;stroke:var(--border)">
+<rect x="192" y="130" width="32" height="24" rx="3"/><rect x="228" y="130" width="32" height="24" rx="3"/><rect x="264" y="130" width="32" height="24" rx="3"/><rect x="300" y="130" width="32" height="24" rx="3"/>
+</g>
+<text x="185" y="180" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Contiguous → merged into <tspan style="fill:var(--win);font-weight:700">1</tspan> transaction</text>
+<text x="185" y="200" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">Every byte fetched gets used</text>
+<line x1="378" y1="30" x2="378" y2="205" style="stroke:var(--border);stroke-dasharray:4 4"/>
+<text x="565" y="26" text-anchor="middle" style="fill:var(--lose);font:700 13px sans-serif">✗ Strided access</text>
+<rect x="424" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="496" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="568" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="640" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="451" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t0</text>
+<text x="523" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t1</text>
+<text x="595" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t2</text>
+<text x="667" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t3</text>
+<line x1="451" y1="70" x2="440" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="523" y1="70" x2="512" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="595" y1="70" x2="584" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="667" y1="70" x2="656" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<g style="fill:none;stroke:var(--losebd);stroke-width:2">
+<rect x="424" y="130" width="32" height="24" rx="3"/><rect x="496" y="130" width="32" height="24" rx="3"/><rect x="568" y="130" width="32" height="24" rx="3"/><rect x="640" y="130" width="32" height="24" rx="3"/>
+</g>
+<g style="fill:none;stroke:var(--border)">
+<rect x="460" y="130" width="32" height="24" rx="3"/><rect x="532" y="130" width="32" height="24" rx="3"/><rect x="604" y="130" width="32" height="24" rx="3"/><rect x="676" y="130" width="32" height="24" rx="3"/>
+</g>
+<text x="565" y="180" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Jumping → split into <tspan style="fill:var(--lose);font-weight:700">4</tspan> transactions</text>
+<text x="565" y="200" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">Pale cells get fetched too, unused</text>
+</svg>
+</div>
+
+<p>The hardware doesn't read 4 bytes at a time — it reads <b>a whole segment (typically 32 or 128 bytes)</b>. If the 32 threads of a warp happen to want contiguous addresses, the hardware merges them into a handful of transactions and bandwidth is fully used. If they jump around, each thread needs its own transaction, and each of those drags back a whole segment of which only 4 bytes are wanted.</p>
+<p><b>In practice there's one rule: adjacent threads should read adjacent addresses.</b> That means <code>a[i]</code> where <code>i</code> contains <code>threadIdx.x</code> — not <code>a[i * stride]</code>.</p>
+<p>The canonical illustration is <b>matrix transpose</b>: reads are contiguous but writes are strided (or the other way round), so no matter how you write it half of it is bad — unless you route through shared memory. Which brings us to the second move.</p>
+
+<h3>② Shared memory tiling — reuse what you fetched</h3>
+<p>Shared memory is <b>a cache you manage yourself</b>: shared by all threads in a block, roughly two orders of magnitude faster, but only tens of KB. The usage pattern is always the same:</p>
+<pre><code><span class="c">// each block computes one 16×16 tile of the output matrix</span>
+<span class="k">__global__</span> void matmul_tiled(<span class="k">const</span> float* A, <span class="k">const</span> float* B, float* C, int N){
+  <span class="k">__shared__</span> float As[16][16], Bs[16][16];
+  int ty = threadIdx.y, tx = threadIdx.x;
+  int row = blockIdx.y * 16 + ty, col = blockIdx.x * 16 + tx;
+  float acc = 0.0f;
+
+  <span class="k">for</span> (int t = 0; t &lt; N/16; ++t) {
+    As[ty][tx] = A[row * N + (t*16 + tx)];      <span class="c">// ① cooperatively load a tile into shared</span>
+    Bs[ty][tx] = B[(t*16 + ty) * N + col];
+    __syncthreads();                            <span class="c">// ② wait for everyone before reading</span>
+
+    <span class="k">for</span> (int k = 0; k &lt; 16; ++k)                 <span class="c">// ③ this tile gets used 16 times, not once</span>
+      acc += As[ty][k] * Bs[k][tx];
+    __syncthreads();                            <span class="c">// ④ wait for everyone before overwriting</span>
+  }
+  C[row * N + col] = acc;
+}</code></pre>
+<p>Step ③ is the whole trick. The naive version fetches two numbers from global memory per multiply-add; the tiled version loads once into shared and then <b>uses it 16 times</b>. Traffic drops by 16×. That's the entire secret.</p>
+<p class="note">★ Both <code>__syncthreads()</code> calls are required, and dropping either produces the worst kind of bug: correct on small matrices, occasionally wrong on large ones. The fourth is the one people forget — without it, fast threads overwrite the tile while slower ones are still reading it.</p>
+<p>The other trap is <b>bank conflicts</b>: shared memory is split across 32 banks, and if several threads in a warp hit <b>different addresses in the same bank</b>, the accesses serialise. Transpose-shaped access patterns are the usual offender, and the classic fix is to declare the array as <code>As[16][17]</code> — one column of padding to knock the alignment out of phase. It looks like a hack; it is genuinely standard practice.</p>
+<p>Tile edges of 16 or 32 are both common, and the choice comes down to shared memory capacity and register use per thread. Those two squeeze each other: a bigger tile means more reuse, but fewer blocks fit on an SM at once.</p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · Warps and reduction — from writing it to writing it well</h2>
+<div class="card">
+<h3>The warp is the real unit of execution</h3>
+<p>Saying "each thread runs independently" was a simplification. The GPU actually schedules in units of a <b>warp — 32 threads</b> — and those 32 <b>share a single instruction pointer</b>. They are always executing the same line of code.</p>
+<p>Which gives you <b>warp divergence</b>:</p>
+<pre><code><span class="k">if</span> (threadIdx.x % 2 == 0) do_A();   <span class="c">// half the warp goes here</span>
+<span class="k">else</span>                      do_B();   <span class="c">// the other half goes there</span>
+<span class="c">// → hardware must run A for everyone (B's half idle), then B (A's half idle)</span>
+<span class="c">// → this warp costs A + B: half your throughput, gone</span></code></pre>
+<p>Note that a bounds check like <code>if (i &lt; n)</code> is <b>essentially free</b> — only the final warp diverges, which is negligible. What you actually want to avoid is <b>branching on thread id inside a warp</b>.</p>
+
+<h3>Reduction: turning n numbers into one</h3>
+<p>This is the classic GPU exercise precisely because it <b>fights the parallel model</b> — every thread wants to write the same result. The standard answer is a halving tree:</p>
+<pre><code><span class="c">// Stage A: halving tree within a block, through shared memory</span>
+<span class="k">for</span> (int s = blockDim.x / 2; s &gt; 32; s &gt;&gt;= 1) {
+  <span class="k">if</span> (tid &lt; s) sdata[tid] += sdata[tid + s];
+  __syncthreads();
+}
+<span class="c">// Stage B: once 32 are left they're one warp, so shuffle registers directly —</span>
+<span class="c">//          no shared memory and no __syncthreads() needed at all</span>
+<span class="k">if</span> (tid &lt; 32) {
+  float v = sdata[tid] + sdata[tid + 32];
+  <span class="k">for</span> (int off = 16; off &gt; 0; off &gt;&gt;= 1)
+    v += __shfl_down_sync(0xffffffff, v, off);   <span class="c">// 0xffffffff = all 32 participate</span>
+  <span class="k">if</span> (tid == 0) out[blockIdx.x] = v;
+}</code></pre>
+<p>NVIDIA has a classic deck, <i>Optimizing Parallel Reduction in CUDA</i>, that takes this kernel from naive to near-bandwidth-limit across 7 versions and 30× of speedup. Every trick it demonstrates — avoiding divergence, avoiding bank conflicts, unrolling the last warp, having each thread handle several elements up front — is a general technique, not something specific to reduction.</p>
+<p class="note">★ When you sum a large number of <code>float</code>s, the GPU result <b>will not exactly match</b> a serial CPU one, and that's not a bug — floating-point addition isn't associative, so a different summation order gives a different answer. It's an inherent property of summing in parallel.</p>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · Which bound you're in — where to optimise</h2>
+<div class="card">
+<p>Once you can write kernels, the next question is <b>which direction to change them</b>. CUDA's optimisation techniques trade against each other — saving memory traffic usually costs arithmetic, and vice versa. Pick the wrong direction and you don't just waste effort, you make the kernel slower.</p>
+
+<h3>The only rule you need: roofline</h3>
+<p>Ask one question: <b>which hits the ceiling first, memory throughput or compute throughput?</b> NVIDIA's <code>nsys</code> (a whole-program timeline) and <code>ncu</code> (per-kernel detail) hand you both percentages directly. Three cases, three completely different directions:</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">Memory near 100%, compute low</div><div class="kd"><b>Memory-bound</b>. This is the normal case. Optimise toward moving less data: coalescing, shared memory reuse, kernel fusion (merge several elementwise kernels so data isn't shuttled back and forth).</div><div class="ke">→ Faster arithmetic buys nothing</div></div>
+<div class="kcard"><div class="kt">Compute near 100%, memory low</div><div class="kd"><b>Compute-bound</b>. Rarer — well-optimised matmul eventually gets here. Optimise toward computing less or computing cheaper: lower precision, tensor cores, removing redundant work.</div><div class="ke">→ Faster data movement buys nothing</div></div>
+<div class="kcard"><div class="kt">Both low</div><div class="kd"><b>Latency-bound</b>. The GPU is waiting. Usually low occupancy (too many registers per thread, oversized shared memory), heavy divergence, or too much synchronisation.</div><div class="ke">→ Now look at the occupancy figure</div></div>
+</div>
+<p class="note">★ <b>High occupancy does not mean fast.</b> This is where beginners get misled most often. Occupancy only measures your ability to hide latency, and plenty of world-class kernels deliberately run at low occupancy to get more registers. <b>Read memory and compute throughput first; occupancy only matters when both are low.</b></p>
+<p>A whole-program timeline often reveals something more fundamental: the bottleneck isn't the kernel at all, it's <code>cudaMemcpy</code>. No amount of kernel tuning helps there — the fix is fewer host-device round trips, or streams so transfers overlap with compute.</p>
+</div>
+
+<h2 id="c6" class="day-anchor">6 · Real kernels — write things people actually use</h2>
+<div class="card">
+<p>The first five chapters are common ground. Here you pick a direction. The order below assumes your goal is <b>AI / LLM inference</b>, currently where CUDA skills are most in demand. If you're aiming at graphics or scientific computing, swap out this chapter's targets — the first five are unchanged.</p>
+
+<table>
+<tr><th>Order</th><th>Kernel</th><th>What's new in it</th><th>Difficulty</th></tr>
+<tr><td>1</td><td>Softmax</td><td>Two passes (max, then sum), numerical stability (subtract the max first), row-wise reduction</td><td><span class="pill p-neu">Medium</span></td></tr>
+<tr><td>2</td><td>LayerNorm</td><td>Mean and variance in one pass, Welford's algorithm, kernel fusion</td><td><span class="pill p-neu">Medium</span></td></tr>
+<tr><td>3</td><td>Online softmax</td><td>Softmax in a single pass — the core trick behind flash attention</td><td><span class="pill p-turn">Med-high</span></td></tr>
+<tr><td>4</td><td>Simplified flash attention</td><td>All of the above together: tiling plus online softmax, never materialising the N×N matrix</td><td><span class="pill p-warn">Hard</span></td></tr>
+</table>
+
+<p>These are order-dependent — 3 is a prerequisite for 4 in particular. Once you've done 4 you'll genuinely understand why flash attention saves so much memory: <b>it doesn't save compute, it saves data movement</b>, which is exactly the 100:1 from chapter 1 paying off.</p>
+
+<h3>When you're allowed to use libraries</h3>
+<p>Once you've hand-written matmul, you <b>should</b> switch to cuBLAS. Your version will reach maybe 50–70% of it, and the remaining gap is a decade of hand-tuning that isn't worth chasing from scratch. The value of writing it yourself was <b>learning why</b>, not replacing the library.</p>
+<p>Same logic for <b>Triton</b> (GPU kernels in Python) — picking it up now will feel effortless, because you already know what it's automating. People who start with Triton tend to hit a wall the moment they need manual control over memory.</p>
+</div>
+
+<h2 id="c7" class="day-anchor">7 · Resources and traps</h2>
+<div class="card">
+<h3>Resources (in this order — don't open them all at once)</h3>
+<table>
+<tr><th>Resource</th><th>Type</th><th>How to use it</th></tr>
+<tr><td><b>Programming Massively Parallel Processors</b> (PMPP, 4th ed.)</td><td>Textbook</td><td><b>The main line.</b> Chapters 1–6 map onto chapters 2–4 here. The one book worth reading front to back</td></tr>
+<tr><td><b>GPU MODE</b> (YouTube + Discord)</td><td>Lectures + community</td><td>Watch alongside PMPP. Speakers are mostly people who write kernels for a living; there are exercises</td></tr>
+<tr><td><b>Simon Boehm, "How to Optimize a CUDA Matmul Kernel"</b></td><td>Long-form article</td><td>The best hands-on companion to chapter 3. Naive to near-cuBLAS in 10 versions, each with numbers</td></tr>
+<tr><td><b>NVIDIA, "Optimizing Parallel Reduction in CUDA"</b></td><td>Slide deck</td><td>The standard text for chapter 4. Seven versions; implement through version 5 yourself</td></tr>
+<tr><td><b>CUDA C++ Programming Guide</b></td><td>Official docs</td><td class="lose">A dictionary. Do <b>not</b> read it front to back</td></tr>
+<tr><td><b>LeetGPU</b></td><td>Online exercises</td><td>Write kernels in the browser with automatic grading. Good for staying sharp</td></tr>
+</table>
+
+<h3>What not to do yet</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">Don't start with Triton or other abstractions</div><div class="kd">Triton, CuPy and Numba earn their keep by <b>handling the memory hierarchy for you</b>. Start there and you skip chapter 3 — the most important chapter here — then get stuck the first time you need manual control.</div><div class="ke">Learn it after chapter 6; it'll be much faster</div></div>
+<div class="kcard"><div class="kt">Don't reach for cuBLAS / cuDNN early</div><div class="kd">They're for saving effort at the end, not for learning. Calling a library on day one teaches you nothing.</div><div class="ke">Use them once you've hand-written matmul</div></div>
+<div class="kcard"><div class="kt">Don't read the Programming Guide cover to cover</div><div class="kd">It's a <b>reference manual</b>, not a course, and it covers a great deal you won't touch for years (dynamic parallelism, graphics interop, multi-GPU…). Reading it linearly just makes you quit around page 20.</div><div class="ke">Consult it when you have a specific question</div></div>
+<div class="kcard"><div class="kt">Don't optimise on instinct</div><div class="kd">"I used shared memory, so it should be faster" is wrong more often than you'd expect. An oversized tile, bank conflicts, or crushed occupancy all make the "optimisation" slower. Work out the direction from chapter 5 first.</div><div class="ke">Wrong direction, no amount of tuning helps</div></div>
+<div class="kcard"><div class="kt">Don't agonise over block size</div><div class="kd">Use 256. Tuning it before you can profile is guessing at a parameter with no feedback signal.</div><div class="ke">Come back to it after chapter 5</div></div>
+</div>
+
+<h3>Common ways people get stuck</h3>
+<table>
+<tr><th>Symptom</th><th>Usually because</th></tr>
+<tr><td>Kernel seems not to run; results are all zero</td><td>No error checking. Add <code>CUDA_CHECK</code> + <code>cudaGetLastError()</code> and you'll typically find <code>invalid configuration argument</code> (block size over 1024)</td></tr>
+<tr><td>Timing says 0.01 ms — implausibly fast</td><td>Missing <code>cudaDeviceSynchronize()</code>. You measured the CPU queuing the launch; the kernel is still running</td></tr>
+<tr><td>Correct on small inputs, occasionally wrong on large ones</td><td>A missing <code>__syncthreads()</code>, or one placed inside an <code>if</code> — <b>every thread in the block must reach the same <code>__syncthreads()</code></b>, otherwise behaviour is undefined</td></tr>
+<tr><td>The GPU version is slower than the CPU</td><td>Input too small (transfer cost dominates), or <code>cudaMemcpy</code> is the real cost. An <code>nsys</code> timeline makes it obvious</td></tr>
+<tr><td>Results differ from the CPU in the 4th decimal</td><td>Not a bug. Floating-point addition isn't associative and the parallel summation order differs. Compare with relative error, not <code>==</code></td></tr>
+<tr><td>Shared memory made it <i>slower</i></td><td>Bank conflicts, or a tile large enough to crush occupancy. Check <code>ncu</code>'s shared memory conflict metrics</td></tr>
+</table>
+
+<h3>How long this takes</h3>
+<p>Assuming 6–8 hours a week:</p>
+<table>
+<tr><td>Chapters 0–1</td><td class="win">1 week</td><td>Setup and mental model (add 3–5 days if you need to shore up C pointers)</td></tr>
+<tr><td>Chapter 2</td><td>1 week</td><td>Execution model</td></tr>
+<tr><td>Chapter 3 ★</td><td class="win">2–3 weeks</td><td>Memory hierarchy — <b>take your time, this one earns it</b></td></tr>
+<tr><td>Chapter 4</td><td>1 week</td><td>Warps and reduction</td></tr>
+<tr><td>Chapter 5</td><td>1 week</td><td>Reading which bound you're in</td></tr>
+<tr><td>Chapter 6</td><td>Ongoing</td><td>Real kernels, one at a time</td></tr>
+</table>
+<p>That's roughly <b>6–8 weeks</b> to get through chapters 0–5, then continuous accumulation. The estimate assumes you actually type out each chapter’s examples yourself — reading without writing is much faster and teaches approximately nothing. CUDA is the kind of thing <b>you can only learn through your fingers</b>.</p>
+</div>
+
+<div class="foot">
+<b>References</b>:NVIDIA CUDA C++ Programming Guide; <i>Programming Massively Parallel Processors</i>, 4th ed.; NVIDIA, "Optimizing Parallel Reduction in CUDA"; Simon Boehm, "How to Optimize a CUDA Matmul Kernel"; GPU MODE lectures.
+<br>Performance figures use the NVIDIA T4 as the example. Absolute numbers vary a lot by architecture, but the ratio that matters — bandwidth is far scarcer than compute — holds across every generation.
+<br><b>Disclaimer</b>:These are personal study notes and may not track the latest toolchain exactly; check the official docs before you rely on anything here.
+</div>
+
+<script>
+// Chapter jump bar: highlight the section currently in view while scrolling.
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>

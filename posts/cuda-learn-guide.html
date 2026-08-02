@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CUDA．從零開始的 GPU 程式學習路線</title>
+<meta name="description" content="假設你已經有能跑 CUDA 的環境，這篇只講怎麼寫：執行模型（thread/block/grid）、記憶體階層與 coalescing、shared memory tiling、warp 與 reduction、瓶頸判讀，一路到 softmax 與 flash attention 的寫法。每段都配圖解與可直接編譯的範例。">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="cuda-learn-guide"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>CUDA．從零開始的 GPU 程式學習路線</h1>
+<div class="sub">假設你手上已經有能跑 CUDA 的環境，這篇只講<b>怎麼寫</b>——先學什麼、後學什麼，每個概念都配圖解與可直接編譯的範例。<br>從一支 20 行的 kernel 開始，到看懂為什麼 flash attention 省下的是記憶體搬運，而不是算力。</div>
+<div style="margin-top:10px">
+<span class="badge new">對象:寫過程式、沒碰過 GPU</span>
+<span class="badge">前置:C 的指標</span>
+<span class="badge">環境:已裝好 CUDA Toolkit</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<nav class="daynav" id="daynav">
+  <a href="#c0">0 第一支 kernel</a>
+  <a href="#c1">1 心智模型</a>
+  <a href="#c2">2 執行模型</a>
+  <a href="#c3">3 記憶體階層</a>
+  <a href="#c4">4 warp 與 reduction</a>
+  <a href="#c5">5 瓶頸判讀</a>
+  <a href="#c6">6 實戰 kernel</a>
+  <a href="#c7">7 資源與陷阱</a>
+</nav>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧠 一句話心智模型：<span class="win">寫 CUDA 不是在寫「怎麼算」，是在寫「資料怎麼搬」</span>。</p>
+<p>GPU 的算力遠遠過剩，瓶頸幾乎永遠在記憶體。新手最常見的失敗是把時間全花在<b>語法</b>（<code>&lt;&lt;&lt;&gt;&gt;&gt;</code>、<code>cudaMalloc</code>）上，然後寫出一個「會動但比 CPU 還慢」的 kernel，卡住、放棄。真正該花時間的是<b>第 3 章的記憶體階層</b>。</p>
+<p><b>建議順序（也就是本篇章節）</b>：第一支 kernel → 心智模型 → 執行模型 → <b>記憶體階層</b> → warp 與 reduction → 瓶頸判讀 → 實戰 kernel。</p>
+<p><b>最重要的一件事</b>：<b>不要跳過第 3 章</b>。90% 的效能問題是記憶體問題，其他章節都在服務它。</p>
+<p class="note">★ 本篇假設你已經有能跑 CUDA 的環境（NVIDIA 顯卡 + CUDA Toolkit，<code>nvcc --version</code> 有反應）。所有範例存成 <code>.cu</code> 檔，用 <code>nvcc</code> 編譯就能跑。</p>
+</div>
+
+<h2 id="c0" class="day-anchor">0 · 第一支 kernel — CUDA 程式長什麼樣</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 265" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CUDA 的學習路線：先補齊 C 的指標，再學執行模型與記憶體階層（這一段最重要），接著 warp 與 reduction、瓶頸判讀，最後才是手寫真實 kernel。">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">打地基（跳過會在後面加倍還）</text>
+<rect x="30" y="38" width="200" height="58" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">前置 · C 的指標</text>
+<text x="130" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">malloc / free、陣列位址</text>
+<rect x="280" y="38" width="200" height="58" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">1 · 執行模型</text>
+<text x="380" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">thread / block / grid</text>
+<rect x="530" y="38" width="200" height="58" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="630" y="62" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">2 · 記憶體階層 ★</text>
+<text x="630" y="80" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">shared memory、coalescing</text>
+<line x1="232" y1="67" x2="278" y2="67" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="482" y1="67" x2="528" y2="67" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<path d="M630 98 L630 128 L130 128 L130 158" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="124" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">開始追效能</text>
+<rect x="30" y="160" width="200" height="58" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="130" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">3 · warp 與 reduction</text>
+<text x="130" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">32 執行緒鎖步、shuffle</text>
+<rect x="280" y="160" width="200" height="58" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="380" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">4 · 瓶頸判讀</text>
+<text x="380" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">Nsight、roofline</text>
+<rect x="530" y="160" width="200" height="58" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="630" y="184" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">5 · 實戰 kernel</text>
+<text x="630" y="202" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">softmax、attention</text>
+<line x1="232" y1="189" x2="278" y2="189" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<line x1="482" y1="189" x2="528" y2="189" style="stroke:var(--ink3)" marker-end="url(#ah1)"/>
+<text x="380" y="246" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">★ 記憶體階層是整條路線的重心，其他章節都在服務它</text>
+</svg>
+</div>
+
+<h3>CUDA 程式的骨架</h3>
+<p>一支 CUDA 程式永遠是同樣四步：<b>在 host（CPU）配記憶體 → 搬到 device（GPU）→ 啟動 kernel → 把結果搬回來</b>。後面每一章都只是在把中間那一步寫得更好。</p>
+<p>存成 <code>add.cu</code>：</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+
+<span class="k">__global__</span> void add(<span class="k">const</span> float* a, <span class="k">const</span> float* b, float* c, int n){
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  <span class="k">if</span> (i &lt; n) c[i] = a[i] + b[i];   <span class="c">// 邊界檢查不能省：thread 總數幾乎一定 &gt; n</span>
+}
+
+int main(){
+  int n = 1&lt;&lt;20;  size_t bytes = n * sizeof(float);
+  float *ha = (float*)malloc(bytes), *hb = (float*)malloc(bytes), *hc = (float*)malloc(bytes);
+  <span class="k">for</span> (int i=0;i&lt;n;i++){ ha[i]=1.0f; hb[i]=2.0f; }
+
+  float *da,*db,*dc;
+  cudaMalloc(&amp;da,bytes); cudaMalloc(&amp;db,bytes); cudaMalloc(&amp;dc,bytes);
+  cudaMemcpy(da,ha,bytes,cudaMemcpyHostToDevice);
+  cudaMemcpy(db,hb,bytes,cudaMemcpyHostToDevice);
+
+  add&lt;&lt;&lt;(n+255)/256, 256&gt;&gt;&gt;(da,db,dc,n);   <span class="c">// &lt;&lt;&lt;幾個 block, 每 block 幾個 thread&gt;&gt;&gt;</span>
+  cudaMemcpy(hc,dc,bytes,cudaMemcpyDeviceToHost);
+
+  printf(<span class="s">"c[0]=%f  c[n-1]=%f\n"</span>, hc[0], hc[n-1]);   <span class="c">// 應該都是 3.0</span>
+  <span class="k">return</span> 0;
+}</code></pre>
+
+<pre><code>nvcc -O2 add.cu -o add &amp;&amp; ./add</code></pre>
+
+<p class="note">★ 印出 <code>c[0]=3.000000</code> 就對了。這 20 行裡已經有 CUDA 的全部骨架，剩下的章節都只是在改寫 <code>add</code> 這個 kernel 本身。</p>
+
+<h3>前置知識：只要 C 的指標</h3>
+<p>你需要的 C 少得出乎意料：<b>指標、<code>malloc</code>/<code>free</code>、陣列與位址運算</b>。就這些。<b>不</b>需要 C++（模板、STL、RAII 一開始都用不到）、<b>不</b>需要作業系統或編譯器知識。</p>
+<p>但這一塊真的不能跳。CUDA 全程在手動搬記憶體，指標不熟的話，第 2 章的 <code>cudaMemcpy</code> 就會變成「照抄咒語」，第 3 章的 shared memory 一定卡死。如果你主要背景是 Python 或 JavaScript，<b>先花 2–3 天補指標</b>，這是整條路線投報率最高的兩三天。</p>
+</div>
+
+<h2 id="c1" class="day-anchor">1 · 心智模型 — GPU 為什麼快，又為什麼常常不快</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CPU 用少數強核心把單一任務做快，GPU 用上萬個弱核心同時做同一件事，所以 GPU 只有在資料量夠大且每個元素做同樣運算時才划算。">
+<text x="190" y="32" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">CPU · 少數強核心</text>
+<rect x="40" y="46" width="300" height="150" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="58" y="64" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="197" y="64" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="58" y="132" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="197" y="132" width="125" height="58" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="120" y="98" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="259" y="98" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="120" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="259" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">core</text>
+<text x="190" y="218" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">大快取、分支預測、亂序執行</text>
+<text x="190" y="236" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">為「把一件事做很快」而設計</text>
+<text x="570" y="32" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">GPU · 上萬個弱核心</text>
+<rect x="420" y="46" width="300" height="150" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
+<g style="fill:var(--winbg);stroke:var(--winbd)">
+<rect x="440" y="62" width="22" height="22" rx="3"/><rect x="466" y="62" width="22" height="22" rx="3"/><rect x="492" y="62" width="22" height="22" rx="3"/><rect x="518" y="62" width="22" height="22" rx="3"/><rect x="544" y="62" width="22" height="22" rx="3"/><rect x="570" y="62" width="22" height="22" rx="3"/><rect x="596" y="62" width="22" height="22" rx="3"/><rect x="622" y="62" width="22" height="22" rx="3"/><rect x="648" y="62" width="22" height="22" rx="3"/><rect x="674" y="62" width="22" height="22" rx="3"/>
+<rect x="440" y="90" width="22" height="22" rx="3"/><rect x="466" y="90" width="22" height="22" rx="3"/><rect x="492" y="90" width="22" height="22" rx="3"/><rect x="518" y="90" width="22" height="22" rx="3"/><rect x="544" y="90" width="22" height="22" rx="3"/><rect x="570" y="90" width="22" height="22" rx="3"/><rect x="596" y="90" width="22" height="22" rx="3"/><rect x="622" y="90" width="22" height="22" rx="3"/><rect x="648" y="90" width="22" height="22" rx="3"/><rect x="674" y="90" width="22" height="22" rx="3"/>
+<rect x="440" y="118" width="22" height="22" rx="3"/><rect x="466" y="118" width="22" height="22" rx="3"/><rect x="492" y="118" width="22" height="22" rx="3"/><rect x="518" y="118" width="22" height="22" rx="3"/><rect x="544" y="118" width="22" height="22" rx="3"/><rect x="570" y="118" width="22" height="22" rx="3"/><rect x="596" y="118" width="22" height="22" rx="3"/><rect x="622" y="118" width="22" height="22" rx="3"/><rect x="648" y="118" width="22" height="22" rx="3"/><rect x="674" y="118" width="22" height="22" rx="3"/>
+<rect x="440" y="146" width="22" height="22" rx="3"/><rect x="466" y="146" width="22" height="22" rx="3"/><rect x="492" y="146" width="22" height="22" rx="3"/><rect x="518" y="146" width="22" height="22" rx="3"/><rect x="544" y="146" width="22" height="22" rx="3"/><rect x="570" y="146" width="22" height="22" rx="3"/><rect x="596" y="146" width="22" height="22" rx="3"/><rect x="622" y="146" width="22" height="22" rx="3"/><rect x="648" y="146" width="22" height="22" rx="3"/><rect x="674" y="146" width="22" height="22" rx="3"/>
+</g>
+<text x="570" y="185" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">…每個都又慢又笨，但有幾千個</text>
+<text x="570" y="218" text-anchor="middle" style="fill:var(--ink2);font:12px sans-serif">小快取、無分支預測、順序執行</text>
+<text x="570" y="236" text-anchor="middle" style="fill:var(--ink3);font:11.5px sans-serif">為「同時做一萬件同樣的事」而設計</text>
+</svg>
+</div>
+
+<h3>GPU 快在哪</h3>
+<p>CPU 的設計目標是<b>降低單一任務的延遲</b>：大量快取、分支預測、亂序執行，全部拿來讓一條指令流跑得越快越好。GPU 反過來，它把那些電晶體通通拿去<b>多塞核心</b>，目標是<b>拉高總吞吐量</b>。</p>
+<p>結論很簡單：<b>GPU 只有在你有大量彼此獨立、而且做同一件事的資料時才划算。</b>10 個元素相加？CPU 完勝，光是把資料搬過 PCIe 就輸了。1 億個元素相加？GPU 快一個數量級。</p>
+
+<h3>三個從第一天就要記住的數字</h3>
+<p>以 <b>NVIDIA T4</b> 為例（其他卡數字不同，但比例關係一樣）：</p>
+<table>
+<tr><th>項目</th><th>數字</th><th>意思</th></tr>
+<tr><td>記憶體頻寬</td><td class="win">約 320 GB/s</td><td>每秒能從顯存搬多少資料——<b>這通常就是你的天花板</b></td></tr>
+<tr><td>FP32 算力</td><td>約 8.1 TFLOPS</td><td>每秒能做多少次浮點運算</td></tr>
+<tr><td>兩者比值</td><td class="lose">約 100 : 1</td><td>每從記憶體搬 1 個 float，GPU 就有時間做約 100 次運算</td></tr>
+</table>
+<p>最後那一列是<b>整篇文章最重要的一句話</b>。它的意思是：如果你的 kernel 每讀一個 float 只做一兩次運算（vector add 就是這種），那你 99% 的算力是閒置的，<b>你被記憶體綁住了</b>。這種 kernel 叫 <b>memory-bound</b>，優化它的唯一方向是「少搬、搬得更聰明」，不是「算得更快」。</p>
+<p>絕大多數真實 kernel（elementwise、softmax、layernorm、attention 的一部分）都是 memory-bound。這就是為什麼第 3 章最重要。</p>
+</div>
+
+<h2 id="c2" class="day-anchor">2 · 執行模型 — thread、block、grid</h2>
+<div class="card">
+<div class="fig">
+<svg viewBox="0 0 760 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CUDA 的執行階層 grid、block、thread 一一對應到記憶體階層 global、shared、register，越往下越小、越私有、也越快。">
+<defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="175" y="34" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">執行階層（你怎麼切工作）</text>
+<text x="585" y="34" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">記憶體階層（誰看得到、多快）</text>
+<rect x="60" y="52" width="230" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="175" y="72" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Grid · 整個 kernel</text>
+<text x="175" y="90" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">一次啟動的全部 thread</text>
+<rect x="470" y="52" width="230" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="585" y="72" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Global memory · GB 級</text>
+<text x="585" y="90" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">全部人看得到 · 慢（數百 cycle）</text>
+<rect x="60" y="122" width="230" height="50" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="175" y="142" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Block · 一群 thread</text>
+<text x="175" y="160" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">最多 1024 個，能互相同步</text>
+<rect x="470" y="122" width="230" height="50" rx="10" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="585" y="142" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Shared memory · 幾十 KB</text>
+<text x="585" y="160" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">同 block 共用 · 快約 100 倍</text>
+<rect x="60" y="192" width="230" height="50" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="175" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Thread · 一條執行緒</text>
+<text x="175" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">你寫的 kernel 程式碼本體</text>
+<rect x="470" y="192" width="230" height="50" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="585" y="212" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Register · 幾百個</text>
+<text x="585" y="230" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">單一 thread 私有 · 最快</text>
+<line x1="292" y1="77" x2="466" y2="77" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="292" y1="147" x2="466" y2="147" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<line x1="292" y1="217" x2="466" y2="217" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+<text x="379" y="70" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">用</text>
+<text x="379" y="140" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">用</text>
+<text x="379" y="210" text-anchor="middle" style="fill:var(--ink3);font:10.5px sans-serif">用</text>
+</svg>
+</div>
+
+<h3>你只需要理解一件事</h3>
+<p>寫 CUDA kernel 時，你寫的是<b>「一個 thread 要做什麼」</b>，然後 GPU 幫你把它複製幾百萬份同時跑。所以每個 thread 的第一件事永遠是<b>問自己「我是誰」</b>：</p>
+<pre><code>int i = blockIdx.x * blockDim.x + threadIdx.x;
+<span class="c">//    ↑ 我在第幾個 block   ↑ 每 block 幾個 thread  ↑ 我在 block 內第幾個</span></code></pre>
+<p>這一行就是 CUDA 的「for 迴圈索引」。CPU 寫 <code>for(i=0;i&lt;n;i++)</code>，GPU 就是把迴圈攤平，每個 <code>i</code> 給一個 thread。</p>
+
+<h3>三個容易踩的地方</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">邊界檢查不能省</div><div class="kd">block 數要無條件進位（<code>(n+255)/256</code>），所以 thread 總數幾乎一定大於 <code>n</code>。少了 <code>if (i &lt; n)</code> 就是越界寫入，而且<b>不一定會當</b>——它可能只是靜靜地污染別的記憶體。</div></div>
+<div class="kcard"><div class="kt">kernel 啟動是非同步的</div><div class="kd"><code>add&lt;&lt;&lt;…&gt;&gt;&gt;()</code> 會立刻返回，CPU 繼續往下跑。要量時間得先 <code>cudaDeviceSynchronize()</code>，否則你量到的是「發送指令」的時間，會得到荒謬的 0.01 ms。</div></div>
+<div class="kcard"><div class="kt">CUDA 錯誤是沉默的</div><div class="kd">kernel 出錯不會丟例外，只會設一個 error flag。<b>從第一天就包一個檢查巨集</b>，不然你會花好幾小時 debug 一個早就失敗的 kernel。</div></div>
+</div>
+
+<pre><code><span class="c">// 從第一天就貼上這個。省下的時間比你想像的多。</span>
+#define CUDA_CHECK(x) do { cudaError_t e = (x); \
+  <span class="k">if</span> (e != cudaSuccess) { \
+    fprintf(stderr, <span class="s">"CUDA error %s at %s:%d\n"</span>, cudaGetErrorString(e), __FILE__, __LINE__); \
+    exit(1); } } <span class="k">while</span>(0)
+
+CUDA_CHECK(cudaMalloc(&amp;da, bytes));
+add&lt;&lt;&lt;grid, block&gt;&gt;&gt;(da, db, dc, n);
+CUDA_CHECK(cudaGetLastError());        <span class="c">// 抓「啟動失敗」（例如 block 開太大）</span>
+CUDA_CHECK(cudaDeviceSynchronize());   <span class="c">// 抓「執行中失敗」（例如越界存取）</span></code></pre>
+
+<h3>block size 怎麼選</h3>
+<p>先別想太多：<b>256</b>。它是 warp（32）的倍數、適用於幾乎所有情境、也是社群的預設答案。等你到第 5 章看得懂瓶頸了，再回頭調 128 / 512——在那之前調它是浪費時間。</p>
+</div>
+
+<h2 id="c3" class="day-anchor">3 · 記憶體階層 — 整條路線的重心 ★</h2>
+<div class="card">
+<p class="big">如果你只有時間學一章，學這章。</p>
+<p>前面說過：算力對頻寬是 100:1。所以 CUDA 優化的全部內容，其實就是<b>兩個動作</b>——①<b>讓每次搬運都搬滿</b>（coalescing）、②<b>搬過來的資料多用幾次再丟</b>（shared memory tiling）。</p>
+
+<h3>① Coalescing — 讓每次搬運都搬滿</h3>
+<div class="fig">
+<svg viewBox="0 0 760 225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="同一個 warp 的 32 個 thread 讀連續位址時，硬體合併成一次記憶體交易；讀跨步位址時要拆成多次交易，搬回來的資料有一半以上用不到，等於白白浪費頻寬。">
+<defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="185" y="26" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">✓ 合併存取 coalesced</text>
+<rect x="44" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="116" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="188" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="260" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="71" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t0</text>
+<text x="143" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t1</text>
+<text x="215" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t2</text>
+<text x="287" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t3</text>
+<line x1="71" y1="70" x2="62" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="143" y1="70" x2="98" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="215" y1="70" x2="134" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="287" y1="70" x2="170" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<rect x="42" y="126" width="150" height="32" rx="5" style="fill:var(--winbg);stroke:var(--winbd);stroke-width:2"/>
+<g style="fill:none;stroke:var(--winbd)">
+<rect x="46" y="130" width="32" height="24" rx="3"/><rect x="82" y="130" width="32" height="24" rx="3"/><rect x="118" y="130" width="32" height="24" rx="3"/><rect x="154" y="130" width="32" height="24" rx="3"/>
+</g>
+<g style="fill:none;stroke:var(--border)">
+<rect x="192" y="130" width="32" height="24" rx="3"/><rect x="228" y="130" width="32" height="24" rx="3"/><rect x="264" y="130" width="32" height="24" rx="3"/><rect x="300" y="130" width="32" height="24" rx="3"/>
+</g>
+<text x="185" y="180" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">連續位址 → 硬體併成 <tspan style="fill:var(--win);font-weight:700">1 次</tspan> 交易</text>
+<text x="185" y="200" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">搬回來的每個 byte 都有人用 → 頻寬吃滿</text>
+<line x1="378" y1="30" x2="378" y2="205" style="stroke:var(--border);stroke-dasharray:4 4"/>
+<text x="565" y="26" text-anchor="middle" style="fill:var(--lose);font:700 13px sans-serif">✗ 跨步存取 strided</text>
+<rect x="424" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="496" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="568" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="640" y="40" width="54" height="28" rx="6" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="451" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t0</text>
+<text x="523" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t1</text>
+<text x="595" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t2</text>
+<text x="667" y="59" text-anchor="middle" style="fill:var(--ink2);font:11px sans-serif">t3</text>
+<line x1="451" y1="70" x2="440" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="523" y1="70" x2="512" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="595" y1="70" x2="584" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<line x1="667" y1="70" x2="656" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+<g style="fill:none;stroke:var(--losebd);stroke-width:2">
+<rect x="424" y="130" width="32" height="24" rx="3"/><rect x="496" y="130" width="32" height="24" rx="3"/><rect x="568" y="130" width="32" height="24" rx="3"/><rect x="640" y="130" width="32" height="24" rx="3"/>
+</g>
+<g style="fill:none;stroke:var(--border)">
+<rect x="460" y="130" width="32" height="24" rx="3"/><rect x="532" y="130" width="32" height="24" rx="3"/><rect x="604" y="130" width="32" height="24" rx="3"/><rect x="676" y="130" width="32" height="24" rx="3"/>
+</g>
+<text x="565" y="180" text-anchor="middle" style="fill:var(--ink2);font:11.5px sans-serif">位址跳著走 → 拆成 <tspan style="fill:var(--lose);font-weight:700">4 次</tspan> 交易</text>
+<text x="565" y="200" text-anchor="middle" style="fill:var(--ink3);font:11px sans-serif">白框那些 byte 也被搬了，但沒人用 → 頻寬砍半</text>
+</svg>
+</div>
+
+<p>硬體讀顯存時<b>不是一次讀 4 bytes，是一次讀一整段（典型 32 或 128 bytes）</b>。同一個 warp 的 32 個 thread 如果剛好讀的是連續位址，硬體會把它們併成極少數幾次交易，效率拉滿；如果跳著讀，每個 thread 都得單獨發一次交易，而且每次搬回來的一整段裡只有 4 bytes 有用。</p>
+<p><b>實務上的規則只有一條：讓相鄰的 thread 讀相鄰的位址。</b>也就是 <code>a[i]</code>，其中 <code>i</code> 含有 <code>threadIdx.x</code>；不要寫成 <code>a[i * stride]</code>。</p>
+<p>這件事最經典的例子是<b>矩陣轉置</b>：讀的時候是連續的，寫的時候變成跨步的（或反過來），所以無論怎麼寫都有一半是壞的——除非你用 shared memory 中轉。這就接到第二個動作。</p>
+
+<h3>② Shared memory tiling — 搬過來多用幾次</h3>
+<p>Shared memory 是<b>你自己管理的快取</b>：同一個 block 的 thread 共用，快上約兩個數量級，但只有幾十 KB。用法固定成一個套路：</p>
+<pre><code><span class="c">// 每個 block 負責輸出矩陣的一塊 16×16 tile</span>
+<span class="k">__global__</span> void matmul_tiled(<span class="k">const</span> float* A, <span class="k">const</span> float* B, float* C, int N){
+  <span class="k">__shared__</span> float As[16][16], Bs[16][16];
+  int ty = threadIdx.y, tx = threadIdx.x;
+  int row = blockIdx.y * 16 + ty, col = blockIdx.x * 16 + tx;
+  float acc = 0.0f;
+
+  <span class="k">for</span> (int t = 0; t &lt; N/16; ++t) {
+    As[ty][tx] = A[row * N + (t*16 + tx)];      <span class="c">// ① 合作搬一塊進 shared</span>
+    Bs[ty][tx] = B[(t*16 + ty) * N + col];
+    __syncthreads();                            <span class="c">// ② 等全員搬完才能讀</span>
+
+    <span class="k">for</span> (int k = 0; k &lt; 16; ++k)                 <span class="c">// ③ 這塊資料被用 16 次，不是 1 次</span>
+      acc += As[ty][k] * Bs[k][tx];
+    __syncthreads();                            <span class="c">// ④ 等全員算完才能覆蓋下一塊</span>
+  }
+  C[row * N + col] = acc;
+}</code></pre>
+<p>關鍵在③：naive 版本每算一次乘加就要去 global memory 讀兩個數；tiled 版本搬一次進 shared 之後<b>用 16 次</b>。搬運量直接砍成 1/16，這就是全部的祕密。</p>
+<p class="note">★ 兩個 <code>__syncthreads()</code> 少一個都會錯，而且是那種「小矩陣看起來對、大矩陣才偶爾錯」的錯。第 ④ 個尤其容易漏——沒有它，跑得快的 thread 會在別人還在讀舊 tile 時就覆蓋掉它。</p>
+<p>另一個坑是 <b>bank conflict</b>：shared memory 分成 32 個 bank，同一個 warp 若有多個 thread 同時打到<b>同一個 bank 的不同位址</b>，存取會被序列化。轉置類的存取模式最容易中，經典解法是把陣列宣告成 <code>As[16][17]</code>——多加一欄 padding 把對齊錯開。看起來像魔法，但確實是標準做法。</p>
+<p>tile 邊長取 16 或 32 都常見，取決於 shared memory 容量與每個 thread 的暫存器用量。這兩個數字會互相擠壓：tile 開越大、重用次數越多，但同時能塞進 SM 的 block 就越少。</p>
+</div>
+
+<h2 id="c4" class="day-anchor">4 · warp 與 reduction — 從「會寫」到「寫得好」</h2>
+<div class="card">
+<h3>warp：真正的執行單位</h3>
+<p>前面說「每個 thread 獨立執行」，那是簡化說法。實際上 GPU 以 <b>warp = 32 個 thread</b> 為單位排程，而且這 32 個<b>共用同一個指令指標</b>——它們永遠在執行同一行程式碼。</p>
+<p>這帶來一個直接後果，<b>warp divergence</b>：</p>
+<pre><code><span class="k">if</span> (threadIdx.x % 2 == 0) do_A();   <span class="c">// warp 內一半 thread 走這裡</span>
+<span class="k">else</span>                      do_B();   <span class="c">// 另一半走這裡</span>
+<span class="c">// → 硬體只能「先全體跑 A（B 那半閒著）、再全體跑 B（A 那半閒著）」</span>
+<span class="c">// → 這個 warp 的耗時 = A + B，效能直接砍半</span></code></pre>
+<p>注意 <code>if (i &lt; n)</code> 這種邊界檢查<b>幾乎不算 divergence</b>——只有最後一個 warp 會分岔，成本可忽略。真正該避免的是<b>在 warp 內部按 thread id 分岔</b>。</p>
+
+<h3>Reduction：把 n 個數變成 1 個</h3>
+<p>這是 GPU 上最經典的練習，因為它<b>本質上跟 GPU 的並行模型衝突</b>——所有 thread 都想寫同一個結果。標準解法是樹狀折半：</p>
+<pre><code><span class="c">// 階段 A：block 內用 shared memory 樹狀折半</span>
+<span class="k">for</span> (int s = blockDim.x / 2; s &gt; 32; s &gt;&gt;= 1) {
+  <span class="k">if</span> (tid &lt; s) sdata[tid] += sdata[tid + s];
+  __syncthreads();
+}
+<span class="c">// 階段 B：只剩 32 個時，同一個 warp 內可以用 shuffle 直接交換 register，</span>
+<span class="c">//         連 shared memory 和 __syncthreads() 都不用</span>
+<span class="k">if</span> (tid &lt; 32) {
+  float v = sdata[tid] + sdata[tid + 32];
+  <span class="k">for</span> (int off = 16; off &gt; 0; off &gt;&gt;= 1)
+    v += __shfl_down_sync(0xffffffff, v, off);   <span class="c">// 0xffffffff = 全部 32 個都參與</span>
+  <span class="k">if</span> (tid == 0) out[blockIdx.x] = v;
+}</code></pre>
+<p>NVIDIA 有一份經典簡報《Optimizing Parallel Reduction in CUDA》，把這個 kernel 從最 naive 一路優化到接近頻寬上限，總共 7 個版本、快了 30 倍以上。它示範的每一招（避免 divergence、避免 bank conflict、展開最後一個 warp、一個 thread 先處理多筆資料）都是通用手法，不只用在 reduction。</p>
+<p class="note">★ 用 <code>float</code> 累加大量數字時，GPU 的結果跟 CPU 序列版<b>本來就不會完全一樣</b>——浮點加法沒有結合律，相加順序不同結果就不同。這不是 bug，是並行加總的固有性質。</p>
+</div>
+
+<h2 id="c5" class="day-anchor">5 · 瓶頸判讀 — 該往哪個方向優化</h2>
+<div class="card">
+<p>寫得出來之後，下一個問題是<b>往哪個方向改</b>。CUDA 的優化手法互相排斥——省記憶體的做法通常會多花算力，反之亦然。選錯方向不只沒效果，還會讓 kernel 變慢。</p>
+
+<h3>唯一需要記住的判斷法：roofline</h3>
+<p>只問一個問題：<b>記憶體吞吐和算力吞吐，哪個先撞到天花板？</b>NVIDIA 的 <code>nsys</code>（整支程式的時間軸）與 <code>ncu</code>（單一 kernel 的細部指標）會直接給你這兩個百分比。三種情況，三個完全不同的方向：</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">記憶體接近 100%，算力很低</div><div class="kd"><b>Memory-bound</b>。這是常態。往「少搬資料」的方向優化：coalescing、shared memory 重用、kernel fusion（把多個 elementwise kernel 合成一個，少來回搬）。</div><div class="ke">→ 加速算術完全沒用</div></div>
+<div class="kcard"><div class="kt">算力接近 100%，記憶體很低</div><div class="kd"><b>Compute-bound</b>。比較少見（矩陣乘法優化到後期會到）。往「算得更少或更便宜」走：降精度、用 tensor core、減少重複計算。</div><div class="ke">→ 加速搬運完全沒用</div></div>
+<div class="kcard"><div class="kt">兩個都很低</div><div class="kd"><b>Latency-bound</b>。GPU 在空等。通常是 occupancy 太低（每 thread 用太多 register、shared memory 開太大），或 divergence 嚴重、同步太多。</div><div class="ke">→ 先看 profiler 的 occupancy 欄位</div></div>
+</div>
+<p class="note">★ <b>Occupancy 高不等於快。</b>這是新手最常被誤導的地方。Occupancy 只是「能不能藏住延遲」的指標，很多頂尖 kernel 刻意用低 occupancy 換更多 register。<b>先看 memory / compute 吞吐，occupancy 只在兩者都低時才看。</b></p>
+<p>順帶一提，整支程式的時間軸常常會告訴你一件更根本的事：瓶頸不在 kernel，而在 <code>cudaMemcpy</code>。這種情況再怎麼優化 kernel 都沒用，該做的是減少 host 與 device 之間的來回，或用 stream 讓搬運跟計算重疊。</p>
+</div>
+
+<h2 id="c6" class="day-anchor">6 · 實戰 kernel — 寫真的會用到的東西</h2>
+<div class="card">
+<p>前五章是共通地基。到這裡你可以挑方向了。以下順序假設你的目標是 <b>AI / LLM 推論</b>——這是目前 CUDA 技能最有需求的方向。如果你的目標是圖形或科學計算，換掉這章的題目即可，前五章完全不變。</p>
+
+<table>
+<tr><th>順序</th><th>Kernel</th><th>新學到的東西</th><th>難度</th></tr>
+<tr><td>1</td><td>Softmax</td><td>兩趟掃描（求 max、求 sum）、數值穩定性（要先減 max）、row-wise reduction</td><td><span class="pill p-neu">中</span></td></tr>
+<tr><td>2</td><td>LayerNorm</td><td>同時求 mean 與 variance、Welford 演算法、kernel fusion</td><td><span class="pill p-neu">中</span></td></tr>
+<tr><td>3</td><td>Online Softmax</td><td>單趟掃描完成 softmax——這是 flash attention 的核心技巧</td><td><span class="pill p-turn">中高</span></td></tr>
+<tr><td>4</td><td>簡版 Flash Attention</td><td>把上面全部串起來：tiling + online softmax，全程不落地 N×N 矩陣</td><td><span class="pill p-warn">高</span></td></tr>
+</table>
+
+<p>這四個是有順序依賴的，尤其 3 是 4 的前提。做完 4，你就真的懂為什麼 flash attention 能省下那麼多顯存了——<b>它省的不是算力，是記憶體搬運</b>，正好呼應第 1 章那個 100:1。</p>
+
+<h3>什麼時候可以開始用現成的東西</h3>
+<p>手寫完 matmul 之後，你就<b>該</b>用 cuBLAS 了。自己寫的 matmul 大概能到 cuBLAS 的 50–70%，剩下那段是十幾年的手工調校，不值得從頭追。手寫的價值在<b>學會為什麼</b>，不在取代函式庫。</p>
+<p>同理，這時候再去看 <b>Triton</b>（用 Python 寫 GPU kernel）會非常順——因為你已經知道它幫你自動處理了什麼。反過來先學 Triton 的人，通常在需要手動控制記憶體時就卡住了。</p>
+</div>
+
+<h2 id="c7" class="day-anchor">7 · 資源與陷阱</h2>
+<div class="card">
+<h3>資源（照這個順序，不要一次全開）</h3>
+<table>
+<tr><th>資源</th><th>類型</th><th>怎麼用</th></tr>
+<tr><td><b>《Programming Massively Parallel Processors》</b>(PMPP, 4th ed.)</td><td>教科書</td><td><b>主線</b>。前 6 章對應本篇第 2–4 章。這是唯一一本從頭讀完值得的書</td></tr>
+<tr><td><b>GPU MODE</b>（YouTube + Discord）</td><td>講座 + 社群</td><td>配著 PMPP 看。講者多是業界實際在寫 kernel 的人，有作業</td></tr>
+<tr><td><b>Simon Boehm, "How to Optimize a CUDA Matmul Kernel"</b></td><td>長文</td><td>第 3 章的最佳實戰讀物。從 naive 一路優化到接近 cuBLAS，10 個版本每步都有數字</td></tr>
+<tr><td><b>NVIDIA《Optimizing Parallel Reduction in CUDA》</b></td><td>簡報</td><td>第 4 章的標準教材。7 個版本，自己實作到第 5 版</td></tr>
+<tr><td><b>CUDA C++ Programming Guide</b></td><td>官方文件</td><td class="lose">當字典查，<b>不要</b>從頭讀</td></tr>
+<tr><td><b>LeetGPU</b></td><td>線上練習</td><td>瀏覽器裡寫 kernel、自動評測。適合通勤時保持手感</td></tr>
+</table>
+
+<h3>現在不要做的事</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">不要先學 Triton 或其他抽象層</div><div class="kd">Triton、CuPy、Numba 的價值在於<b>幫你自動處理記憶體階層</b>。先學它們，你會跳過整篇文章最重要的第 3 章，然後在需要手動控制時徹底卡住。</div><div class="ke">學完第 6 章再回頭學，會快非常多</div></div>
+<div class="kcard"><div class="kt">不要一開始就用 cuBLAS / cuDNN</div><div class="kd">它們是最後拿來省事的，不是拿來學的。一開始就呼叫函式庫，等於什麼都沒學到。</div><div class="ke">手寫過 matmul 之後就該用了</div></div>
+<div class="kcard"><div class="kt">不要從頭讀官方 Programming Guide</div><div class="kd">那是<b>參考手冊</b>不是教材，涵蓋了大量你三年內都用不到的功能（動態並行、圖形互通、多 GPU…）。從頭讀只會讓你在第 20 頁放棄。</div><div class="ke">遇到具體問題再去查</div></div>
+<div class="kcard"><div class="kt">不要憑感覺優化</div><div class="kd">「我用了 shared memory，應該比較快」——這句話錯的機率超過你想像。tile 開太大、bank conflict、occupancy 被擠掉，都會讓「優化」實際變慢。先照第 5 章判斷方向再動手。</div><div class="ke">方向錯了，改再多也沒用</div></div>
+<div class="kcard"><div class="kt">不要糾結 block size</div><div class="kd">先用 256 就好。在你會用 profiler 之前調它，是拿沒有回饋訊號的參數在瞎猜。</div><div class="ke">第 5 章之後再回來調</div></div>
+</div>
+
+<h3>常見的卡關點</h3>
+<table>
+<tr><th>症狀</th><th>八成的原因</th></tr>
+<tr><td>kernel 好像沒跑，結果全是 0</td><td>沒檢查錯誤。加上 <code>CUDA_CHECK</code> + <code>cudaGetLastError()</code>，通常會看到 <code>invalid configuration argument</code>（block 開超過 1024）</td></tr>
+<tr><td>量出來只有 0.01 ms，快得不合理</td><td>忘了 <code>cudaDeviceSynchronize()</code>。你量到的是 CPU 發送指令的時間，kernel 還在跑</td></tr>
+<tr><td>小輸入對、大輸入偶爾錯</td><td><code>__syncthreads()</code> 漏了，或是放在 <code>if</code> 裡面——<b>block 內所有 thread 都必須執行到同一個 <code>__syncthreads()</code></b>，否則行為未定義</td></tr>
+<tr><td>GPU 版比 CPU 版還慢</td><td>資料量太小（搬運成本蓋過一切），或是被 <code>cudaMemcpy</code> 主導。用 <code>nsys</code> 看時間軸就一目了然</td></tr>
+<tr><td>結果跟 CPU 版差在小數第 4 位</td><td>不是 bug。浮點加法沒有結合律，並行的加總順序跟序列不同。用相對誤差比對，別用 <code>==</code></td></tr>
+<tr><td>用了 shared memory 反而變慢</td><td>bank conflict，或是 tile 太大擠壓 occupancy。用 <code>ncu</code> 看 shared memory 的 conflict 指標</td></tr>
+</table>
+
+<h3>時間規劃</h3>
+<p>假設每週投入 6–8 小時：</p>
+<table>
+<tr><td>第 0–1 章</td><td class="win">1 週</td><td>環境 + 心智模型（若要補 C 指標另加 3–5 天）</td></tr>
+<tr><td>第 2 章</td><td>1 週</td><td>執行模型</td></tr>
+<tr><td>第 3 章 ★</td><td class="win">2–3 週</td><td>記憶體階層——<b>慢慢來，這章值得</b></td></tr>
+<tr><td>第 4 章</td><td>1 週</td><td>warp 與 reduction</td></tr>
+<tr><td>第 5 章</td><td>1 週</td><td>瓶頸判讀</td></tr>
+<tr><td>第 6 章</td><td>持續</td><td>實戰 kernel，一個一個慢慢加</td></tr>
+</table>
+<p>總計約 <b>6–8 週</b>走完 0–5 章，之後就是持續累積。這個估計假設你每一章的範例都自己打過一遍——只讀不寫的話時間會短很多，但學到的東西趨近於零。CUDA 是那種<b>只能靠手指學會</b>的東西。</p>
+</div>
+
+<div class="foot">
+<b>參考</b>:NVIDIA CUDA C++ Programming Guide、《Programming Massively Parallel Processors》4th ed.、NVIDIA《Optimizing Parallel Reduction in CUDA》、Simon Boehm "How to Optimize a CUDA Matmul Kernel"、GPU MODE 講座。
+<br>文中效能數字以 NVIDIA T4 為例,不同架構的絕對值會差很多,但「頻寬遠比算力稀缺」的比例關係在各代 GPU 上都成立。
+<br><b>免責聲明</b>:本頁為個人學習筆記,不保證與最新版工具鏈完全一致,實作前請對照官方文件。
+</div>
+
+<script>
+// 章節快速跳轉列：捲動時高亮目前所在章節。
+(function(){
+  var nav=document.getElementById('daynav'); if(!nav) return;
+  var links=[].slice.call(nav.querySelectorAll('a'));
+  var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
+  function onScroll(){
+    var y=90, idx=-1;
+    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+})();
+</script>
+</div></body></html>
