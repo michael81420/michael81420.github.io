@@ -298,8 +298,8 @@ const GROUP=[
  ['4977 Gigacomm','Taiwan optical components','Catch-up','5-day +27.23% · 1-month −5.00%','trailing PER 31.6x','The most reasonable valuation in the group, but likewise a vertical move with no confirmed trend'],
  ['3363 Luxnet','Taiwan optical components','Catch-up','5-day +23.58% · 1-month +2.21%','no valid figure','The only Taiwan name positive on the month, but it only started moving in this rally — not trend strength'],
 ];
-document.getElementById('groupTable').innerHTML='<tr><th>Ticker / Name</th><th>Role in the group</th><th>Relative strength</th><th>Recent move</th><th>Valuation</th><th>One-line view</th></tr>'+
-GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td style="white-space:nowrap">${r[2]}</td><td style="white-space:nowrap">${r[3]}</td><td style="white-space:nowrap">${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+document.getElementById('groupTable').innerHTML='<tr><th>Ticker / Name</th><th>Role in the group</th><th>Relative strength · recent move</th><th>Valuation</th><th>One-line view</th></tr>'+
+GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}${r[3]==='—'?'':`<div style="color:var(--ink3);font-size:12px;margin-top:4px">${r[3]}</div>`}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
 
 // Fact-check table
 const FACTS=[

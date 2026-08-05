@@ -296,8 +296,8 @@ const GROUP=[
  ['4977 眾達-KY','台灣光通訊元件廠','跟漲','近 5 日 +27.23% · 近 1 月 −5.00%','trailing PER 31.6x','族群裡估值相對最合理的一檔,但同樣是急拉、趨勢未確立'],
  ['3363 上詮','台灣光通訊元件廠','跟漲','近 5 日 +23.58% · 近 1 月 +2.21%','查無有效值','唯一近 1 月為正的台廠,但這波才啟動,非趨勢性強勢'],
 ];
-document.getElementById('groupTable').innerHTML='<tr><th>代號/名稱</th><th>族群定位</th><th>相對強弱</th><th>近期表現</th><th>估值</th><th>一句話看法</th></tr>'+
-GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td style="white-space:nowrap">${r[2]}</td><td style="white-space:nowrap">${r[3]}</td><td style="white-space:nowrap">${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+document.getElementById('groupTable').innerHTML='<tr><th>代號/名稱</th><th>族群定位</th><th>相對強弱 · 近期表現</th><th>估值</th><th>一句話看法</th></tr>'+
+GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}${r[3]==='—'?'':`<div style="color:var(--ink3);font-size:12px;margin-top:4px">${r[3]}</div>`}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
 
 // 數字查證表
 const FACTS=[
