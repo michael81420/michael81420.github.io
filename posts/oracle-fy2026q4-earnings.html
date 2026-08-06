@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oracle．FY2026 Q4 財報拆解 — RPO 暴增至 $638B、OCI +93% 卻換來財報後 7 週 −35%:capex 超出自己的財測、FCF 轉負 $23.7B、再融資 $40B 含 $20B 增發稀釋</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="oracle-fy2026q4-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Oracle．FY2026 Q4 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">營收與 EPS 雙 beat、RPO 暴增到 <b>$638B(YoY +363%)</b>、OCI <b>+93%</b> 是四朵雲最猛的加速度——然後股價次日 −8.5%,其後 7 週累跌 <b>−35%</b>。<br>市場否定的不是需求,是<b>錢從哪來、稀釋多少</b>。IR 原文 + 法說逐字稿 + Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Oracle IR 財報原文 + 法說逐字稿</span>
+<span class="badge">財報期:2026-03-01 ~ 2026-05-31(FY26 Q4)</span>
+<span class="badge">公布日:2026-06-10</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>⚠️ 先講季度對應:Oracle 沒有「日曆 2026 Q2」財報</h2>
+<p>Oracle 會計年度<b>結束於 5 月底</b>(FY Q1=6–8 月、Q2=9–11 月、Q3=12–2 月、Q4=3–5 月)。截至 2026-08-03,<b>最近一次已公布的是 FY2026 Q4</b>,會計期間 2026/3/1–5/31,橫跨日曆 Q1 尾與 Q2 前段。</p>
+<p><b>沒有任何一份 Oracle 財報能完全對應日曆 2026 Q2</b>——真正落在 6–8 月的是 FY2027 Q1,要等 2026 年 9 月中才公布。本文分析的是最近可得的這一份,標題與 badge 一律用 Oracle 自己的財季命名,不改寫成 Q2。</p>
+</div>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">🧾 <span class="win">需求端是四朵雲裡最猛的一檔,這點沒有爭議</span>。RPO(已簽約未認列訂單)單季再增 $85B 到 <b>$638B</b>,YoY <b>+363%</b>;OCI 營收 $5.79B、YoY <b>+93%</b>,對比 AWS +37%、Azure 43%、Google Cloud +82%,基期最低但加速度最猛。Q4 有 <b>4 個客戶各自簽下逾 $8B 合約</b>,GPU 利用率 97.5%。</p>
+<p class="big">💸 <span class="lose">但錢的帳算不過來,而且是連續第二年超支</span>。FY26 資本支出 <b>$55.7B</b>,超出公司自己年中給的 $50B 財測;自由現金流 <b>−$23.7B</b>(FY25 才 −$0.4B);附息負債一年內從 $92.6B 增到 <b>$129.5B</b>。FY27 還要再花約 $70B 淨現金支出,並宣布 <b>$40B 再融資,其中 $20B 是股權增發</b>——直接稀釋。</p>
+<p class="big">📉 <span class="lose">毛利率連 8 季下滑,而且管理層說明年還要再降</span>。TTM 毛利率 71.3% → <b>65.8%</b>,CFO 在法說會上明講「步降約 5 個百分點,符合預期」,並承認 FY2027「因資料中心爬坡時序與產品組合,毛利率會再進一步下探」。<b>這是拿毛利率換 OCI 產能速度的主動選擇</b>,不是意外。</p>
+<p class="big">⏳ <span class="mid">$638B 的 RPO 有多少是近期的?只有 12%</span>。法說會揭露:<b>僅 12% 在 12 個月內轉為營收、34% 落在 13–36 個月</b>,剩下 54% 要等三年後。這份「未來營收保證」很厚,但兌現期拉得很長,對當期估值的支撐力比頭條數字看起來弱得多。</p>
+<p class="note">★ 跟「數字全對卻跌 = 資金面」的常見解讀不同:<span class="lose">Oracle 這次有明確的公司特有裂縫</span>(capex 超財測、FCF 轉負、宣布稀釋性增發、股東訴訟律所已介入調查資本支出揭露),足以獨立解釋 −35%,不必歸因於同業齊跌——雖然同期確實疊加了 7–8 月的 AI 資產去槓桿大環境。</p>
+</div>
+
+<h2>一、RPO $638B 很厚,但兌現期很長</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oracle 6380 億美元的 RPO 中只有 12% 會在 12 個月內轉為營收,34% 落在 13 到 36 個月,超過一半要等三年以後">
+  <defs><marker id="oah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">RPO 成長軌跡(十億美元)· FY26 四季</text>
+  <line x1="60" y1="120" x2="700" y2="120" style="stroke:var(--border)"/>
+  <circle cx="140" cy="105" r="5" style="fill:var(--ink3)"/>
+  <circle cx="320" cy="99" r="5" style="fill:var(--ink3)"/>
+  <circle cx="490" cy="96" r="5" style="fill:var(--win)"/>
+  <circle cx="660" cy="78" r="6" style="fill:var(--win)"/>
+  <path d="M140 105L320 99L490 96L660 78" style="fill:none;stroke:var(--win);stroke-width:2.5"/>
+  <text x="140" y="95" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">455</text>
+  <text x="320" y="89" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">523</text>
+  <text x="490" y="86" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">553</text>
+  <text x="660" y="66" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">638</text>
+  <text x="140" y="137" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q1</text>
+  <text x="320" y="137" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q2</text>
+  <text x="490" y="137" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q3</text>
+  <text x="660" y="137" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q4</text>
+
+  <text x="20" y="180" style="fill:var(--ink2);font:600 13px sans-serif">這 $638B 什麼時候變成營收?</text>
+  <rect x="60" y="196" width="77" height="34" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <rect x="137" y="196" width="218" height="34" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <rect x="355" y="196" width="345" height="34" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="98" y="218" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">12%</text>
+  <text x="246" y="218" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">34%</text>
+  <text x="527" y="218" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">54%</text>
+  <text x="98" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">12 個月內</text>
+  <text x="246" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">13–36 個月</text>
+  <text x="527" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">36 個月以後</text>
+  <text x="98" y="270" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">約 $77B</text>
+  <text x="246" y="270" text-anchor="middle" style="fill:var(--ink2);font:600 11px sans-serif">約 $217B</text>
+  <text x="527" y="270" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">約 $345B</text>
+  <text x="380" y="291" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">頭條講 $638B,近一年真正會入帳的只有八分之一</text>
+</svg>
+</div>
+<p>RPO 這條線本身沒有問題:$455B → $523B → $553B → <b>$638B</b>,單季增 $85B,YoY +363%。這是<b>已簽約</b>的訂單,不是管理層畫的餅。Q4 光是 4 個客戶就各自簽下逾 $8B。</p>
+<p>問題在<b>轉換節奏</b>。法說會上揭露的拆分(新聞稿沒寫):12% 在 12 個月內認列、34% 在 13–36 個月。換算下來,近一年會變成營收的大約只有 <b>$77B</b>。對比 FY27 全年營收目標 $90B,RPO 確實提供了紮實的底,但<span class="mid">「$638B」這個頭條數字跟明年的損益表關係沒有直覺上那麼大</span>。</p>
+<div class="quote">📌 <b>RPO 越排越滿,執行風險就越高。</b>Q1 FY27 營收 guidance 從本季實際的 +21% 大幅上修到 +27–29%,底氣就是 RPO 轉換。但這也代表 Oracle 把「已簽約但未交付」的訂單排得很滿——能不能如期把資料中心蓋出來供貨,變成了新的風險來源。FY26 已交付超過 1.2GW 容量,Q1 FY27 還要再交付接近 1GW。</div>
+</div>
+
+<h2>二、真正打垮股價的是這張圖:錢不夠</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 340" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oracle FY2026 營運現金流 320 億美元,但資本支出 557 億美元,自由現金流因此轉負 237 億美元,附息負債一年增加 369 億美元">
+  <defs><marker id="oah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">FY2026 全年現金流(十億美元)</text>
+  <line x1="60" y1="200" x2="560" y2="200" style="stroke:var(--border)"/>
+  <text x="50" y="204" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+
+  <rect x="100" y="114" width="90" height="86" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="145" y="106" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">+32.0</text>
+  <text x="145" y="222" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">營運現金流</text>
+  <text x="145" y="238" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">YoY +54%</text>
+
+  <rect x="255" y="50" width="90" height="150" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="300" y="42" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">−55.7</text>
+  <text x="300" y="222" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">資本支出</text>
+  <text x="300" y="238" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">自訂財測 $50B,超支</text>
+
+  <rect x="410" y="200" width="90" height="64" rx="3" style="fill:var(--losebg);stroke:var(--lose);stroke-width:2"/>
+  <text x="455" y="284" text-anchor="middle" style="fill:var(--lose);font:600 14px sans-serif">−23.7</text>
+  <text x="455" y="302" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">自由現金流</text>
+  <text x="455" y="318" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">FY25 僅 −0.4</text>
+
+  <line x1="200" y1="157" x2="248" y2="157" style="stroke:var(--ink3)" marker-end="url(#oah2)"/>
+  <line x1="355" y1="157" x2="403" y2="180" style="stroke:var(--ink3)" marker-end="url(#oah2)"/>
+
+  <rect x="590" y="60" width="150" height="120" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="665" y="84" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">缺口怎麼補?</text>
+  <text x="665" y="106" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">附息負債</text>
+  <text x="665" y="124" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">92.6 → 129.5</text>
+  <text x="665" y="146" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">FY27 再融資</text>
+  <text x="665" y="164" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">$40B(含 $20B 增發)</text>
+  <text x="665" y="200" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">← 稀釋來源</text>
+</svg>
+</div>
+<p>營運現金流其實很好:<b>$32.0B、YoY +54%</b>。本業印錢的能力在變強。但 FY26 資本支出 <b>$55.7B</b>,比營運現金流多出 $23.7B——這個差額就是負的自由現金流。</p>
+<p>更關鍵的是:<b>$55.7B 超出了公司自己給的 $50B 財測</b>。這是連續第二年 capex 超支。市場能接受「花很多錢」,不太能接受「花的比自己說的還多」——後者傷的是資本紀律的可信度。</p>
+<p>缺口靠借:附息負債從 FY25 末 $92.6B 增到 FY26 末 <b>$129.5B</b>,一年多借 $37B。FY27 還要再融資 <b>$40B</b>,其中 <b>$20B 是 ATM 股權增發</b>——這是直接的每股稀釋,不只是利息費用。<span class="lose">股東訴訟律所已介入調查公司對資本支出的揭露是否誤導投資人</span>。</p>
+<p>Oracle 有一個同業沒有的緩衝:大型 AI 合約中,客戶預付或自帶 GPU(BYOH)的硬體部分<b>累計已達 $75B</b>,管理層強調這大幅降低了需自行籌資的金額。這是真的差異化——但顯然還不夠,不然不需要再融資 $40B。</p>
+</div>
+
+<h2>三、毛利率連 8 季下滑,而且還沒到底</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 290" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oracle 的 TTM 毛利率從 FY2025 Q1 的 71.3% 連續下滑八個季度到 FY2026 Q4 的 65.8%,管理層並預告 FY2027 還會再往下">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">TTM 毛利率(%)· 用毛利率換 OCI 產能擴張速度</text>
+  <line x1="80" y1="245" x2="720" y2="245" style="stroke:var(--border)"/>
+  <line x1="80" y1="55" x2="80" y2="245" style="stroke:var(--border)"/>
+  <text x="70" y="249" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">64</text>
+  <text x="70" y="157" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">68</text>
+  <text x="70" y="65" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">72</text>
+
+  <path d="M120 76L400 113L480 141L560 173L640 203" style="fill:none;stroke:var(--lose);stroke-width:2.5"/>
+  <path d="M640 203L710 227" style="fill:none;stroke:var(--lose);stroke-width:2.5;stroke-dasharray:5 4"/>
+  <circle cx="120" cy="76" r="5" style="fill:var(--lose)"/>
+  <circle cx="400" cy="113" r="5" style="fill:var(--lose)"/>
+  <circle cx="480" cy="141" r="5" style="fill:var(--lose)"/>
+  <circle cx="560" cy="173" r="5" style="fill:var(--lose)"/>
+  <circle cx="640" cy="203" r="6" style="fill:var(--lose)"/>
+  <text x="120" y="66" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">71.3</text>
+  <text x="400" y="103" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">69.7</text>
+  <text x="480" y="131" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">68.5</text>
+  <text x="560" y="163" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">67.1</text>
+  <text x="640" y="193" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">65.8</text>
+  <text x="120" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">FY25 Q1</text>
+  <text x="400" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">FY26 Q1</text>
+  <text x="480" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q2</text>
+  <text x="560" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q3</text>
+  <text x="640" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q4</text>
+  <text x="700" y="248" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">FY27?</text>
+  <text x="260" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">(中間三季未逐季列出,趨勢為連續下滑)</text>
+  <text x="380" y="235" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">八季累計 −5.5pp,CFO 稱「符合預期」</text>
+</svg>
+</div>
+<p>TTM 毛利率從 FY25 Q1 的 71.3% 一路下滑到本季 <b>65.8%</b>,累計 −5.5pp,近四季分別是 69.7% → 68.5% → 67.1% → 65.8%,<b>每季固定掉約 1.3pp,非常規律</b>。</p>
+<p>值得肯定的是管理層沒有迴避:CFO Hilary Maxson 主動說明「gross margin 步降約 5 個百分點,符合預期」,並給了恢復路徑——「隨資料中心達到完整合約收入水準,infrastructure margin 會快速改善」。</p>
+<p>但<span class="lose">承諾裡有兩個洞</span>:① FY2027 毛利率<b>只給方向(先降後升),沒給任何百分比</b>;② 「何時」達到滿產能合約收入,<b>沒有時間表</b>。也就是說「先蹲後跳」的蹲有多深、蹲多久,兩個都是空白。</p>
+<p>分析師在會上追過這一塊:Guggenheim 的 John DiFucci 問記憶體/SSD 漲價對合約毛利率的侵蝕,管理層以「固定價格合約 vs 成本轉嫁機制」兩種應對方式回答;Bernstein 的 Mark Moerdler 問 SpaceX 等新進者的競爭威脅,<span class="mid">管理層避開毛利率衝擊,改談客戶留存與 97.5% GPU 利用率</span>。</p>
+</div>
+
+<h2>四、核心數字與分部拆解</h2>
+<div class="card">
+<p>營收 $19.18B(YoY +21%)對比一致預期 $19.09B 是小幅 beat;non-GAAP EPS $2.11 對比預期 $1.96 是 beat +7.7%。但 EPS 要拆:</p>
+<p class="note">★ <b>non-GAAP EPS 含一次性投資利得</b>(Ampere 晶片業務出售 + Bloom Energy 認股權證)。公司自行揭露剔除後 Q4 為 <b>$2.03</b>(仍高於預期,beat 縮到 +3.6%),FY26 全年為 <b>$6.83</b> 而非頭條的 $7.63。用頭條數字算成長率會高估。</p>
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+<p style="margin-top:14px">分部層級的分歧很明顯:</p>
+<div style="overflow-x:auto"><table id="segTable"></table></div>
+<p style="margin-top:14px">① <b>OCI 是唯一的故事</b>。$3.35B → $4.08B → $4.89B → $5.79B,四季幾乎直線上升,YoY +93%。</p>
+<p>② <b>SaaS 與傳統授權基本沒動</b>。Cloud Apps YoY +10%、QoQ 僅 +2.5%;Software(授權+支援)YoY −2%。<span class="mid">Oracle 的舊本業已經是穩定的現金基座,不是成長來源</span>——所有成長都押在 OCI 一條線上,集中度風險比帳面上高。</p>
+</div>
+
+<h2>五、Guidance:全面上修,但把執行風險也拉滿</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">FY27 全年營收 $90B 目標維持不變,non-GAAP EPS 上修到 $8.05(剔除一次性後 +18%),長期目標(至 FY2030)重申 <b>31% 營收 CAGR / 28% EPS CAGR</b>。</p>
+<p>Q1 FY27 營收成長從本季實際的 +21% 上修到 <b>+27–29%</b>,是很大的跳升。底氣是 RPO 轉換,但代價是<b>執行風險</b>:要達標就必須如期把資料中心蓋好、把 GPU 裝上去、把客戶接進來。Abilene, TX 的進度揭露(42% 已交付、35% 未來 90 天交付)就是這種壓力的具體樣貌。</p>
+</div>
+
+<h2>六、估值:分位掉到 9.1%,但跟 NVDA 同倍數合理嗎</h2>
+<div class="card">
+<p class="big">📉 <b>Forward PE 19.5x、五年歷史分位 9.1%</b>(五年均值 34.6x,均值 −1σ 為 24.3x,現已跌破下緣)。Forward PS 4.19x、分位 29.4%。</p>
+<p>兩個分位差很多,這件事本身有資訊:<b>PS 分位(29.4%)遠高於 PE 分位(9.1%)</b>,代表被壓縮的主要是<b>獲利倍數</b>而不是營收倍數——市場沒有質疑 Oracle 賣不出去,質疑的是這些營收最後能不能變成股東的錢。這跟毛利率下滑、利息費用上升、股權稀釋三件事完全對得起來。</p>
+<p><b>循環烈度判斷(invest-playbook)</b>:AI 雲端資本支出循環本身仍在<b>擴張期</b>(RPO $638B、GPU 利用率 97.5%,供給全面落後需求);但<b>融資結構的循環已進入緊縮期</b>——2026 年 6–8 月市場對「debt-funded AI capex」的容忍度明顯下降。Oracle 因為 FCF 已轉負、高度依賴舉債與增發,是這波「capex 信任危機」裡受衝擊最大的一個。</p>
+<p class="big">⚠️ <b>一個值得懷疑的定價</b>:ORCL forward PE 19.5x,已經跌到跟 NVDA 的 19.85x 同一水平。但兩者體質天差地遠——<span class="win">NVDA 是現金牛、無稀釋壓力</span>;<span class="lose">ORCL 是負 FCF、需舉債加增發</span>。用同樣的倍數為兩種截然不同的資產負債表定價,合理性存疑。這不代表 ORCL 該更貴,更可能是<b>市場尚未充分反映兩者的信用風險差異</b>。</p>
+<p><b>分析師一致預期:</b>31 家分析師、90.3% 買入,平均目標價 <b>$262.25</b>(高 $400 / 低 $145)。對比 2026-08-03 現價 $129.87,隱含空間極大——但目標價區間 $145–$400 的離散度本身就說明<span class="mid">分析師之間對這家公司的分歧已經到了難以形成共識的程度</span>。</p>
+</div>
+
+<h2>七、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b><b>AI 雲端基礎設施／超大規模資料中心資本支出</b>。核心特徵是靠巨額資本支出建置 GPU 資料中心,向企業與 AI 公司出租算力,營收與 RPO 隨訓練/推論需求擴張,同時共同承受資本支出強度、自由現金流、舉債稀釋三重壓力。往上游延伸到 GPU 供應商,往旁邊延伸到資料中心電力與散熱。</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">兩個觀察:</p>
+<p>① <b>族群內部按「誰付得起錢」在分層</b>。MSFT / GOOGL / AMZN 有本業現金牛墊底,capex 壓力被業務多元化稀釋;ORCL 與 CRWV 沒有這個緩衝,同樣的 RPO 故事在它們身上被市場給了完全不同的評價。<span class="lose">RPO 暴增這件事本身不能救估值,要看資產負債表撐不撐得住</span>。</p>
+<p>② <b>VRT 是這族群裡唯一不承擔資本風險的部位</b>。它賣鏟子給蓋資料中心的人,不管誰的帳算不算得過來,設備都要買。forward PE 34.4x、分位 31.8%,估值不便宜但風險屬性完全不同。</p>
+</div>
+
+<h2>八、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Q1 FY27 營收是否落在 +27–29%</div><div class="kd">本季實際 +21%,guidance 大幅上修</div><div class="ke">明顯低於 +27% = RPO 轉換速度不如管理層暗示</div></div>
+<div class="kcard"><div class="kt">② TTM 毛利率能否止跌</div><div class="kd">本季 65.8%,已連 8 季下滑</div><div class="ke">續破 65% 且無回升跡象 = 「先蹲後跳」承諾落空</div></div>
+<div class="kcard"><div class="kt">③ $40B 再融資的實際稀釋</div><div class="kd">含 $20B ATM 股權增發</div><div class="ke">看增發股數對 EPS 的稀釋比例,以及是否守住「日曆 2026 年內不再發債」的承諾</div></div>
+</div>
+<p style="margin-top:14px" class="note">★ 下一份財報是 FY2027 Q1(會計期間 2026/6–8 月),預計 2026 年 9 月中公布——那才是真正涵蓋日曆 2026 Q2 後半的一份。</p>
+</div>
+
+<h2>九、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>需求是實的,不是敘事</b>。RPO $638B、YoY +363% 是已簽約訂單;OCI +93% 是四朵雲最快的加速度;GPU 利用率 97.5%、Q4 四個客戶各簽逾 $8B、Multicloud AI Database 單季成長 404%。這些不是管理層的展望,是已發生的事。</p>
+<p>② <b>客戶預付/BYOH 是同業沒有的槓桿管理方式</b>。$75B 的硬體資本需求已被客戶預付或自帶 GPU 覆蓋,把部分資本風險轉嫁出去。這是合約結構上的真差異化。</p>
+<p>③ <b>估值已在五年 9.1% 分位</b>,低於均值 −1σ。FY27 guidance(+27–29% 營收、EPS $8.05)若兌現,現在的 forward PE 隱含的成長性被低估;31 家分析師 90.3% 買入。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>資本紀律有問題,不只是花得多</b>。FY26 capex $55.7B 超出自訂的 $50B 財測,連續第二年超支;FY27 還要再花約 $70B。FCF 從 −$0.4B 惡化到 −$23.7B。市場對「capex 能否轉成等比例回報」的信任正在流失,而信任一旦掉了要花很久才回得來。</p>
+<p>② <b>財務結構是最大的個股特定利空</b>。附息負債一年 +$37B 到 $129.5B;FY27 再融資 $40B 含 $20B 股權增發,直接稀釋;股東訴訟律所已介入調查資本支出揭露。這三件事互相加乘。</p>
+<p>③ <b>毛利率沒有底,而且成長高度集中在單一產品線</b>。連 8 季下滑、管理層預告還要再降但不給數字;同時 Cloud Apps +10%、Software −2%,所有成長都押在 OCI 一條線上。OCI 如果卡住,沒有第二引擎。</p>
+<p class="note">★ 分歧點:<b>多空雙方對需求沒有分歧,分歧在資產負債表</b>。看多方說「訂單這麼滿,借錢蓋是理性的」;看空方說「借錢蓋沒問題,但你連自己財測都守不住,我憑什麼信下一個 $70B」。這一題下季有部分答案(毛利率、營收達標率),但完整答案要等資料中心滿載,那是好幾年。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Oracle IR 財報新聞稿(4q26-pressrelease-final.pdf,含損益表/資產負債表/現金流量表/RPO/guidance/分部營收季度序列)、Oracle FY26 Q3 新聞稿(guidance 對照)、The Motley Fool「Oracle ORCL Q4 2026 Earnings Call Transcript」(2026-06-10)並交叉核對 Investing.com 轉載摘要、Futu 財務報表與估值數據(查詢日 2026-08-03)、一致預期數字引自 TIKR / Sherwood News 彙整、股價與訴訟資訊交叉查證 CNBC / TheStreet / ERP Today / Seeking Alpha。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 核心數字表
+const CORE=[
+ ['總營收','$19.18B','$17.19B','$19.09B','Beat +0.5% / YoY +21%','win'],
+ ['Cloud 總營收','$9.91B','$8.91B','—','YoY +47%','win'],
+ ['<b>OCI 雲端基礎設施</b>','$5.79B','$4.89B','—','YoY +93%,四朵雲最快','win'],
+ ['Cloud Apps(SaaS)','$4.13B','$4.03B','—','YoY +10% / QoQ 僅 +2.5%','mid'],
+ ['Software(授權+支援)','$6.82B','$6.12B','—','YoY −2%','lose'],
+ ['Non-GAAP EPS','$2.11(剔除一次性 $2.03)','$1.79','$1.96','Beat +7.7%(剔除後 +3.6%)','mid'],
+ ['GAAP EPS','$1.45','$1.27','—','YoY +21%','win'],
+ ['Non-GAAP 營益率','45%','43%','—','QoQ +2pp','win'],
+ ['<b>TTM 毛利率</b>','<b>65.8%</b>','67.1%','—','YoY −5.5pp,連 8 季下滑','lose'],
+ ['<b>RPO</b>','<b>$638B</b>','$553B','—','YoY +363% / 單季 +$85B','win'],
+ ['FY26 資本支出','$55.7B','—','自訂財測 $50B','超支,YoY +162%','lose'],
+ ['FY26 營運現金流','$32.0B','—','—','YoY +54%','win'],
+ ['<b>FY26 自由現金流</b>','<b>−$23.7B</b>','—','—','FY25 僅 −$0.4B','lose'],
+ ['附息負債(FY26 末)','$129.5B','—','—','一年 +$37B(FY25 末 $92.6B)','lose'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>指標</th><th>FY26 Q4</th><th>FY26 Q3</th><th>市場預期</th><th>判定</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="${r[5]}">${r[4]}</td></tr>`).join('');
+
+// 分部四季序列
+const SEG=[
+ ['<b>OCI 雲端基礎設施</b>','$3.35B','$4.08B','$4.89B','$5.79B','+93%','win'],
+ ['Cloud Apps(SaaS)','$3.84B','$3.90B','$4.03B','$4.13B','+10%','mid'],
+ ['Software(授權+支援)','$5.72B','$5.88B','$6.12B','$6.82B','−2%','lose'],
+ ['<b>總營收</b>','$14.93B','$16.06B','$17.19B','$19.18B','+21%',''],
+];
+document.getElementById('segTable').innerHTML=
+ '<tr><th>分部</th><th>FY26 Q1</th><th>FY26 Q2</th><th>FY26 Q3</th><th>FY26 Q4</th><th>Q4 YoY</th></tr>'+
+ SEG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// Guidance 對照
+const GUIDE=[
+ ['Q4 營收成長','19–21%','21%','觸及高標','win'],
+ ['Q4 Cloud 成長','46–50%','47%','區間中段','mid'],
+ ['Q4 non-GAAP EPS','$1.96–$2.00','$2.11(剔除一次性 $2.03)','略超高標','win'],
+ ['<b>Q1 FY27 營收成長</b>','—','<b>+27–29%</b>(新)','較本季實際 21% 大幅加速','win'],
+ ['Q1 FY27 Cloud 成長','—','58–64%(新)','較本季實際 47% 加速','win'],
+ ['Q1 FY27 non-GAAP EPS','—','$1.72–$1.76(新)','+17–20%','win'],
+ ['FY27 全年營收','$90B','$90B(重申)','未變','mid'],
+ ['FY27 non-GAAP EPS','—','上修至 $8.05','剔除一次性後 +18%','win'],
+ ['<b>FY27 淨資本支出</b>','—','<b>約 $70B</b>','不含 $20–25B 客戶預付/timing','lose'],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>上次給的(2026-03-10)</th><th>本次實際 / 新 guidance</th><th>判讀</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 同族群概念股掃描
+const GROUP=[
+ ['ORCL Oracle','追趕型雲端(OCI)· 本文主標的','族群最弱 · 財報後 −35%','19.5x','9.1%(5年)','需求最猛但資本結構最脆弱,估值被砸到歷史低位'],
+ ['MSFT 微軟','超大規模龍頭 · Azure 是 OCI 最大對手','相對抗跌 · 共識最穩健','23.5x','44.0%','現金流最厚,capex 壓力被業務多元化稀釋'],
+ ['GOOGL 谷歌','超大規模龍頭 · Google Cloud +82%','雲端成長領先但估值分位極低','26.3x','2.9%','三雲中成長最快卻估值分位最低,若持續加速有修復空間'],
+ ['AMZN 亞馬遜','超大規模龍頭 · AWS 基期最大','RPO 單季暴增 · 財報後 +15.3%','28.5x','22.1%','三雲中成長最慢但財報接受度最高'],
+ ['NVDA 輝達','上游 GPU 供應商 · ORCL 最大採購對象','同期同樣重挫至極端低位','19.85x','1.3%','無負債壓力,體質與 ORCL 天差地遠,倍數卻已趨同'],
+ ['AMD 超微','次要 GPU/CPU 供應商 · OCI 伺服器夥伴','回落但估值仍偏高','71.5x','72.0%','族群內少數分位仍高於歷史中位數的標的,透支較深'],
+ ['CRWV CoreWeave','純 GPU 雲端新創(neocloud)· 與 OCI 高度同質','跌幅最深之一 · 尚無 GAAP 獲利','PS 2.49x','1.6%','跟 ORCL 同一種質疑,但更脆弱——沒有自有現金流緩衝'],
+ ['VRT 維諦','資料中心電源/散熱供應商','相對抗跌 · 分位居中','34.4x','31.8%','賣鏟子給蓋資料中心的人,不承擔 ORCL 式的資本負債風險'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>估值分位</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+</script>
+</body></html>

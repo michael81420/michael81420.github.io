@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meta．2026 Q2 財報拆解 — 營收 +28% 卻是 EPS 六季來首度 miss:單季 capex 跳增 57% 吃掉幾乎全部營運現金流,FCF 只剩 $1.75B;剔除一次性費用後營益率仍比去年低 6.2pp</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="meta-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Meta．2026 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">營收 $60.80B、YoY +28%,是近八季數一數二的成長——但 EPS $6.18 對比預期 $7.22 是 <b>−14.4% 的 miss,終結連續六季 beat</b>,股價當日 −8%。<br>真正的重點不在 EPS:<b>自由現金流單季只剩 $1.75B</b>,QoQ −86.8%。IR 原文 + 法說摘要 + Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Meta IR 財報原文 + 法說會摘要</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30</span>
+<span class="badge">公布日:2026-07-29 盤後</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">💧 <span class="lose">自由現金流幾乎歸零,這比 EPS miss 重要得多</span>。營運現金流 $31.86B(YoY +24.7%,本業其實很健康),但單季 capex <b>$31.08B</b>(QoQ +57%、YoY +82%)幾乎把它吃光,<b>FCF 只剩 $1.746B</b>——QoQ −86.8%、YoY −80.6%,是過去八季最低。這不是一次性費用能解釋的,是 AI 基建建置期把現金流結構性壓窄的第一次明確訊號。</p>
+<p class="big">📉 <span class="lose">EPS 六季來首度 miss,而且剔除一次性項目後仍然難看</span>。$6.18 對比預期 $7.22。本季有 $2.4B 法律費用 + $1.18B 資遣費(合計 $3.58B),剔除後營益率還原到約 <b>36.8%</b>——但去年同期是 <b>43%</b>、上季 <b>40.6%</b>。<b>就算把一次性的全部扣掉,利潤率還是低了 6.2pp</b>,這代表折舊與人力是結構性侵蝕,不是雜訊。</p>
+<p class="big">📊 <span class="mid">廣告的「量」在減速,全靠「價」撐住</span>。曝光數 YoY 連兩季下滑(+19% → +14%),單價 YoY 持平 +12%,家族日活成長率連三季下滑(+8% → +4% → +3%)。營收 +28% 目前撐得住,但成長的擔子正在從量的一側往價的一側移。<b>下季曝光數若跌破 +10%,單價要獨力扛更大比重</b>。</p>
+<p class="big">🛑 <span class="lose">回購歸零、負債暴增,財務順位已經被改寫</span>。本季股票回購 <b>$0</b>(前幾季都是數十億);長期借款從上季 $58.75B 跳到 <b>$83.66B</b>(QoQ +42.4%)。錢全部讓給 capex。這跟 Alphabet 這季同時發股又發債是同一個現象——<b>大型平台股正在集體從「還錢給股東」切換成「跟市場要錢」</b>。</p>
+<p class="note">★ 估值上,財報後重挫把 forward PE 打到 <b>17.9x、一年分位 5.2%</b>,是同族群裡最低的一檔之一。但要分清楚:<span class="mid">這個便宜是「股價被砸出來的」,不是長期低估</span>——它便宜的原因正是 capex / FCF 的疑慮,而疑慮下季才會有答案。</p>
+</div>
+
+<h2>一、先看現金流:營運現金流沒問題,是 capex 把它吃了</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meta 的營運現金流一年來持續成長到 318 億美元,但資本支出同期從 165 億膨脹到 301 億,把自由現金流從 90 億壓縮到只剩 17 億美元">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季營運現金流的去向(十億美元)· 整根 = 營運現金流,上段被 capex 吃掉,剩下才是 FCF</text>
+  <line x1="60" y1="250" x2="710" y2="250" style="stroke:var(--border)"/>
+  <text x="50" y="254" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+
+  <rect x="120" y="98" width="100" height="98" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="170" y="152" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">capex 16.5</text>
+  <rect x="120" y="196" width="100" height="54" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="170" y="228" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">FCF 9.0</text>
+  <text x="170" y="88" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">營運現金流 25.6</text>
+  <text x="170" y="274" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2025</text>
+
+  <rect x="340" y="59" width="100" height="112" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="390" y="120" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">capex 19.0</text>
+  <rect x="340" y="171" width="100" height="79" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="390" y="216" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">FCF 13.2</text>
+  <text x="390" y="49" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">營運現金流 32.2</text>
+  <text x="390" y="274" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q1 2026</text>
+
+  <rect x="560" y="61" width="100" height="179" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="610" y="155" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">capex 30.1</text>
+  <rect x="560" y="240" width="100" height="10" rx="2" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="610" y="274" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2026</text>
+  <text x="610" y="51" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">營運現金流 31.9</text>
+  <line x1="672" y1="245" x2="712" y2="222" style="stroke:var(--lose)"/>
+  <text x="716" y="219" style="fill:var(--lose);font:600 12px sans-serif">FCF 1.7</text>
+
+  <text x="390" y="303" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">營運現金流一年 +24.7%,但 capex 同期 +82% —— FCF 被壓掉 80.6%</text>
+</svg>
+</div>
+<p>這張圖是本季最重要的一張。<b>Meta 的本業沒有壞掉</b>:營運現金流 $25.56B → $32.23B → $31.86B,一年成長 24.7%,廣告機器照樣印錢。壞掉的是<b>錢流出去的速度</b>:capex $16.54B → 約 $19.0B → <b>$30.1B</b>,單季 QoQ +57%。</p>
+<p>兩者相減就是自由現金流:$9.02B → $13.23B → <b>$1.746B</b>。過去八季最低,次低的是一年前的 $9.02B——<span class="lose">也就是說本季是次低值的五分之一</span>。</p>
+<p>錢不夠怎麼辦?本季<b>停掉全部股票回購($0)</b>,同時長期借款從 $58.75B 拉到 <b>$83.66B</b>,單季多借 $24.9B。現金及約當現金從 $23.43B 降到 $15.46B。</p>
+<div class="quote">📌 <b>把三件事擺在一起看才看得懂</b>:回購歸零 + 大幅舉債 + FCF 剩零頭。這不是三個獨立的數字,是同一件事的三個切面——<b>Meta 現在的現金產出已經追不上它想蓋的東西</b>。管理層對此完全不遮掩,FY26 capex 指引還是往上收斂。這是主動選擇,不是失控;但主動選擇也會有代價,代價就是往後幾年的折舊。</div>
+<p class="note">★ 資料落差要標明:IR 新聞稿的資本支出是 <b>$31.08B</b>,Futu 現金流量表的「固定資產交易淨額」是 <b>$30.12B</b>。圖表用後者(才與 FCF 相容),文中引用 IR 數字時以 $31.08B 為準。</p>
+</div>
+
+<h2>二、EPS miss 拆開來看:一次性只解釋了一半</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meta 營業利益率從去年同期 43% 降到本季公布的 31%,即使剔除 35.8 億美元一次性費用還原到 36.8%,仍比去年低 6.2 個百分點">
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">營業利益率(%)· 一次性費用只解釋了 12pp 降幅裡的 5.8pp</text>
+  <line x1="70" y1="245" x2="720" y2="245" style="stroke:var(--border)"/>
+  <text x="60" y="249" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">25</text>
+  <text x="60" y="157" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">35</text>
+  <text x="60" y="69" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">45</text>
+
+  <rect x="110" y="87" width="90" height="158" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="155" y="79" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">43.0</text>
+  <text x="155" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2025</text>
+
+  <rect x="255" y="108" width="90" height="137" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="300" y="100" text-anchor="middle" style="fill:var(--ink2);font:600 13px sans-serif">40.6</text>
+  <text x="300" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q1 2026</text>
+
+  <rect x="400" y="141" width="90" height="104" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="445" y="133" text-anchor="middle" style="fill:var(--turn);font:600 13px sans-serif">36.8</text>
+  <text x="445" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2026</text>
+  <text x="445" y="281" text-anchor="middle" style="fill:var(--turn);font:600 11px sans-serif">剔除一次性後</text>
+
+  <rect x="545" y="192" width="90" height="53" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="590" y="184" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">31.0</text>
+  <text x="590" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2026</text>
+  <text x="590" y="281" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">實際公布值</text>
+
+  <line x1="200" y1="60" x2="435" y2="60" style="stroke:var(--lose);stroke-dasharray:4 3" marker-end="url(#ah2)"/>
+  <text x="317" y="52" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">結構性 −6.2pp(扣掉一次性也還在)</text>
+  <line x1="500" y1="175" x2="540" y2="200" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <text x="524" y="168" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">−5.8pp 一次性</text>
+</svg>
+</div>
+<p>本季有兩筆一次性:<b>法律費用 $2.4B</b> 與 <b>資遣費用 $1.18B</b>(2026 年 5 月裁員約 8,000 人),合計 $3.58B。把它們加回去,營益率從公布的 31% 還原到約 <b>36.8%</b>。</p>
+<p>很多討論停在這裡,結論是「扣掉一次性其實還好」。<span class="lose">但這個結論站不住</span>:去年同期 43%、上季 40.6%,<b>36.8% 仍然比去年低 6.2pp、比上季低 3.8pp</b>。也就是 12pp 的總降幅裡,一次性只解釋了 5.8pp,<b>剩下 6.2pp 是結構性的</b>。</p>
+<p>結構性的部分來自哪?管理層自己在法說會上列了四項:員工薪酬、基礎設施成本(折舊)、法律相關成本、<b>第三方 AI token 成本</b>。最後這項是新出現的費用類別——代表 Meta AI 產品自身的推論成本,已經大到要單獨拿出來講。</p>
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+</div>
+
+<h2>三、廣告端:量在減速,價在撐盤</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Meta 廣告曝光數年增率連兩季從 19% 降到 14%,單價年增率持平在 12%,家族日活年增率則連續下滑到只剩 3%">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">年增率(%)· 曝光數與日活雙雙減速,單價持平</text>
+  <line x1="90" y1="250" x2="700" y2="250" style="stroke:var(--border)"/>
+  <line x1="90" y1="55" x2="90" y2="250" style="stroke:var(--border)"/>
+  <text x="80" y="254" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+  <text x="80" y="159" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">10</text>
+  <text x="80" y="64" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">20</text>
+
+  <path d="M170 145L410 69L640 117" style="fill:none;stroke:var(--turn);stroke-width:2.5"/>
+  <circle cx="170" cy="145" r="5" style="fill:var(--turn)"/>
+  <circle cx="410" cy="69" r="5" style="fill:var(--turn)"/>
+  <circle cx="640" cy="117" r="5" style="fill:var(--turn)"/>
+  <text x="170" y="136" text-anchor="middle" style="fill:var(--turn);font:600 12px sans-serif">+11</text>
+  <text x="410" y="59" text-anchor="middle" style="fill:var(--turn);font:600 12px sans-serif">+19</text>
+  <text x="655" y="112" style="fill:var(--turn);font:600 12px sans-serif">+14</text>
+  <text x="655" y="128" style="fill:var(--turn);font:400 11px sans-serif">廣告曝光數</text>
+
+  <path d="M170 164L410 136L640 136" style="fill:none;stroke:var(--win);stroke-width:2.5"/>
+  <circle cx="170" cy="164" r="5" style="fill:var(--win)"/>
+  <circle cx="410" cy="136" r="5" style="fill:var(--win)"/>
+  <circle cx="640" cy="136" r="5" style="fill:var(--win)"/>
+  <text x="170" y="182" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">+9</text>
+  <text x="410" y="154" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">+12</text>
+  <text x="655" y="152" style="fill:var(--win);font:600 12px sans-serif">+12</text>
+  <text x="655" y="168" style="fill:var(--win);font:400 11px sans-serif">廣告單價</text>
+
+  <path d="M410 212L640 222" style="fill:none;stroke:var(--lose);stroke-width:2.5;stroke-dasharray:5 3"/>
+  <circle cx="410" cy="212" r="5" style="fill:var(--lose)"/>
+  <circle cx="640" cy="222" r="5" style="fill:var(--lose)"/>
+  <text x="410" y="204" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">+4</text>
+  <text x="655" y="218" style="fill:var(--lose);font:600 12px sans-serif">+3</text>
+  <text x="655" y="234" style="fill:var(--lose);font:400 11px sans-serif">家族日活</text>
+  <text x="330" y="230" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">(日活 Q3&#39;25 曾達 +8%)</text>
+
+  <text x="170" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2025</text>
+  <text x="410" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q1 2026</text>
+  <text x="640" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2026</text>
+</svg>
+</div>
+<p>廣告營收 $59.36B、YoY +27%,佔總營收 97.6%。表面很好,但把它拆成量與價就看得出重心在移動:</p>
+<p>① <b>曝光數 YoY 從 +19% 掉到 +14%</b>,連續兩季減速。② <b>單價 YoY 持平 +12%</b>,沒有跟著上,也沒有下滑。③ <b>家族日活成長率 +8% → +4% → +3%</b>,連三季下滑,絕對值 36.0 億人。</p>
+<p>用戶端(日活)接近飽和是可預期的,Meta 已經覆蓋地球上大部分能上網的人;但<span class="mid">曝光數減速比日活減速更值得注意</span>——曝光數不只看人數,也看每人看幾則廣告,是 Meta 還能自己控制的變數。它掉下來,代表廣告載量的擴張空間也在收斂。</p>
+<div class="quote">📌 <b>可證偽的判準</b>:下季曝光數 YoY 若跌破 +10%,而單價 YoY 沒有相應上抬,廣告營收增速就會直接反映出來(目前 +27%)。這是三個數字裡最先會出事的一個。</div>
+</div>
+
+<h2>四、Reality Labs:虧損擴大,但錢改花在別的地方</h2>
+<div class="card">
+<p>營收 $431M(YoY +16%),營業虧損 <b>$4.62B</b>,較上季 $4.03B 擴大。自 2020 年設立以來累計虧損約 <b>$88B</b>。</p>
+<p>本季法說會透露了一個口徑變化:<b>約 70% 的 Reality Labs 支出已從 VR 頭顯轉向 AI 眼鏡／穿戴裝置</b>。這是策略轉向的明確訊號——虧損金額沒變小,但錢投的方向換了。<span class="mid">目前還沒有 AI 眼鏡的出貨量或營收拆分揭露</span>,這是下季值得追的第一個具體數字。</p>
+<p>另外一件只在法說會上講、沒寫進財報稿的事:管理層主動提及美國今年有<b>多起「青少年相關訴訟」(youth-related trials)</b> 將開庭,並明確表示<span class="lose">可能造成 material loss,且不在本季已提列的 $2.4B 法律費用範圍內</span>。管理層會主動預告的訴訟風險,通常代表他們評估機率不低。</p>
+</div>
+
+<h2>五、Guidance:連兩季往上收斂,沒有停下來的意思</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">看法有兩層。<b>第一層</b>:下季營收 guidance $61–64B,對比本季實際 $60.80B,中位數隱含 QoQ 續增,本業動能管理層自己是有信心的。</p>
+<p><b>第二層才是重點</b>:FY26 capex 指引的軌跡是 <b>$120-135B</b>(Q4'25 法說)→ <b>$125-145B</b>(Q1'26)→ <b>$130-145B</b>(本季)。每一次都是<b>下緣往上抬、上緣不動</b>。這種「收斂式上修」的意思是:管理層越來越確定會花到很多,只是還不確定會不會花到頂。<span class="lose">連續三次同方向,沒有任何見頂訊號</span>。</p>
+<p>總費用指引同步從 $162–169B 收斂為 <b>$165–169B</b>,下緣 +$3B。費用與資本支出兩條線同時往上,是本季 guidance 唯一一致的方向。</p>
+</div>
+
+<h2>六、估值:便宜是被砸出來的,不是長期低估</h2>
+<div class="card">
+<p class="big">📉 <b>Forward PE 17.9x、一年估值分位 5.2%</b>(一年均值 26.2x);forward PS 5.1x、分位 0.8%。兩個指標都在近一年低檔。</p>
+<p>但要看清楚這個便宜怎麼來的:財報後單日股價 <b>$585.61 → $539.03(−8%)</b>,隨後三日部分收復到 $556.71。<span class="mid">是股價先掉下去,才有這個 PE</span>——而股價掉下去的原因,正是上面那些 capex / FCF / 利潤率的疑慮。</p>
+<p>所以「便宜」跟「錯殺」不是同一件事。要判定是錯殺,得先看下季 FCF 有沒有回升、營益率有沒有止穩。<b>疑慮本身還沒被證偽,只是被定價了</b>。</p>
+<p><b>分析師一致預期</b>(2026-08-02 更新,財報後一天):42 位分析師,買入 88.1% / 持有 11.9% / 賣出 0%,平均目標價 <b>$763.61</b>(高 $1000 / 低 $595),對比現價 $556.71 隱含約 +37%。<span class="mid">但這是財報後才更新一天的數字</span>,目標價下修通常落後財報 1–2 週,這個 +37% 現在不宜當結論用。</p>
+<p><b>循環烈度判斷(invest-playbook)</b>:數位廣告屬<b>中等循環</b>,跟總經廣告預算連動但 Meta 市佔穩固;真正的循環變數是 <b>capex 週期</b>,現在明顯在擴張段。擴張段的特徵是折舊費用會在未來 2–3 年遞延壓上損益表——這一段通常不會被完整計入 forward PE。</p>
+</div>
+
+<h2>七、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b><b>數位廣告平台</b>。Meta 有 97.6% 營收來自精準廣告,與 Google 搜尋廣告、Amazon 電商廣告、Snap／Pinterest／Reddit 社群廣告、The Trade Desk 程序化廣告同屬一個需求受總經與廣告主預算牽動的族群。(Meta 同時也是 AI capex 大戶,但那屬另一個題材,本表聚焦廣告本業。)</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">一個橫向觀察:<b>META 17.9%、GOOGL 3.2%、AMZN 0.8%、TTD 3.6% —— 四家估值分位全落在個位數</b>。這不是單一公司的問題,是整個族群同步的估值壓縮,比較像資金面而非基本面驅動。</p>
+<p><b>PINS 是明顯例外</b>:forward PE 38.3x、分位 98.8%,處在歷史高位,性質跟其他幾家完全不同,不宜放在同一個「便宜」的框裡看。SNAP 因虧損 forward PE 為負值,那個 73.6% 分位讀不出估值意義。</p>
+</div>
+
+<h2>八、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① FCF 能否回升</div><div class="kd">本季僅 $1.746B(QoQ −86.8%)</div><div class="ke">回到 $8–10B 以上 = 單季現象;續留低位 = 結構性壓縮</div></div>
+<div class="kcard"><div class="kt">② 營益率能否止穩</div><div class="kd">剔除一次性後 36.8%,仍比去年低 6.2pp</div><div class="ke">下季再降 = 折舊與人力結構性上移已成定局</div></div>
+<div class="kcard"><div class="kt">③ 曝光數成長是否破 10%</div><div class="kd">本季 +14%,已連兩季減速</div><div class="ke">破 10% 且單價未上抬 → 廣告營收增速將直接下滑</div></div>
+<div class="kcard"><div class="kt">④ Capex 指引是否再上修</div><div class="kd">現為 $130–145B,已連兩季往上收斂</div><div class="ke">收斂到上緣 $145B = 見頂;區間再往上 = 還沒到底</div></div>
+<div class="kcard"><div class="kt">⑤ 家族日活能否止穩</div><div class="kd">+8% → +4% → +3%</div><div class="ke">降到 +1~2% 代表用戶端已無成長貢獻</div></div>
+<div class="kcard"><div class="kt">⑥ 青少年訴訟</div><div class="kd">管理層預告可能 material loss</div><div class="ke">看是否出現超出已提列 $2.4B 的判決或和解金額</div></div>
+</div>
+</div>
+
+<h2>九、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>廣告本業其實很強</b>。營收 YoY +28% 是近八季數一數二,單價 YoY +12% 穩定,曝光數雖減速但仍正成長。營運現金流 YoY +24.7%,印鈔能力沒有退化。</p>
+<p>② <b>估值到了同族群最低檔之一</b>。forward PE 17.9x、分位 5.2%,分析師 88.1% 買入、目標價隱含 +37%。若 capex 疑慮下季被證偽,估值修復的空間是實的。</p>
+<p>③ <b>capex 是投資不是失血</b>。這筆錢是拿去蓋能算 AI 的基礎設施,若能轉成推薦引擎效率與 Meta AI 變現,現在是投資期低點而非衰退起點。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>FCF $1.746B 不是一次性</b>。FY26 capex 指引 $130–145B 意味著後面幾季還要花更多,FCF 受壓大概率延續而非回補。回購已停、負債單季 +$24.9B,財務彈性正在被消耗。</p>
+<p>② <b>利潤率的下滑扣掉一次性還在</b>。36.8% vs 去年 43%,差 6.2pp。折舊與 AI token 成本都是往上走的科目,沒有理由自己回來。</p>
+<p>③ <b>廣告的量價結構在惡化</b>。曝光數與日活同步減速,目前靠單價撐;訴訟風險未量化,可能還有超出 $2.4B 的額外損失。</p>
+<p class="note">★ 分歧點其實只有一個:<b>你認為這輪 AI capex 幾年能回本</b>。看多方沒有否認 FCF 難看,看空方也沒有否認廣告本業還在成長——差別只在願不願意等折舊跑完。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Meta Investor Relations 財報新聞稿(investor.atmeta.com)、2026-07-29 法說會多方媒體摘要(gurufocus / investing.com / alphastreet / stocktitan)、Futu 財務報表與估值數據(查詢日 2026-08-03)、市場預期 EPS 引自 247wallst。本季<b>未取得完整法說逐字稿</b>,法說相關內容以可查證的媒體摘要為準,已於文中標明。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 核心數字表
+const CORE=[
+ ['總營收','$60.80B','$56.31B','$47.52B','guidance $58-61B','逼近上緣 Beat','win'],
+ ['廣告營收','$59.36B','—','—','—','YoY +27%','win'],
+ ['稀釋 EPS','$6.18','$10.44','$7.14','$7.22','Miss −14.4%(六季來首度)','lose'],
+ ['營業利益','$18.78B','$22.87B','$20.44B','—','YoY −8.2% / QoQ −17.9%','lose'],
+ ['營業利益率','31%(剔除一次性 36.8%)','40.6%','43%','—','扣掉一次性仍 −6.2pp','lose'],
+ ['營運現金流','$31.86B','$32.23B','$25.56B','—','YoY +24.7%,本業健康','win'],
+ ['資本支出','$31.08B','~$19.0B','$16.54B','—','QoQ +57% / YoY +82%','lose'],
+ ['<b>自由現金流</b>','<b>$1.746B</b>','$13.23B','$9.02B','—','QoQ −86.8%,八季最低','lose'],
+ ['Reality Labs 虧損','−$4.62B','−$4.03B','−$4.53B','—','擴大;累計約 −$88B','lose'],
+ ['長期借款','$83.66B','$58.75B','—','—','QoQ +42.4%','lose'],
+ ['股票回購','$0','數十億','數十億','—','全面暫停','lose'],
+ ['員工數','75,472','—','—','—','YoY −1% / QoQ −3%(5 月裁 8,000 人)','mid'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>指標</th><th>Q2 2026</th><th>Q1 2026</th><th>Q2 2025</th><th>市場預期</th><th>判定</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// Guidance 對比表
+const GUIDE=[
+ ['下季營收','Q3&#39;26:$61–64B','Q2&#39;26:$58–61B(實際 $60.80B)','—',''],
+ ['FY26 資本支出','<b>$130–145B</b>','$125–145B','下緣 +$5B','lose'],
+ ['FY26 總費用','<b>$165–169B</b>','$162–169B','下緣 +$3B','lose'],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>本次(2026-07-29)</th><th>上次(2026-04-29)</th><th>變化</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 同族群概念股掃描
+const GROUP=[
+ ['META Meta','最大規模廣告平台 · 本文主標的','龍頭 · 財報後轉弱','17.9x','5.2%','廣告本業強,但 FCF 與利潤率同時承壓,估值被砸到低位'],
+ ['GOOGL 谷歌','搜尋廣告龍頭 + 雲端第二引擎','龍頭 · 同樣低分位','26.3x','3.2%','廣告+雲端雙引擎,估值分位同樣落在個位數'],
+ ['AMZN 亞馬遜','電商廣告第三極,體量小但成長快','龍頭 · 相對抗跌','28.5x','0.8%','廣告只是副業,估值分位卻是全表最低'],
+ ['TTD The Trade Desk','程序化廣告技術中介,非平台方','跟跌 · 動能減弱','16.3x','3.6%','全表最便宜,但對 Cookie 淘汰與隱私法規最敏感'],
+ ['RDDT Reddit','新興社群廣告 + AI 數據授權','分位極低但波動大','21.5x','0.4%','雙題材但獲利波動大,歷史均值高達 104x,分位讀數要小心'],
+ ['PINS Pinterest','利基型視覺廣告平台','明顯偏貴 · 歷史高位','38.3x','98.8%','全表唯一在歷史高位的一檔,不能跟其他家放同一框比'],
+ ['SNAP Snap','二線社群廣告,持續虧損','弱勢 · 估值失效','負值','73.6%','虧損使 forward PE 為負,該分位讀不出估值意義'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一年估值分位</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+</script>
+</body></html>

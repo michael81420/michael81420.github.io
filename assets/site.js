@@ -3,11 +3,22 @@
 /* 全站文章清單（單一事實來源）。新增文章時在這裡加一筆即可同步側欄。
    d = 日期（同首頁 .pc-date），排序一律依 d 算，陣列擺放順序不影響顯示。
    cat 用首頁 data-cat 的正規中文值。
+   sub = 子分類（選填，如 'Alphabet'）。同一 cat 底下用它再分一層：首頁選了該 cat 會長出第二排
+   子分類 chip，側欄該分類底下也多一層可展開的群組。子分類清單由這裡自動推導，不用另外登記；
+   同 cat 內沒有 sub 的文章直接列在分類底下，不受影響。子分類名不進 CATL，中英同字。
    draft:1 = 草稿：首頁卡片線上自動隱藏（本機預覽仍可見），側欄也只在自己頁面出現 →
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
+  {slug:'palantir-2026q2-earnings',   d:'2026-08-05', cat:'財報分析',       sub:'Palantir',  zh:'Palantir．2026 Q2 財報拆解', en:'Palantir．Q2 2026 Earnings, Unpacked'},
+  {slug:'onsemi-2026q2-earnings',     d:'2026-08-05', cat:'財報分析',       sub:'onsemi',    zh:'onsemi．2026 Q2 財報拆解',   en:'onsemi．Q2 2026 Earnings, Unpacked'},
+  {slug:'alphabet-2026q2-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Alphabet',  zh:'Alphabet．2026 Q2 財報拆解', en:'Alphabet．Q2 2026 Earnings, Unpacked'},
+  {slug:'amazon-2026q2-earnings',     d:'2026-08-03', cat:'財報分析',       sub:'Amazon',    zh:'Amazon．2026 Q2 財報拆解',   en:'Amazon．Q2 2026 Earnings, Unpacked'},
+  {slug:'microsoft-2026q2-earnings',  d:'2026-08-03', cat:'財報分析',       sub:'Microsoft', zh:'Microsoft．FY2026 Q4 財報拆解', en:'Microsoft．FY2026 Q4 Earnings, Unpacked'},
+  {slug:'meta-2026q2-earnings',       d:'2026-08-03', cat:'財報分析',       sub:'Meta',      zh:'Meta．2026 Q2 財報拆解',     en:'Meta．Q2 2026 Earnings, Unpacked'},
+  {slug:'tesla-2026q2-earnings',      d:'2026-08-03', cat:'財報分析',       sub:'Tesla',     zh:'Tesla．2026 Q2 財報拆解',    en:'Tesla．Q2 2026 Earnings, Unpacked'},
+  {slug:'oracle-fy2026q4-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Oracle',    zh:'Oracle．FY2026 Q4 財報拆解', en:'Oracle．FY2026 Q4 Earnings, Unpacked'},
   {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript', draft:1},
   {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
   {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
@@ -33,9 +44,31 @@ var POSTS=[
 ];
 // 新→舊。分組時「首次出現順序」即等於分類最新文章的先後，分類展開順序因此自動跟著更新時間走。
 POSTS.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
+
+/* 首頁「財報」資料表沒有陣列：每篇 cat:'財報分析' 的文章旁邊放一支 posts/<slug>.earn.js，
+   內容是 (window.EARN=window.EARN||{})['<slug>']={tk,nm,q,rev,t,opm,eps,epsN,pe}，
+   首頁按下「財報」時才依 POSTS 的 slug 動態插 <script src> 把它們載進來排表（見 drawEarn）。
+   → 數字只存在那支檔一份，改它首頁自動跟著改；新增一篇只要 POSTS 加一筆 + 建一支 .earn.js。
+   用 script src 而不是 fetch JSON：跟 site.js 送 POSTS/CATL 是同一套模式，file:// 直開也讀得到。
+   顯示順序吃 POSTS 的日期，不看載入完成的先後（用 slug 對回去，所以 script 誰先到都無所謂）。
+   欄位：eps = 剔除一次性後的核心 EPS，epsN 註明口徑；t = win/lose/mid，只給營收 YoY 上色。 */
+var ETXT={
+  zh:{head:['代號','公司 / 季度','營收 YoY','營益率','核心 EPS','forward PE'],
+      load:'讀取各篇財報數字中…',
+      fail:'讀不到財報數字，posts/&lt;slug&gt;.earn.js 可能漏建或有語法錯誤（開 console 看）。',
+      note:'營益率與核心 EPS 口徑各家不同（GAAP / non-GAAP / 剔除一次性），已標在數字下方；'+
+           '估值一律看 forward PE，不看被一次性利得灌壞的 trailing。點任一列進完整拆解。'},
+  en:{head:['Ticker','Company / Quarter','Rev. YoY','Op. margin','Core EPS','Forward P/E'],
+      load:'Loading figures from each post…',
+      fail:'Could not load the figures — posts/&lt;slug&gt;.earn.js may be missing or have a syntax error (check the console).',
+      note:'Operating margin and core EPS use different bases per company (GAAP / non-GAAP / ex one-offs), '+
+           'noted under each figure. Valuation always uses forward P/E, never trailing — one-off gains break it. '+
+           'Click any row for the full breakdown.'}
+};
 var CATL={
   '全部':            {zh:'全部',            en:'All'},
   '股癌podcast分析': {zh:'股癌podcast分析', en:'Gooaye Podcast'},
+  '財報分析':        {zh:'財報分析',        en:'Earnings'},
   'AI 技術分享':     {zh:'AI 技術分享',     en:'AI Notes'},
   '前端開發':        {zh:'前端開發',        en:'Frontend'},
   '旅遊':            {zh:'旅遊',            en:'Travel'}
@@ -118,15 +151,18 @@ function initSkills(){
 function initHome(){
   var grid=document.getElementById('grid');
   if(!grid) return;
-  var chips=document.querySelectorAll('.chip');
+  var chips=document.querySelectorAll('.toolbar .chip');
+  var subbar=document.getElementById('subbar');
   var search=document.getElementById('search');
   var hero=document.getElementById('hero');
   var empty=document.getElementById('empty');
-  var cat='全部',q='';
-  // 日期單一來源＝POSTS.d，卡片的 .pc-date 由此填入（HTML 不再各寫一份）
-  var DATES={},DRAFT={};POSTS.forEach(function(p){DATES[p.slug]=p.d;if(p.draft)DRAFT[p.slug]=1;});
+  var cat='全部',sub='全部',q='';
+  // 日期／子分類單一來源＝POSTS，卡片的 .pc-date 由此填入（HTML 不再各寫一份）
+  var DATES={},DRAFT={},SUBS={};
+  POSTS.forEach(function(p){DATES[p.slug]=p.d;if(p.draft)DRAFT[p.slug]=1;if(p.sub)SUBS[p.slug]=p.sub;});
   function slugOf(c){return (c.getAttribute('href')||'').replace(/^posts\//,'').replace(/(\.en)?\.html$/,'');}
   function dateOf(c){return DATES[slugOf(c)]||'';}
+  function subOf(c){return SUBS[slugOf(c)]||'';}
   // 草稿卡片：線上直接從 DOM 拿掉，本機預覽保留並標記，方便發佈前看版。
   // → 發佈只要刪 POSTS 那筆的 draft:1，首頁卡片自己就會出現（HTML 不用動）。
   var cards=[].slice.call(grid.querySelectorAll('.post-card')).filter(function(c){
@@ -157,36 +193,121 @@ function initHome(){
   // 超過 6 篇時預設只顯示最新 6 篇（DOM 已是新→舊），按鈕展開全部
   var expanded=false,showAll=document.getElementById('showAll');
   window.toggleAll=function(){expanded=!expanded;apply();};
+  // 第二排子分類 chip：只在選了「有子分類的分類」時出現，清單由 POSTS.sub 自動推導
+  function buildSubbar(){
+    if(!subbar) return;
+    var list=[];
+    if(cat!=='全部'){
+      sorted.forEach(function(c){
+        var s=subOf(c);
+        if(c.dataset.cat===cat&&s&&list.indexOf(s)<0)list.push(s);
+      });
+    }
+    subbar.innerHTML='';
+    subbar.style.display=list.length?'':'none';
+    if(!list.length){sub='全部';return;}
+    ['全部'].concat(list).forEach(function(s){
+      var b=document.createElement('button');
+      b.className='chip chip-sub'+(s===sub?' active':'');
+      b.textContent=s==='全部'?catLabel('全部'):s;
+      b.addEventListener('click',function(){sub=s;buildSubbar();apply();});
+      subbar.appendChild(b);
+    });
+  }
   function apply(){
     var shown=0,matched=0;
     grid.querySelectorAll('.post-card').forEach(function(c){
-      var okCat=cat==='全部'||c.dataset.cat===cat;
+      var okCat=cat==='全部'||(c.dataset.cat===cat&&(sub==='全部'||subOf(c)===sub));
       var hay=(c.dataset.title+' '+(c.dataset.excerpt||'')).toLowerCase();
       var okQ=q===''||hay.indexOf(q)>=0;
       var match=okCat&&okQ;
       if(match)matched++;
-      var show=match&&(expanded||matched<=6);
+      var show=match&&(expanded||matched<=9);
       c.style.display=show?'':'none';
       if(show)shown++;
     });
-    var heroVisible=hero&&cat==='全部'&&q==='';
+    var heroVisible=hero&&q===''; // 精選常駐，只有搜尋時讓位給結果
     if(hero)hero.style.display=heroVisible?'':'none';
     if(empty)empty.style.display=(!shown&&!heroVisible)?'':'none';
     if(showAll){
-      showAll.style.display=matched>6?'inline-flex':'none';
+      showAll.style.display=matched>9?'inline-flex':'none';
       showAll.classList.toggle('open',expanded);
       var txt=document.getElementById('showAllTxt');
       if(txt)txt.textContent=expanded?(LANG==='en'?'Show less':'收合文章'):(LANG==='en'?'Show all posts':'顯示全部文章');
+    }
+  }
+  /* 「財報」是模式不是分類：按下去整塊換成資料表，切回任一分類就回到文章卡片。
+     財報文章不進 #grid，所以兩種內容永遠不會混在同一個清單裡。 */
+  var earnBtn=document.getElementById('earnChip'),earnWrap=document.getElementById('earnWrap'),earnOn=false,earnDone=false;
+  var earnExt=LANG==='en'?'.en.html':'.html';
+  // POSTS 已排好新→舊，filter 後順序即為顯示順序
+  var earnPosts=POSTS.filter(function(p){return p.cat==='財報分析'&&(!p.draft||LOCAL);});
+  if(earnBtn&&earnBtn.querySelector('.n'))earnBtn.querySelector('.n').textContent=earnPosts.length;
+  // 數字在各篇的 posts/<slug>.earn.js 裡，按下財報鈕才把那幾支載進來（只載一次）
+  function drawEarn(){
+    if(!earnWrap||earnDone) return;
+    earnDone=true;
+    var T=ETXT[LANG];
+    earnWrap.innerHTML='<div class="etable-note">'+T.load+'</div>';
+    Promise.all(earnPosts.map(function(p){
+      return new Promise(function(done){
+        var s=document.createElement('script');
+        s.src='posts/'+p.slug+'.earn.js';
+        s.onload=s.onerror=done; // 單篇載不到不拖垮整張表，下面 filter 掉就好
+        document.head.appendChild(s);
+      });
+    })).then(function(){
+      var E=window.EARN||{};
+      var rows=earnPosts.map(function(p){ // 順序吃 POSTS，與載入完成先後無關
+        var r=E[p.slug];
+        return r?{r:r,slug:p.slug}:null;
+      }).filter(Boolean);
+      if(!rows.length){earnWrap.innerHTML='<div class="etable-note">'+T.fail+'</div>';earnDone=false;return;}
+      earnWrap.innerHTML='<div class="etable"><div class="er eh"><div>'+T.head[0]+'</div><div>'+T.head[1]+'</div>'+
+        T.head.slice(2).map(function(h){return '<div class="num">'+h+'</div>';}).join('')+'</div>'+
+        rows.map(function(x){
+          var r=x.r;
+          return '<a class="er" href="posts/'+x.slug+earnExt+'">'+
+            '<div class="tkc">'+r.tk+'</div>'+
+            '<div class="nmc"><b>'+r.nm[LANG]+'</b><span>'+r.q+'</span></div>'+
+            '<div class="num k'+(r.t?' '+r.t:'')+'">'+r.rev+'</div>'+
+            '<div class="num">'+r.opm+'</div>'+
+            '<div class="num k">'+r.eps+'<em>'+r.epsN[LANG]+'</em></div>'+
+            '<div class="num">'+r.pe+'</div></a>';
+        }).join('')+'</div><div class="etable-note">'+T.note+'</div>';
+    });
+  }
+  function setEarn(on){
+    earnOn=on;
+    if(on)drawEarn();
+    if(earnWrap)earnWrap.style.display=on?'':'none';
+    if(earnBtn)earnBtn.classList.toggle('active',on);
+    grid.style.display=on?'none':'';
+    if(on){
+      if(hero)hero.style.display=''; // 精選常駐，財報模式也留著
+      if(subbar)subbar.style.display='none';
+      if(empty)empty.style.display='none';
+      if(showAll)showAll.style.display='none';
     }
   }
   chips.forEach(function(ch){
     ch.addEventListener('click',function(){
       chips.forEach(function(x){x.classList.remove('active');});
       ch.classList.add('active');
-      cat=ch.dataset.cat;apply();
+      cat=ch.dataset.cat;sub='全部';setEarn(false);buildSubbar();apply();
     });
   });
-  if(search)search.addEventListener('input',function(){q=this.value.trim().toLowerCase();apply();});
+  if(earnBtn)earnBtn.addEventListener('click',function(){
+    chips.forEach(function(x){x.classList.remove('active');});
+    setEarn(true);
+  });
+  // 搜尋只搜文章，所以一打字就退出財報模式（財報有自己的表，不走關鍵字過濾）
+  if(search)search.addEventListener('input',function(){
+    q=this.value.trim().toLowerCase();
+    if(earnOn){chips[0].classList.add('active');cat='全部';setEarn(false);buildSubbar();}
+    apply();
+  });
+  buildSubbar();
   apply();
 }
 /* 文章頁：頂部返回鈕與標題（含標誌線）維持整列、置中；
@@ -229,12 +350,35 @@ function initArticle(){
     var box=document.createElement('div');
     var scrollable=items.length>5;
     box.className='rail-items'+(scrollable?' scroll':''); // 每類最多顯示5篇，其餘用滑動看
-    items.forEach(function(p){
+    function addItem(p,parent){
       var a=document.createElement('a');
       a.className='rail-item'+(p.slug===slug?' active':'');
       a.href=p.slug+ext;
       a.textContent=LANG==='en'?p.en:p.zh;
-      box.appendChild(a);
+      parent.appendChild(a);
+    }
+    // 有 sub 的再分一層；沒 sub 的直接列在分類底下
+    var bySub={},subOrder=[];
+    items.forEach(function(p){
+      if(!p.sub){addItem(p,box);return;}
+      if(!bySub[p.sub]){bySub[p.sub]=[];subOrder.push(p.sub);}
+      bySub[p.sub].push(p);
+    });
+    subOrder.forEach(function(s){
+      var sItems=bySub[s];
+      var sg=document.createElement('div');
+      sg.className='rail-group rail-sub'+(sItems.some(function(p){return p.slug===slug;})?'':' collapsed');
+      var sbtn=document.createElement('button');
+      sbtn.className='rail-toggle';
+      sbtn.innerHTML='<span class="chev">▶</span><span class="rg-cat"></span><span class="rg-count">'+sItems.length+'</span>';
+      sbtn.querySelector('.rg-cat').textContent=s;
+      sbtn.addEventListener('click',function(){sg.classList.toggle('collapsed');});
+      sg.appendChild(sbtn);
+      var sbox=document.createElement('div');
+      sbox.className='rail-items';
+      sItems.forEach(function(p){addItem(p,sbox);});
+      sg.appendChild(sbox);
+      box.appendChild(sg);
     });
     if(scrollable){
       var scrollWrap=document.createElement('div');

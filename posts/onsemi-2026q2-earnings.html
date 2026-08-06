@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>onsemi．2026 Q2 財報拆解 — Non-GAAP EPS $0.74 beat,GAAP $0.56 卻跌破自己給的財測下限;稼動率 77%→83%、交期 27→32 週,第二輪漲價還沒進毛利率</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="onsemi-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>onsemi．2026 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">標題寫「beat 預期、盤後大漲」——但那是 Non-GAAP 口徑。<b>GAAP EPS $0.56,連公司三個月前自己給的 $0.60–0.72 下限都沒摸到</b>。真正值得記下來的是另一組數字:稼動率單季 +6pp、交期拉長 5 週、公司宣布第二輪漲價。<br>IR 新聞稿 + 法說逐字稿 + Futu 損益表逐季交叉驗證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:onsemi IR 財報原文 + 法說逐字稿</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30</span>
+<span class="badge">公布日:2026-08-03</span>
+<span class="badge">整理日:2026-08-05</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">🎭 <span class="lose">「Beat」是 Non-GAAP 口徑的 beat,GAAP 全口徑其實是 miss</span>。Non-GAAP EPS $0.74 對預期 $0.71(+4.2%),盤後跳漲;但 GAAP 稀釋 EPS 只有 <b>$0.56</b>,低於公司在 Q1 財報時自己給的 <b>$0.60–0.72</b> 下限。差額來自被 Non-GAAP 剔除的重組併購費用 $24.9M、資產減值 $16.3M、其他淨費用 −$32.6M。FabRight 重組還在跑,這個落差短期不會收斂。</p>
+<p class="big">🔥 <span class="win">產能吃緊的第一組硬數字出現了</span>。稼動率單季 <b>77% → 83%(+6pp)</b>,交期同步從 <b>27 週拉長到 32 週</b>,公司宣布<b>第二輪漲價</b>反映原料與委外代工成本。管理層並在會上口頭給了轉換係數:<b>每 1pp 稼動率約帶動 25–30bp 毛利率</b>。這是功率半導體從「去化庫存」翻到「產能緊」的具體訊號,不是形容詞。</p>
+<p class="big">✂️ <span class="mid">但漲價一毛錢都還沒進本季毛利率</span>。Q2 GAAP 毛利率 38.4%,跟上季 38.5% 幾乎持平。真正的兌現點是 Q3 指引 <b>Non-GAAP 毛利率 40–42%</b>——比本季實際 39.3% 高出一截。<b>整個多方論述押在這個區間上,而它下一季就會被驗證或證偽。</b></p>
+<p class="big">⚡ <span class="lose">復甦只發生在電源這一塊,不是全面的</span>。PSG(電源方案,含 SiC/GaN)YoY <b>+19%</b>、QoQ +13% 獨力拉動大盤;AMG(類比混合訊號)YoY <b>−2%</b>、QoQ 僅 +1%,是唯一衰退的分部。汽車終端 QoQ 還是 −2%。廣度不夠,意味著一旦 AI 資料中心那條腿降溫,沒有第二個分部接得住。</p>
+<p class="note">★ 估值先別看 trailing PE 53x / 分位 85%——那是<b>復甦期分母太小</b>造成的失真。要看 forward PE <b>22.5x</b>,對比自身 5 年均值 23.1x,基本上就是貼在均值上:<span class="mid">不貴,也沒便宜到值得為它承擔循環風險</span>。</p>
+</div>
+
+<h2>一、先把這個 beat 拆開</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi 2026 Q2 的 GAAP EPS 0.56 美元跌破公司自己給的 0.60 到 0.72 美元財測下限,但 Non-GAAP EPS 0.74 美元擊敗市場預期 0.71 美元,同一季在兩個口徑下結論相反">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季稀釋 EPS(美元)· 同一季,兩個口徑,兩個結論</text>
+  <line x1="55" y1="255" x2="715" y2="255" style="stroke:var(--border)"/>
+  <text x="45" y="259" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+  <line x1="380" y1="60" x2="380" y2="255" style="stroke:var(--border);stroke-dasharray:4 4"/>
+
+  <text x="205" y="46" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">GAAP 口徑 · 沒達到自己的財測</text>
+  <rect x="120" y="125" width="170" height="22" rx="3" style="fill:var(--midbg);stroke:var(--midbd);stroke-dasharray:4 3"/>
+  <text x="205" y="117" text-anchor="middle" style="fill:var(--mid);font:400 11px sans-serif">自家 guidance $0.60–0.72</text>
+  <rect x="160" y="154" width="90" height="101" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="205" y="188" text-anchor="middle" style="fill:var(--lose);font:600 15px sans-serif">$0.56</text>
+  <text x="205" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">GAAP 實際</text>
+  <text x="205" y="294" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">跌破下限</text>
+
+  <text x="550" y="46" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">Non-GAAP 口徑 · 擊敗市場預期</text>
+  <rect x="440" y="127" width="90" height="128" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="485" y="118" text-anchor="middle" style="fill:var(--ink2);font:600 14px sans-serif">$0.71</text>
+  <text x="485" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">市場預期</text>
+  <rect x="570" y="122" width="90" height="133" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="615" y="113" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">$0.74</text>
+  <text x="615" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Non-GAAP 實際</text>
+  <text x="615" y="294" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">Beat +4.2%</text>
+</svg>
+</div>
+<p>兩個口徑的差額 $0.18/股,拆開來看是三筆:<b>重組與併購費用 $24.9M</b>(FabRight fab-lite 轉型還在進行)、<b>資產減值 $16.3M</b>、<b>其他淨費用 −$32.6M</b>。這些在 Non-GAAP 裡全被剔除。</p>
+<p><span class="mid">要區分兩種情況</span>:如果是真正一次性的重組尾巴,那 Non-GAAP 確實比較接近營運實況;但 FabRight 的效益要到 <b>2027 年才開始顯現</b>(年省約 $35M,2028 全額),意味著費用端還要再認幾季。<b>「一次性」費用連續出現好幾季,就不叫一次性了。</b></p>
+<div class="quote">📌 更值得記的是:<b>公司連自己三個月前給的 GAAP 區間都沒守住</b>。財測是公司對自己的預測,miss 自己的預測跟 miss 分析師預測不是同一件事——後者是外界估錯,前者是公司對自己的成本結構估錯。</div>
+</div>
+
+<h2>二、核心數字與近五季趨勢</h2>
+<div class="card">
+<p>營收 $1,603.5M(YoY +9.2% / QoQ +6.0%),小幅優於預期約 $1.59B。庫存端全面改善:通路庫存 10.8 → <b>10.1 週</b>,總庫存天數 201 → <b>192 天</b>。自由現金流 $425.4M,YoY 接近四倍。</p>
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+<p style="margin-top:14px">拉長到八季,循環的形狀才看得出來:</p>
+<div style="overflow-x:auto"><table id="trendTable"></table></div>
+<p style="margin-top:14px"><span class="mid">注意 FY25Q1 那一列</span>:毛利率 20.3%、營益率 −2.4%、EPS −$1.15。那是庫存減損加低稼動率同時打下來的谷底,也是判斷「現在走到哪」的錨點。</p>
+</div>
+
+<h2>三、復甦只在電源這一塊</h2>
+<div class="card">
+<p>總營收 +9.2% 是被單一分部拉起來的:</p>
+<div style="overflow-x:auto"><table id="segTable"></table></div>
+<p style="margin-top:14px">終端市場拆分:</p>
+<div style="overflow-x:auto"><table id="endTable"></table></div>
+<p style="margin-top:14px">兩件要單獨拿出來說的事:</p>
+<p>① <b>AMG 是唯一 YoY 衰退的分部</b>(−2%),QoQ 也只有 +1%。它對應的傳統類比/工業終端還沒跟上。<span class="lose">這代表本輪復甦的廣度不足</span>——PSG 靠的是 SiC 與 AI 資料中心電源,是題材最集中的那條腿。</p>
+<p>② <b>汽車終端 QoQ 還是 −2%</b>,YoY +7%。公司解釋為歐洲 Q2 季節性偏弱。汽車是 onsemi 最大的單一終端($781M,約佔 49%),它沒有加速,而整體加速了,說明成長來源正在從汽車轉移到別處。</p>
+<p class="note">★ Futu 的分部佔比資料目前只更新到 2026/Q1(PSG 48.7% / AMG 35.7% / ISG 15.6%),Q2 尚未同步;本頁分部數字全部以 IR 與法說原文為準。</p>
+</div>
+
+<h2>四、產能吃緊的訊號出現了,但還沒進毛利率</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi 的稼動率跳升與交期拉長已經觸發第二輪漲價,但漲價要到第三季毛利率指引 40 到 42% 才會第一次被數字驗證,這條傳導鏈目前只走到第三格">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="34" style="fill:var(--ink2);font:600 13px sans-serif">產能吃緊 → 漲價 → 毛利率:這條鏈目前只走到第三格</text>
+
+  <rect x="25" y="70" width="150" height="60" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="100" y="94" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">① 稼動率跳升</text>
+  <text x="100" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">77% → 83%(+6pp)</text>
+
+  <rect x="215" y="70" width="150" height="60" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="290" y="94" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">② 交期拉長</text>
+  <text x="290" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">27 週 → 32 週</text>
+
+  <rect x="405" y="70" width="150" height="60" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="480" y="94" text-anchor="middle" style="fill:var(--mid);font:600 13px sans-serif">③ 第二輪漲價</text>
+  <text x="480" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">反映原料與代工成本</text>
+
+  <rect x="595" y="70" width="150" height="60" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="670" y="94" text-anchor="middle" style="fill:var(--turn);font:600 13px sans-serif">④ 毛利率兌現</text>
+  <text x="670" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">Q3 指引 40–42%</text>
+
+  <line x1="178" y1="100" x2="210" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="368" y1="100" x2="400" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="558" y1="100" x2="590" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+
+  <text x="480" y="155" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">本季走到這裡</text>
+  <text x="670" y="155" text-anchor="middle" style="fill:var(--turn);font:600 11px sans-serif">下季才驗證得了</text>
+  <line x1="480" y1="134" x2="480" y2="143" style="stroke:var(--ink3)"/>
+  <line x1="670" y1="134" x2="670" y2="143" style="stroke:var(--turn)"/>
+</svg>
+</div>
+<p>這三個數字都<b>只在法說會上口頭給,新聞稿裡沒有</b>:稼動率 77% → 83%、交期 27 週 → 32 週、每 1pp 稼動率約帶動 25–30bp 毛利率。最後這個係數是本次法說最可操作的一句話——照它推算,+6pp 稼動率理論上值 <b>150–180bp 毛利率</b>。</p>
+<p>但本季 GAAP 毛利率 38.4%,跟上季 38.5% <b>幾乎沒動</b>。也就是說稼動率的效益與漲價的效益,一毛都還沒認到損益表上。Q3 Non-GAAP 毛利率指引 <b>40.0–42.0%</b>(本季實際 39.3%)才是第一次兌現點。</p>
+<div class="quote">📌 <b>這是本篇最該被證偽的一句話</b>:管理層說漲價效益會在 Q3–Q4 顯現。它已經被寫成一個明確的數字區間(40–42%),三個月後就知道對錯。如果 Q3 落在 40% 以下,那「產能吃緊」這條敘事本身要重估——因為訊號都在,只是傳不到毛利率。</div>
+</div>
+
+<h2>五、Guidance:全線上修</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guidTable"></table></div>
+<p style="margin-top:14px">兩個口徑變化值得記:</p>
+<p>① <b>AI 資料中心全年展望從「double」升級為「more than double」</b>(2025 基期約 $250M)。管理層原話是這塊「remains our fastest-growing business」。</p>
+<p>② <b>SiC 首次被拆成兩條獨立曲線報數</b>:中國車用 SiC 全年 +60–70% YoY、AI 資料中心 SiC 近 +60% YoY。過去幾季只籠統講「SiC 成長」。<span class="mid">把成長來源拆細通常有兩種動機</span>——真的多元化了,或是要證明不只靠單一市場。這季看起來是前者,但值得盯著看拆法會不會又變。</p>
+</div>
+
+<h2>六、法說會上的口徑變化</h2>
+<div class="card">
+<p><b>分析師追問集中在哪:</b></p>
+<div class="kbox">
+<div class="kcard"><div class="kt">① 稼動率與毛利率的槓桿係數</div><div class="kd">追問到管理層給出「每 1pp 稼動率 ≈ 25–30bp 毛利率」</div><div class="ke">本次最重要的可操作數字</div></div>
+<div class="kcard"><div class="kt">② 漲價能不能轉嫁到車用</div><div class="kd">車廠議價力強、合約週期長</div><div class="ke">只泛稱「適用所有市場含汽車」,沒給幅度</div></div>
+</div>
+<p style="margin-top:14px"><b>被迴避的地方:</b>逐字稿裡<span class="lose">沒有正面回應中國本土 SiC 廠(比亞迪半導體、斯達半導體等)的價格競爭壓力</span>。公司只講自己在中國拿到 +60–70% 成長,沒談中國供應商擴產對定價與毛利率的衝擊。對照 Wolfspeed 等美系同業近幾季頻繁被問到中國 SiC 產能過剩,onsemi 這季完全沒被逼問,這個資訊落差本身要保守看待。</p>
+<p><b>只在會上口頭給、沒寫進新聞稿的數字:</b></p>
+<table>
+<tr><th>項目</th><th>本季</th><th>備註</th></tr>
+<tr><td>稼動率</td><td>83%(上季 77%)</td><td>新聞稿只講毛利率,沒揭露絕對數字</td></tr>
+<tr><td>交期</td><td>32 週(上季 27 週)</td><td>拉長 5 週</td></tr>
+<tr><td>稼動率槓桿</td><td>每 1pp ≈ 25–30bp 毛利率</td><td>可自行推算的換算式</td></tr>
+<tr><td>Mass market 營收</td><td>QoQ +20%</td><td>非車用大客戶的通路端</td></tr>
+<tr><td>現金與流動性</td><td>現金及短投 $3.9B / 總流動性 $5.4B</td><td>—</td></tr>
+<tr><td>FabRight 節省</td><td>年省約 $35M</td><td>2027 起分階段,2028 全額</td></tr>
+<tr><td>Treo 平台</td><td>今年送測產品數預計翻倍</td><td>類比平台的新品節奏</td></tr>
+</table>
+</div>
+
+<h2>七、估值:先判循環位置,再談 PE</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi 營收自 FY25Q1 的 14.5 億美元谷底回升到 FY26Q2 的 16.0 億美元,但仍比 FY24Q3 前波高點 17.6 億低約 9%,毛利率 38.4% 也還沒回到當時的 45%,循環位在復甦中段而非末端">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季營收(百萬美元)與 GAAP 毛利率 · 谷底已過,離前高還有一段</text>
+  <line x1="75" y1="240" x2="705" y2="240" style="stroke:var(--border)"/>
+
+  <rect x="85" y="101" width="50" height="139" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="165" y="113" width="50" height="127" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="245" y="196" width="50" height="44" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="325" y="189" width="50" height="51" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="405" y="165" width="50" height="75" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="485" y="171" width="50" height="69" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="565" y="176" width="50" height="64" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="645" y="149" width="50" height="91" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+
+  <text x="110" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1762</text>
+  <text x="190" y="106" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1723</text>
+  <text x="270" y="189" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">1446</text>
+  <text x="350" y="182" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1469</text>
+  <text x="430" y="158" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1551</text>
+  <text x="510" y="164" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1530</text>
+  <text x="590" y="169" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1513</text>
+  <text x="670" y="142" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">1604</text>
+
+  <text x="110" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">24Q3</text>
+  <text x="190" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">24Q4</text>
+  <text x="270" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q1</text>
+  <text x="350" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q2</text>
+  <text x="430" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q3</text>
+  <text x="510" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q4</text>
+  <text x="590" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">26Q1</text>
+  <text x="670" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">26Q2</text>
+
+  <text x="18" y="278" style="fill:var(--ink3);font:400 11px sans-serif">毛利率</text>
+  <text x="110" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">45.4</text>
+  <text x="190" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">45.2</text>
+  <text x="270" y="278" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">20.3</text>
+  <text x="350" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">37.6</text>
+  <text x="430" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">37.9</text>
+  <text x="510" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">36.0</text>
+  <text x="590" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">38.5</text>
+  <text x="670" y="278" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">38.4</text>
+
+  <line x1="140" y1="101" x2="700" y2="101" style="stroke:var(--ink3);stroke-dasharray:4 3"/>
+  <text x="470" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">前波高點 · 營收仍差 9%、毛利率仍差 7pp</text>
+  <text x="270" y="215" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">谷底</text>
+  <text x="670" y="215" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">復甦中段</text>
+</svg>
+</div>
+<p><b>循環烈度:高。</b>功率半導體是典型深循環,從 FY24Q3 的毛利率 45.4% 掉到 FY25Q1 的 20.3%,一年半跌掉 25pp——這種振幅決定了 trailing PE 在這條產業鏈上基本沒有參考價值。</p>
+<p><b>現在走到哪:</b>營收 $1,603.5M 距前波高點 $1,761.9M 還差約 <b>9%</b>,毛利率 38.4% 距 45%+ 還差約 <b>7pp</b>,稼動率 83% 也還沒到歷史滿載。結論是<b>復甦中段——谷底確定過了,但離循環末端的過熱位置還有距離</b>。</p>
+<p><b>Forward PE 22.5x</b>(Futu 五年窗),自身 5 年均值 23.1x,基本貼平。Trailing PE 53.05x、分位 85% 是分母失真,不要用。Futu 估值模型給的結論是「輕微高估:市值增長略快於盈利增長」。</p>
+<p><b>股價反應值得記:</b>財報前一週股價已從 $89 跌到 $80 附近(同期科技股整體重殺),財報當天盤後一度衝到 $84.51,<span class="lose">但次一交易日收在 $81.23,利多沒撐住</span>。分析師 21 家、Buy 52.4% / Hold 47.6% / Sell 0%,均價目標 $112.29(高 $150 / 低 $90),隱含約 +38% 空間——但這批目標價多在財報前設定,要看後續有沒有下修。</p>
+</div>
+
+<h2>八、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b>車用/工業<b>功率半導體 + SiC/GaN 寬能隙材料</b>概念。涵蓋分離式功率元件(MOSFET / IGBT / SiC MOSFET)、功率模組、高壓類比與驅動 IC;終端集中在電動車逆變器與車載充電器、工業自動化、以及近兩年新長出來的 AI 伺服器 800V 電源架構。</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">三個觀察:</p>
+<p>① <b>族群內的估值分層極度清楚</b>。IDM 龍頭(ON 22.5x / STM 28.7x / Infineon 30–34x)明顯低於利基與題材股(ALGM 71.6x / POWI 69.1x / VICR 48.2x)。ON 是這批裡 forward PE 最低的一檔,但它同時也是分部復甦廣度最差的一檔(AMG 還在衰退)。</p>
+<p>② <b>純題材股的體質差距大到不能混談</b>。WOLF 與 NVTS 的 forward PE 都是負值——代表市場預期它們還在虧損。SiC/GaN 題材純度最高,但這兩檔的性質是選擇權而非基本面配置,不該跟 ON 放在同一個估值框架裡比。</p>
+<p>③ <b>台廠那組是另一個世界</b>。強茂、德微、富鼎、漢磊屬產業鏈末端的純缺貨/漲價題材股,trailing PE 落在 56–144x,估值早就跟月營收成長脫鉤,跟 ON 這種有自有產能的 IDM 龍頭是完全不同的標的性質,列在這裡僅供對照,不建議直接橫比。</p>
+<p class="note">★ Infineon 因 Futu 不提供美股 OTC(IFNNY)報價、需查歐股 ETR:IFX,網路來源給的 forward PE 差異極大(24.36x / 33.52x / 34.70x),本頁未能交叉驗證出單一可信數字,使用前請自行以歐股數據源覆核。台廠那組的 PE 為先前查證的數字,非本次重新查核。</p>
+</div>
+
+<h2>九、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Q3 Non-GAAP 毛利率是否落在 40–42%</div><div class="kd">本季實際 39.3%,指引要求跳一階</div><div class="ke">低於 40% = 漲價傳不到毛利率,產能吃緊敘事要重估</div></div>
+<div class="kcard"><div class="kt">② AMG 分部 YoY 能否轉正</div><div class="kd">本季 −2%,已連兩季弱</div><div class="ke">連三季負成長 = 復甦廣度確定不足,只剩 PSG 一條腿</div></div>
+<div class="kcard"><div class="kt">③ 稼動率是否延續上升</div><div class="kd">指引「持平到上升」,本季 77%→83%</div><div class="ke">不升反降 = 這次跳升是脈衝式回補,不是結構性復甦</div></div>
+<div class="kcard"><div class="kt">④ GAAP EPS 能否回到 guidance 區間內</div><div class="kd">本季 $0.56 跌破 $0.60–0.72 下限</div><div class="ke">再度跌破 = 一次性費用其實是經常性成本</div></div>
+</div>
+</div>
+
+<h2>十、風險與反方</h2>
+<div class="card">
+<p><b>1. GAAP 與 Non-GAAP 的落差可能持續放大。</b>FabRight 重組還在跑,費用端要再認幾季。市場對「beat」的信任度會被稀釋——尤其當 miss 的是公司自己給的財測時。</p>
+<p><b>2. 復甦廣度不足。</b>AMG 連續兩季弱、汽車終端 QoQ 還是負的,整條成長靠 PSG(SiC + AI 資料中心電源)。一旦 AI 這條腿降溫,沒有第二個分部接得住。</p>
+<p><b>3. 漲價能否兌現仍是假設。</b>Q3 毛利率指引建立在「漲價效益顯現」上,但這是公司自己的預期。車用客戶合約週期長、議價力強,轉嫁順不順利,管理層沒給任何幅度。</p>
+<p><b>4. 股價對利多反應薄弱。</b>財報後次日沒守住當天盤中高點。可能是大盤資金面壓過個股利多,也可能市場已經看穿了第 1 點的 GAAP miss——這兩種解釋要分開驗證,不要預設是前者。</p>
+<p><b>5. 中國 SiC 競爭壓力在法說上是空白。</b>公司只報自己在中國的成長率,沒談中國本土廠擴產對定價的衝擊。資訊不對稱處要打折看。</p>
+<p><b>反方怎麼說:</b>看多的論點是「稼動率 +6pp、交期 +5 週、第二輪漲價,這三個訊號在功率半導體循環裡是教科書級的向上轉折,而毛利率遞延一兩季才反映是常態,不是問題」;以及「forward PE 22.5x 貼在均值,在一個剛從谷底翻上來的深循環股身上,均值估值配復甦中段的獲利,賠率是正的」。<span class="mid">這兩點都成立</span>——分歧只在你信不信 Q3 那個 40–42%。它是這篇所有多空論述的共同支點。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:onsemi Investor Relations FY2026 Q2 財報新聞稿(2026-08-03)、FY2026 Q1 財報新聞稿(2026-05-04,作為 guidance 基準)、2026-08-03 法說會逐字稿、Futu 損益表逐季數字與估值/分析師一致預期(查詢日 2026-08-04)。分部與終端市場數字以 IR 與法說原文為準。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 核心數字表
+const CORE=[
+ ['營收','$1,603.5M','$1,513.3M','$1,468.7M','~$1.59B','Beat +0.6~0.9%','win'],
+ ['GAAP 毛利率','38.4%','38.5%','37.6%','guide 37.9–39.9%','落在區間中段','mid'],
+ ['Non-GAAP 毛利率','39.3%','38.5%','~37.9%(估)','guide 38.0–40.0%','落在上段','win'],
+ ['GAAP 營益率','18.7%','18.2%','16.5%','—','YoY +2.2pp','win'],
+ ['Non-GAAP 營益率','20.8%','19.1%','—','—','QoQ +1.7pp','win'],
+ ['GAAP 稀釋 EPS','$0.56','−$0.08','$0.41','guide $0.60–0.72','<b>未達自家 guidance 下限</b>','lose'],
+ ['Non-GAAP 稀釋 EPS','$0.74','$0.64','—','$0.71','Beat +4.2%','win'],
+ ['自由現金流','$425.4M','$217.2M','$106.1M','—','YoY 近 4 倍','win'],
+ ['Capex','$34.3M','—','—','Q3 guide $40–50M','全年低於營收 5%','mid'],
+ ['稼動率(法說)','83%','77%','—','Q3「持平到上升」','QoQ +6pp','win'],
+ ['通路庫存','10.1 週','10.8 週','—','—','改善','win'],
+ ['總庫存天數','192 天','201 天','—','—','降 9 天','win'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>指標</th><th>FY26 Q2</th><th>FY26 Q1</th><th>FY25 Q2</th><th>市場預期 / 財測</th><th>判定</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// 八季趨勢表
+const TREND=[
+ ['FY24 Q3','$1,761.9M','45.4%','26.9%','$0.93','前波高點',''],
+ ['FY24 Q4','$1,722.5M','45.2%','25.5%','$0.88','','' ],
+ ['FY25 Q1','$1,445.7M','20.3%','−2.4%','−$1.15','<b>週期谷底</b>','lose'],
+ ['FY25 Q2','$1,468.7M','37.6%','16.5%','$0.41','毛利率修復','' ],
+ ['FY25 Q3','$1,550.9M','37.9%','18.3%','$0.63','','' ],
+ ['FY25 Q4','$1,530.1M','36.0%','16.9%','$0.45','小幅回檔','mid'],
+ ['FY26 Q1','$1,513.3M','38.5%','18.2%','−$0.08','重組費 $329.3M 拖累','mid'],
+ ['FY26 Q2','$1,603.5M','38.4%','18.7%','$0.56','<b>本季 · 復甦中段</b>','win'],
+];
+document.getElementById('trendTable').innerHTML=
+ '<tr><th>季度</th><th>營收</th><th>GAAP 毛利率</th><th>GAAP 營益率</th><th>GAAP 稀釋 EPS</th><th>備註</th></tr>'+
+ TREND.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// 分部營收表
+const SEG=[
+ ['<b>PSG</b> Power Solutions(含 SiC / GaN)','$829.0M','+13%','+19%','唯一拉動大盤的分部','win'],
+ ['<b>AMG</b> Analog and Mixed-Signal','$545.7M','+1%','−2%','唯一 YoY 衰退,傳統類比/工業未跟上','lose'],
+ ['<b>ISG</b> Intelligent Sensing','$228.8M','−3%','+7%','影像感測,體量最小','mid'],
+];
+document.getElementById('segTable').innerHTML=
+ '<tr><th>分部</th><th>FY26 Q2 營收</th><th>QoQ</th><th>YoY</th><th>一句話</th></tr>'+
+ SEG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]}">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// 終端市場表
+const END=[
+ ['汽車','$781M','−2%','+7%','最大單一終端(約 49%),歐洲 Q2 季節性偏弱','mid'],
+ ['工業','$423M','+1%','+4%','復甦最溫吞的一塊','mid'],
+ ['其他(含 AI 資料中心)','$400M','−34%','+21.6%(計算值)','QoQ 大跌為非核心業務出清完畢的基期效應','win'],
+];
+document.getElementById('endTable').innerHTML=
+ '<tr><th>終端市場</th><th>FY26 Q2 營收</th><th>QoQ</th><th>YoY</th><th>說明</th></tr>'+
+ END.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]}">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// Guidance 表
+const GUID=[
+ ['營收','$1,650–1,750M(中值 $1,700M)','上修','win'],
+ ['GAAP 毛利率','39.9–41.9%','上修(Q2 guide 37.9–39.9%)','win'],
+ ['Non-GAAP 毛利率','40.0–42.0%','上修(Q2 guide 38.0–40.0%)','win'],
+ ['GAAP EPS','$0.79–0.91','—',''],
+ ['Non-GAAP EPS','$0.81–0.93(中值 $0.87)','上修(Q2 guide $0.65–0.77)','win'],
+ ['Non-GAAP 營運費用','$303–318M','法說口頭',''],
+ ['Capex','$40–50M','全年低於營收 5%',''],
+ ['AI 資料中心全年','2026 較 2025「more than double」','<b>上修</b>(前次僅稱 double)','win'],
+ ['中國車用 SiC 全年','+60–70% YoY','維持','mid'],
+];
+document.getElementById('guidTable').innerHTML=
+ '<tr><th>項目</th><th>Q3 2026 指引</th><th>對比前次</th></tr>'+
+ GUID.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${r[3]}">${r[2]}</td></tr>`).join('');
+
+// 同族群概念股掃描
+const GROUP=[
+ ['ON onsemi','車用+工業並重的 SiC / Si IDM,自有垂直整合產能','本文主標的 · 復甦中段','22.5x','全表最低;基本面在爬升但復甦廣度最差(AMG 仍衰退)'],
+ ['STM 意法半導體','歐系 IDM 龍頭,車用 SiC 全球前二','龍頭 · 規模大於 ON','28.7x','車用曝險結構與 ON 高度重疊,可當 ON 的直接對照組'],
+ ['IFX 英飛凌','歐洲車用功率半導體市佔最大(MOSFET / IGBT)','龍頭 · 體量最大','約 30–34x ⚠️','估值明顯高於 ON,反映車用市佔龍頭溢價;數字來源分歧大'],
+ ['WOLF Wolfspeed','純 SiC 基板/晶圓上游材料商,非 IDM','落後 · 體質最弱','負值(預期仍虧損)','破產重組後的困境資產,SiC 純度最高但體質最差'],
+ ['NVTS Navitas','GaN / SiC fabless 小廠,AI 伺服器 800V 題材','落後 · 純題材','負值(預期仍虧損)','題材純度高但獲利遙遠,屬選擇權而非基本面配置'],
+ ['ALGM Allegro','車用磁性感測器,同循環但產品線不同','跟漲 · 利基','71.6x','估值明顯偏貴,反映磁感測利基溢價,非直接可比'],
+ ['POWI Power Integrations','高壓類比 / GaN 驅動 IC,消費與家電為主','跟漲 · 終端結構不同','69.1x','車用/工業比重低於 ON,循環同步但終端分散'],
+ ['VSH Vishay','被動元件 + 分離式功率元件,產品線更廣','跟漲 · 多元化','41.1x','泛用型功率+被動複合體,非純 SiC / GaN concept'],
+ ['VICR Vicor','高密度電源模組,AI 伺服器電源直接受惠','跟漲 · AI 敘事濃','48.2x','與 ON 的 AI 資料中心業務部分重疊競爭,溢價已計入'],
+ ['ADI / TXN','泛用類比 IC 龍頭,非純功率但車用/工業曝險高','更大型多元化龍頭','—','兩家已進入漲價循環,可當整條類比/功率鏈的估值錨'],
+ ['強茂 2481 / 德微 3675 / 富鼎 8261 / 漢磊 3707','台廠 MOSFET 二線,純缺貨與漲價題材','落後龍頭 · 投機性最高','trailing 56–144x ⚠️','估值與月營收成長已脫鉤,性質與 IDM 龍頭截然不同,僅供對照'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+</script>
+</body></html>

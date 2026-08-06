@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>onsemi．Q2 2026 Earnings, Unpacked — Non-GAAP EPS $0.74 Beat, GAAP $0.56 Missed Its Own Guidance Floor; Utilisation 77%→83%, Lead Times 27→32 Weeks, and a Second Price Increase Not Yet in Margin</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="onsemi-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to Home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>onsemi．Q2 2026 Earnings, Unpacked <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">The headlines said "beat, shares jump after hours" — that was the Non-GAAP line. <b>GAAP EPS came in at $0.56, below the $0.60–0.72 floor the company itself guided to three months earlier.</b> The numbers actually worth writing down are elsewhere: utilisation up 6pp in one quarter, lead times out five weeks, and a second round of price increases announced.<br>Built from the IR release, the earnings call transcript, and Futu's quarterly income statement cross-checked line by line. Not investment advice.</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: onsemi IR release + earnings call</span>
+<span class="badge">Period: 2026-04-01 – 2026-06-30</span>
+<span class="badge">Reported: 2026-08-03</span>
+<span class="badge">Compiled: 2026-08-05</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · What Actually Mattered</h2>
+<p class="big">🎭 <span class="lose">The "beat" is a Non-GAAP beat; on a full GAAP basis this was a miss</span>. Non-GAAP EPS $0.74 vs. $0.71 consensus (+4.2%) sent the stock up after hours. But GAAP diluted EPS was <b>$0.56</b> — below the <b>$0.60–0.72</b> floor the company guided to in its Q1 release. The gap is restructuring and acquisition costs of $24.9M, asset impairments of $16.3M, and other net expense of −$32.6M, all excluded from Non-GAAP. FabRight is still running, so this gap won't close soon.</p>
+<p class="big">🔥 <span class="win">The first hard numbers on capacity tightness showed up</span>. Utilisation jumped <b>77% → 83% (+6pp)</b> in a single quarter, lead times stretched from <b>27 to 32 weeks</b>, and management announced a <b>second round of price increases</b> to cover input and foundry costs. They also volunteered a conversion factor on the call: <b>each 1pp of utilisation is worth roughly 25–30bp of gross margin</b>. These are the concrete signals of power semis flipping from destocking to tight capacity — not adjectives.</p>
+<p class="big">✂️ <span class="mid">But none of that pricing has reached this quarter's margin yet</span>. Q2 GAAP gross margin was 38.4%, essentially flat against 38.5% last quarter. The actual proof point is the Q3 guide of <b>40–42% Non-GAAP gross margin</b> — a full step above this quarter's 39.3%. <b>The entire bull case rests on that range, and it gets tested in three months.</b></p>
+<p class="big">⚡ <span class="lose">The recovery is happening in power only — it isn't broad</span>. PSG (Power Solutions, including SiC/GaN) grew <b>+19% YoY</b> and +13% QoQ, carrying the whole company. AMG (Analog and Mixed-Signal) was <b>−2% YoY</b> and just +1% QoQ — the only shrinking segment. Automotive was still −2% QoQ. Narrow breadth means that if the AI data centre leg cools, no second segment catches the fall.</p>
+<p class="note">★ Ignore the trailing P/E of 53x at the 85th percentile — that's a <b>recovery-phase denominator distortion</b>. Use forward P/E of <b>22.5x</b> against a five-year mean of 23.1x: it's sitting right on its own average. <span class="mid">Not expensive, but not cheap enough to be paid for taking cyclical risk either.</span></p>
+</div>
+
+<h2>1. Take the beat apart first</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi's Q2 2026 GAAP EPS of $0.56 fell below the company's own $0.60 to $0.72 guidance floor, while Non-GAAP EPS of $0.74 beat the $0.71 consensus — the same quarter reads opposite ways on the two bases">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">Diluted EPS ($) · one quarter, two bases, two opposite conclusions</text>
+  <line x1="55" y1="255" x2="715" y2="255" style="stroke:var(--border)"/>
+  <text x="45" y="259" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+  <line x1="380" y1="60" x2="380" y2="255" style="stroke:var(--border);stroke-dasharray:4 4"/>
+
+  <text x="205" y="46" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">GAAP · missed its own guidance</text>
+  <rect x="120" y="125" width="170" height="22" rx="3" style="fill:var(--midbg);stroke:var(--midbd);stroke-dasharray:4 3"/>
+  <text x="205" y="117" text-anchor="middle" style="fill:var(--mid);font:400 11px sans-serif">Company guide $0.60–0.72</text>
+  <rect x="160" y="154" width="90" height="101" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="205" y="188" text-anchor="middle" style="fill:var(--lose);font:600 15px sans-serif">$0.56</text>
+  <text x="205" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">GAAP actual</text>
+  <text x="205" y="294" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">below the floor</text>
+
+  <text x="550" y="46" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">Non-GAAP · beat consensus</text>
+  <rect x="440" y="127" width="90" height="128" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="485" y="118" text-anchor="middle" style="fill:var(--ink2);font:600 14px sans-serif">$0.71</text>
+  <text x="485" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">consensus</text>
+  <rect x="570" y="122" width="90" height="133" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="615" y="113" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">$0.74</text>
+  <text x="615" y="275" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Non-GAAP actual</text>
+  <text x="615" y="294" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">Beat +4.2%</text>
+</svg>
+</div>
+<p>The $0.18 per share difference breaks into three pieces: <b>restructuring and acquisition costs of $24.9M</b> (the FabRight fab-lite transition is still under way), <b>asset impairments of $16.3M</b>, and <b>other net expense of −$32.6M</b>. All excluded from Non-GAAP.</p>
+<p><span class="mid">Two cases to distinguish here.</span> If these are genuinely the tail of a one-off restructuring, then Non-GAAP is the better read on operations. But FabRight's savings don't start showing up until <b>2027</b> (~$35M a year, full run-rate in 2028), which means the expense side has several more quarters to run. <b>"One-time" charges that recur for several quarters aren't one-time.</b></p>
+<div class="quote">📌 The sharper point: <b>the company missed a range it set for itself three months ago</b>. Guidance is the company's forecast of its own cost structure. Missing analysts means outsiders got it wrong; missing your own guide means you got your own P&amp;L wrong. Those are not the same event.</div>
+</div>
+
+<h2>2. Core numbers and the eight-quarter shape</h2>
+<div class="card">
+<p>Revenue was $1,603.5M (+9.2% YoY, +6.0% QoQ), modestly ahead of the ~$1.59B consensus. Inventory improved across the board: distributor inventory 10.8 → <b>10.1 weeks</b>, total inventory days 201 → <b>192</b>. Free cash flow of $425.4M was nearly 4x the year-ago figure.</p>
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+<p style="margin-top:14px">Stretch it to eight quarters and the cycle's shape becomes visible:</p>
+<div style="overflow-x:auto"><table id="trendTable"></table></div>
+<p style="margin-top:14px"><span class="mid">Note the FY25Q1 row</span>: 20.3% gross margin, −2.4% operating margin, −$1.15 EPS. That's inventory write-downs and low utilisation landing at the same time — and it's the anchor for judging where the cycle sits now.</p>
+</div>
+
+<h2>3. The recovery is in power only</h2>
+<div class="card">
+<p>That +9.2% at the top line was carried by a single segment:</p>
+<div style="overflow-x:auto"><table id="segTable"></table></div>
+<p style="margin-top:14px">By end market:</p>
+<div style="overflow-x:auto"><table id="endTable"></table></div>
+<p style="margin-top:14px">Two things worth pulling out:</p>
+<p>① <b>AMG is the only segment shrinking YoY</b> (−2%), with QoQ of just +1%. Its traditional analog and industrial end markets haven't joined the recovery. <span class="lose">Breadth is the problem</span> — PSG's growth rests on SiC and AI data centre power, the most concentrated leg of the story.</p>
+<p>② <b>Automotive was still −2% QoQ</b> (+7% YoY), which the company attributes to European Q2 seasonality. Automotive is onsemi's largest single end market ($781M, ~49% of revenue). It isn't accelerating while the total is — so the source of growth is migrating away from cars.</p>
+<p class="note">★ Futu's segment-mix data currently only runs through 2026/Q1 (PSG 48.7% / AMG 35.7% / ISG 15.6%); Q2 hasn't synced. All segment figures on this page come from the IR release and the call.</p>
+</div>
+
+<h2>4. The tightness signal fired — the margin hasn't</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi's utilisation jump and longer lead times have already triggered a second price increase, but pricing only gets validated in numbers at the Q3 gross margin guide of 40 to 42% — the chain has reached step three of four">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="34" style="fill:var(--ink2);font:600 13px sans-serif">Tight capacity → pricing → margin: the chain has only reached step 3</text>
+
+  <rect x="5" y="70" width="170" height="60" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="90" y="94" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">① Utilisation jumps</text>
+  <text x="90" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">77% → 83% (+6pp)</text>
+
+  <rect x="195" y="70" width="170" height="60" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="280" y="94" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">② Lead times stretch</text>
+  <text x="280" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">27 → 32 weeks</text>
+
+  <rect x="385" y="70" width="170" height="60" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="470" y="94" text-anchor="middle" style="fill:var(--mid);font:600 13px sans-serif">③ Second price rise</text>
+  <text x="470" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">input + foundry costs</text>
+
+  <rect x="575" y="70" width="170" height="60" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="660" y="94" text-anchor="middle" style="fill:var(--turn);font:600 13px sans-serif">④ Margin follows</text>
+  <text x="660" y="115" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">Q3 guide 40–42%</text>
+
+  <line x1="178" y1="100" x2="192" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="368" y1="100" x2="382" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="558" y1="100" x2="572" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+
+  <text x="470" y="155" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">we are here</text>
+  <text x="660" y="155" text-anchor="middle" style="fill:var(--turn);font:600 11px sans-serif">next quarter proves it</text>
+  <line x1="470" y1="134" x2="470" y2="143" style="stroke:var(--ink3)"/>
+  <line x1="660" y1="134" x2="660" y2="143" style="stroke:var(--turn)"/>
+</svg>
+</div>
+<p>All three of these came <b>only from the call, not the press release</b>: utilisation 77% → 83%, lead times 27 → 32 weeks, and roughly 25–30bp of gross margin per 1pp of utilisation. That last one is the most actionable sentence of the quarter — on its own arithmetic, +6pp of utilisation should be worth <b>150–180bp of gross margin</b>.</p>
+<p>Yet Q2 GAAP gross margin was 38.4% against 38.5% last quarter — <b>essentially unchanged</b>. Neither the utilisation benefit nor the pricing benefit has hit the P&amp;L. The Q3 Non-GAAP gross margin guide of <b>40.0–42.0%</b> (vs. 39.3% actual this quarter) is the first proof point.</p>
+<div class="quote">📌 <b>This is the sentence in this post most worth trying to falsify.</b> Management says pricing shows up in Q3–Q4. That claim has been written down as an explicit numeric range (40–42%), and three months from now we'll know. If Q3 lands below 40%, the "tight capacity" narrative itself needs re-rating — because all the signals were there and none of them reached margin.</div>
+</div>
+
+<h2>5. Guidance: raised across the board</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guidTable"></table></div>
+<p style="margin-top:14px">Two wording changes worth logging:</p>
+<p>① <b>The full-year AI data centre outlook was upgraded from "double" to "more than double"</b> (off a 2025 base of roughly $250M). Management's phrasing: it "remains our fastest-growing business."</p>
+<p>② <b>SiC was broken into two separately reported curves for the first time</b>: China automotive SiC +60–70% YoY for the year, AI data centre SiC close to +60% YoY. Previous quarters just said "SiC growth." <span class="mid">Splitting out growth sources usually has one of two motives</span> — genuine diversification, or a need to prove you aren't dependent on one market. This quarter reads as the former, but watch whether the split changes again.</p>
+</div>
+
+<h2>6. What changed on the call</h2>
+<div class="card">
+<p><b>Where the analyst questions clustered:</b></p>
+<div class="kbox">
+<div class="kcard"><div class="kt">① The utilisation-to-margin factor</div><div class="kd">Pressed until management gave "1pp utilisation ≈ 25–30bp gross margin"</div><div class="ke">The most actionable number of the quarter</div></div>
+<div class="kcard"><div class="kt">② Can pricing pass through to automotive?</div><div class="kd">Carmakers have strong leverage and long contract cycles</div><div class="ke">Only "applies across all markets, including automotive" — no magnitude</div></div>
+</div>
+<p style="margin-top:14px"><b>What was avoided:</b> <span class="lose">nothing in the transcript addresses pricing pressure from domestic Chinese SiC makers</span> (BYD Semiconductor, StarPower and others). The company reported its own +60–70% growth in China without discussing what Chinese capacity additions do to pricing and margin. Compare that with US peers like Wolfspeed, which have been asked about Chinese SiC oversupply repeatedly. onsemi wasn't pressed at all this quarter — treat that information gap conservatively.</p>
+<p><b>Numbers given verbally on the call and not in the release:</b></p>
+<table>
+<tr><th>Item</th><th>This quarter</th><th>Note</th></tr>
+<tr><td>Fab utilisation</td><td>83% (77% last quarter)</td><td>Release discusses margin only, never the absolute figure</td></tr>
+<tr><td>Lead times</td><td>32 weeks (27 last quarter)</td><td>Out five weeks</td></tr>
+<tr><td>Utilisation leverage</td><td>~25–30bp margin per 1pp</td><td>A conversion factor you can run yourself</td></tr>
+<tr><td>Mass market revenue</td><td>+20% QoQ</td><td>The non-automotive channel</td></tr>
+<tr><td>Cash and liquidity</td><td>$3.9B cash &amp; short-term / $5.4B total liquidity</td><td>—</td></tr>
+<tr><td>FabRight savings</td><td>~$35M a year</td><td>Phased from 2027, full run-rate 2028</td></tr>
+<tr><td>Treo platform</td><td>Products sampling expected to double this year</td><td>New-product cadence on the analog platform</td></tr>
+</table>
+</div>
+
+<h2>7. Valuation: place the cycle first, then talk P/E</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="onsemi's revenue has recovered from the FY25Q1 trough of $1.45B to $1.60B in FY26Q2, but remains about 9% below the FY24Q3 peak of $1.76B, with gross margin at 38.4% still 7pp short of the 45% it ran then — mid-recovery, not late cycle">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">Quarterly revenue ($M) and GAAP gross margin · past the trough, short of the prior peak</text>
+  <line x1="75" y1="240" x2="705" y2="240" style="stroke:var(--border)"/>
+
+  <rect x="85" y="101" width="50" height="139" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="165" y="113" width="50" height="127" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="245" y="196" width="50" height="44" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="325" y="189" width="50" height="51" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="405" y="165" width="50" height="75" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="485" y="171" width="50" height="69" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="565" y="176" width="50" height="64" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="645" y="149" width="50" height="91" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+
+  <text x="110" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1762</text>
+  <text x="190" y="106" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1723</text>
+  <text x="270" y="189" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">1446</text>
+  <text x="350" y="182" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1469</text>
+  <text x="430" y="158" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1551</text>
+  <text x="510" y="164" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1530</text>
+  <text x="590" y="169" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">1513</text>
+  <text x="670" y="142" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">1604</text>
+
+  <text x="110" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">24Q3</text>
+  <text x="190" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">24Q4</text>
+  <text x="270" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q1</text>
+  <text x="350" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q2</text>
+  <text x="430" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q3</text>
+  <text x="510" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q4</text>
+  <text x="590" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">26Q1</text>
+  <text x="670" y="258" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">26Q2</text>
+
+  <text x="20" y="278" style="fill:var(--ink3);font:400 11px sans-serif">GM%</text>
+  <text x="110" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">45.4</text>
+  <text x="190" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">45.2</text>
+  <text x="270" y="278" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">20.3</text>
+  <text x="350" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">37.6</text>
+  <text x="430" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">37.9</text>
+  <text x="510" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">36.0</text>
+  <text x="590" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">38.5</text>
+  <text x="670" y="278" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">38.4</text>
+
+  <line x1="140" y1="101" x2="700" y2="101" style="stroke:var(--ink3);stroke-dasharray:4 3"/>
+  <text x="470" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Prior peak · revenue still 9% below, gross margin 7pp below</text>
+  <text x="270" y="215" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">trough</text>
+  <text x="670" y="215" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">mid-recovery</text>
+</svg>
+</div>
+<p><b>Cycle amplitude: high.</b> Power semis are a deep cycle. Gross margin went from 45.4% in FY24Q3 to 20.3% in FY25Q1 — 25 percentage points in eighteen months. That amplitude is exactly why trailing P/E is close to useless in this part of the chain.</p>
+<p><b>Where it sits now:</b> revenue of $1,603.5M is still about <b>9% below</b> the $1,761.9M prior peak; gross margin of 38.4% is about <b>7pp below</b> the 45%+ it ran then; and 83% utilisation isn't historically full either. That reads as <b>mid-recovery — the trough is confirmed behind us, but the late-cycle overheating zone is still some distance away</b>.</p>
+<p><b>Forward P/E 22.5x</b> (Futu, five-year window) against its own five-year mean of 23.1x — essentially on the average. The trailing 53.05x at the 85th percentile is a distorted denominator; don't use it. Futu's own valuation model concludes "slightly overvalued: market cap has grown a little faster than earnings."</p>
+<p><b>The price reaction is worth logging:</b> the stock had already fallen from ~$89 to ~$80 in the week before the print (tech sold off broadly over the same stretch), spiked to $84.51 after hours on the day, <span class="lose">then closed the next session at $81.23 — the good news didn't hold</span>. Coverage is 21 analysts, 52.4% Buy / 47.6% Hold / 0% Sell, average target $112.29 (high $150 / low $90), implying about +38%. But most of those targets were set before the print; watch for revisions.</p>
+</div>
+
+<h2>8. Peer group scan</h2>
+<div class="card">
+<p><b>Group definition:</b> automotive and industrial <b>power semiconductors plus SiC/GaN wide-bandgap</b>. It covers discrete power devices (MOSFET / IGBT / SiC MOSFET), power modules, and high-voltage analog and driver ICs. End markets concentrate in EV inverters and on-board chargers, industrial automation, and the newer 800V AI server power architecture.</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">Three observations:</p>
+<p>① <b>The valuation tiers inside this group are unusually clean.</b> The IDM leaders (ON 22.5x / STM 28.7x / Infineon 30–34x) sit well below the niche and thematic names (ALGM 71.6x / POWI 69.1x / VICR 48.2x). ON has the lowest forward P/E in the table — and also the narrowest recovery breadth (AMG still shrinking).</p>
+<p>② <b>The pure thematic names aren't comparable on fundamentals.</b> WOLF and NVTS both carry negative forward P/Es, meaning the market expects continued losses. They have the highest SiC/GaN purity but function as options, not positions — putting them in the same valuation frame as ON is a category error.</p>
+<p>③ <b>The Taiwan names are a different world.</b> Mospec, Uni-Calsonic, APEC and Episil sit at the tail of the chain as pure shortage-and-pricing plays, on trailing P/Es of 56–144x, with valuation long since decoupled from monthly revenue growth. Listed here for contrast only; don't compare them directly with an IDM that owns its fabs.</p>
+<p class="note">★ Infineon: Futu doesn't quote the US OTC line (IFNNY), so it needs ETR:IFX. Web sources disagree badly on its forward P/E (24.36x / 33.52x / 34.70x) and this page could not cross-verify a single credible figure — check a European data source before using it. The Taiwan P/Es are prior figures, not re-verified for this post.</p>
+</div>
+
+<h2>9. Falsifiable checks for next quarter</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Does Q3 Non-GAAP gross margin land in 40–42%?</div><div class="kd">39.3% actual this quarter; the guide requires a full step up</div><div class="ke">Below 40% = pricing isn't reaching margin; re-rate the tightness narrative</div></div>
+<div class="kcard"><div class="kt">② Does AMG turn positive YoY?</div><div class="kd">−2% this quarter, weak for two running</div><div class="ke">A third negative quarter = breadth is confirmed missing; PSG is the only leg</div></div>
+<div class="kcard"><div class="kt">③ Does utilisation keep climbing?</div><div class="kd">Guide says "flat to up"; 77% → 83% this quarter</div><div class="ke">A decline = this jump was a restocking pulse, not structural recovery</div></div>
+<div class="kcard"><div class="kt">④ Does GAAP EPS get back inside the guide?</div><div class="kd">$0.56 this quarter vs a $0.60–0.72 floor</div><div class="ke">Another miss = those "one-time" charges are recurring costs</div></div>
+</div>
+</div>
+
+<h2>10. Risks and the other side</h2>
+<div class="card">
+<p><b>1. The GAAP-to-Non-GAAP gap may widen further.</b> FabRight is still running and the charges have several quarters left. Trust in the "beat" erodes — especially when what's being missed is the company's own guide.</p>
+<p><b>2. Recovery breadth is insufficient.</b> AMG weak two quarters running, automotive still negative QoQ, and the entire growth line resting on PSG (SiC plus AI data centre power). If the AI leg cools, no second segment catches it.</p>
+<p><b>3. Whether pricing converts is still an assumption.</b> The Q3 margin guide is built on "pricing shows up," which is the company's own forecast. Automotive customers have long contracts and real leverage, and management gave no magnitude on pass-through.</p>
+<p><b>4. The stock barely responded to good news.</b> It failed to hold the day's intraday high the following session. That could be macro flows overwhelming a single stock's print — or the market seeing through to point 1. Verify those separately rather than assuming the former.</p>
+<p><b>5. Chinese SiC competition is a blank on the call.</b> The company reported its own China growth without discussing what domestic capacity does to pricing. Discount asymmetric information.</p>
+<p><b>The bull case:</b> "+6pp utilisation, +5 weeks of lead time, and a second price increase is a textbook upward inflection in a power semi cycle, and margin lagging a quarter or two is normal, not a problem"; plus "forward P/E on the mean, for a deep cyclical just off the trough, with mid-recovery earnings — that's positive odds." <span class="mid">Both hold.</span> The disagreement is only whether you believe that Q3 40–42%. It's the shared pivot of every bull and bear argument here.</p>
+</div>
+
+<div class="foot">
+<b>Sources</b>: onsemi Investor Relations FY2026 Q2 earnings release (2026-08-03), FY2026 Q1 release (2026-05-04, as the guidance baseline), the 2026-08-03 earnings call transcript, and Futu quarterly income-statement, valuation and consensus data (queried 2026-08-04). Segment and end-market figures come from the IR release and the call.<br>
+<b>Disclaimer</b>: Personal research notes, not investment advice. Official filings govern all figures; valuation data is a snapshot from the query date and moves with the share price.
+</div>
+</div>
+
+<script>
+// Core numbers
+const CORE=[
+ ['Revenue','$1,603.5M','$1,513.3M','$1,468.7M','~$1.59B','Beat +0.6–0.9%','win'],
+ ['GAAP gross margin','38.4%','38.5%','37.6%','guide 37.9–39.9%','Mid-range','mid'],
+ ['Non-GAAP gross margin','39.3%','38.5%','~37.9% (est.)','guide 38.0–40.0%','Upper half','win'],
+ ['GAAP operating margin','18.7%','18.2%','16.5%','—','+2.2pp YoY','win'],
+ ['Non-GAAP operating margin','20.8%','19.1%','—','—','+1.7pp QoQ','win'],
+ ['GAAP diluted EPS','$0.56','−$0.08','$0.41','guide $0.60–0.72','<b>Below its own guidance floor</b>','lose'],
+ ['Non-GAAP diluted EPS','$0.74','$0.64','—','$0.71','Beat +4.2%','win'],
+ ['Free cash flow','$425.4M','$217.2M','$106.1M','—','~4x YoY','win'],
+ ['Capex','$34.3M','—','—','Q3 guide $40–50M','FY capex below 5% of revenue','mid'],
+ ['Utilisation (call)','83%','77%','—','Q3 "flat to up"','+6pp QoQ','win'],
+ ['Distributor inventory','10.1 weeks','10.8 weeks','—','—','Improved','win'],
+ ['Total inventory days','192','201','—','—','Down 9 days','win'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>Metric</th><th>FY26 Q2</th><th>FY26 Q1</th><th>FY25 Q2</th><th>Consensus / guide</th><th>Read</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// Eight-quarter trend
+const TREND=[
+ ['FY24 Q3','$1,761.9M','45.4%','26.9%','$0.93','Prior peak',''],
+ ['FY24 Q4','$1,722.5M','45.2%','25.5%','$0.88','',''],
+ ['FY25 Q1','$1,445.7M','20.3%','−2.4%','−$1.15','<b>Cycle trough</b>','lose'],
+ ['FY25 Q2','$1,468.7M','37.6%','16.5%','$0.41','Margin repair',''],
+ ['FY25 Q3','$1,550.9M','37.9%','18.3%','$0.63','',''],
+ ['FY25 Q4','$1,530.1M','36.0%','16.9%','$0.45','Slight give-back','mid'],
+ ['FY26 Q1','$1,513.3M','38.5%','18.2%','−$0.08','$329.3M restructuring charge','mid'],
+ ['FY26 Q2','$1,603.5M','38.4%','18.7%','$0.56','<b>This quarter · mid-recovery</b>','win'],
+];
+document.getElementById('trendTable').innerHTML=
+ '<tr><th>Quarter</th><th>Revenue</th><th>GAAP gross margin</th><th>GAAP op. margin</th><th>GAAP diluted EPS</th><th>Note</th></tr>'+
+ TREND.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// Segments
+const SEG=[
+ ['<b>PSG</b> Power Solutions (incl. SiC / GaN)','$829.0M','+13%','+19%','The only segment carrying the total','win'],
+ ['<b>AMG</b> Analog and Mixed-Signal','$545.7M','+1%','−2%','Only YoY decline; analog/industrial hasn\'t joined','lose'],
+ ['<b>ISG</b> Intelligent Sensing','$228.8M','−3%','+7%','Image sensing, smallest of the three','mid'],
+];
+document.getElementById('segTable').innerHTML=
+ '<tr><th>Segment</th><th>FY26 Q2 revenue</th><th>QoQ</th><th>YoY</th><th>In a sentence</th></tr>'+
+ SEG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]}">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// End markets
+const END=[
+ ['Automotive','$781M','−2%','+7%','Largest single end market (~49%); weak European Q2 seasonality','mid'],
+ ['Industrial','$423M','+1%','+4%','The slowest-recovering block','mid'],
+ ['Other (incl. AI data centre)','$400M','−34%','+21.6% (calc.)','The QoQ drop is a base effect from exiting non-core lines','win'],
+];
+document.getElementById('endTable').innerHTML=
+ '<tr><th>End market</th><th>FY26 Q2 revenue</th><th>QoQ</th><th>YoY</th><th>Note</th></tr>'+
+ END.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]}">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// Guidance
+const GUID=[
+ ['Revenue','$1,650–1,750M (mid $1,700M)','Raised','win'],
+ ['GAAP gross margin','39.9–41.9%','Raised (Q2 guide 37.9–39.9%)','win'],
+ ['Non-GAAP gross margin','40.0–42.0%','Raised (Q2 guide 38.0–40.0%)','win'],
+ ['GAAP EPS','$0.79–0.91','—',''],
+ ['Non-GAAP EPS','$0.81–0.93 (mid $0.87)','Raised (Q2 guide $0.65–0.77)','win'],
+ ['Non-GAAP operating expense','$303–318M','Given on the call',''],
+ ['Capex','$40–50M','FY capex below 5% of revenue',''],
+ ['AI data centre, full year','2026 "more than double" 2025','<b>Raised</b> (previously just "double")','win'],
+ ['China automotive SiC, full year','+60–70% YoY','Maintained','mid'],
+];
+document.getElementById('guidTable').innerHTML=
+ '<tr><th>Item</th><th>Q3 2026 guide</th><th>vs previous</th></tr>'+
+ GUID.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${r[3]}">${r[2]}</td></tr>`).join('');
+
+// Peer group
+const GROUP=[
+ ['ON onsemi','Automotive + industrial SiC / Si IDM with its own fabs','Subject of this post · mid-recovery','22.5x','Lowest in the table; improving fundamentals but the narrowest breadth (AMG still shrinking)'],
+ ['STM STMicroelectronics','European IDM leader, top-two in automotive SiC globally','Leader · larger than ON','28.7x','Automotive exposure overlaps ON heavily — the cleanest direct comparison'],
+ ['IFX Infineon','Largest European automotive power share (MOSFET / IGBT)','Leader · biggest by volume','~30–34x ⚠️','Clear premium to ON for automotive share leadership; sources disagree badly'],
+ ['WOLF Wolfspeed','Pure SiC substrate and wafer supplier, not an IDM','Laggard · weakest balance sheet','Negative (losses expected)','Post-restructuring distressed asset; highest SiC purity, worst condition'],
+ ['NVTS Navitas','GaN / SiC fabless, 800V AI server story','Laggard · thematic','Negative (losses expected)','High thematic purity, profitability far off — an option, not a position'],
+ ['ALGM Allegro','Automotive magnetic sensors — same cycle, different product','Follower · niche','71.6x','Clearly expensive; a niche sensing premium, not directly comparable'],
+ ['POWI Power Integrations','High-voltage analog / GaN drivers, consumer and appliance skew','Follower · different end mix','69.1x','Lower automotive and industrial weight than ON; same cycle, different exposure'],
+ ['VSH Vishay','Passives plus discrete power, broader line','Follower · most diversified','41.1x','A generalist power-and-passives composite, not a pure SiC/GaN name'],
+ ['VICR Vicor','High-density power modules, direct AI server beneficiary','Follower · heavy AI narrative','48.2x','Partly competes with ON\'s AI data centre business; the premium is already priced'],
+ ['ADI / TXN','Broad analog leaders — not pure power, but high auto/industrial exposure','Larger diversified leaders','—','Both already in a pricing up-cycle; use as an anchor for the whole analog/power chain'],
+ ['Taiwan MOSFET tier-2 (2481 / 3675 / 8261 / 3707)','Tail of the chain, pure shortage-and-pricing plays','Laggards · most speculative','trailing 56–144x ⚠️','Valuation decoupled from monthly revenue; a different security type entirely — contrast only'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>Ticker / name</th><th>Role in the group</th><th>Relative strength</th><th>Forward P/E</th><th>In a sentence</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+</script>
+</body></html>

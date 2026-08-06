@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft．FY2026 Q4 財報拆解 — Azure 加速到 43% 創財年新高,但 EPS 的 14.3% beat 有六成來自 Anthropic 與 OpenAI 投資利得;毛利率連 4 季下滑、FCF 年減 23%</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="microsoft-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Microsoft．FY2026 Q4 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">Azure 加速到 <b>43%</b>(本財年新高,前三季 40%→39%→40%),而且固定匯率口徑同為 43%——<b>是真需求,不是匯率</b>。<br>但 EPS 的 14.3% beat 拆開來,六成來自 Anthropic 與 OpenAI 的投資利得;毛利率已連 4 季下滑,自由現金流年減 23%。IR 原文 + 法說摘要 + Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Microsoft IR 財報原文 + 法說會摘要</span>
+<span class="badge">財季:FY2026 Q4 = 日曆 2026 Q2(4–6 月)</span>
+<span class="badge">公布日:2026-07-29 盤後</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">☁️ <span class="win">Azure 43% 是本財年最高,而且加速是真的</span>。四季軌跡 40% → 39% → 40% → <b>43%</b>,更關鍵的是<b>固定匯率口徑也是 43%</b>——上一季 headline 40% 但 CC 只有 39%,匯率有貢獻;<b>這季兩者相同,代表這次加速沒有匯率成分</b>。FY27 Q1 guidance 再給到 CC 約 45%,管理層押注加速會延續。</p>
+<p class="big">🧮 <span class="lose">EPS 的 beat 品質要拆:$0.60 的超額裡只有 $0.20 是本業</span>。GAAP EPS $4.81 對比一致預期約 $4.21,表面 beat +14.3%。但公司揭露的 non-GAAP $4.74 <b>只剔除了 OpenAI 的 $0.07</b>,<b>沒有剔除本季新增的 Anthropic 投資利得 $3.2B(約 $0.33/股)</b>。兩者都還原後核心 EPS 約 $4.41,真實 beat 縮到約 <b>+4.8%</b>。</p>
+<p class="big">📉 <span class="lose">毛利率連 4 季下滑,這是本季最該被記住的數字</span>。69.0% → 68.0% → 67.6% → <b>67.2%</b>,YoY −1.4pp。營業利益率靠費用槓桿勉強撐平(45.1% vs 去年 44.9%),但<b>毛利端的雲端基礎設施折舊壓力是持續惡化的財報事實,不是觀點</b>。法說會上管理層以「效率提升」帶過,沒有正面處理。</p>
+<p class="big">💧 <span class="lose">自由現金流反而在縮</span>。FCF $19.6B,YoY <b>−23%</b>(去年同期 $25.6B);同期現金 capex 卻年增 <b>109%</b>($17.1B → $35.8B)。GAAP 淨利大幅成長的同時,真正能回饋股東或再投資的現金創造能力在萎縮——這就是「數字亮眼、體感變差」的來源。</p>
+<p class="note">★ 一個容易被誤讀的利多:日曆 2026 年 capex 展望「下修」到約 $175B(原 $190B)。<span class="lose">這不是縮減支出</span>,而是把資料中心與辦公樓耐用年限由 15 年延長至 25 年,導致部分融資租賃被重分類為營業租賃(不計入 capex)。公司明講「除此會計影響外,capex 投資預期不變」——<b>表面像利多,實際中性</b>。FY27 Q1 capex guidance 是「超過 $50B」,比本季 $41B 再跳升。</p>
+</div>
+
+<h2>一、先拆 EPS:60 美分的 beat 裡,只有 20 美分是本業</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microsoft 本季超出市場預期的 0.60 美元 EPS 中,只有 0.20 美元來自本業,0.33 美元來自 Anthropic 投資利得,0.07 美元來自 OpenAI 投資利得">
+  <text x="20" y="28" style="fill:var(--ink2);font:600 13px sans-serif">GAAP EPS $4.81 vs 一致預期 $4.21 · 這 $0.60 的 beat 是誰貢獻的</text>
+  <rect x="70" y="70" width="200" height="46" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <rect x="270" y="70" width="330" height="46" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="600" y="70" width="70" height="46" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="170" y="99" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">$0.20</text>
+  <text x="435" y="99" text-anchor="middle" style="fill:var(--lose);font:600 14px sans-serif">$0.33</text>
+  <text x="635" y="99" text-anchor="middle" style="fill:var(--ink2);font:600 13px sans-serif">$0.07</text>
+  <text x="170" y="140" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">本業</text>
+  <text x="170" y="157" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">佔 33%</text>
+  <text x="435" y="140" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">Anthropic 投資利得</text>
+  <text x="435" y="157" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">$3.2B · 佔 55% · 公司未從 non-GAAP 剔除</text>
+  <text x="635" y="140" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">OpenAI</text>
+  <text x="635" y="157" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">$480M · 12%</text>
+
+  <line x1="70" y1="188" x2="670" y2="188" style="stroke:var(--border)"/>
+  <text x="70" y="210" style="fill:var(--ink3);font:400 12px sans-serif">表面 beat</text>
+  <text x="70" y="230" style="fill:var(--lose);font:600 14px sans-serif">+14.3%</text>
+  <text x="670" y="210" text-anchor="end" style="fill:var(--ink3);font:400 12px sans-serif">還原兩筆投資利得後的真實 beat</text>
+  <text x="670" y="230" text-anchor="end" style="fill:var(--win);font:600 14px sans-serif">約 +4.8%(核心 EPS $4.41)</text>
+</svg>
+</div>
+<p>這件事值得單獨拿出來講,因為<b>公司自己的 non-GAAP 口徑不夠乾淨</b>。Microsoft 公布的 non-GAAP EPS $4.74,只剔除了 OpenAI 權益法投資的 $480M($0.07/股)。但本季<b>新出現一筆 Anthropic 投資利得 $3.2B(約 $0.33/股)</b>——這個數字只在法說會上口頭給,新聞稿沒有單獨列出,non-GAAP 也沒剔。</p>
+<p>兩筆都還原,核心 EPS 約 $4.41,對比一致預期 $4.21 是 beat 約 4.8%。<span class="mid">4.8% 仍然是 beat,本業沒有問題</span>——但跟頭條的 14.3% 完全是兩個量級。</p>
+<div class="quote">📌 <b>這類權益法投資利得有對稱性</b>:標的估值回吐時會產生對稱的一次性<b>虧損</b>。過去 OpenAI 項下就曾出現過虧損季度。也就是說,未來某一季 Microsoft 的 GAAP EPS 可能被同一個機制往下打——屆時同樣不該當成本業變差。<b>Alphabet 這季也是同一個現象</b>(Anthropic + SpaceX 貢獻 $6.26/股),兩家的財報要用同一把尺看。</div>
+</div>
+
+<h2>二、本季的核心張力:需求上去,毛利下來</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microsoft 的 Azure 成長率在本財年第四季加速到 43% 並指引下季 45%,但同期毛利率連續四季從 69.0% 下滑到 67.2%,兩條線方向相反">
+  <text x="20" y="24" style="fill:var(--win);font:600 13px sans-serif">Azure 成長率(%,固定匯率)</text>
+  <line x1="90" y1="150" x2="720" y2="150" style="stroke:var(--border)"/>
+  <text x="80" y="154" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">38</text>
+  <text x="80" y="64" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">46</text>
+  <path d="M150 128L300 139L450 128L600 94" style="fill:none;stroke:var(--win);stroke-width:2.5"/>
+  <path d="M600 94L700 71" style="fill:none;stroke:var(--win);stroke-width:2.5;stroke-dasharray:5 4"/>
+  <circle cx="150" cy="128" r="5" style="fill:var(--win)"/>
+  <circle cx="300" cy="139" r="5" style="fill:var(--win)"/>
+  <circle cx="450" cy="128" r="5" style="fill:var(--win)"/>
+  <circle cx="600" cy="94" r="6" style="fill:var(--win)"/>
+  <circle cx="700" cy="71" r="5" style="fill:none;stroke:var(--win);stroke-width:2"/>
+  <text x="150" y="118" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">40</text>
+  <text x="300" y="129" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">39</text>
+  <text x="450" y="118" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">40</text>
+  <text x="600" y="84" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">43</text>
+  <text x="700" y="61" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">~45</text>
+  <text x="700" y="46" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">guidance</text>
+
+  <text x="20" y="188" style="fill:var(--lose);font:600 13px sans-serif">毛利率(%)</text>
+  <line x1="90" y1="278" x2="720" y2="278" style="stroke:var(--border)"/>
+  <text x="80" y="282" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">67.0</text>
+  <text x="80" y="202" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">69.5</text>
+  <path d="M150 206L300 238L450 251L600 264" style="fill:none;stroke:var(--lose);stroke-width:2.5"/>
+  <circle cx="150" cy="206" r="5" style="fill:var(--lose)"/>
+  <circle cx="300" cy="238" r="5" style="fill:var(--lose)"/>
+  <circle cx="450" cy="251" r="5" style="fill:var(--lose)"/>
+  <circle cx="600" cy="264" r="6" style="fill:var(--lose)"/>
+  <text x="150" y="197" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">69.0</text>
+  <text x="300" y="229" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">68.0</text>
+  <text x="450" y="242" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">67.6</text>
+  <text x="600" y="255" text-anchor="middle" style="fill:var(--lose);font:600 14px sans-serif">67.2</text>
+
+  <text x="150" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">FY26 Q1</text>
+  <text x="300" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2</text>
+  <text x="450" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q3</text>
+  <text x="600" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q4(本季)</text>
+  <text x="700" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">FY27Q1</text>
+</svg>
+</div>
+<p>兩條線放在一起就是本季的全部故事:<b>上面那條(需求)在往上,下面那條(獲利品質)在往下</b>,而且都是連續的、有方向的,不是單季波動。</p>
+<p><b>好的一邊:</b>Azure 43% 是本財年單季最高,也高於管理層 Q3 給的「Q4 CC 約 40%」隱含指引。商業 RPO 衝到 <b>$678B(YoY +84%)</b>;扣除 OpenAI 影響後的 commercial bookings 從上季 +7% 加速到 <b>+18%</b>——這代表非 OpenAI 驅動的基本盤需求也在轉強。法說會口徑「demand continues to exceed available capacity」與前幾季一致,<b>沒有任何「產能追上來了」的鬆動措辭</b>。</p>
+<p><b>壞的一邊:</b>毛利率 69.0% → 68.0% → 67.6% → 67.2%,連 4 季下滑,YoY −1.4pp。營業利益率能撐在 45.1%(去年 44.9%)是靠 SG&amp;A 與研發費用增速低於營收——也就是<b>費用槓桿在補毛利的洞</b>。這個補法有極限:費用不能無限壓,毛利率的折舊壓力卻還在往上。</p>
+<p class="note">★ 法說會上分析師追問過驅動力,CFO Amy Hood 回應「效率提升能很快被貨幣化」;但<span class="lose">對「毛利率已連 4 季下滑」這個事實沒有正面量化回應,也沒給觸底時點</span>。這是本季法說最明顯的迴避之一。</p>
+</div>
+
+<h2>三、現金流:capex 年增 109%,FCF 年減 23%</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microsoft 本財年資本支出從每季 194 億逐季升到 358 億美元,自由現金流同期未能同步成長,本季 196 億仍低於一年前的 256 億">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季現金 capex vs 自由現金流(十億美元)· 不含融資租賃</text>
+  <line x1="70" y1="240" x2="710" y2="240" style="stroke:var(--border)"/>
+  <text x="60" y="244" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+
+  <rect x="110" y="142" width="55" height="98" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="137" y="134" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">19.4</text>
+  <rect x="170" y="111" width="55" height="129" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="197" y="103" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">25.7</text>
+  <text x="167" y="262" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">FY26 Q1</text>
+
+  <rect x="260" y="90" width="55" height="150" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="287" y="82" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">29.9</text>
+  <rect x="320" y="210" width="55" height="30" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="347" y="202" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">5.9</text>
+  <text x="317" y="262" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2</text>
+
+  <rect x="410" y="85" width="55" height="155" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="437" y="77" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">30.9</text>
+  <rect x="470" y="161" width="55" height="79" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="497" y="153" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">15.8</text>
+  <text x="467" y="262" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q3</text>
+
+  <rect x="560" y="60" width="55" height="180" rx="3" style="fill:var(--losebg);stroke:var(--lose);stroke-width:2"/>
+  <text x="587" y="52" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">35.8</text>
+  <rect x="620" y="141" width="55" height="99" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="647" y="133" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">19.6</text>
+  <text x="617" y="262" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q4(本季)</text>
+
+  <rect x="110" y="278" width="14" height="10" rx="2" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="130" y="287" style="fill:var(--ink3);font:400 11px sans-serif">現金 capex</text>
+  <rect x="220" y="278" width="14" height="10" rx="2" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="240" y="287" style="fill:var(--ink3);font:400 11px sans-serif">自由現金流</text>
+  <text x="640" y="287" text-anchor="end" style="fill:var(--lose);font:600 12px sans-serif">本季 FCF $19.6B,仍低於一年前的 $25.6B(YoY −23%)</text>
+</svg>
+</div>
+<p>營運現金流本身很好:$55.4B、YoY +30%。問題是 capex 跑得更快——現金 capex 從 $19.4B 一路到 <b>$35.8B</b>,YoY +109%;含融資租賃口徑是 <b>$41B</b>(YoY +69%),符合公司先前「超過 $40B」的指引。</p>
+<p>相減之後,<b>FCF $19.6B 比一年前的 $25.6B 還少 23%</b>。淨利在漲、現金創造在縮,這個落差就是本季「數字漂亮但體感不好」的來源。而下季 capex guidance 還要「超過 $50B」——比本季 $41B 再跳一級。</p>
+<p class="note">★ 關於那個「日曆 2026 capex 從 $190B 下修到 $175B」:<b>純粹是會計調整</b>。資料中心與辦公樓耐用年限由 15 年延長至 25 年,使部分未來融資租賃從 finance lease 重分類為 operating lease(不計入 capex)。公司明確表示「除此耐用年限影響外,capex 投資預期不變」。<span class="lose">當成減支利多來讀會誤判</span>。</p>
+</div>
+
+<h2>四、三大分部:只有雲在加速</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="segTable"></table></div>
+<p style="margin-top:14px">① <b>Intelligent Cloud 是唯一加速的分部</b>:+28% → +29% → 未揭露 → <b>+32%</b>,Azure 43% 帶動。Microsoft Cloud 營收 $59.3B、YoY +27%。</p>
+<p>② <b>P&amp;BP(生產力軟體)溫和降速</b>:17% → 16% → 17% → <b>14%</b>,是本財年最慢的一季。Copilot 席位暴衝(見下)並未完全抵消整體降速——這代表 Copilot 目前還是「加分項」,不是主引擎。</p>
+<p>③ <b>MPC(個人運算)連 4 季走弱</b>:+4% → −3% → −1% → <b>−4%</b>,Windows OEM 與裝置需求疲弱。FY27 Q1 guidance 仍隱含 OEM「low 20s decline」,<span class="lose">短期看不到改善跡象</span>。</p>
+</div>
+
+<h2>五、Copilot:本季少數有硬數字支撐的 AI 變現</h2>
+<div class="card">
+<p>這是本季最扎實的一塊,而且是<b>可驗證的數字而非敘事</b>:</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">M365 Copilot 付費席位</div><div class="kd">1,500 萬 → 2,000 萬 → <b>3,000 萬</b></div><div class="ke">FY26 Q2 → Q3 → Q4,逐季近乎倍增</div></div>
+<div class="kcard"><div class="kt">GitHub Copilot</div><div class="kd">用戶 5,000 萬,營收 <b>QoQ +60%</b></div><div class="ke">法說會口頭揭露,新聞稿無</div></div>
+<div class="kcard"><div class="kt">Foundry</div><div class="kd">客戶 <b>10 萬家</b>,營收 YoY 翻倍以上</div><div class="ke">法說會口頭揭露</div></div>
+<div class="kcard"><div class="kt">Agent 365</div><div class="kd">上線約 2 個月,近 <b>4,000 萬</b>個代理註冊</div><div class="ke">註冊數非付費數,要留意口徑</div></div>
+</div>
+<p style="margin-top:14px">法說會上還揭露新推出 <b>per-seat-plus-consumption</b> 定價模式——從純席位制走向席位加用量,這對雲端業者是熟悉的變現路徑,也代表 Copilot 的營收模型正在從「賣授權」轉向「賣使用」。</p>
+<p>Nadella 對模型策略的回應值得記:強調多模型架構、<b>「every model is substitutable」</b>,直接回應市場對過度依賴 OpenAI 的疑慮。<span class="mid">這個說法對 Microsoft 有利,但也同時削弱了 OpenAI 獨家性的敘事價值</span>——兩面刃。</p>
+</div>
+
+<h2>六、Guidance:FY27 全年 capex 拒絕給數字</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">FY27 Q1 各分部 guidance 都給了明確區間,唯獨<b>全年 capex 只給了「will grow year-over-year」的定性語言,拒絕給金額或增速</b>。市場只能靠分析師自行推估($220B 上下,非公司口徑)。</p>
+<p>這是本季法說最明顯的迴避。在一個市場正在重新定價「debt-funded AI capex」的環境裡,<span class="lose">拒絕量化資本支出強度本身就是資訊</span>——要嘛數字還沒定,要嘛數字大到不想先講。</p>
+</div>
+
+<h2>七、估值:分位 44%,是同族群裡最高的</h2>
+<div class="card">
+<p class="big">📊 <b>Forward PE 23.5x、一年估值分位 44.0%</b>(一年均值 30.16x);forward PS 8.8x、分位 48.4%。</p>
+<p>股價走勢:2025 年 10 月高點約 $538 → 2026 年 7 月低點約 $390(−28%,反映市場對毛利率與 capex 壓力的持續擔憂),財報後兩個交易日(7/30–7/31)暴漲 <b>+19%</b>($390.54 → $464.72)。</p>
+<p class="big">⚠️ <b>橫向比較才看得出問題</b>:GOOGL 3.2% 分位、AMZN 0.8%、META 5.2%、NVDA 6.4%、ORCL 5.2%——<b>同業幾乎全在個位數分位,MSFT 的 44% 明顯偏高</b>。</p>
+<p>兩種讀法:① 市場對 MSFT 這次財報的信心修復領先同業,是體質溢價;② MSFT 尚未經歷同業普遍的深度 de-rate,<span class="mid">現在的相對位置是「還沒輪到」而不是「不會輪到」</span>。這一波修復很大程度是 MSFT 相對同業的超額表現,值得留意是否過度領先。</p>
+<p><b>循環烈度判斷(invest-playbook)</b>:AI 雲端基礎設施循環仍在「需求明確擴張、供給持續追趕」的中段,非成熟期。MSFT forward PE 23.5x 低於自身一年均值 30.2x,財報後的反彈屬<b>修復性重估</b>而非新高溢價,尚未看到過熱訊號——但這是跟自己比;跟同業比,它是全場最貴的一檔。</p>
+</div>
+
+<h2>八、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b><b>雲端超大規模業者(Hyperscaler)＋企業軟體 AI 變現</b>。涵蓋三大公有雲(Azure / AWS / GCP)、雲端後進者,以及以 AI agent 變現的企業軟體代表。共同特徵是資本支出強度快速上升,同時靠雲端訂閱或軟體席位把 AI 變現。</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">兩個觀察:</p>
+<p>① <b>三朵雲的成長排名跟估值排名是反的</b>。成長 GCP(+82%)&gt; Azure(43%)&gt; AWS(+37%),但估值分位 AMZN(0.8%)&lt; GOOGL(3.2%)&lt; MSFT(44%)。<span class="mid">成長最快的估值分位最低,成長居中的估值分位最高</span>——這個錯位本身就值得記一筆。</p>
+<p>② <b>ORCL 是最好的對照組</b>。同樣是 RPO 暴增的故事(+363%、$638B),但因為 capex 超出自訂財測、FCF 轉負、宣布股權增發,財報後暴跌 −35%。<b>它證明了「RPO 大」本身救不了估值,要看資產負債表撐不撐得住</b>——而這正是 MSFT 相對紮實的地方。</p>
+</div>
+
+<h2>九、下季待觀察(FY2027 Q1,2026 年 10 月公布)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Azure CC 能否兌現 ~45%</div><div class="kd">本季實際 43%,guidance 再上修</div><div class="ke">未達 45% = 加速敘事轉弱;超過 = 供需缺口仍在擴大</div></div>
+<div class="kcard"><div class="kt">② 毛利率能否止跌</div><div class="kd">本季 67.2%,已連 4 季下滑</div><div class="ke">續探低於 67% = AI 基礎設施折舊壓力尚未見頂</div></div>
+<div class="kcard"><div class="kt">③ FY27 全年 capex 是否給數字</div><div class="kd">本季僅給「會成長」定性語言</div><div class="ke">下季仍不量化 = 管理層持續迴避資本支出強度問題</div></div>
+<div class="kcard"><div class="kt">④ FCF 年減幅度是否收斂</div><div class="kd">本季 −23% YoY;下季 capex guide 超過 $50B</div><div class="ke">年減幅度擴大 = 現金創造持續惡化,非一次性</div></div>
+</div>
+</div>
+
+<h2>十、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>Azure 43% 是真加速</b>,CC 口徑同為 43%(上季 CC 低於 headline),不靠匯率。RPO $678B、YoY +84%;扣 OpenAI 後 bookings 從 +7% 加速到 +18%,基本盤需求也在轉強。供需缺口沒有鬆動跡象。</p>
+<p>② <b>Copilot 的變現有硬數字</b>。席位 15M → 20M → 30M、GitHub Copilot 營收 QoQ +60%、Foundry 客戶 10 萬家。在一片「AI 何時賺錢」的質疑裡,這是少數拿得出可驗證數字的一家。</p>
+<p>③ <b>財務體質是族群裡最紮實的</b>。對比 ORCL 的 capex 超支 + FCF 轉負 + 股權增發,MSFT 的 FCF 雖然年減但仍是正的 $19.6B,不需要靠增發稀釋股東。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>毛利率連 4 季下滑且沒給觸底時點</b>。69.0% → 67.2%,YoY −1.4pp;營益率靠費用槓桿撐平,但費用不能無限壓。同時 FCF 年減 23%,現金創造能力在惡化。</p>
+<p>② <b>EPS beat 品質存疑</b>。還原 Anthropic + OpenAI 後核心 beat 僅約 +4.8%。這類權益法利得波動大且會反轉,未來可能變成拖累。</p>
+<p>③ <b>估值分位是同業最高的</b>。44% vs 同業普遍個位數。MPC 連 4 季走弱無改善跡象;FY27 全年 capex 拒絕量化,市場對資本支出強度與 ROI 的疑慮並未被正面解答。<span class="mid">在一個估值普遍被壓縮的族群裡,最貴的那個承受的下修風險最大</span>。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Microsoft Investor Relations FY2026 Q4 財報新聞稿(microsoft.com/investor/earnings/fy-2026-q4)、investing.com 法說會逐字稿摘要(FY27Q1 guidance、Anthropic 投資利得、commercial bookings、產能口徑、Q&amp;A 焦點、Copilot / Foundry / Agent 365 數字),Anthropic $3.2B / $0.33 EPS 一項經 CNBC、Benzinga、fool.com 等多方交叉驗證一致、Futu 財務報表與估值數據(查詢日 2026-08-03)。<b>未取得法說逐字稿全文</b>,法說內容以可查證摘要為準。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 分部表
+const SEG=[
+ ['Productivity &amp; Business Processes','$33.0B / +17%','$34.1B / +16%','$35.0B / +17%','<b>$37.8B / +14%</b>','本財年最慢一季','mid'],
+ ['<b>Intelligent Cloud</b>','$30.9B / +28%','$32.9B / +29%','約 $34.7B','<b>$39.3B / +32%</b>','唯一加速的分部','win'],
+ ['More Personal Computing','$13.8B / +4%','$14.3B / −3%','$13.2B / −1%','<b>$12.9B / −4%</b>','連 4 季走弱','lose'],
+ ['<b>Azure 成長(reported / CC)</b>','40% / —','39% / 38%','40% / 39%','<b>43% / 43%</b>','財年新高,無匯率成分','win'],
+ ['<b>總營收</b>','$77.7B / +18%','$81.3B / +17%','$82.9B / +18%','<b>$90.0B / +18%</b>','Beat 預期 $87.44B','win'],
+];
+document.getElementById('segTable').innerHTML=
+ '<tr><th>分部</th><th>FY26 Q1</th><th>FY26 Q2</th><th>FY26 Q3</th><th>FY26 Q4(本季)</th><th>判定</th></tr>'+
+ SEG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// FY27 Q1 guidance
+const GUIDE=[
+ ['Productivity &amp; Business Processes','$36.7B–$37.0B','+11~12%','M365 商用雲 CC ~16%、LinkedIn 高個位數、Dynamics 低雙位數',''],
+ ['<b>Intelligent Cloud</b>','$40.95B–$41.25B','+33~34%','<b>Azure CC 約 45%</b>(本季實際 43%,隱含續加速)','win'],
+ ['More Personal Computing','$12.2B–$12.7B','隱含下滑','Windows OEM/裝置 low-20s decline、搜尋廣告中個位數成長','lose'],
+ ['公司整體營益率','—','YoY「相對持平」','未給精確數字','mid'],
+ ['<b>FY27 Q1 資本支出</b>','<b>超過 $50B</b>','較本季 $41B 再跳升','含租賃重分類效應','lose'],
+ ['<b>FY27 全年資本支出</b>','<b>拒絕給數字</b>','僅稱「will grow YoY」','分析師推估 $220B 上下,非公司口徑','lose'],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>區間 / 說法</th><th>隱含</th><th>備註</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td class="${r[4]}">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+// 同族群
+const GROUP=[
+ ['MSFT 微軟','Azure + 企業軟體 Copilot 雙引擎 · 本文主標的','財報後 +19% · 修復最快','23.5x','44.0%','毛利率/FCF 壓力真實,但估值分位已修復到同業中最高'],
+ ['GOOGL 谷歌','Google Cloud +82%,三雲最快;廣告現金牛支撐','雲端成長領先 · 估值分位極低','26.3x','3.2%','三雲中成長最快卻估值分位最低,若持續加速有修復空間'],
+ ['AMZN 亞馬遜','AWS 基期最大但成長最慢(+37%)','財報後 +15.3% · 接受度高','28.5x','0.8%','AWS 加速是真的,但三雲賽跑仍墊底,估值分位全場最低'],
+ ['ORCL Oracle','OCI 後進暴衝 +93%,但 capex 超財測、FCF 轉負','財報後 −35% · 族群最弱','19.5x','5.2%','最好的對照組:RPO 暴增救不了估值,要看資產負債表'],
+ ['META Meta','非雲端業者,但 capex 強度與 AI 敘事可比','EPS miss + FCF 崩跌 · 低檔','17.9x','5.2%','AI 變現靠廣告效率而非雲端收費,賽道不同但 capex 壓力同源'],
+ ['NVDA 輝達','上游 GPU 供應商 · 上述各家的共同供應商','同期重挫至極端低位','19.9x','6.4%','三家 capex 同步上修對其直接利多,估值分位卻在歷史低檔'],
+ ['CRM Salesforce','企業 SaaS + Agentforce AI agent 變現','分位居中 · 商業化不如 Copilot 具體','22.5x','16.4%','企業軟體 AI 變現的另一種嘗試,規模與 Copilot 席位成長有差距'],
+ ['NOW ServiceNow','企業工作流 + AI agent 平台','估值中性','59.1x','45.2%','分位與 MSFT 相近,屬企業軟體 AI 敘事的另一象限'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一年估值分位</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+</script>
+</body></html>

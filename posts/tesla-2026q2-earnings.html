@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tesla．2026 Q2 財報拆解 — 交車 48 萬創 Q2 紀錄、營收 beat,但 non-GAAP EPS miss 40%:淨利九成以上來自 SpaceX 股權利得與稅項,碳權年減 67%、儲能毛利率腰斬、FCF 轉負</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="tesla-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Tesla．2026 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">美國 $7,500 EV 稅額抵免 2025/9/30 到期後的第三個完整季度。交車 <b>480,126 台、YoY +25%</b> 創 Q2 紀錄,營收 $28.24B beat 共識 +2.4%——<br>但 <b>non-GAAP EPS $0.33 對共識 $0.55 是 miss 40%</b>,總毛利率 miss 270bp,而 GAAP 淨利九成以上來自 SpaceX 股權利得與一次性稅項。IR 股東信原文 + Futu 逐項交叉核對,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Tesla SEC 8-K Exhibit 99.1 股東信全文</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30</span>
+<span class="badge">公布日:2026-07-22 盤後</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">🚗 <span class="win">需求端證明了一件事:沒有補貼也賣得動</span>。稅額抵免消失、沒有任何政策順風,交車量仍 <b>YoY +25% 到 480,126 台</b>,創 Q2 紀錄。庫存天數從 27 天壓到 <b>15 天</b>(生產 451,758 &lt; 交車 480,126,在去化庫存),公司自稱「供給受限」。這一點是本季最紮實的多方論據。</p>
+<p class="big">🧾 <span class="lose">但獲利品質很差,而且是三層一起塌</span>。① <b>碳權收入 $146M,YoY −67%</b>,占汽車毛利的貢獻從 2.2pp 縮到 0.6pp;② <b>儲能毛利率從 39.5% 崩到 20.4%</b>(公司稱電芯保固一次性費用);③ 總毛利率 16.8% 對共識 19.5% 是 <b>miss 270bp</b>,營益率只剩 <b>1.4%</b>。non-GAAP EPS $0.33 對共識 $0.55,<b>miss 40%</b>。</p>
+<p class="big">🎭 <span class="lose">GAAP 淨利 $1.114B 裡,九成以上不是本業</span>。$763M(稅後)來自 <b>SpaceX 股權未實現利得</b>,$274M 來自加州遞延稅資產一次性迴轉,合計 $1.037B——<b>佔 93%</b>。剔除後核心獲利只剩約 $77M。這跟 Alphabet / Microsoft / Amazon 這季的一次性利得是同一個機制,只是 Tesla 的本業基數小得多,所以掩蓋效果更強。</p>
+<p class="big">🤖 <span class="lose">Robotaxi、Cybercab、Optimus 本季實際揭露營收都是 $0</span>。Robotaxi 已在七大都會運營、7 月新增佛州三城無人監督;FSD 付費訂閱 148 萬(YoY +56%)——但<b>公司沒有單獨揭露任何一項的營收金額</b>。同時 Optimus 的語氣明顯轉保守:管理層自承是「最難量產的產品」、「初期 S 曲線會很平且很長」。</p>
+<p class="note">★ 唯一「量價質」三者同時轉強的是 <b>Services &amp; Other</b>:$4.58B、YoY <b>+50.4%</b>、毛利率創高 <b>14.1%</b>(5.4% → 9.2% → 14.1% 連 3 季擴大),占營收比重從 13.5% 升到 16.2%。<span class="win">這是目前最接近「軟體變現真的產生現金」的證據</span>——但公司同樣沒有單獨揭露 FSD 訂閱收入金額。</p>
+</div>
+
+<h2>一、先拆淨利:$1.114B 裡只有 $77M 是本業</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 240" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tesla 本季 11.14 億美元的 GAAP 淨利中,7.63 億來自 SpaceX 股權未實現利得、2.74 億來自一次性稅項迴轉,只有約 7700 萬美元是本業貢獻">
+  <text x="20" y="28" style="fill:var(--ink2);font:600 13px sans-serif">GAAP 淨利 $1.114B 的組成 · 本業只佔 7%</text>
+  <rect x="70" y="66" width="411" height="48" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="481" y="66" width="148" height="48" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <rect x="629" y="66" width="41" height="48" rx="4" style="fill:var(--winbg);stroke:var(--win);stroke-width:2"/>
+  <text x="275" y="96" text-anchor="middle" style="fill:var(--lose);font:600 14px sans-serif">$763M</text>
+  <text x="555" y="96" text-anchor="middle" style="fill:var(--turn);font:600 13px sans-serif">$274M</text>
+  <text x="275" y="136" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">SpaceX 股權未實現利得(稅後)</text>
+  <text x="275" y="153" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">佔 68.5% · 非現金、非本業</text>
+  <text x="555" y="136" text-anchor="middle" style="fill:var(--turn);font:600 12px sans-serif">加州遞延稅資產迴轉</text>
+  <text x="555" y="153" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">佔 24.6% · 一次性</text>
+  <line x1="650" y1="120" x2="690" y2="150" style="stroke:var(--win)"/>
+  <text x="694" y="155" style="fill:var(--win);font:600 13px sans-serif">$77M</text>
+  <text x="694" y="172" style="fill:var(--win);font:400 11px sans-serif">本業 7%</text>
+
+  <line x1="70" y1="190" x2="670" y2="190" style="stroke:var(--border)"/>
+  <text x="70" y="212" style="fill:var(--ink3);font:400 12px sans-serif">GAAP EPS $0.32 · 對共識 $0.36</text>
+  <text x="70" y="230" style="fill:var(--lose);font:600 13px sans-serif">miss −11%</text>
+  <text x="670" y="212" text-anchor="end" style="fill:var(--ink3);font:400 12px sans-serif">Non-GAAP EPS $0.33 · 對共識 $0.55</text>
+  <text x="670" y="230" text-anchor="end" style="fill:var(--lose);font:600 13px sans-serif">miss −40%</text>
+</svg>
+</div>
+<p>這張圖是理解本季的起點。GAAP 淨利 $1.114B(YoY −4.9%,QoQ +133.5%)看起來還過得去,但拆開來:</p>
+<p><b>$763M(稅後)是 SpaceX 股權未實現利得</b>——非現金、非本業、會隨標的估值反向波動。<b>$274M 是加州遞延稅資產一次性迴轉</b>。兩筆合計 $1.037B,佔淨利 <b>93%</b>。剩下約 $77M 才是本業。</p>
+<p><span class="mid">這個機制本身不新鮮</span>:Alphabet 這季有 Anthropic + SpaceX 的 $99B、Microsoft 有 Anthropic 的 $3.2B、Amazon 有 Anthropic 的 $53.4B。差別在<b>相對規模</b>——那三家的本業獲利體量夠大,一次性利得只是把好數字變得更好看;Tesla 的本業獲利體量小,一次性利得等於<b>整個撐起了獲利</b>。</p>
+<p>而且 non-GAAP EPS(理應已經處理過一些調整)仍然 <b>miss 共識 40%</b>,YoY −18%、QoQ −19.5%。<b>兩個口徑都指向同一件事:本業獲利能力在退,不是會計雜訊</b>。</p>
+</div>
+
+<h2>二、三塊業務的毛利率正在往三個方向走</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tesla 的能源儲能毛利率從上季 39.5% 崩跌到 20.4%,服務業務毛利率則連續三季擴大到創高的 14.1%,汽車扣碳權毛利率在 16.3% 附近震盪">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">分部毛利率(%)· 服務向上、儲能崩跌、汽車震盪</text>
+  <line x1="70" y1="255" x2="590" y2="255" style="stroke:var(--border)"/>
+  <line x1="70" y1="55" x2="70" y2="255" style="stroke:var(--border)"/>
+  <text x="60" y="259" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+  <text x="60" y="167" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">20</text>
+  <text x="60" y="74" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">40</text>
+
+  <path d="M130 114L350 72L570 160" style="fill:none;stroke:var(--lose);stroke-width:2.5"/>
+  <circle cx="130" cy="114" r="5" style="fill:var(--lose)"/>
+  <circle cx="350" cy="72" r="5" style="fill:var(--lose)"/>
+  <circle cx="570" cy="160" r="6" style="fill:var(--lose)"/>
+  <text x="130" y="105" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">30.3</text>
+  <text x="350" y="63" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">39.5</text>
+  <text x="592" y="157" style="fill:var(--lose);font:600 13px sans-serif">20.4</text>
+  <text x="592" y="173" style="fill:var(--lose);font:400 11px sans-serif">能源儲能</text>
+  <text x="592" y="188" style="fill:var(--lose);font:400 10px sans-serif">QoQ −1914bp</text>
+
+  <path d="M130 185L350 166L570 179" style="fill:none;stroke:var(--mid);stroke-width:2.5"/>
+  <circle cx="130" cy="185" r="5" style="fill:var(--mid)"/>
+  <circle cx="350" cy="166" r="5" style="fill:var(--mid)"/>
+  <circle cx="570" cy="179" r="6" style="fill:var(--mid)"/>
+  <text x="130" y="203" text-anchor="middle" style="fill:var(--mid);font:600 12px sans-serif">15.0</text>
+  <text x="350" y="157" text-anchor="middle" style="fill:var(--mid);font:600 12px sans-serif">19.2</text>
+  <text x="592" y="208" style="fill:var(--mid);font:600 13px sans-serif">16.3</text>
+  <text x="592" y="224" style="fill:var(--mid);font:400 11px sans-serif">汽車(扣碳權)</text>
+  <text x="592" y="239" style="fill:var(--mid);font:400 10px sans-serif">YoY +130bp</text>
+
+  <path d="M130 230L350 212L570 190" style="fill:none;stroke:var(--win);stroke-width:2.5"/>
+  <circle cx="130" cy="230" r="5" style="fill:var(--win)"/>
+  <circle cx="350" cy="212" r="5" style="fill:var(--win)"/>
+  <circle cx="570" cy="190" r="6" style="fill:var(--win)"/>
+  <text x="130" y="248" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">5.4</text>
+  <text x="350" y="230" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">9.2</text>
+  <text x="678" y="262" text-anchor="end" style="fill:var(--win);font:600 13px sans-serif">14.1 服務(創高)</text>
+
+  <text x="130" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2025</text>
+  <text x="350" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q1 2026</text>
+  <text x="570" y="278" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">Q2 2026</text>
+</svg>
+</div>
+<p><b>① 能源儲能是本季最大的意外</b>。毛利率從 Q1 的 39.5% 崩到 <b>20.4%</b>,單季 −1914bp。公司歸因於「電芯供應商保固相關費用」,稱是一次性。同時營收 $3.14B 對共識 $3.77B 是 <b>miss 16.7%</b>——雖然部署量 13.5 GWh、YoY +40.6% 其實很好。</p>
+<p class="note">★ 這是<b>「儲能是新利潤支柱」這個敘事最大的一次雜訊</b>。若下季毛利率回到 30%+,那確實是一次性;<span class="lose">若仍在 20% 附近甚至更低,就要重新評估這個敘事</span>。這是下季最可證偽的一個判準。</p>
+<p><b>② 汽車扣掉碳權後其實在改善</b>。non-GAAP 汽車毛利率 16.3%,<b>YoY +130bp</b>(去年同期 15.0%),主因是進口關稅降低與庫存成本下降。QoQ 的 −290bp 主要是 Q1 有一次性受益(保固 + 關稅)未再現的基期問題,<span class="mid">不是趨勢惡化</span>。</p>
+<p><b>③ 服務是唯一三項全好的業務</b>。毛利率 5.4% → 9.2% → <b>14.1%</b> 連 3 季擴大且創高,營收 YoY +50.4%,占比從 13.5% 升到 16.2%。這是低資本支出、高毛利、可規模化的引擎。<b>但公司沒有拆出 FSD 訂閱收入金額</b>,只給了活躍付費 FSD 訂閱數 <b>148 萬(YoY +56%)</b>——所以這裡有多少是軟體、多少是保養維修零件,外部無法驗證。</p>
+</div>
+
+<h2>三、碳權在消失,而且沒有替代品</h2>
+<div class="card">
+<p>汽車碳權收入 <b>$146M</b>,YoY <b>−66.7%</b>、QoQ −61.6%(去年同期 $439M,上季 $380M)。</p>
+<p>影響用毛利貢獻看最清楚:碳權對汽車毛利的貢獻<b>從去年同期的 2.2pp 縮到 0.6pp</b>。這也是為什麼 GAAP 汽車毛利率(含碳權)16.9% 是 YoY −30bp,但扣掉碳權的 non-GAAP 反而是 YoY +130bp——<span class="mid">製造效率其實在進步,是碳權這塊在往下拖</span>。</p>
+<p>問題在於<b>這塊沒有替代品</b>。碳權收入來自其他車廠向 Tesla 買排放額度;隨著美國政策環境轉向、各車廠自身 EV 比重上升,這個需求結構性下降。<b>政策上短期內看不到能替代的來源</b>。如果照這個速度,單季碳權收入跌破 $100M 只是時間問題。</p>
+<div class="quote">📌 <b>值得記的框架</b>:過去幾年市場習慣用「Tesla 毛利率」當作它製造效率的代理指標。但碳權混在裡面,而碳權跟製造效率完全無關。<b>從現在起要看的是「扣碳權後的汽車毛利率」</b>——本季 16.3%,這才是本業的真實水位,也是下季該追的數字。</div>
+</div>
+
+<h2>四、Capex 季增 132%,FCF 兩年來首度轉負</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="cashTable"></table></div>
+<p style="margin-top:14px">營運現金流其實很好:$4.70B、YoY +85%。但 capex 單季從 $2.49B 跳到 <b>$5.79B(QoQ +132%、YoY +142%)</b>,自由現金流因此轉為 <b>−$1.09B</b>,是近兩年首見。現金及短投從 $44.74B 降到 $43.52B。</p>
+<p class="big">⚠️ <b>而且 capex 的執行進度其實落後</b>。FY2026 指引是「超過 $25B」,但上半年只花了 $8.28B——<b>下半年要拉到約 $8.35B/季</b>(比本季 $5.79B 再增 44%)才能達到下限。CFO Taneja 的表態是「願意接受較低的資本效率以換取加速執行」。</p>
+<p><span class="mid">guidance 沒破,但年化節奏落後</span>。這是下季一個很硬、可以直接驗證的數字:Q3 capex 有沒有到約 $8.35B。到了,代表執行在追上;沒到,代表要嘛下修 guidance,要嘛 Q4 得爆量。</p>
+</div>
+
+<h2>五、Robotaxi 與 Optimus:進度有,營收是零</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">兩個口徑變化值得記:</p>
+<p><b>① Robotaxi 的瓶頸說法換了。</b>上季說是「監理/供給」,這季管理層改稱瓶頸是<b>「安全性(march of nines 可靠度)而非需求」</b>。城市數字確實兌現了(七大都會 + 7 月新增 Miami / Orlando / Tampa 三城無人監督),但<span class="mid">把限制因素從監理改口為安全可靠度,是否只是換個說法迴避需求問題,需要持續觀察</span>。</p>
+<p><b>② Optimus 的語氣明顯轉保守。</b>時程沒變(仍稱「今年稍晚」量產),Model S/X 產線已拆除、第一代 Optimus 產線在裝。但管理層自承這是<b>「最難量產的產品」、「初期 S 曲線會很平且很長」</b>——對比上季「Fremont 準備年底前投產」「Gen 3 手部 Q2 開始全天候工廠部署」的措辭,<b>從執行細節退回到期望管理</b>。</p>
+<p class="note">★ 最關鍵的一件事:<b>Robotaxi、Cybercab、Optimus 三者本季實際揭露營收皆為 $0</b>。不是「很少」,是財報上沒有任何獨立揭露的營收金額。市場為這三個故事付出的估值溢價,目前沒有任何財務數字對應。</p>
+</div>
+
+<h2>六、估值:超過九成的市值是敘事的期權價值</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 290" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="用傳統車廠估值倍數推算 Tesla 純本業合理股價約 25 到 31 美元,但實際股價 311 美元,代表超過九成市值來自 Robotaxi 與 Optimus 敘事的期權價值">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">股價組成粗估(美元)· illustrative,非嚴謹 SOTP</text>
+  <line x1="70" y1="250" x2="700" y2="250" style="stroke:var(--border)"/>
+
+  <rect x="150" y="232" width="130" height="18" rx="3" style="fill:var(--winbg);stroke:var(--win);stroke-width:2"/>
+  <text x="215" y="224" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">$25–31</text>
+  <text x="215" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">純本業(汽車+能源+服務)</text>
+
+  <rect x="450" y="232" width="130" height="18" rx="3" style="fill:var(--winbg);stroke:var(--win);stroke-width:2"/>
+  <rect x="450" y="70" width="130" height="162" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="515" y="155" text-anchor="middle" style="fill:var(--turn);font:600 14px sans-serif">約 $280</text>
+  <text x="515" y="175" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">Robotaxi / Optimus</text>
+  <text x="515" y="192" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">敘事期權價值 · 超過 90%</text>
+  <text x="515" y="60" text-anchor="middle" style="fill:var(--ink);font:600 14px sans-serif">$311 實際股價</text>
+  <text x="515" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">2026-08-03 盤中</text>
+
+  <text x="70" y="105" style="fill:var(--ink3);font:400 11px sans-serif">算法:TTM non-GAAP EPS $1.74</text>
+  <text x="70" y="123" style="fill:var(--ink3);font:400 11px sans-serif">× 同族群車廠 forward PE</text>
+  <text x="70" y="141" style="fill:var(--ink3);font:400 11px sans-serif">(GM 7.3x / Toyota 9.5x /</text>
+  <text x="70" y="159" style="fill:var(--ink3);font:400 11px sans-serif">BYD 17.6x — 已取上限)</text>
+  <text x="70" y="185" style="fill:var(--lose);font:600 11px sans-serif">Forward PE 284.7x</text>
+  <text x="70" y="203" style="fill:var(--ink3);font:400 11px sans-serif">一年估值分位 28%</text>
+</svg>
+</div>
+<p class="big">📐 <b>Trailing PE 288.2x、Forward PE 284.7x</b>,一年估值分位 <b>28%</b>(財報前 2026-07-08 分位曾高達 71.2%,股價重挫近兩成把分位打了下來)。但 <span class="lose">284x 這個絕對水位放在任何汽車股裡都是天文數字</span>,分位低只是相對自己歷史而言。</p>
+<p><b>循環烈度判斷(invest-playbook)</b>:汽車是<b>強循環</b>產業,而且 Tesla 自己就證明了 EV 需求對政策補貼極度敏感——稅額抵免 2025/9/30 到期後,Q3'25、Q4'25、Q1'26 連 3 季下滑,Q2'26 才回補。但 Tesla 目前的股價<b>已經脫離汽車循環股的定價邏輯</b>,走的是 AI／機器人敘事股定價。</p>
+<p><b>上圖的算法</b>:把 Tesla 當純汽車 + 能源 + 服務公司,用同族群傳統車廠的 forward PE(GM 7.3x、Toyota 9.5x、BYD 17.6x——即使給到 BYD 這個全球 EV 龍頭的估值上限)乘以 TTM non-GAAP EPS($0.50 + $0.50 + $0.41 + $0.33 = $1.74),得出「純本業合理股價」約 <b>$25–31</b>。實際股價 $311。</p>
+<p class="note">★ <b>這只是 illustrative 算法,不是嚴謹 SOTP</b>——它忽略了 Tesla 的成長性溢價、能源業務應有更高倍數、以及 TTM EPS 正處在被一次性因素壓低的低點。但方向性結論很清楚:<b>本業財報越弱,股價對敘事的依賴度就越高,也就越脆弱</b>。本季正是這種季度。</p>
+<p><b>分析師一致預期:</b>24 家,平均目標價 $405.8(高 $505 / 低 $130),買入/持有/賣出 <b>41.7% / 50% / 8.3%</b>。<span class="mid">值得注意的是「持有」佔一半、且有 8.3% 賣出</span>——這在大型科技股裡很少見(對比 AMZN 97.4% 買進、META 88.1% 買進)。目標價 $130 到 $505 的離散度也說明分析師對這家公司根本沒有共識。</p>
+<p><b>股價走勢:</b>財報前收盤 $374.01 → 7/31 低點 $298.32(<b>−20.2%</b>)→ 2026-08-03 盤中回升至 <b>$311.21</b>。</p>
+</div>
+
+<h2>七、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b>Tesla 橫跨三個題材,不能只用一張表涵蓋——<b>(A) 純電動車整車廠</b>、<b>(B) 儲能／能源</b>、<b>(C) 自動駕駛／機器人</b>(Robotaxi + FSD + Optimus)。以下分三段掃描。部分公司 GAAP 仍虧損,Futu 改用 PS(市銷率)估值,已標註。</p>
+
+<p style="margin-top:16px"><b>(A) EV 整車廠</b></p>
+<div style="overflow-x:auto"><table id="evTable"></table></div>
+
+<p style="margin-top:18px"><b>(B) 儲能／能源</b></p>
+<div style="overflow-x:auto"><table id="energyTable"></table></div>
+
+<p style="margin-top:18px"><b>(C) 自動駕駛／機器人</b></p>
+<div style="overflow-x:auto"><table id="avTable"></table></div>
+<p style="margin-top:12px" class="note">★ Waymo(Alphabet 子公司)、Zoox(Amazon 子公司)非獨立上市標的,未列表;要曝險只能透過 GOOGL / AMZN 個股。</p>
+
+<p style="margin-top:16px">三個觀察:</p>
+<p>① <b>EV 整車廠這一段的估值光譜極端分裂</b>。Stellantis forward PS 0.09x(分位 9.7%)到 Tesla forward PE 284.7x,中間差了幾個數量級。<span class="mid">這不是同一個資產類別在被定價</span>——傳統車廠被當成衰退中的製造業,Tesla 被當成 AI 期權。</p>
+<p>② <b>BYD 才是「銷量霸主但估值已墊高」的那一個</b>。forward PE 17.6x、分位 <b>82.5%</b>,是 EV 族群裡少數估值分位偏高的。它不是那種「便宜的龍頭」。</p>
+<p>③ <b>Robotaxi 這段真正在跑規模的是百度</b>。Apollo Go 在中國的運營規模領先,forward PE 16.2x 相對合理。Pony.ai / WeRide 是純題材股(PS 17.65x / 9.64x),Mobileye 則是 Tier 1 供應商而非營運商,forward PS 3.42x、分位 11.3% 是這段裡最便宜的。</p>
+</div>
+
+<h2>八、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Capex 是否追上節奏</div><div class="kd">Q3 需約 $8.35B(本季僅 $5.79B)</div><div class="ke">達不到 = 要嘛下修 FY26 &gt;$25B guidance,要嘛 Q4 得爆量</div></div>
+<div class="kcard"><div class="kt">② 儲能毛利率能否回彈</div><div class="kd">39.5% → 20.4%,公司稱一次性</div><div class="ke">Q3 仍在 20% 附近 = 結構性問題,「儲能是新利潤支柱」敘事需重估</div></div>
+<div class="kcard"><div class="kt">③ 扣碳權汽車毛利率能否守住 16%</div><div class="kd">本季 16.3%</div><div class="ke">續跌 = 核心製造成本控制惡化,不是單純基期效應</div></div>
+<div class="kcard"><div class="kt">④ 碳權收入是否跌破 $100M</div><div class="kd">本季 $146M,YoY −67%</div><div class="ke">政策環境沒反轉的話,這條利潤來源可能加速消失</div></div>
+</div>
+</div>
+
+<h2>九、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>需求證明不靠補貼</b>。稅額抵免消失、無任何政策順風,交車量仍 YoY +25% 創 Q2 紀錄,庫存天數壓到 15 天。這是本季最硬的多方論據。</p>
+<p>② <b>服務業務是真實的高毛利引擎</b>。毛利 $648M、毛利率 14.1% 雙創新高,且連 3 季結構性擴大(5.4% → 9.2% → 14.1%)。低資本支出、可規模化,是最接近「軟體變現產生現金」的證據。</p>
+<p>③ <b>扣碳權後的汽車毛利率其實 YoY 上升 130bp</b>。核心製造效率仍在改善,QoQ 的下滑主要是 Q1 一次性受益的基期問題,不是趨勢惡化。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>獲利九成以上不是本業</b>。$763M SpaceX 利得 + $274M 稅項迴轉佔淨利 93%,核心只剩約 $77M;而且 non-GAAP EPS 仍 miss 共識 40%。兩個口徑同時指向本業獲利能力在退。</p>
+<p>② <b>現金開始流出,而 capex 進度還落後</b>。FCF 轉負 −$1.09B(近兩年首見),現金 QoQ 減 $1.22B;要達成 FY26 &gt;$25B,下半年每季還要再增 44%,執行壓力極大且尚未看到對應的營收/毛利回報。</p>
+<p>③ <b>三大敘事本季營收皆為 $0</b>。Robotaxi、Cybercab、Optimus 都沒有獨立揭露的營收;商業化口徑(安全性瓶頸、S 曲線很平很長)比上季更保守。而市場為這些故事付出的溢價約佔九成市值。</p>
+<p class="note">★ 分歧點跟其他幾家不同:Alphabet / Microsoft / Amazon 的分歧是「capex 幾年回本」,那是<b>時間問題</b>;Tesla 的分歧是「Robotaxi 與 Optimus 到底會不會發生」,那是<b>有無問題</b>。前者可以用折現率討論,後者只能用機率。這也是為什麼分析師評級裡「持有」會佔到一半。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Tesla SEC 8-K Exhibit 99.1 股東信全文(2026-07-22,含損益表/資產負債表/現金流量表/GAAP 與 non-GAAP 調節表)、Futu `get_financials_statements` 近 8 季損益表<b>逐項與 IR 股東信交叉核對,數字完全一致</b>、Tesla IR「Q2 2026 Earnings Consensus」頁(官方彙整分析師共識,作為「vs 市場預期」基準)、Futu 估值與分析師一致預期(查詢日 2026-08-03)、Investing.com 法說會逐字稿摘要(Robotaxi / Optimus 管理層口徑、capex 效率表態)、EV 稅額抵免 2025/9/30 到期經多方查證。<b>未取得法說逐字稿全文</b>,法說段落以摘要為準。ASP 為自行試算(汽車銷售收入 ÷ 交付量,未剔匯率),非官方揭露。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 現金流表
+const CASH=[
+ ['營運現金流','$4.70B','$3.94B','$2.54B','+85%','win'],
+ ['<b>資本支出</b>','<b>$5.79B</b>','$2.49B','$2.39B','QoQ +132% / YoY +142%','lose'],
+ ['<b>自由現金流</b>','<b>−$1.09B</b>','+$1.44B','+$0.15B','近兩年首度轉負','lose'],
+ ['現金 + 短投','$43.52B','$44.74B','$36.78B','QoQ −$1.22B','mid'],
+ ['車輛庫存天數','15 天','27 天','24 天','公司稱供給受限','win'],
+ ['FY26 capex 進度','H1 僅 $8.28B','—','—','指引 &gt;$25B,H2 需約 $8.35B/季','lose'],
+];
+document.getElementById('cashTable').innerHTML=
+ '<tr><th>指標</th><th>Q2 2026</th><th>Q1 2026</th><th>Q2 2025</th><th>判定</th></tr>'+
+ CASH.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="${r[5]}">${r[4]}</td></tr>`).join('');
+
+// Guidance / 敘事追蹤
+const GUIDE=[
+ ['FY2026 Capex','由年初約 $20B 上修至 &gt;$25B','重申 &gt;$25B,CFO 稱「願接受較低資本效率換加速執行」','guidance 未破,但 H1 只花 $8.28B,年化節奏落後','lose'],
+ ['Optimus','「Fremont 準備年底前投產」「Gen 3 手部 Q2 全天候工廠部署」','S/X 產線已拆、第一代產線在裝,「今年稍晚」量產;自承「最難量產」「S 曲線很平很長」','時程沒變但<b>語氣明顯轉保守</b>','lose'],
+ ['Robotaxi','「擴至七個美國市場,全年加速擴張」','已在七大都會運營,7 月新增 Miami / Orlando / Tampa 無人監督;瓶頸改稱「安全可靠度而非需求」','城市數字兌現,但<b>限制因素改口</b>,需觀察是否迴避需求問題','mid'],
+ ['交車量財測','未給具體數字','同上,仍未給任何量化全年財測','一貫政策,非本季新增迴避','mid'],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>Q1 2026 法說怎麼說</th><th>Q2 2026 法說怎麼說</th><th>有沒有跳票</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// EV 整車廠
+const EV=[
+ ['BYD 比亞迪 (01211.HK)','全球純電+插混銷量龍頭','龍頭','Forward PE 17.6x(分位 82.5%)','銷量霸主但估值已墊高,不是便宜的龍頭','lose'],
+ ['TSLA 特斯拉','北美 EV 龍頭 + 最高估值溢價 · 本文主標的','龍頭 · 估值脫鉤','Forward PE 284.7x(分位 28%)','估值已幾乎與本業脫鉤,見估值段落','lose'],
+ ['GM 通用汽車','傳統車廠轉型 EV','追隨者','Forward PE 7.3x','便宜但轉型力道有限,估值反映傳統車廠折價','mid'],
+ ['F 福特','傳統車廠轉型 EV','追隨者','Forward PS 0.32x(分位 74%)','現金流壓力大,用 PS 估值反映獲利品質疑慮','mid'],
+ ['TM 豐田','混動為主、純電謹慎','落後者(EV 戰略)','Forward PE 9.5x','估值便宜但純電布局明顯落後 BYD / Tesla','mid'],
+ ['STLA Stellantis','傳統多品牌車廠','落後者','Forward PS 0.09x(分位 9.7%)','極便宜,但反映轉型停滯與獲利疑慮','lose'],
+ ['NIO 蔚來','中國高端純電','二線','Forward PS 0.59x(分位 22.6%)','仍虧損燒現金,PS 便宜但獲利能見度低','lose'],
+ ['XPEV 小鵬','中國智能電動車','二線','Forward PE 為負(仍虧損)','尚未轉盈,估值宜用 PS / 營收成長判斷','lose'],
+ ['LI 理想','中國增程 / 純電','二線','Forward PE 63.1x(分位 25.8%)','已轉盈但估值不便宜,相對自身歷史不算貴','mid'],
+ ['RIVN Rivian','美國電動皮卡 / SUV 新創','落後者','Forward PS 2.25x(分位 38.7%)','仍虧損,規模效應尚未顯現','lose'],
+ ['LCID Lucid','美國豪華純電新創','落後者','Forward PS 1.19x(分位 95.2%)','持續虧損但估值處自身歷史高位,風險報酬差','lose'],
+];
+document.getElementById('evTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward 估值</th><th>一句話看法</th></tr>'+
+ EV.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[5]}">${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// 儲能
+const ENERGY=[
+ ['FLNC Fluence Energy','儲能系統整合商','二線','Forward PS 0.51x(分位 14.5%)','估值低位但需求波動大,與 Tesla 儲能同受景氣循環影響'],
+ ['ENPH Enphase Energy','太陽能微逆變器 + 家用儲能','二線','Forward PE 69.6x(分位 17.7%)','PE 絕對值高但相對自身歷史處低位,反映住宅太陽能景氣低谷'],
+];
+document.getElementById('energyTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward 估值</th><th>一句話看法</th></tr>'+
+ ENERGY.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// 自駕 / 機器人
+const AV=[
+ ['BIDU 百度','Apollo Go Robotaxi 中國運營規模最大','龍頭(中國 Robotaxi)','Forward PE 16.2x','Robotaxi 商業化規模領先,估值相對合理不算貴'],
+ ['PONY 小馬智行','中國 Robotaxi 純自駕新創','跟隨者','Forward PS 17.65x(分位 45.2%)','純題材股,估值中性,需看訂單 / 里程數兌現'],
+ ['WRD 文遠知行','中國 Robotaxi / 自駕巴士新創','跟隨者','Forward PS 9.64x(分位 33.9%)','同上,估值相對 Pony 較低'],
+ ['MBLY Mobileye','ADAS / 自駕方案供應商','技術供應商','Forward PS 3.42x(分位 11.3%)','不是營運商而是 Tier 1 供應商,估值處這段最低位'],
+];
+document.getElementById('avTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward 估值</th><th>一句話看法</th></tr>'+
+ AV.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+</script>
+</body></html>

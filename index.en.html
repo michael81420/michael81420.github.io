@@ -45,17 +45,25 @@
     <button class="chip" data-cat="AI 技術分享">AI Notes</button>
     <button class="chip" data-cat="前端開發">Frontend</button>
     <button class="chip" data-cat="旅遊">Travel</button>
+    <!-- 財報是模式不是分類：分隔線右邊自成一區，按下去整塊換成資料表（見 site.js 的 drawEarn） -->
+    <div class="chip-div"></div>
+    <button class="chip chip-earn" id="earnChip">Earnings <span class="n">8</span></button>
     <div class="search">
       <div class="dot"></div>
       <input id="search" type="text" placeholder="Search…">
     </div>
   </div>
 
+  <!-- Sub-category row: filled by site.js from POSTS[].sub; hidden when the category has none -->
+  <div class="subbar" id="subbar" style="display:none"></div>
+
   <div class="empty" id="empty" style="display:none">No matching posts — try another category or keyword.</div>
+
+  <!-- 財報模式的資料表：由 site.js 依各篇 .earn.js 填入，預設隱藏 -->
+  <div class="etable-wrap" id="earnWrap" style="display:none"></div>
 
   <!-- Post list -->
   <div class="grid" id="grid">
-
 
     <a class="post-card" data-cat="AI 技術分享"
        data-title="CUDA GPU programming path from zero tutorial learning order how to write nvcc NVIDIA thread block grid kernel execution model memory hierarchy shared memory global memory registers coalescing tiling matmul matrix multiply transpose warp divergence reduction shuffle syncthreads bank conflict Nsight roofline occupancy memory-bound compute-bound softmax layernorm flash attention PMPP cuBLAS Triton parallel computing"

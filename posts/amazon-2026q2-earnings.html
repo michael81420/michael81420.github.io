@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amazon．2026 Q2 財報拆解 — AWS +37% 創 18 季新高、backlog 單季暴增 $132B 到 $496B,但淨利 $62.6B 有 $53.4B 是 Anthropic 一次性利得;capex 二度上修到 $220B,理由是記憶體漲價</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="amazon-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Amazon．2026 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">AWS 營收 <b>+37% YoY 創 18 季新高</b>、營益率一年擴張 <b>627bp</b> 到 39.3%、backlog 單季暴增 $132B 到 <b>$496B</b>——股價次日 <b>+15.3%</b>。<br>但頭條淨利 $62.6B 裡有 <b>$53.4B 是 Anthropic 一次性投資利得</b>,核心 EPS $1.97 才是真實的本業 beat。IR 原文 + 法說摘要 + Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Amazon IR 財報原文 + 法說會摘要</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30</span>
+<span class="badge">公布日:2026-07-30 盤後</span>
+<span class="badge">整理日:2026-08-03</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">☁️ <span class="win">AWS 是本季最高品質的訊號,而且不只是營收</span>。$42.23B、YoY <b>+37%</b>,連 5 季加速(20.2% → 24% → 28% → 37%),創 18 季新高。更重要的是<b>營業利益率從 33.0% 擴張到 39.3%,一年 +627bp</b>——擴張幅度遠大於營收成長能解釋的規模效應,代表產能滿載下訂價權與單位成本效率同時改善。這不是靠犧牲利潤換營收。</p>
+<p class="big">🧾 <span class="lose">但頭條淨利要拆:$62.6B 裡有 $53.4B 不是本業</span>。GAAP 淨利 YoY +245%,其中 <b>$53.4B 是 Anthropic 投資的稅前一次性利得</b>。剔除後核心 Adjusted EPS <b>$1.97</b> 對比預期 $1.82,beat 幅度是 <b>+8.2%</b> 而非頭條暗示的量級。<span class="mid">+8.2% 仍是紮實的 beat</span>,但市場當日 +15.3% 的反應,有多少建立在沒拆解的頭條數字上,值得存疑。</p>
+<p class="big">📊 <span class="mid">加速是真的,但 AWS 仍是三朵雲裡最慢的一朵</span>。AWS +37%、Azure 43%、Google Cloud +82%。「重新加速」的敘事要放進同業排名看——<b>AWS 是在追趕,不是在領先</b>。它的優勢是基期最大、backlog 最具可見度,不是成長率。</p>
+<p class="big">💸 <span class="lose">capex 二度上修到 $220B,而理由是成本不是需求</span>。全年指引從 $200B 上修到 <b>$220B</b>(YoY +71%),管理層在法說會明確歸因於<b>「higher cost of memory」記憶體漲價</b>,而非單純擴大建置規模。這代表 AI 基建的<b>成本通膨</b>正在轉嫁進 Amazon 自己的資本支出。同期 TTM 自由現金流已從 +$18.2B 轉為 <b>−$7.6B</b>。</p>
+<p class="note">★ 估值陷阱同 Alphabet:現在看到的 <b>trailing PE 21.85x、一年分位 0.8%</b> 是<span class="lose">壞掉的</span>——$53.4B 一次性利得灌大了 TTM EPS,機械性壓低了 trailing PE。要看 forward PE:28.46x,低於一年均值 32.0x,自身歷史中段偏低,但<b>是雲端三雄裡最高的一檔</b>。</p>
+</div>
+
+<h2>一、AWS:加速是真的,但排名還是第三</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AWS 年增率連續四季從 20% 加速到 37% 創 18 季新高,但同期 Azure 為 43%、Google Cloud 為 82%,AWS 在三朵雲中仍是成長最慢的一朵">
+  <text x="20" y="26" style="fill:var(--win);font:600 13px sans-serif">AWS 營收年增率(%)· 連 4 季加速</text>
+  <line x1="70" y1="245" x2="440" y2="245" style="stroke:var(--border)"/>
+  <line x1="70" y1="60" x2="70" y2="245" style="stroke:var(--border)"/>
+  <text x="60" y="249" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">18</text>
+  <text x="60" y="170" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">28</text>
+  <text x="60" y="94" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">38</text>
+  <path d="M110 223L210 194L310 163L410 93" style="fill:none;stroke:var(--win);stroke-width:2.5"/>
+  <circle cx="110" cy="223" r="5" style="fill:var(--win)"/>
+  <circle cx="210" cy="194" r="5" style="fill:var(--win)"/>
+  <circle cx="310" cy="163" r="5" style="fill:var(--win)"/>
+  <circle cx="410" cy="93" r="6" style="fill:var(--win)"/>
+  <text x="110" y="214" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">20.2</text>
+  <text x="210" y="185" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">24</text>
+  <text x="310" y="154" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">28</text>
+  <text x="410" y="83" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">37</text>
+  <text x="110" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q3&#39;25</text>
+  <text x="210" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q4&#39;25</text>
+  <text x="310" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q1&#39;26</text>
+  <text x="410" y="266" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q2&#39;26</text>
+
+  <line x1="480" y1="55" x2="480" y2="255" style="stroke:var(--border);stroke-dasharray:3 3"/>
+  <text x="510" y="80" style="fill:var(--ink2);font:600 13px sans-serif">同期三朵雲比較(本季 YoY)</text>
+  <rect x="510" y="100" width="90" height="26" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="610" y="118" style="fill:var(--ink2);font:600 12px sans-serif">AWS +37%</text>
+  <rect x="510" y="145" width="105" height="26" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="625" y="163" style="fill:var(--ink2);font:600 12px sans-serif">Azure +43%</text>
+  <rect x="510" y="190" width="200" height="26" rx="3" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="510" y="234" style="fill:var(--win);font:600 12px sans-serif">Google Cloud +82%</text>
+  <text x="610" y="208" style="fill:var(--win);font:600 12px sans-serif"> </text>
+  <text x="510" y="256" style="fill:var(--lose);font:600 12px sans-serif">加速最猛的敘事,排名還是第三</text>
+</svg>
+</div>
+<p>AWS 這條線是本季最強的訊號,而且不是只有營收:</p>
+<p>① <b>營收 $42.23B、YoY +37%</b>,連 4 季加速,創 18 季新高。② <b>營業利益 $16.6B、營益率 39.31%</b>,對比去年同期 33.04%,一年擴張 <b>627bp</b>。③ <b>backlog(RPO)$496B,單季增 $132B</b>,Jassy 在法說會上稱其「growing triple digits year-over-year」。</p>
+<p>第 ② 點是這三個裡最有價值的。營益率擴張 627bp 的幅度<b>遠大於營收成長能解釋的規模效應</b>——代表在產能滿載的狀態下,訂價權與單位成本效率同時在改善。這是質量而非數量的訊號。</p>
+<p><span class="mid">但要把它放回同業排名裡看</span>:AWS +37%、Azure 43%、Google Cloud +82%。「AWS 重新加速」是事實,「AWS 領先」不是。它現在的優勢是<b>基期最大、backlog 可見度最高</b>,不是成長率。</p>
+<div class="quote">📌 <b>Jassy 的一句話值得記</b>:「Even at that amount, we will still not have enough capacity to meet all the demand we have in 2026, and I believe this dynamic will also be true in 2027, too」——即使 capex 上修到 $220B,2026 年產能仍不夠,而且他認為 2027 年還是一樣。<b>供給缺口是管理層自己承認的多年期狀態</b>,不是單季現象。</div>
+</div>
+
+<h2>二、淨利拆開:$62.6B 裡只有九分之一多是本業增量</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amazon 本季 GAAP 稀釋 EPS 5.75 美元中約 3.78 美元來自 Anthropic 一次性投資利得,剔除後核心 EPS 1.97 美元對比預期 1.82 美元是 8.2% 的 beat">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">稀釋 EPS(美元)· 頭條 vs 核心</text>
+  <line x1="60" y1="250" x2="700" y2="250" style="stroke:var(--border)"/>
+
+  <rect x="110" y="190" width="110" height="60" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="165" y="181" text-anchor="middle" style="fill:var(--ink2);font:600 14px sans-serif">$1.82</text>
+  <text x="165" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">市場預期</text>
+
+  <rect x="320" y="185" width="110" height="65" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <rect x="320" y="60" width="110" height="125" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="375" y="115" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">約 $3.78</text>
+  <text x="375" y="133" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">Anthropic 一次性利得</text>
+  <text x="375" y="151" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">($53.4B 稅前)</text>
+  <text x="375" y="224" text-anchor="middle" style="fill:var(--ink2);font:600 13px sans-serif">$1.97</text>
+  <text x="375" y="50" text-anchor="middle" style="fill:var(--ink);font:600 14px sans-serif">$5.75 GAAP</text>
+  <text x="375" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">本季公布值</text>
+
+  <rect x="530" y="185" width="110" height="65" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="585" y="176" text-anchor="middle" style="fill:var(--win);font:600 14px sans-serif">$1.97</text>
+  <text x="585" y="272" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">核心 Adjusted EPS</text>
+  <text x="585" y="292" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">對比預期 Beat +8.2%</text>
+
+  <line x1="440" y1="217" x2="522" y2="217" style="stroke:var(--ink3)"/>
+  <text x="481" y="208" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">剔除</text>
+  <text x="165" y="292" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">分析師一致預期</text>
+</svg>
+</div>
+<p>GAAP 淨利 $62.65B、YoY +245%,看起來驚人。但其中 <b>$53.4B 是 Anthropic 投資的稅前一次性利得</b>——非經常性、非本業。</p>
+<p>還原方式:$53.4B 稅前利得 ×(1 − 22.5% 有效稅率)÷ 約 109 億股 ≈ $3.80/股;$5.75 − $3.80 ≈ $1.95,與分析師口徑的 Adjusted EPS <b>$1.97</b> 大致吻合。對比預期 $1.82,真實 beat 是 <b>+8.2%</b>。</p>
+<p class="note">★ <b>口徑要標明</b>:$1.97 這個 Adjusted EPS 是<b>分析師口徑,不是 Amazon 官方揭露</b>。公司沒有提供剔除該筆利得的 non-GAAP EPS。上面的還原算式是交叉驗證用,不是精確會計數字。</p>
+<p><span class="mid">+8.2% 是紮實的 beat,本業確實好</span>——營業利益 $27.46B(YoY +43.2%)大幅超出上季 guidance 上限 $24B 達 $3.5B,這部分完全是真的。要留意的只是:<b>市場當日 +15.3% 的反應,有多少是對 $62.6B 這個頭條數字的反應</b>。這跟 Alphabet 這季正好相反——Alphabet 也有一次性利得,但市場看穿了,次日跌 6.9%。</p>
+</div>
+
+<h2>三、分部:AWS 擴張利潤率,零售在吸收關稅</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="segTable"></table></div>
+<p style="margin-top:14px">① <b>AWS 的利潤率擴張是全公司唯一的大幅改善</b>(+627bp)。北美只小幅擴張 +33bp,國際還略降。</p>
+<p>② <b>北美利潤率擴張受限,原因之一是自行吸收關稅</b>。本季收到約 $600M 關稅相關退款,法說會上管理層明講「largely absorbed these costs rather than pass them on to customers」——<b>選擇犧牲毛利保市佔,而非轉嫁消費者</b>。這是策略選擇,短期壓利潤率,長期換份額。</p>
+<p>③ <b>廣告是被低估的第三引擎</b>:$19.8B、YoY <b>+26%</b>(上季 +24%,持續加速)。這是高毛利業務,規模已經不小,而且跟 AWS 與零售有協同(AI 驅動的 sponsored product 轉換率提升)。<span class="mid">在 Meta 廣告曝光成長減速的同期,Amazon 廣告還在加速</span>,這個對比值得記。</p>
+</div>
+
+<h2>四、Capex 上修到 $220B,而理由是記憶體漲價</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Amazon 單季資本支出一年內從 314 億增至 531 億美元,同期滾動一年自由現金流從正 182 億轉為負 76 億美元">
+  <defs><marker id="aah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季資本支出(十億美元)</text>
+  <line x1="70" y1="230" x2="400" y2="230" style="stroke:var(--border)"/>
+  <rect x="100" y="147" width="65" height="83" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="132" y="139" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">31.4</text>
+  <text x="132" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q2&#39;25</text>
+  <rect x="210" y="116" width="65" height="114" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="242" y="108" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">43.2</text>
+  <text x="242" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q1&#39;26</text>
+  <rect x="320" y="90" width="65" height="140" rx="3" style="fill:var(--losebg);stroke:var(--lose);stroke-width:2"/>
+  <text x="352" y="82" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">53.1</text>
+  <text x="352" y="250" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Q2&#39;26</text>
+  <text x="235" y="272" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">YoY +69%</text>
+
+  <line x1="440" y1="55" x2="440" y2="270" style="stroke:var(--border);stroke-dasharray:3 3"/>
+  <text x="470" y="80" style="fill:var(--ink2);font:600 13px sans-serif">滾動一年(TTM)自由現金流</text>
+  <line x1="480" y1="180" x2="740" y2="180" style="stroke:var(--border)"/>
+  <text x="470" y="184" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+  <rect x="520" y="132" width="70" height="48" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="555" y="124" text-anchor="middle" style="fill:var(--win);font:600 13px sans-serif">+18.2</text>
+  <text x="555" y="200" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">一年前</text>
+  <rect x="650" y="180" width="70" height="20" rx="3" style="fill:var(--losebg);stroke:var(--lose);stroke-width:2"/>
+  <text x="685" y="218" text-anchor="middle" style="fill:var(--lose);font:600 13px sans-serif">−7.6</text>
+  <text x="685" y="238" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">本季</text>
+  <line x1="596" y1="150" x2="644" y2="172" style="stroke:var(--ink3)" marker-end="url(#aah)"/>
+  <text x="620" y="270" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">一年之內轉負</text>
+</svg>
+</div>
+<p>全年資本支出指引從 <b>$200B 上修到 $220B</b>(對比 FY2025 實際約 $128B,YoY <b>+71%</b>)。這是本財年第二度上修。</p>
+<p class="big">⚠️ <b>上修的理由值得單獨拿出來講</b>:管理層在法說會明確歸因於<b>「higher cost of memory」——記憶體漲價</b>,而非單純擴大建置規模。這代表<span class="lose">AI 基建的成本通膨正在轉嫁進 Amazon 自己的資本支出</span>。同樣的錢,買到的產能變少了。</p>
+<p>這件事的影響比「花更多錢」嚴重:如果 capex 上修是因為需求更旺、要蓋更多,那是好消息;如果是因為同樣的東西變貴了,那是<b>資本效率的直接惡化</b>。Oracle 這季法說會上也被 Guggenheim 追問過同一件事(記憶體/SSD 漲價對合約毛利率的侵蝕)——<b>這是整個族群共同的成本壓力,不是 Amazon 獨有</b>。</p>
+<p>結果反映在現金流:單季 FCF −$8.82B;<b>TTM 自由現金流從一年前的 +$18.2B 轉為 −$7.6B</b>。營運現金流其實成長得很好($45.39B、YoY +40%),是 capex 跑得更快。</p>
+</div>
+
+<h2>五、Guidance:連兩季大幅超越自己設的區間</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">值得記的一個模式:<b>Amazon 連續兩季大幅超越自己給的 guidance 上限</b>(Q1、Q2 營業利益都超上限 $2.4–3.5B)。這是管理層一貫的保守設定慣例。</p>
+<p>因此 Q3 guidance 隱含的 YoY 成長率(+9~12%)明顯低於本季實際的 +19.6%,不宜直接當成減速訊號讀——<span class="mid">除了基期墊高(Prime Day 已計入 Q2)之外,保守設定本身就是慣例</span>。若模式延續,Q3 營業利益 $22.5–26.5B 有再度低估的可能。</p>
+</div>
+
+<h2>六、估值:trailing PE 壞掉了,forward 才能看</h2>
+<div class="card">
+<p class="big">⚠️ <b>Trailing PE 21.85x、一年分位 0.8%</b> —— <span class="lose">這個數字現在不能用</span>。$53.4B 一次性利得灌大了 TTM EPS,機械性壓低了 trailing PE,看起來像史上最便宜,實際只是會計效果。<b>Alphabet 這季完全同一個陷阱</b>,兩家要用同一把尺看。</p>
+<p><b>Forward PE 28.46x</b>,低於一年均值 32.0x,也低於 2019 年至今長期均值 34.4x(長期分位 37%)——用 forward 口徑看,<b>估值在自身歷史中段偏低,未過熱</b>。</p>
+<p>但橫向比就不一樣了:AMZN 28.46x / MSFT 23.5x / GOOG 26.3x / META 17.9x / ORCL 19.5x / NVDA 19.9x——<b>AMZN 是雲端三雄裡 forward PE 最高的一檔</b>,反映市場給 AWS 加速與 backlog 可見度的溢價。</p>
+<p><b>分部加總視角(SOTP,粗估):</b></p>
+<div style="overflow-x:auto"><table id="sotpTable"></table></div>
+<p style="margin-top:14px" class="note">★ 合計 $1.83–2.35T,對比目前市值約 <b>$2.96T</b>(推算:股價 $271.58 × 稀釋股數約 109 億股)。差額 $0.6–1.1T 可能反映:① 市場給 AWS backlog(近三年營收量體、尚未入帳)更高的隱含乘數;② Anthropic 等股權投資部位的帳面價值;③ 對 AWS 利潤率持續擴張的樂觀預期。<span class="mid">這只是粗略框架,不是精確估值結論</span>,乘數選擇本身就有很大主觀空間。</p>
+<p><b>分析師一致預期:</b>38 位分析師,<b>97.4% 買進</b>、2.6% 持有、0% 賣出,平均目標價 $333.26(高 $400 / 低 $250),對比現價 $271.58 隱含 +22.7%。<span class="mid">97.4% 買進是極高的一致性</span>——沒有反方觀點的共識通常代表下修風險而非上檔保證。</p>
+<p><b>循環烈度判斷(invest-playbook)</b>:AWS 屬<b>成長期而非循環期</b>;零售屬中等循環(受消費與關稅牽動);真正的循環變數是 <b>capex 週期</b>,現在在擴張段,而且成本通膨(記憶體漲價)讓這一段的資本效率變差。折舊會在未來 2–3 年遞延壓上損益表,這部分通常沒有被完整計入 forward PE。</p>
+</div>
+
+<h2>七、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b>Amazon 本季驅動力主要來自<b>雲端運算／AI 基礎設施超大規模業者(Hyperscaler)</b>,其次才是<b>電商零售</b>。以下以雲端族群為主表,電商族群作次要對照。</p>
+<p style="margin-top:14px"><b>主族群:雲端超大規模業者</b></p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:18px"><b>次要對照:電商零售</b></p>
+<div style="overflow-x:auto"><table id="retailTable"></table></div>
+<p style="margin-top:14px">兩個觀察:</p>
+<p>① <b>雲端族群的估值分位幾乎全在低檔</b>(AMZN 0.8%、GOOG 3.2%、META 5.2%、ORCL 5.2%、NVDA 6.4%),唯獨 MSFT 44%。<span class="mid">整個族群同步被壓縮,比較像資金面而非單一公司基本面</span>——但 AMZN 那個 0.8% 因 trailing PE 失真,不宜直接橫比。</p>
+<p>② <b>WMT forward PE 37.4x 高於 AMZN 的 28.5x</b>。傳統零售龍頭比科技巨頭貴,反映的是穩定現金流溢價而非成長性——在一個現金流普遍被 capex 壓縮的環境裡,「還有自由現金流」本身變成了溢價來源。</p>
+</div>
+
+<h2>八、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① AWS 能否連 6 季加速</div><div class="kd">本季 +37%,已連 4 季加速</div><div class="ke">看 Q3 是否 ≥37%,以及與 Azure / GCP 的差距是否縮小</div></div>
+<div class="kcard"><div class="kt">② $220B 是否為年內最後一次上修</div><div class="kd">已從 $200B 上修一次</div><div class="ke">再上修至 $240B+ = 成本/需求壓力未見頂;守住 = 本次已是高點</div></div>
+<div class="kcard"><div class="kt">③ TTM FCF 能否止跌</div><div class="kd">+$18.2B → −$7.6B</div><div class="ke">續惡化 = capex 對現金創造的擠壓尚未觸底</div></div>
+<div class="kcard"><div class="kt">④ AWS backlog 成長是否維持三位數</div><div class="kd">$496B,單季 +$132B</div><div class="ke">環比增速放緩 = 需求見頂的早期訊號</div></div>
+</div>
+</div>
+
+<h2>九、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>AWS backlog $496B 鎖定了近三年營收量體</b>,且營益率同步擴張 627bp 到 39.3%——不是靠犧牲利潤換營收。單季增 $132B,Jassy 稱三位數 YoY 成長。</p>
+<p>② <b>廣告是加速中的高毛利第三引擎</b>。$19.8B、+26%(上季 +24%),與 AWS 及零售有協同。在 Meta 廣告曝光減速的同期還在加速。</p>
+<p>③ <b>guidance 連兩季被自己大幅超越</b>。保守設定 + 持續超額執行的模式若延續,Q3 的 $22.5–26.5B 有再度低估的可能。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>大 beat 主要是一次性利得撐起來的</b>。核心 Adjusted EPS beat 僅 +8.2%,遠不如 GAAP 頭條誇張。市場單日 +15.3% 的反應,可能有一部分建立在未拆解的數字上。<span class="mid">對照 Alphabet 同季同一機制卻跌 6.9%,市場的一致性存疑</span>。</p>
+<p>② <b>capex 上修的理由是成本不是需求</b>。$220B、YoY +71%,管理層歸因記憶體漲價——這是資本效率的直接惡化,不是產能擴張的好消息。TTM FCF 已轉負 −$7.6B。</p>
+<p>③ <b>AWS 仍是三雲最慢</b>。+37% vs Azure 43%、GCP +82%。若 GCP / Azure 持續拉開差距,AWS 的相對競爭敘事會被稀釋,而市場現在給的 forward PE 溢價(三雄最高)正是建立在這個敘事上。</p>
+<p class="note">★ 分歧點:<b>你怎麼看那 $53.4B</b>。看多方說「Anthropic 持股的價值是真的,Amazon 用相對小的錢買到很大的部位」;看空方說「那是未實現、會反轉,而且它掩蓋了 capex 效率正在惡化這件事」。兩邊都對——差別在你的持有期是一季還是三年。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Amazon IR 財報新聞稿(aboutamazon.com/news/company-news/amazon-earnings-q2-2026-report)、investing.com 轉載法說會逐字稿摘要(AWS backlog、capex 歸因記憶體成本、關稅吸收原句)、Futu 財務報表與估值數據(查詢日 2026-08-03)、廣告營收經 mediapost / variety / ppc.land 交叉一致、Azure / GCP 同期成長率對照引自 tomtunguz.com / fool.com、CNBC 與 Fortune 交叉查證。<b>未取得法說逐字稿全文</b>,法說內容以可查證摘要為準。Adjusted EPS $1.97 為分析師口徑,非公司官方揭露;市值 $2.96T 為推算值。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 分部表
+const SEG=[
+ ['北美 North America','$116.18B','+16%','$9.1B','7.83%','7.50%(+33bp)','mid'],
+ ['國際 International','$42.20B','+15%','$1.7B','4.03%','4.08%(略降)','lose'],
+ ['<b>AWS</b>','<b>$42.23B</b>','<b>+37%</b>','$16.6B','<b>39.31%</b>','33.04%(<b>+627bp</b>)','win'],
+ ['廣告服務(含於上述分部)','$19.8B','+26%','—','—','上季 +24%,持續加速','win'],
+ ['<b>總營收</b>','<b>$200.6B</b>','+19.6%','$27.46B','13.7%','11.4%(+230bp)','win'],
+];
+document.getElementById('segTable').innerHTML=
+ '<tr><th>分部</th><th>Q2 2026 營收</th><th>YoY</th><th>營業利益</th><th>營益率</th><th>去年同期營益率</th></tr>'+
+ SEG.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[6]}">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+// Guidance
+const GUIDE=[
+ ['Q2 營收(上次給的)','$194–199B(+16~19%)','$200.6B(+19.6%)','超上限','win'],
+ ['Q2 營業利益(上次給的)','$20–24B','$27.5B','大幅超上限 $3.5B','win'],
+ ['<b>Q3 營收(本次新給)</b>','$197.0–202.0B','+9~12% YoY','去年同期 $180.2B','mid'],
+ ['<b>Q3 營業利益(本次新給)</b>','$22.5–26.5B','—','去年同期 $17.4B','mid'],
+ ['<b>全年資本支出</b>','<b>約 $220B</b>','上修自 $200B','YoY +71%,歸因記憶體漲價','lose'],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>區間</th><th>實際 / 隱含</th><th>備註</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${r[4]}">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+// SOTP
+const SOTP=[
+ ['AWS','$66.4B','18–24x(雲端基建可比)','$1.20–1.59T'],
+ ['北美零售','$36.4B','15–18x','$546–655B'],
+ ['國際','$6.8B','12–15x','$82–102B'],
+ ['<b>合計</b>','—','—','<b>$1.83–2.35T</b>'],
+];
+document.getElementById('sotpTable').innerHTML=
+ '<tr><th>分部</th><th>年化營業利益</th><th>假設乘數</th><th>隱含價值</th></tr>'+
+ SOTP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+// 雲端主族群
+const GROUP=[
+ ['AMZN 亞馬遜','AWS 市佔第一但成長最慢 · 本文主標的','加速中但排名仍第三','28.46x','⚠️ trailing 失真','backlog 與利潤率是本季最強訊號,但成長排名仍居三雲之末'],
+ ['MSFT 微軟','Azure,三雲第二','穩定加速至 43%','23.5x','44.0%','增速僅次 GCP,估值分位卻是同業最高的一檔'],
+ ['GOOG 谷歌','Google Cloud +82%,三雲最快','龍頭 · 加速最猛','26.3x','3.2%','成長最快卻估值分位最低,錯位明顯'],
+ ['ORCL Oracle','OCI 後進暴衝 +93%,但基期小','財報後暴跌 −35%','19.5x','5.2%','RPO 暴增但 capex 超支 + FCF 轉負,市場用腳投票'],
+ ['NVDA 輝達','上游 GPU 供應商,綁定最深','核心受惠者 · 估值低位','19.9x','6.4%','三家 capex 同步上修對其直接利多,估值分位仍在歷史低檔'],
+ ['META Meta','非雲端出售方,但 capex 規模與敘事可比','EPS miss + FCF 崩跌 · 族群最弱','17.9x','5.2%','可當 capex 過熱的反面案例'],
+ ['CRWV CoreWeave','Neo-cloud / GPU 租賃','純題材 · 高波動','未查證','—','最貼近算力稀缺敘事,但獲利能見度低於超大規模業者'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一年估值分位</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+// 電商次要對照
+const RETAIL=[
+ ['WMT 沃爾瑪','傳統零售龍頭,電商份額提升中','防禦型','37.4x','估值高於 AMZN,反映穩定現金流溢價而非成長性'],
+ ['BABA 阿里巴巴','中國電商 + 雲端雙重曝險','估值最低','21.9x','地緣政治折價明顯,阿里雲成長性不如美系三雄'],
+ ['COST 好市多','會員制零售,非直接電商競品','防禦型','未查證','僅作零售估值錨定參考'],
+ ['SHOP Shopify','電商基礎設施(非自營)','題材型','未查證','與 AMZN 是互補而非直接競爭'],
+];
+document.getElementById('retailTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一句話看法</th></tr>'+
+ RETAIL.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+</script>
+</body></html>

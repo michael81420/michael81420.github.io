@@ -65,7 +65,7 @@ input{font-family:inherit;outline:none}
 /* ============================================================
    首頁（列表頁）
    ============================================================ */
-.home{max-width:880px;margin:0 auto;padding:46px 30px 90px}
+.home{max-width:1298px;margin:0 auto;padding:46px 30px 90px}
 .home-head{display:flex;align-items:center;justify-content:space-between;gap:20px}
 .home-head .brand{font-size:25px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
 .home-head nav{display:flex;align-items:center;gap:6px}
@@ -81,24 +81,29 @@ input{font-family:inherit;outline:none}
 .featured:hover{transform:translateY(-2px);text-decoration:none}
 .featured .blob{position:absolute;right:-44px;top:-44px;width:190px;height:190px;border-radius:50%;
   background:var(--accent);opacity:.55}
-.featured .inner{position:relative}
+/* ponytail: 一條 max-width 管整塊；-150px 是右上 blob 露出的寬度 */
+.featured .inner{position:relative;max-width:min(calc(100% - 150px),1000px)}
 .featured .kicker{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accentSoft)}
-.featured .f-title{margin-top:14px;font-size:28px;font-weight:800;line-height:1.25;letter-spacing:-.01em;
-  color:var(--feat-ink);max-width:560px}
-.featured .f-excerpt{margin-top:13px;font-size:14.5px;line-height:1.65;color:var(--feat-sub);max-width:520px}
+.featured .f-title{margin-top:14px;font-size:clamp(24px,2.2vw,32px);font-weight:800;line-height:1.25;
+  letter-spacing:-.01em;color:var(--feat-ink)}
+.featured .f-excerpt{margin-top:13px;font-size:14.5px;line-height:1.65;color:var(--feat-sub)}
 .featured .f-meta{margin-top:18px;font-size:13px;color:var(--feat-sub);opacity:.8}
 
 .toolbar{display:flex;align-items:center;gap:10px;margin-top:30px;flex-wrap:wrap}
 .chip{font-size:13px;font-weight:600;border-radius:18px;padding:7px 15px;white-space:nowrap;
   background:transparent;color:var(--ink2);border:1px solid var(--border)}
 .chip.active{background:var(--accent);color:#fff;border-color:transparent}
+/* 第二排：子分類 chip。選了有子分類的分類才由 site.js 填入，否則整排隱藏 */
+.subbar{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;padding-left:2px}
+.subbar .chip-sub{font-size:12px;padding:5px 12px;background:var(--surface2)}
+.subbar .chip-sub.active{background:var(--accent);color:#fff}
 .search{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);
   border-radius:9px;padding:9px 13px;width:200px;margin-left:auto}
 .search .dot{width:13px;height:13px;border:1.8px solid var(--ink3);border-radius:50%;flex:none}
 .search input{flex:1;width:100%;border:none;background:transparent;font-size:14px;color:var(--ink);padding:0}
 .search input::placeholder{color:var(--ink3);opacity:.7}
 
-.grid{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid{margin-top:22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .post-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:14px;
   padding:22px 24px;transition:border-color .15s ease,transform .15s ease}
 .post-card:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
@@ -116,9 +121,11 @@ input{font-family:inherit;outline:none}
 .home-foot .f-links a:hover{color:var(--accent);text-decoration:none}
 .home-foot .f-copy{font-size:12.5px;color:var(--ink3)}
 
+@media(max-width:980px){.grid{grid-template-columns:1fr 1fr}}
 @media(max-width:680px){
   .home{padding:32px 18px 60px}
   .grid{grid-template-columns:1fr}
+  .featured .inner{max-width:100%}
   .featured .f-title{font-size:23px}
   .search{margin-left:0;width:100%}
 }
@@ -126,7 +133,7 @@ input{font-family:inherit;outline:none}
 /* ============================================================
    文章（深度報告）— 沿用原 class，套用紙質主題
    ============================================================ */
-.wrap{max-width:1400px;margin:0 auto;padding:14px 18px 80px}
+.wrap{max-width:1298px;margin:0 auto;padding:14px 30px 80px}
 .wrap header{text-align:center;padding:32px 16px 28px;border-bottom:1px solid var(--border);margin:14px 0 8px}
 .wrap header h1{font-size:30px;margin:0 0 10px;letter-spacing:-.01em;color:var(--ink);font-weight:800}
 .wrap header .sub{color:var(--ink2);font-size:15px}
@@ -210,7 +217,7 @@ tr:hover td{background:var(--surface2)}
   padding:11px 0;margin:6px 0;background:var(--bg);border-bottom:1px solid var(--border)}
 /* 章節導覽借用右側空白欄（比內文寬），捲動後卡在 topbar 那一行，
    右邊留白讓開語言/主題鈕 */
-.article-body > .daynav{margin-right:-132px}
+.article-body > .daynav{margin-right:0}
 .daynav a{font-size:13px;font-weight:600;color:var(--ink2);background:var(--surface);
   border:1px solid var(--border);border-radius:999px;padding:7px 14px;white-space:nowrap}
 .daynav a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
@@ -230,7 +237,11 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
    版面：頂部返回鈕靠左、標題置中＋標誌線，線下才是
    [左側清單][置中內文][右側對稱留白]——讓內文真正置中。
    ============================================================ */
-.article-cols{display:grid;grid-template-columns:210px minmax(0,1fr) 210px;gap:32px;align-items:start;margin-top:10px}
+.article-cols{display:grid;grid-template-columns:210px minmax(0,1fr);gap:32px;align-items:start;margin-top:10px}
+/* ponytail: 整塊往左挪半個側欄(=(210+32)/2)，讓右欄內文在視窗裡置中；左邊空間不夠就退回原位 */
+body[data-slug] .wrap{margin-left:max(0px,calc((100vw - 1298px)/2 - 121px))}
+/* 標題跟著內文欄置中（用 padding 不用 margin，底線才維持整條） */
+body[data-slug] .wrap header{padding-left:258px}
 .article-body{min-width:0}
 .rail{position:sticky;top:70px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
 .rail-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding:0 4px}
@@ -252,6 +263,9 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
 .rail-scrollwrap::after{content:'';position:absolute;left:0;right:0;bottom:0;height:28px;background:linear-gradient(to bottom,transparent,var(--surface2));pointer-events:none}
 .rail-group.collapsed .rail-items{display:none}
 .rail-group.collapsed .rail-scrollwrap::after{display:none}
+/* 分類底下再一層子分類（POSTS[].sub） */
+.rail-sub>.rail-toggle{padding:6px 6px}
+.rail-sub>.rail-toggle .rg-cat{font-size:12px;font-weight:600;color:var(--ink2)}
 .rail-item{font-size:13px;line-height:1.45;border-radius:7px;padding:8px 10px;color:var(--ink2);font-weight:500}
 .rail-item:hover{background:var(--surface);text-decoration:none}
 .rail-item.active{background:var(--accent);color:#fff;font-weight:700}
@@ -259,6 +273,8 @@ figure.shot figcaption{font-size:12px;color:var(--ink3);margin-top:6px}
 
 @media(max-width:980px){
   .article-cols{grid-template-columns:1fr;gap:0}
+  body[data-slug] .wrap{margin-left:auto}
+  body[data-slug] .wrap header{padding-left:16px}
   .rail{position:static;margin:0 0 18px}
   .article-body > .daynav{margin-right:0}
 }
@@ -373,3 +389,38 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .code-fold[open]>summary::before{transform:rotate(90deg)}
 .code-fold>summary:hover{text-decoration:underline}
 .code-fold pre{background:var(--surface);margin:10px 0 2px}
+
+/* ---------- 首頁「財報」模式（分類列右側，用分隔線與文章分類切開） ----------
+   刻意不用 post-card：財報是拿來「橫向比較」的，密集資料表比敘事卡片好掃。 */
+.toolbar .chip-div{width:1px;height:22px;background:var(--border);margin:0 2px}
+.chip-earn{display:inline-flex;align-items:center;gap:7px;
+  background:var(--midbg);border-color:var(--midbd);color:var(--mid)}
+.chip-earn .n{font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;
+  background:var(--surface);color:var(--mid);font-variant-numeric:tabular-nums}
+.chip-earn.active{background:var(--mid);border-color:transparent;color:#fff}
+.chip-earn.active .n{background:rgba(255,255,255,.22);color:#fff}
+
+.etable-wrap{margin-top:22px;overflow-x:auto}
+.etable{min-width:660px;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;overflow:hidden}
+/* 數字欄用 fr 平均攤開，不然寬螢幕下公司名那欄會把數字擠到最右邊、看不出對照關係 */
+.etable .er{display:grid;grid-template-columns:74px minmax(150px,1.5fr) 1fr .85fr 1.05fr .95fr;
+  align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)}
+.etable .er:last-child{border-bottom:0}
+.etable .eh{padding:11px 20px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
+  color:var(--ink3);font-weight:600}
+.etable a.er{text-decoration:none;color:inherit}
+.etable a.er:hover{background:var(--surface2);text-decoration:none}
+.etable .tkc{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.etable .nmc b{font-size:14.5px;font-weight:700;color:var(--ink)}
+.etable .nmc span{margin-left:9px;font-size:12.5px;color:var(--ink3)}
+.etable .num{text-align:right;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.etable .num.k{font-weight:700;color:var(--ink)}
+.etable .num.win{color:var(--win)}   /* 蓋掉上面的 .num.k，語氣色要贏 */
+.etable .num.lose{color:var(--lose)}
+.etable .num.mid{color:var(--mid)}
+.etable .eh .num{color:var(--ink3);font-weight:600}
+.etable .num em{display:block;font-style:normal;font-size:10.5px;color:var(--ink3);margin-top:2px}
+.etable-note{margin-top:12px;font-size:12.5px;color:var(--ink3);line-height:1.7}
+/* 窄螢幕 chip 會換行，分隔線落在行首反而像雜訊 */
+@media(max-width:640px){.toolbar .chip-div{display:none}}

@@ -45,17 +45,25 @@
     <button class="chip" data-cat="AI 技術分享">AI 技術分享</button>
     <button class="chip" data-cat="前端開發">前端開發</button>
     <button class="chip" data-cat="旅遊">旅遊</button>
+    <!-- 財報是模式不是分類：分隔線右邊自成一區，按下去整塊換成資料表（見 site.js 的 drawEarn） -->
+    <div class="chip-div"></div>
+    <button class="chip chip-earn" id="earnChip">財報 <span class="n">8</span></button>
     <div class="search">
       <div class="dot"></div>
       <input id="search" type="text" placeholder="搜尋…">
     </div>
   </div>
 
+  <!-- 子分類第二排：由 site.js 依 POSTS[].sub 自動填入，沒有子分類時整排隱藏 -->
+  <div class="subbar" id="subbar" style="display:none"></div>
+
   <div class="empty" id="empty" style="display:none">沒有符合的文章 — 換個分類或關鍵字試試。</div>
+
+  <!-- 財報模式的資料表：由 site.js 依各篇 .earn.js 填入，預設隱藏 -->
+  <div class="etable-wrap" id="earnWrap" style="display:none"></div>
 
   <!-- 文章列表 -->
   <div class="grid" id="grid">
-
 
     <a class="post-card" data-cat="AI 技術分享"
        data-title="CUDA 從零開始的 GPU 程式學習路線 教學 入門 學習順序 怎麼寫 nvcc kernel NVIDIA thread block grid 執行模型 記憶體階層 shared memory global memory register coalescing 合併存取 tiling 矩陣乘法 matmul 轉置 transpose warp divergence reduction shuffle syncthreads bank conflict Nsight roofline occupancy memory-bound compute-bound softmax layernorm flash attention PMPP cuBLAS Triton GPU 平行運算"

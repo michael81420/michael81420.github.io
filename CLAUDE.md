@@ -142,6 +142,7 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 
 - `data-cat` / `data-title` / `data-excerpt` 餵給 `site.js` 的分類+搜尋，務必填。
 - **若是新分類**：在 `.toolbar` 加一顆 `<button class="chip" data-cat="分類名">分類名</button>`。chip 是 data-driven，加了就能用，不用改 JS。同時在 `site.js` 的 `CATL` 補上該分類的中英標籤。
+- **若要再分一層（子分類）**：只在 `site.js` 的 `POSTS` 那筆加 `sub:'名稱'`，其他都不用動。首頁選到該分類時會自動長出第二排子分類 chip（`#subbar`，沒有子分類的分類整排隱藏），側欄該分類底下也自動多一層可展開的群組。子分類清單由 `POSTS[].sub` 推導，**不必登記到 `CATL`、也不必改 HTML**（中英同字，如 `Alphabet`、`NVIDIA`）。同分類內沒填 `sub` 的文章照樣直接列在分類底下，互不影響。
 - `#hero`（`.featured`）精選位**自動選最新一篇**（依卡片 `.pc-date` 日期），不用手改。
 - 首頁卡片顯示順序由 `site.js` 依 `.pc-date` **自動新→舊排序**（rule-based，見 `initHome()`），新卡片加進 `#grid` 時位置不影響顯示順序，放哪裡都可以。
 
@@ -152,8 +153,38 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 1. `posts/<slug>.html` — 中文頁（body 加 `data-slug="<slug>"`，topbar 需 `lang-toggle` 按鈕）。
 2. `posts/<slug>.en.html` — 英文頁（`<html lang="en">`、back 鈕指 `../index.en.html`、`lang-toggle` 文字為「中」）。兩檔 `data-slug` 必須一致，lang-toggle 才切得過去。
 3. `index.html` 與 `index.en.html` 各加一張 `post-card`（各自語言的 title/excerpt，`href` 指對應語言檔；`data-cat` 兩邊都用**中文**正規值）。
-4. **`site.js` 最上面的 `POSTS` 陣列加一筆**（`slug`/`d`/`cat`/`zh`/`en`）—— 這是左側全文章樹的唯一事實來源，漏了進頁時左欄選不到當前文章。`d` 填首頁卡片同一個日期（`YYYY-MM-DD`）；排序依 `d` 自動新→舊（分類展開順序也跟著走），陣列擺放位置隨意。
+4. **`site.js` 最上面的 `POSTS` 陣列加一筆**（`slug`/`d`/`cat`/`zh`/`en`，選填 `sub`）—— 這是左側全文章樹的唯一事實來源，漏了進頁時左欄選不到當前文章。`d` 填首頁卡片同一個日期（`YYYY-MM-DD`）；排序依 `d` 自動新→舊（分類展開順序也跟著走），陣列擺放位置隨意。
 5. **`sitemap.xml` 加兩行**（中英各一 `<url><loc>…</loc></url>`）—— 漏了搜尋引擎收錄不到新頁。`robots.txt` 只指 sitemap、不列個別頁，不用動。
+
+### 財報分析是例外：不掛首頁卡片，改掛資料表
+
+`cat:'財報分析'` 的文章**不進 `#grid`**（第 3 處不用做）。首頁分類列右邊用 `.chip-div` 分隔線切出一顆
+`#earnChip`「財報」鈕，按下去整塊換成資料表 —— 財報是拿來橫向比較的，密集表格比敘事卡片好掃，
+也讓兩種內容永遠不會混在同一個清單裡。所以財報文章要同步的是：1、2、4、5 **加上**：
+
+**新建一支 `posts/<slug>.earn.js`**（中英共用一支，不用兩支）—— 首頁那張表的數字只存在這裡一份，
+`site.js` 按下「財報」鈕才依 `POSTS` 的 slug 動態插 `<script src>` 把它們載進來排表。
+**`site.js` 沒有財報陣列，不用改；兩份 index 也不用改**：
+
+```js
+(window.EARN=window.EARN||{})['foo-2026q3-earnings']={
+  tk:'FOO', nm:{zh:'Foo', en:'Foo'}, q:'2026 Q3',
+  rev:'+12.3%', t:'win',
+  opm:'28%',
+  eps:'$1.23', epsN:{zh:'non-GAAP', en:'non-GAAP'},
+  pe:'21.4x'
+};
+```
+
+- 檔名**必須**是 `<slug>.earn.js`、key **必須**等於 slug，首頁靠這個對回文章；改 slug 記得一起改。
+- 數字**一律照抄本篇自己的核心數字表**，不要另算一套；查不到就填 `—`（如 Tesla 的營收 YoY）。
+- `nm`／`epsN` 是唯一分語言的兩個欄位（中文寫「剔一次性」，英文寫 `Ex one-offs`），其餘中英共用。
+- `eps` 放**剔除一次性後的核心 EPS**（本站主張看核心不看頭條），`epsN` 註明口徑（`GAAP $9.11`／`Adjusted`／`剔一次性`…），會顯示在數字下方那行小字。
+- `pe` 一律 forward，不放 trailing —— trailing 會被一次性利得灌壞。
+- `t` 只給營收 YoY 上色（`win`/`lose`/`mid`，空字串不上色）。
+- 排序自動吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；`#earnChip` 的家數 `<span class="n">` 也由 JS 自動填。
+- 表頭與頁尾說明的中英文字在 `site.js` 的 `ETXT`。
+- 走 `<script src>` 而不是 fetch JSON，是為了跟 `site.js` 送 `POSTS`／`CATL` 同一套模式，`file://` 直開也讀得到。
 
 ### 草稿（寫好但先不公開）
 
