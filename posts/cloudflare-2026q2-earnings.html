@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloudflare．2026 Q2 財報拆解 — Q1 崩 23% 的四道裂縫本季全補上,盤後 +17.4%;但 forward PS 已在 98.8 百分位,利多屬實≠買點</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="cloudflare-2026q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Cloudflare．2026 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">這季要看的不是絕對數字,是<b>驗收</b>。5/7 Q1 財報後兩天崩 23.3%,市場當時開出四道裂縫:毛利率 miss、DBNRR 回落、裁員 20% 傷執行力、guidance 沒力。本季四道全補上,盤後 +17.4%。<br>但補上不等於便宜——forward PS 31.3x 落在一年 <b>98.8 百分位</b>、三年 99.6%,過去一年幾乎沒有比現在更貴的時候。<br>IR 財報原文 + 法說會 + Futu 估值數據交叉驗證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Cloudflare IR 財報原文 + 法說會</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30</span>
+<span class="badge">公布日:2026-08-06 盤後</span>
+<span class="badge">整理日:2026-08-07</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">🩹 <span class="win">這是一場驗收季,而且驗收通過</span>。Q1 財報後兩日 −23.3%,四道裂縫本季逐一回答:non-GAAP 毛利率 72.8% → <b>73.1%</b>(止穩)、DBNRR 118% → <b>120%</b>(完全收復)、non-GAAP 營益率 11.4% → <b>13.8%</b>、大客戶單季淨增 118 家 → <b>282 家</b>(公司史上最高)。<b>裁掉 20% 人力沒有傷到業務動能</b>,這是本季最重要的一件事。</p>
+<p class="big">🚀 <span class="win">beat 幅度是近幾季最大,而且很乾淨</span>。營收 $696.1M,YoY <b>+36%</b>(連 5 季加速),超市場預期 +4.7%、超<b>自家財測高標 +4.7%</b>。non-GAAP EPS $0.29 vs 預期 $0.27。beat 完全來自本業,沒有靠一次性利得——反而是本季認列 $150.7M 重組費用在<b>拖累</b>帳面數字。</p>
+<p class="big">🔍 <span class="lose">GAAP 大虧看起來很嚇人,但那不是本業</span>。GAAP 營益率 −29.6%、EPS −$0.48,全部來自那筆 $150.7M 重組費。剔除後 GAAP 淨損只剩約 −$18M,管理層說轉盈進度「pacing ahead of 2028 target」。<b>FCF 從 $84.1M 掉到 $56.4M 也是同一筆</b>(約 $99M 現金衝擊),還原後 underlying FCF 約 $155M 量級。</p>
+<p class="big">⚠️ <span class="mid">四道裂縫的修復程度不一樣,毛利率是最弱的一環</span>。DBNRR、營益率、大客戶都是漂亮的 V 轉,但 non-GAAP 毛利率只回 <b>30bp</b>,離歷史 76% 區間還很遠。而且管理層口徑從 Q1 的「解釋成因」換成本季的「trend showing signs of stabilizing」+ 改看 total unit economics ——<span class="lose">從解釋轉成淡化,這種措辭變化本身要記一筆</span>。</p>
+<p class="note">★ 估值:GAAP 常年虧損,trailing PE(−1137.7x)完全失真,不採用。以盤後 ~$330 對 FY26 non-GAAP EPS 中值 $1.255,<b>隱含 forward PE 約 263x</b>;forward PS <b>31.3x</b>,一年分位 <b>98.8%</b>、三年 99.6%。<span class="lose">數字全對、指引雙上修,但價格已經站在歷史估值的頂端</span>。</p>
+</div>
+
+<h2>一、這季的意義:Q1 那場 −23% 的驗收</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cloudflare 在 Q1 財報崩跌時被質疑的四個指標,本季全部回升,其中毛利率的回升幅度最小">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">Q1 被質疑的四道裂縫 → 本季的回答</text>
+  <text x="235" y="48" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">FY26 Q1</text>
+  <text x="395" y="48" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">FY26 Q2</text>
+
+  <text x="170" y="80" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">non-GAAP 毛利率</text>
+  <rect x="185" y="60" width="100" height="28" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="235" y="79" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">72.8%</text>
+  <line x1="293" y1="74" x2="337" y2="74" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <rect x="345" y="60" width="100" height="28" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="395" y="79" text-anchor="middle" style="fill:var(--mid);font:600 12px sans-serif">73.1%</text>
+  <text x="460" y="79" style="fill:var(--mid);font:400 12px sans-serif">只回 30bp,最弱的一環</text>
+
+  <text x="170" y="125" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">DBNRR 淨留存率</text>
+  <rect x="185" y="105" width="100" height="28" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="235" y="124" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">118%</text>
+  <line x1="293" y1="119" x2="337" y2="119" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <rect x="345" y="105" width="100" height="28" rx="5" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="395" y="124" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">120%</text>
+  <text x="460" y="124" style="fill:var(--win);font:400 12px sans-serif">完全收復 Q1 的回落</text>
+
+  <text x="170" y="170" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">non-GAAP 營益率</text>
+  <rect x="185" y="150" width="100" height="28" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="235" y="169" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">11.4%</text>
+  <line x1="293" y1="164" x2="337" y2="164" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <rect x="345" y="150" width="100" height="28" rx="5" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="395" y="169" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">13.8%</text>
+  <text x="460" y="169" style="fill:var(--win);font:400 12px sans-serif">回到去年同期水準</text>
+
+  <text x="170" y="215" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">大客戶單季淨增</text>
+  <rect x="185" y="195" width="100" height="28" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="235" y="214" text-anchor="middle" style="fill:var(--ink2);font:400 12px sans-serif">118 家</text>
+  <line x1="293" y1="209" x2="337" y2="209" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <rect x="345" y="195" width="100" height="28" rx="5" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="395" y="214" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">282 家</text>
+  <text x="460" y="214" style="fill:var(--win);font:400 12px sans-serif">公司史上單季最高</text>
+
+  <text x="380" y="242" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">裁員 20% 之後的第一個完整季度,業務動能沒有被傷到</text>
+</svg>
+</div>
+<p>2026/5/7 Q1 財報當天,Cloudflare 同時丟出三件壞事:non-GAAP 毛利率 72.8% 大幅低於預期的 75.1%、DBNRR 從 120% 回落到 118%、以及宣布<b>裁員 20%(逾 1,100 人)</b>。兩個交易日跌掉 <b>23.3%</b>。</p>
+<p>市場當時的質疑很具體:<b>AI workload 是不是結構性地在吃掉毛利率?裁掉五分之一的人,還賣得動嗎?</b>這兩個問題只能用下一季的數字回答,不能用管理層的話回答——所以本季的意義是驗收,不是增量。</p>
+<div class="quote">📌 <b>可複用的判讀規則</b>:當一檔股票因為「某個指標壞掉 + 組織動盪」而重挫,下一季要看的不是營收有沒有 beat(通常會),而是<b>那個壞掉的指標本身有沒有轉向</b>。營收 beat 可以靠既有訂單遞延認列撐出來,毛利率和 NRR 不行。</div>
+<p style="margin-top:14px">本季股價盤後 +17.4%(自 $284.43 跳到 $333.95),幾乎收復 Q1 財報後那兩日的重挫。<span class="mid">注意這是盤後成交價</span>,正式常規盤的完整反應要看今晚收盤。</p>
+</div>
+
+<h2>二、核心數字</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+<p style="margin-top:14px">三個值得單獨拿出來的:</p>
+<p>① <b>營收 $696.1M,超自家財測高標 $665M 有 +4.7%</b>。Cloudflare 過去典型的 beat 幅度約 3.1%,這次明顯放大。而且是「超自己給的高標」,不只是超賣方共識——後者容易因為共識過低而失真,前者不會。</p>
+<p>② <b>GAAP 與 non-GAAP 的落差本季異常巨大</b>。GAAP 營益率 −29.6%、EPS −$0.48,但 non-GAAP 是 +13.8% / $0.29。差距全部來自 $150.7M 重組費用。<span class="mid">這種季度不能看 GAAP 判本業,但也不該完全無視</span>——重組費是真的現金支出。</p>
+<p>③ <b>FCF $56.4M(margin 8%)看起來是 QoQ 大退步</b>(上季 $84.1M / 13%),但重組費裡約 $99M 是現金衝擊。<b>還原後 underlying FCF 約 $155M 量級(~22% margin)</b>,是本季實際的現金產生能力。</p>
+<p class="note">★ Cloudflare 財報只揭露<b>單一分部</b>,沒有產品別或地區別營收拆分。法說會上關於 Workers / Zero Trust / AI 的描述全部是定性敘述,無法用數字驗證各產品線的實際規模——這是它與多數 SaaS 同業最大的揭露差異,本頁所有產品線討論都受這個限制。</p>
+</div>
+
+<h2>三、營收 YoY 連 5 季加速</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 290" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cloudflare 營收年增率連續五個季度上升,從 27.8% 加速到 36%,Q1 財報崩跌那一季成長率其實仍在上升">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">營收 YoY 成長率(%)· 連 5 季加速,包含被市場打壞的 26Q1</text>
+  <line x1="70" y1="225" x2="690" y2="225" style="stroke:var(--border)"/>
+  <text x="60" y="229" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+
+  <rect x="120" y="100" width="80" height="125" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="230" y="87" width="80" height="138" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="340" y="74" width="80" height="151" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <rect x="450" y="72" width="80" height="153" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="560" y="63" width="80" height="162" rx="3" style="fill:var(--winbg);stroke:var(--win)"/>
+
+  <polyline points="160,100 270,87 380,74 490,72 600,63"
+    style="fill:none;stroke:var(--win);stroke-width:2;stroke-dasharray:5 3"/>
+
+  <text x="160" y="92" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">27.8</text>
+  <text x="270" y="79" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">30.7</text>
+  <text x="380" y="66" text-anchor="middle" style="fill:var(--ink3);font:400 12px sans-serif">33.6</text>
+  <text x="490" y="64" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">34.0</text>
+  <text x="600" y="55" text-anchor="middle" style="fill:var(--win);font:600 15px sans-serif">36.0</text>
+
+  <text x="160" y="245" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q2</text>
+  <text x="270" y="245" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q3</text>
+  <text x="380" y="245" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">25Q4</text>
+  <text x="490" y="245" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">26Q1</text>
+  <text x="600" y="245" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">26Q2</text>
+
+  <text x="490" y="263" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">財報後兩日 −23.3%</text>
+  <text x="600" y="263" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">盤後 +17.4%</text>
+  <text x="380" y="283" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">成長率本身一路往上,26Q1 的崩跌完全不是營收成長的問題</text>
+</svg>
+</div>
+<p>把 Q1 放回這張圖裡,會看到一件容易被忘記的事:<b>26Q1 的營收 YoY 其實是加速的</b>(33.6% → 34%)。那次 −23.3% 完全不是成長率的問題,是毛利率、DBNRR 與裁員三件事疊起來的。</p>
+<p>本季 +36% 是這五季裡最快的一次,且 QoQ 也從 +4.1% 跳到 <b>+8.8%</b>。<span class="mid">但要留意 Q3 指引隱含 YoY 只有 +31%</span>——如果照字面走,連 5 季加速會在下一季中止(見第六節)。</p>
+</div>
+
+<h2>四、毛利率:止穩訊號很弱,而且口徑換了</h2>
+<div class="card">
+<p>這是本季最需要打折看的地方。non-GAAP 毛利率的軌跡:</p>
+<div style="overflow-x:auto"><table id="gmTable"></table></div>
+<p style="margin-top:14px">從 25Q2 的 76.3% 一路掉到 26Q1 的 72.8%,<b>累計掉了 350bp</b>。本季回升 <b>30bp</b> 到 73.1%——方向對了,但幅度只回補了跌幅的不到十分之一。</p>
+<p>更值得記一筆的是<b>管理層口徑的變化</b>:</p>
+<div class="kbox">
+<div class="kcard"><div class="kt">Q1 法說(5 月)</div><div class="kd">歸因於 paid vs free traffic mix,偏防禦性解釋</div><div class="ke">未給止穩時點</div></div>
+<div class="kcard"><div class="kt">Q2 法說(本次)</div><div class="kd">改口「trend showing signs of stabilizing」,並強調改看 total unit economics 而非單看毛利率</div><div class="ke">從解釋轉為淡化</div></div>
+</div>
+<div class="quote">📌 當管理層開始說「不要只看這個指標,要看更全面的指標」,通常有兩種可能:一種是那個指標真的失去代表性了,另一種是<b>它短期內不會好看,所以先換一個觀察框架</b>。目前的資訊分不出是哪一種——<b>只有下一季的毛利率能分。</b></div>
+<p style="margin-top:14px"><b>可證偽的檢查點:</b>若 FY26 Q3 的 non-GAAP 毛利率<b>沒有連兩季回升</b>(即低於 73.1%),那本季的「止穩」就只是 30bp 的雜訊,AI workload 侵蝕毛利率就要當成結構性問題重新定價。</p>
+</div>
+
+<h2>五、大客戶與 DBNRR:結構最紮實的一段</h2>
+<div class="card">
+<p>如果只能挑一個指標證明「裁員 20% 沒有傷到業務」,是這個:</p>
+<div style="overflow-x:auto"><table id="custTable"></table></div>
+<p style="margin-top:14px"><b>&gt;$100K 客戶單季淨增 282 家,TTM 淨增 986 家,兩者都是公司史上最高。</b>而 Q1 的淨增只有 118 家。裁員發生在 Q1 末到 Q2,結果是招攬大客戶的速度<b>翻了一倍以上</b>。</p>
+<p><b>DBNRR 120%</b>(QoQ +2pp、YoY +6pp),把 Q1 那 2pp 的回落完全收復。搭配 RPO $2.732B(YoY +38%,略快於營收的 36%)、cRPO YoY +35%,<span class="win">訂單能見度沒有惡化</span>。</p>
+<p><b>Zero Trust / SASE</b> 被管理層稱為 Workers 之後成長最快的產品線,會上點名兩筆大單:歐洲科技客戶 <b>$11M</b>、美國聯邦機構 <b>$7.7M</b>;其中一位客戶用 Cloudflare 替換掉 <b>16 家</b>舊供應商,年省逾 $1.3M。</p>
+<p class="note">★ <span class="lose">但揭露品質有落差</span>:&gt;$500K / &gt;$1M / &gt;$5M 三個分層只在會上以「創紀錄淨增」定性帶過,<b>沒有給絕對數字或成長率</b>。Workers AI / inference 也沒有獨立營收數字。這幾塊都屬於「講故事但不給數字」,無法獨立驗證。</p>
+</div>
+
+<h2>六、Guidance:雙上修,但重組成本也上修</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guidTable"></table></div>
+<p style="margin-top:14px">FY26 營收指引中值上修 <b>+2.1%</b>、non-GAAP EPS 中值上修 <b>+5.0%</b>——EPS 上修幅度是營收的兩倍多,反映的是營業槓桿(裁員後的成本結構)開始發揮,不只是營收帶動。</p>
+<p><span class="lose">但同一份指引裡,FY26 重組總成本從 $140–150M 上修到上看 $165M</span>。Q2 單季就花掉 $150.7M,已經逼近原本的全年上限。<b>成本比 5 月宣布時預期的更高,只是本業成長蓋過去了。</b></p>
+<p><b>Q3 指引</b>:營收 $736–737M(隱含 YoY <b>+31%</b>、QoQ +5.8%)、non-GAAP EPS $0.34。<span class="mid">注意 +31% 明顯低於本季的 +36%</span>——照字面走,連 5 季加速會在下一季中止。Cloudflare 過去有給保守指引的紀錄(本季就超自家高標 4.7%),所以這未必是真的減速,但它是<b>目前唯一一個由公司自己給出的減速訊號</b>。</p>
+<p><b>其他只在會上口頭給的數字:</b>Q2 網路 capex 佔營收 <b>7%</b>、FY26 全年 capex 指引 <b>14–15%</b> 營收佔比(明顯往上);剔除重組費後 GAAP 淨損僅約 <b>−$18M</b>,管理層稱 GAAP 轉盈「pacing ahead of 2028 target」;通路夥伴貢獻 <b>31%</b> 營收,管理層認為潛在可上看 50%+。</p>
+</div>
+
+<h2>七、新敘事:從 CDN 到「agentic internet 的收費站」</h2>
+<div class="card">
+<p>本季管理層花了不少篇幅在一個新定位上,值得單獨記,因為它<b>還完全沒有反映在營收數字裡</b>:</p>
+<p>① <b>非人類流量首次超過網路總流量的 50%</b>。machine-to-machine(bot、爬蟲、AI agent)已經是網路的多數。Cloudflare 的角度是:既然流量都要過我這一層,那就在這一層收費。</p>
+<p>② <b>新推出 Monetization Gateway、Wallets、cloudflare.pay</b>,針對 agent 與 agent 之間的商業支付。這是全新的業務線,目前沒有任何變現規模的揭露。</p>
+<p>③ <b>開發者數突破 740 萬</b>,單季新增 200 萬——超過 2025 全年新增的 150 萬。這是 Workers 平台的基數,不是營收。</p>
+<p>④ CEO Prince 明確表態<b>不參與 GPU 商用算力租賃</b>,認為那是 commodity 賽道,改押注「work-done」的 agentic internet 定位。</p>
+<div class="quote">📌 這段的性質要看清楚:它是<b>估值故事的更新,不是本季業績的來源</b>。本季 +36% 的成長來自既有的 CDN / 資安 / Workers 業務,跟 cloudflare.pay 一點關係都沒有。<span class="mid">而且因為 Cloudflare 只揭露單一分部,即使未來這條線起來了,外部也無法從財報拆出它的規模</span>——只能靠管理層願意在法說會上講多少。</div>
+<p style="margin-top:14px"><span class="lose">把 forward PS 31.3x 的估值歸因到這個新敘事,是目前最沒有數據支撐的一步。</span>它可能是對的,但財報裡沒有任何東西能證明或證偽。</p>
+</div>
+
+<h2>八、估值:98.8 百分位,利多屬實≠買點</h2>
+<div class="card">
+<p><b>循環烈度判斷:</b>Cloudflare 屬<b>結構成長型</b>(訂閱制 SaaS 基礎設施),不是商品循環股,所以 PE / PS 仍有參考性——但必須用 forward。<span class="lose">GAAP 常年淨損,trailing PE 為 −1137.7x,完全失真,本頁不採用。</span></p>
+<div style="overflow-x:auto"><table id="valTable"></table></div>
+<p style="margin-top:14px"><b>forward PS 31.3x、一年分位 98.8%、三年分位 99.6%</b>。白話講:<b>過去三年裡,只有不到 0.4% 的時間比現在更貴。</b>這還是用盤後價算的,今晚正式收盤若站穩,分位只會更高。</p>
+<p>non-GAAP 隱含 forward PE 約 <b>263x</b>(盤後 ~$330 ÷ FY26 EPS 中值 $1.255)。這個數字之所以誇張,是因為 Cloudflare 目前的 EPS 基數極小——它反映的是市場完全用「成長股 + 敘事」在定價,而不是用獲利在定價。</p>
+<div class="quote">📌 <b>這季的核心矛盾</b>:財報本身沒什麼好挑的——beat 乾淨、四道裂縫都補上、指引雙上修。問題不在公司,在<b>價格已經站在歷史估值的頂端</b>。「利多屬實」和「現在是買點」是兩個獨立的判斷,這季把它們拆開來看特別重要。</div>
+<p style="margin-top:14px"><b>賣方共識(僅作背景):</b>26 位分析師平均目標價 $284.65、買入佔 80.8%。<span class="mid">這個均價已經低於盤後價 ~$330</span>——代表舊目標價還沒消化本次大 beat,預期後續會被上修,但也說明<b>股價短線已經跑在共識前面</b>。</p>
+</div>
+
+<h2>九、同族群概念股掃描</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="邊緣運算與資安族群中,Palo Alto、Cloudflare、CrowdStrike 的估值分位都在 98% 以上,Zscaler 是族群裡估值最溫和的一檔">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">同族群估值歷史分位(1 年,%)· 越長越貴</text>
+  <line x1="160" y1="42" x2="160" y2="268" style="stroke:var(--border)"/>
+
+  <text x="150" y="70" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">PANW</text>
+  <rect x="160" y="52" width="496" height="22" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="666" y="69" style="fill:var(--lose);font:600 12px sans-serif">99.2</text>
+
+  <text x="150" y="102" text-anchor="end" style="fill:var(--ink);font:700 13px sans-serif">NET</text>
+  <rect x="160" y="84" width="494" height="22" rx="3" style="fill:var(--losebg);stroke:var(--lose)"/>
+  <text x="664" y="101" style="fill:var(--lose);font:700 12px sans-serif">98.8</text>
+
+  <text x="150" y="134" text-anchor="end" style="fill:var(--ink);font:600 12px sans-serif">CRWD</text>
+  <rect x="160" y="116" width="494" height="22" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="664" y="133" style="fill:var(--lose);font:600 12px sans-serif">98.8</text>
+
+  <text x="150" y="166" text-anchor="end" style="fill:var(--ink2);font:600 12px sans-serif">AKAM</text>
+  <rect x="160" y="148" width="410" height="22" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="580" y="165" style="fill:var(--mid);font:600 12px sans-serif">82.0</text>
+
+  <text x="150" y="198" text-anchor="end" style="fill:var(--ink2);font:600 12px sans-serif">FSLY</text>
+  <rect x="160" y="180" width="410" height="22" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="580" y="197" style="fill:var(--mid);font:600 12px sans-serif">82.0</text>
+
+  <text x="150" y="230" text-anchor="end" style="fill:var(--ink2);font:600 12px sans-serif">DDOG</text>
+  <rect x="160" y="212" width="384" height="22" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="554" y="229" style="fill:var(--mid);font:600 12px sans-serif">76.8</text>
+
+  <text x="150" y="262" text-anchor="end" style="fill:var(--ink2);font:600 12px sans-serif">ZS</text>
+  <rect x="160" y="244" width="185" height="22" rx="3" style="fill:var(--winbg);stroke:var(--win)"/>
+  <text x="355" y="261" style="fill:var(--win);font:600 12px sans-serif">37.0</text>
+
+  <text x="400" y="290" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">除 AKAM 為 forward PE 分位外,其餘皆為 forward PS 分位 · 整個資安/SASE 賽道都在高檔,不是 NET 獨有</text>
+</svg>
+</div>
+<p><b>族群定義:</b><b>邊緣運算 / CDN / SASE(安全訪問服務邊緣)</b>的交集地帶。Cloudflare 同時是 CDN 龍頭與 Zero Trust / SASE 平台玩家,近期再疊一層 AI 基礎設施敘事。掃描範圍取<b>同時具 CDN 或 SASE 業務的可比同業</b>。</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">三個觀察:</p>
+<p>① <b>貴的不只 NET。</b>PANW 99.2%、NET 98.8%、CRWD 98.8% 三檔的估值分位全部貼在頂部。這代表資金正把「AI + 資安 + 基礎設施」的敘事溢價<b>集中定價在龍頭上</b>,不是 Cloudflare 的個股現象。要看空 NET 的估值,等於同時要看空整個賽道的定價邏輯。</p>
+<p>② <b>便宜的那組,便宜有原因。</b>AKAM 的 forward PE 只有 38.9x,但成長是低個位數;FSLY 的 forward PS 只有 4.65x,但基本面結構性掙扎——<span class="mid">兩檔都不是錯殺,是市場正確地給低成長低估值</span>。值得注意的是 FSLY 的 4.65x 絕對值雖低,自身分位仍在 82%,代表連它自己都不算便宜。</p>
+<p>③ <b>ZS 是族群裡唯一估值溫和的一檔</b>(PS 分位 37%),而它是 Cloudflare 在 SASE / Zero Trust 的直接對手。<span class="turn">同一塊市場、兩種定價</span>——差別在於 NET 被歸類成「AI 基礎設施」而 ZS 被歸類成「純資安」。這個分類本身值不值 60 個百分位的差距,是這張表最開放的問題。</p>
+</div>
+
+<h2>十、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① non-GAAP 毛利率能否連兩季回升</div><div class="kd">本季 73.1%(僅 +30bp),歷史區間 76%+</div><div class="ke">Q3 低於 73.1% = 本季止穩只是雜訊,AI workload 侵蝕要當結構性問題重新定價</div></div>
+<div class="kcard"><div class="kt">② 連 5 季加速會不會中止</div><div class="kd">本季 +36%,Q3 指引隱含僅 +31%</div><div class="ke">Q3 實際落在 31% 附近 = 加速結束;過往紀錄顯示公司偏保守,但這是唯一的減速訊號</div></div>
+<div class="kcard"><div class="kt">③ 重組成本 $165M 上限會不會再破</div><div class="kd">Q2 單季已花 $150.7M,原估全年 $140–150M</div><div class="ke">再度上修 = 裁員的實際代價高於管理層掌握,執行力要打折</div></div>
+<div class="kcard"><div class="kt">④ 大客戶淨增能否維持在 200 家以上</div><div class="kd">本季 282 家(史上最高),Q1 僅 118 家</div><div class="ke">Q3 回落到 150 家以下 = 本季高淨增含遞延成交,裁員的傷是延後出現而非沒出現</div></div>
+</div>
+</div>
+
+<h2>十一、風險與反方</h2>
+<div class="card">
+<p><b>1. 估值分位在極端值。</b>forward PS 31.3x、一年分位 98.8% / 三年 99.6%。這種位置對任何一次 miss 的容忍度都極低,而 Q3 指引本身就隱含減速到 +31%。</p>
+<p><b>2. 毛利率的止穩訊號只有 30bp。</b>距離歷史 76% 區間還有 300bp 以上,而管理層已經開始把觀察框架從毛利率換成 total unit economics。若 AI workload 的成本結構是結構性的,那 SaaS 該有的毛利率溢價會被長期壓縮。</p>
+<p><b>3. 揭露品質偏低。</b>單一分部、無產品別營收拆分;大客戶分層、Workers AI、cloudflare.pay 全部只有定性描述。<b>新敘事無法被外部驗證,也無法被證偽</b>——這在估值站上 98 百分位時是額外的風險,不是中性事實。</p>
+<p><b>4. 重組成本連續超出自估。</b>原估 $140–150M,單季就花 $150.7M,全年上修到 $165M。裁員的實際代價比 5 月宣布時高。</p>
+<p><b>5. capex 佔比明顯上升。</b>FY26 指引 14–15% 營收佔比(Q2 單季 7%)。管理層說不做 GPU 租賃,但 AI 相關的網路建置仍在推高資本支出,這會壓 FCF margin。</p>
+<p><b>反方怎麼說:</b>看空的論點是「PS 31x、隱含 PE 263x,任何一季 miss 就會殺估值,而 Q3 指引自己就在減速」;看多的反駁是「連 5 季加速 + 裁員 20% 後大客戶淨增創紀錄 + DBNRR 收復 + 指引雙上修,這是執行力被低估而不是估值被高估,而且 agentic internet 的收費站定位還沒開始貢獻營收」。<span class="mid">兩邊都不算錯</span>——分歧點是<b>你願不願意在 98.8 百分位為一個還沒有任何數字的新敘事付錢</b>。這篇提供不了那個答案,只能指出:本季財報本身沒有瑕疵,瑕疵在價格。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Cloudflare Investor Relations FY2026 Q2 財報新聞稿與股東信(2026-08-06 盤後)、FY2026 Q2 法說會(2026-08-06 17:00 ET)、FY2026 Q1 與 FY2025 各季財報稿(作為對照基準)、Futu 損益表與估值分位數據、賣方一致預期(查詢日 2026-08-07)。營益率與毛利率之 GAAP / non-GAAP 口徑均依 IR 原文。盤後股價為第三方財經媒體引用之盤後成交,非正式收盤價。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 核心數字表
+const CORE=[
+ ['營收','$696.1M','$639.8M','$512.3M','~$664.7M','Beat +4.7% / 超自家高標 +4.7%','win'],
+ ['營收 YoY','+36%','+34%','+27.8%','+29.7~30%','連 5 季加速','win'],
+ ['營收 QoQ','+8.8%','+4.1%','—','—','QoQ 明顯加速','win'],
+ ['毛利率(non-GAAP)','73.1%','72.8%','76.3%','—','僅 QoQ +30bp,止穩訊號弱','mid'],
+ ['毛利率(GAAP)','71.8%','—','74.9%','—','YoY −310bp','lose'],
+ ['營業利益率(GAAP)','−29.6%','−9.7%','−13.1%','—','營業虧損 $205.7M,全來自重組費','lose'],
+ ['營業利益率(non-GAAP)','13.8%','11.4%','14.1%','—','收復 Q1 的滑落','win'],
+ ['稀釋 EPS(GAAP)','−$0.48','−$0.07','−$0.15','—','含 $150.7M 重組費','lose'],
+ ['稀釋 EPS(non-GAAP)','<b>$0.29</b>','$0.25','$0.21','$0.27','Beat +7.4%,本業驅動','win'],
+ ['營運現金流','$117.6M(17%)','$158.3M','—','—','受重組現金支出影響','mid'],
+ ['自由現金流','$56.4M(8%)','$84.1M(13%)','$33.3M(6%)','—','還原重組後約 $155M / 22%','mid'],
+ ['DBNRR 淨留存率','<b>120%</b>','118%','114%','—','完全收復 Q1 回落','win'],
+ ['&gt;$100K 客戶數','<b>4,698</b>(+27% YoY)','4,416(+25% YoY)','3,712','—','單季淨增 282 家,史上最高','win'],
+ ['大客戶營收佔比','73%','72%','71%','—','結構持續往上','win'],
+ ['RPO','$2.732B','—','—','—','YoY +38% / QoQ +7%,快於營收','win'],
+ ['cRPO','佔 RPO 64%','—','—','—','YoY +35%,能見度未惡化','win'],
+ ['重組費用','$150.7M','—','—','—','約 $99M 為現金衝擊','lose'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>指標</th><th>FY26 Q2</th><th>FY26 Q1</th><th>FY25 Q2</th><th>市場預期</th><th>判定</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// 毛利率走勢表
+const GM=[
+ ['25Q2','76.3%','—','歷史正常區間','' ],
+ ['26Q1','72.8%','−210bp','大幅低於預期 75.1%,是崩跌主因之一','lose'],
+ ['<b>26Q2</b>','<b>73.1%</b>','<b>+30bp</b>','方向轉正,但只回補跌幅不到 1/10','mid'],
+];
+document.getElementById('gmTable').innerHTML=
+ '<tr><th>季度</th><th>non-GAAP 毛利率</th><th>QoQ</th><th>說明</th></tr>'+
+ GM.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${r[4]}">${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 客戶結構表
+const CUST=[
+ ['25Q2','3,712','—','114%','71%'],
+ ['25Q3','4,009(+23% YoY)','+297','119%','73%'],
+ ['25Q4','4,298','+289','120%','73%'],
+ ['26Q1','4,416(+25% YoY)','+118','118%','72%'],
+ ['<b>26Q2</b>','<b>4,698(+27% YoY)</b>','<b>+282</b>','<b>120%</b>','73%'],
+];
+document.getElementById('custTable').innerHTML=
+ '<tr><th>季度</th><th>&gt;$100K 客戶數</th><th>單季淨增</th><th>DBNRR</th><th>大客戶營收佔比</th></tr>'+
+ CUST.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// Guidance 表
+const GUID=[
+ ['FY26 營收','$2,805–2,813M','<b>$2,864–2,870M</b>','<b>+2.1%</b>','win'],
+ ['FY26 non-GAAP EPS','$1.19–1.20','<b>$1.25–1.26</b>','<b>+5.0%</b>','win'],
+ ['FY26 non-GAAP 營業利益','—','$443–445M','首次給出','' ],
+ ['FY26 重組總成本','$140–150M','<b>上看 $165M</b>','<b>成本上修</b>','lose'],
+ ['Q3 26 營收','—','$736–737M','隱含 YoY +31%(本季 +36%)','mid'],
+ ['Q3 26 non-GAAP EPS','—','$0.34','—',''],
+];
+document.getElementById('guidTable').innerHTML=
+ '<tr><th>項目</th><th>舊指引(Q1 法說)</th><th>新指引(本次)</th><th>變化</th></tr>'+
+ GUID.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 估值表
+const VAL=[
+ ['Trailing PE','−1137.7x','—','GAAP 常年淨損,完全失真,不採用','lose'],
+ ['Forward PE(non-GAAP 隱含)','~263x','—','盤後 ~$330 ÷ FY26 EPS 中值 $1.255;EPS 基數極小','lose'],
+ ['<b>Forward PS</b>','<b>31.3x</b>','<b>1 年 98.8% / 3 年 99.6%</b>','過去三年只有不到 0.4% 的時間更貴','lose'],
+ ['分析師目標價','$284.65(26 位,買入 80.8%)','—','已低於盤後 ~$330,舊目標價尚未消化本次 beat','mid'],
+];
+document.getElementById('valTable').innerHTML=
+ '<tr><th>指標</th><th>數值</th><th>歷史百分位</th><th>怎麼讀</th></tr>'+
+ VAL.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 同族群概念股掃描
+const GROUP=[
+ ['NET Cloudflare','CDN + SASE + AI 基建三合一','本文主標的 · 龍頭','PS 31.3x / 隱含 PE ~263x','PS 98.8%','成長最強,估值也最貴,安全邊際薄'],
+ ['PANW Palo Alto','資安平台整合者,Prisma 是 SASE 直接對手','龍頭 · 估值最極端','PS 21.9x','PS 99.2%','全表分位最高,證明貴的不只 NET'],
+ ['CRWD CrowdStrike','端點資安龍頭,agentic SOC 敘事','龍頭 · 與 NET 同一档','PS 33.8x','PS 98.8%','跟 NET 同等昂貴,同一套 AI+安全溢價'],
+ ['DDOG Datadog','可觀測性,與 Workers 開發者平台有交集','中偏強','PS 16.6x','PS 76.8%','比 NET / CRWD 便宜,成長性略遜'],
+ ['ZS Zscaler','SASE / Zero Trust 純血股,NET 直接對手','中段 · 估值最溫和','PS 7.0x','PS 37.0%','同一塊市場卻只有 37 分位,分類差異造成的落差'],
+ ['AKAM Akamai','老牌 CDN + 資安,成長最慢','落後','PE 38.9x','PE 82.0%','便宜是因為沒有 NET 的成長性,不是錯殺'],
+ ['FSLY Fastly','小型 CDN / 邊緣運算,結構性掙扎','明顯落後','PS 4.65x','PS 82.0%','絕對值最低但自身分位仍 82%,轉機股非成長股'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward 估值</th><th>估值分位(1 年)</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+</script>
+</body></html>

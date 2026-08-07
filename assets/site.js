@@ -11,6 +11,7 @@
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
+  {slug:'cloudflare-2026q2-earnings', d:'2026-08-07', cat:'財報分析',       sub:'Cloudflare',zh:'Cloudflare．2026 Q2 財報拆解', en:'Cloudflare．Q2 2026 Earnings, Unpacked'},
   {slug:'palantir-2026q2-earnings',   d:'2026-08-05', cat:'財報分析',       sub:'Palantir',  zh:'Palantir．2026 Q2 財報拆解', en:'Palantir．Q2 2026 Earnings, Unpacked'},
   {slug:'onsemi-2026q2-earnings',     d:'2026-08-05', cat:'財報分析',       sub:'onsemi',    zh:'onsemi．2026 Q2 財報拆解',   en:'onsemi．Q2 2026 Earnings, Unpacked'},
   {slug:'alphabet-2026q2-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Alphabet',  zh:'Alphabet．2026 Q2 財報拆解', en:'Alphabet．Q2 2026 Earnings, Unpacked'},
