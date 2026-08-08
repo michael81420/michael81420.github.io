@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP686 個股觀點整理 — 大盤精準停在季線、中小型股跌 28% 後的輪動接力棒、台達電基本面與股價的背離</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep686-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP686 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🕸</span></h1>
+<div class="sub">EP685 講「彈完了怎麼辦」,這集接著給出<b>輪動的順序</b>:光通訊第一個站起來、散熱跟上、被動/功率元件可能是下一棒,而電源族群因為 800V 規格升級被單獨拉出來講。<br>本集最意外的發現是:<b>兩個籠統的口播數字經查證後精準到小數點</b>——「大盤拉到季線」實際落差僅 0.1%、「中小型股跌近三成」實際是 −28.05%。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP686 逐字稿分析</span>
+<span class="badge">整理日:2026-08-08</span>
+<span class="badge">姊妹篇:EP685 個股觀點整理</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">📐 <span class="win">兩個口播數字被查到精準吻合,這集的籌碼面體感異常準</span>。「大盤拉到季線整理」——加權指數 8/7 收 <b>44,225.91</b>,60 日均線 <b>44,278.76</b>,落差只有 <b>0.1%</b>。「中小型股跌了近三成」——櫃買指數 6/22 高 453.5 跌到 7/30 低 326.23,實際 <b>−28.05%</b>。兩句都不是抓感覺,是真的踩在數字上。</p>
+<p class="big">🔁 <span class="mid">這集最可操作的是「輪動順序」而不是個股</span>:光通訊(第一個休息也第一個站起來)→ 散熱 → 被動/功率元件(推測的下一棒)。前兩段已被數字驗證(健策近 5 日 <b>+27.1%</b>、奇鋐 +20.0%),第三段<b>純屬推測,沒有數字支撐</b>,別把三段當同一種強度讀。</p>
+<p class="big">⚡ <span class="win">台達電是這集最清楚的「基本面 vs 股價背離」案例</span>。6 月營收 YoY <b>+55.4%</b> 創新高、訂單超滿,但近 1 月股價 <b>−12.2%</b>、距高點 −13.4%。同族群的光寶科財報後近 5 日 <b>+18.2%</b> 先噴出去。主持人說「資金暫時不在這裡」——數字上完全成立。</p>
+<p class="big">🚨 <span class="lose">被查出方向錯誤的是台積電那段</span>。主持人說「5、6 月橫盤整理後朝新高邁進」,但 FinMind 查證 4 月低 1,810 到 6 月高 2,510 是 <b>+38.7% 的強力上攻段</b>,不是橫盤;而且現價 2,370 距高點仍 <b>−5.6%</b>,新高沒創到。這是本集少數具體技術面描述出錯的地方。</p>
+<p class="note">★ 估值提醒:同一檔股票在不同資料源的 forward PE 可以差近一倍(聯發科查到 34.2x 與 59–60x 兩個版本)。<span class="lose">本文一律以「現價 ÷ 共識 EPS」自行換算並標明來源</span>,不直接照抄網頁上的現成倍數。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP686 是<b>典型的「族群輪動 + 大盤位階」型的一集</b>,不是選股清單。內容大致分四塊:前段大盤與籌碼面(季線、中小型股跌幅)、中段族群輪動順序與電源 800V 題材、後段記憶體與供應鏈傳言拆解,最後是主持人對風險控管的自省(從滿倉科技股走向全天候配置)。</p>
+<p><b>本集提到的個股大多沒有給新的基本面數字</b>,而是被用來佐證「某個族群現在在輪動的哪一段」。所以這篇的重心放在「<b>大盤位階</b>」「<b>輪動接力棒</b>」「<b>三大族群掃描</b>」三段,個股卡片作佐證用。</p>
+<div class="quote">📌 <b>本集最值得記的一句</b>:「<b>光通訊是第一個休息、也是第一個站起來的族群</b>」。這句話的價值不在光通訊本身,而在它提供了一個判斷框架——<b>先跌的先落底,落底的先啟動</b>。用這個框架去看被動/功率元件(5、6 月噴完、7 月吐回)就會得到「可能是下一棒」的推論。但要誠實:<span class="lose">這是型態推論,不是基本面因果</span>。</div>
+</div>
+
+<h2>二、大盤位階:兩個口播數字都被查到精準吻合</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 336" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="加權指數八月七日收在四萬四千二百二十六,與季線四萬四千二百七十九僅差百分之零點一,而櫃買指數從六月高點跌了百分之二十八後已自低點反彈百分之十七點八,兩個口播數字都精準吻合">
+  <defs><marker id="ah686a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">兩句口播 vs 實際數字 · 都踩在點上</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 查證 2026-08-07 收盤。上:加權指數(權值代表) 下:櫃買指數(中小型股代表)</text>
+
+  <text x="20" y="72" style="fill:var(--ink);font:700 12px sans-serif">加權指數 TAIEX</text>
+  <line x1="150" y1="150" x2="740" y2="150" style="stroke:var(--border)"/>
+  <line x1="150" y1="128" x2="740" y2="128" style="stroke:var(--turn);stroke-width:1.5;stroke-dasharray:5 4"/>
+  <text x="152" y="122" style="fill:var(--turn);font:600 10px sans-serif">季線(60MA) 44,278.76</text>
+  <path d="M170 80 L400 148 L560 118 L700 130" style="fill:none;stroke:var(--ink3);stroke-width:2"/>
+  <circle cx="170" cy="80" r="5" style="fill:var(--lose)"/>
+  <circle cx="700" cy="130" r="6" style="fill:var(--turn)"/>
+  <text x="170" y="70" text-anchor="middle" style="fill:var(--ink2);font:600 10px sans-serif">6/22 高 47,741</text>
+  <text x="700" y="168" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">8/7 收 44,226</text>
+  <rect x="410" y="72" width="230" height="40" rx="7" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="424" y="89" style="fill:var(--ink);font:700 11px sans-serif">口播「拉到季線整理」</text>
+  <text x="424" y="106" style="fill:var(--win);font:700 11px sans-serif">實際落差僅 0.1% · 精準吻合</text>
+  <line x1="470" y1="112" x2="682" y2="126" style="stroke:var(--ink3)" marker-end="url(#ah686a)"/>
+  <text x="20" y="120" style="fill:var(--lose);font:700 11px sans-serif">距高點</text>
+  <text x="20" y="138" style="fill:var(--lose);font:700 11px sans-serif">−7.4%</text>
+
+  <text x="20" y="216" style="fill:var(--ink);font:700 12px sans-serif">櫃買指數 TPEx</text>
+  <line x1="150" y1="300" x2="740" y2="300" style="stroke:var(--border)"/>
+  <path d="M170 218 L430 288 L700 250" style="fill:none;stroke:var(--ink3);stroke-width:2"/>
+  <circle cx="170" cy="218" r="5" style="fill:var(--lose)"/>
+  <circle cx="430" cy="288" r="6" style="fill:var(--lose)"/>
+  <circle cx="700" cy="250" r="6" style="fill:var(--win)"/>
+  <text x="170" y="208" text-anchor="middle" style="fill:var(--ink2);font:600 10px sans-serif">6/22 高 453.5</text>
+  <text x="430" y="316" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">7/30 低 326.23</text>
+  <text x="700" y="316" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">8/7 收 384.19</text>
+  <rect x="196" y="228" width="200" height="40" rx="7" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="210" y="245" style="fill:var(--ink);font:700 11px sans-serif">口播「跌了近三成」</text>
+  <text x="210" y="262" style="fill:var(--lose);font:700 11px sans-serif">實際 −28.05% · 精準吻合</text>
+  <text x="716" y="238" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">自低點</text>
+  <text x="716" y="222" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">+17.8%</text>
+</svg>
+</div>
+<p>股癌的口播通常是「感覺型」的形容詞,這集卻有兩句經得起小數點驗證:</p>
+<div class="quote">✅ <b>「大盤拉到季線整理」——落差 0.1%</b>。加權指數 8/7 收 <b>44,225.91</b>,60 日均線 <b>44,278.76</b>,指數幾乎是貼著季線在走。距 6/22 的 YTD 高點 47,741.51 仍有 <b>−7.4%</b>。主持人的結論是「除非重大意外,續崩機率偏低」——這是把季線當支撐的技術面判斷,不是基本面論證,<span class="mid">季線本身不保證什麼</span>,但描述位階這件事他確實描述對了。</div>
+<div class="quote">✅ <b>「中小型股跌了近三成」——實際 −28.05%</b>。櫃買指數 6/22 高點 453.5 → 7/30 低點 326.23,再到 8/7 的 384.19(自低點反彈 <b>+17.8%</b>)。權值股(加權 −7.4%)和中小型股(櫃買 −28.05%)的跌幅差了將近四倍,<b>這才是 7 月那波「體感遠比指數慘」的真正原因</b>。</div>
+<div class="quote">💡 <b>籌碼面解讀:高槓桿去化,不是基本面轉壞</b>。主持人維持 EP679/680 以來的同一個論點——7 月的殺盤本質是籌碼堆疊過高的多殺多。這個論點在本集<b>沒有提出新證據</b>,是既有結論的重申。要留意的是:同一個論點被重複講第四次,不會因為重複而變得更被證實。</div>
+</div>
+
+<h2>三、輪動接力棒:光通訊 → 散熱 → 被動/功率元件?</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="輪動接力的前兩棒光通訊與散熱已被股價數字驗證,第三棒被動與功率元件純屬推測沒有數字支撐,電源族群則是同時進行的另一條獨立線">
+  <defs><marker id="ah686b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">節目描述的接力順序 · 前兩棒有數字,第三棒只有推測</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 查證 2026-08-07。證據強度會隨著棒次遞減,不能當同一種東西讀</text>
+
+  <rect x="20" y="62" width="200" height="86" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="34" y="84" style="fill:var(--win);font:700 12px sans-serif">① 光通訊 · 已跑完一段</text>
+  <text x="34" y="104" style="fill:var(--ink2);font:400 11px sans-serif">「第一個休息、第一個站起來」</text>
+  <text x="34" y="122" style="fill:var(--ink2);font:400 11px sans-serif">上游 InP 基板缺料</text>
+  <text x="34" y="140" style="fill:var(--ink3);font:400 10px sans-serif">EP685 已查證台廠齊漲 23–38%</text>
+
+  <line x1="224" y1="105" x2="264" y2="105" style="stroke:var(--ink3)" marker-end="url(#ah686b)"/>
+
+  <rect x="268" y="62" width="200" height="86" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="282" y="84" style="fill:var(--win);font:700 12px sans-serif">② 散熱 · 正在跑</text>
+  <text x="282" y="104" style="fill:var(--ink);font:600 11px sans-serif">健策近 5 日 +27.1%</text>
+  <text x="282" y="122" style="fill:var(--ink);font:600 11px sans-serif">奇鋐 +20.0% · 雙鴻 +12.5%</text>
+  <text x="282" y="140" style="fill:var(--win);font:700 10px sans-serif">✅ 數字驗證:已啟動</text>
+
+  <line x1="472" y1="105" x2="512" y2="105" style="stroke:var(--ink3);stroke-dasharray:4 3" marker-end="url(#ah686b)"/>
+
+  <rect x="516" y="62" width="224" height="86" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="530" y="84" style="fill:var(--mid);font:700 12px sans-serif">③ 被動/功率 · 推測</text>
+  <text x="530" y="104" style="fill:var(--ink2);font:400 11px sans-serif">5、6 月噴完 → 7 月吐回</text>
+  <text x="530" y="122" style="fill:var(--ink2);font:400 11px sans-serif">ODM/EMS 端顯示元件仍在漲價</text>
+  <text x="530" y="140" style="fill:var(--mid);font:700 10px sans-serif">❓ 本集未給任何個股數字</text>
+
+  <rect x="20" y="170" width="720" height="52" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="192" style="fill:var(--ink);font:700 12px sans-serif">另一條獨立線:電源供應器(800V 規格升級驅動),不在上面的接力順序裡</text>
+  <text x="36" y="212" style="fill:var(--ink2);font:400 11px sans-serif">光寶科已先噴(近 5 日 +18.2%)· 台達電落後(近 1 月 −12.2%,但 6 月營收 YoY +55.4% 創高)</text>
+
+  <rect x="20" y="238" width="720" height="48" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="36" y="260" style="fill:var(--lose);font:700 12px sans-serif">讀法提醒:①②是「已發生」的回顧,③是「還沒發生」的預測</text>
+  <text x="36" y="279" style="fill:var(--ink2);font:400 11px sans-serif">同一段口播裡混著回顧與預測,是最容易讓人把預測誤當成事實的地方。</text>
+</svg>
+</div>
+<p>這集的核心敘事是族群輪動的<b>順序</b>。三棒的證據強度差很多,分開讀才不會出事:</p>
+<div class="quote">✅ <b>第一棒光通訊:已跑完一段</b>。主持人的說法是「這波修正中第一個休息、也是第一個站起來的族群」,並提到上游磷化銦(InP)基板缺料。台廠的漲勢在 <a href="gooaye-ep685-stocks.html">EP685</a> 已經查證過(四檔近 5 日齊漲 23–38%),本集沒有給新數字,屬於<b>回顧</b>。</div>
+<div class="quote">✅ <b>第二棒散熱:數字驗證已啟動</b>。健策近 5 日 <b>+27.1%</b>、近 1 月 +36.7%;奇鋐 +20.0% / +18.5%;雙鴻 +12.5% / +10.3%。三檔同步走強,「先前死很久、現在轉強」的描述屬實。<span class="lose">但估值也跟著上去了</span>——健策 trailing PER 已到 <b>121.16x</b>。</div>
+<div class="quote">❓ <b>第三棒被動/功率元件:純推測,沒有任何個股數字</b>。主持人的邏輯是「5、6 月噴完 7 月大回檔甚至吐回,但 ODM/EMS 端數據顯示元件仍在漲價」,所以可能是下一棒。<b>這是型態推論疊加供應鏈耳語</b>,本集沒有給出任何一檔被動元件股的價格或營收數字。要買的話,證據等級和前兩棒完全不同。</div>
+</div>
+
+<h2>四、電源族群:基本面與股價的背離</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 296" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="台達電六月營收年增百分之五十五創新高但近一月股價下跌百分之十二,光寶科營收年增百分之三十七卻近一月上漲百分之十六,同族群裡基本面較強的反而股價落後">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">同一個族群,基本面強的那家股價反而落後</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 查證 2026-08-07。左:6 月營收 YoY 右:近 1 月股價報酬</text>
+
+  <line x1="380" y1="70" x2="380" y2="256" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="200" y="66" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">基本面(6 月營收 YoY)</text>
+  <text x="570" y="66" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">股價(近 1 月報酬)</text>
+
+  <text x="20" y="112" style="fill:var(--ink);font:700 12px sans-serif">2308</text>
+  <text x="20" y="130" style="fill:var(--ink);font:700 12px sans-serif">台達電</text>
+  <rect x="96" y="94" width="230" height="30" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="211" y="114" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">+55.4%　創新高</text>
+  <rect x="430" y="94" width="120" height="30" rx="6" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="490" y="114" text-anchor="middle" style="fill:var(--lose);font:700 13px sans-serif">−12.2%</text>
+  <text x="562" y="114" style="fill:var(--ink3);font:400 11px sans-serif">距高點 −13.4% · trailing 52.51x</text>
+
+  <text x="20" y="180" style="fill:var(--ink);font:700 12px sans-serif">2301</text>
+  <text x="20" y="198" style="fill:var(--ink);font:700 12px sans-serif">光寶科</text>
+  <rect x="96" y="162" width="156" height="30" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="174" y="182" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">+37.0%</text>
+  <rect x="430" y="162" width="106" height="30" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="483" y="182" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">+15.7%</text>
+  <text x="548" y="182" style="fill:var(--ink3);font:400 11px sans-serif">近 5 日 +18.2% · trailing 28.89x</text>
+
+  <rect x="20" y="220" width="720" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="242" style="fill:var(--ink);font:700 12px sans-serif">主持人的說法:「線型走爛但公司非常屌、訂單超滿,資金暫時不在這裡」</text>
+  <text x="36" y="263" style="fill:var(--ink2);font:400 11px sans-serif">數字上完全成立。但「落後 = 遲早補漲」是假設,不是結論——資金也可能單純不認同這個估值(52.51x vs 光寶 28.89x)。</text>
+</svg>
+</div>
+<p>電源供應器是本集唯一被單獨拉出來講題材的族群,理由是<b>某大 AI 巨頭提早往 800V 架構走</b>,PS/PX/PBU 等高規方案的 ASP 有機會飆升數倍。</p>
+<div class="quote">✅ <b>台達電的背離屬實</b>。6 月營收 YoY <b>+55.4%</b> 創新高(訂單滿的說法有數字支撐),但近 1 月股價 <b>−12.2%</b>、距高點 −13.4%。這是本集查證下來最乾淨的一組「基本面 vs 股價」背離案例。</div>
+<div class="quote">✅ <b>光寶科先噴出去也屬實</b>。近 5 日 <b>+18.2%</b>、近 1 月 +15.7%,6 月營收 YoY +37.0%,距高點僅 −2.2%。而且 trailing PER <b>28.89x</b> 只有台達電(52.51x)的一半多——<b>族群裡跑最快的那檔,估值反而是相對低的</b>。</div>
+<div class="quote">⚠️ <b>但「800V ASP 飆升數倍」沒有數字地基</b>。本集沒有給任何訂單金額、出貨時程或財測。方向與台達電既有的「800V 在 2027 年放量」說法一致,但<b>屬於展望型敘事</b>。用它來支撐「台達電落後所以會補漲」的推論,中間缺了好幾個環節。</div>
+</div>
+
+<h2>五、記憶體與供應鏈傳言:哪些能信</h2>
+<div class="card">
+<p>本集在記憶體上的核心主張是<b>「報價趨緩不等於需求轉弱」</b>,並用 SanDisk 的 guidance 當佐證。</p>
+<div class="quote">✅ <b>SanDisk 的 guidance 反應屬實</b>。SNDK 8/5 公布財報後股價重挫,近 1 月 <b>−29.8%</b>,現價 $1,212.21。主持人說「報價拉平略低於部分預期,印證此前 Q3/Q4 漲幅趨緩的看法,但不代表需求受影響」——前半段有數字支撐,後半段是判斷。<span class="mid">值得注意的是 SNDK forward PE 只有 5.37x</span>,市場顯然已 price in 相當程度的循環見頂預期。</div>
+<div class="quote">❓ <b>HBM「12Hi 換 8Hi」屬供應鏈耳語</b>。主持人的解讀是「不是末日,是市場太缺料所以客戶妥協規格」。這個解讀方向合理,但<b>具體規格傳言本身查無官方公開文件佐證</b>。這與 EP685 查證 HBM 降規傳言時的結論一致——同一則傳言換了個說法又出現一次,兩次都查不到獨立來源。</div>
+<div class="quote">✅ <b>但記憶體族群的營收數字比口播還兇</b>。群聯月營收 YoY <b>+377.6%</b>、川湖 <b>+355.5%</b>、力成 +29.4%。這是本集少數<b>敘事被驗證為「保守」而非誇大</b>的地方——實際的營收爆發力遠超節目給人的印象。</div>
+<div class="quote">💡 <b>矽電容 vs 高階 MLCC:主持人的結論偏保守且合理</b>。他認為矽電容在高功耗應用有空間、但不會取代 MLCC,兩者共同受惠伺服器功耗攀升,供需影響有限。<b>這種「不會取代、共同受惠」的判斷比單邊看多有價值</b>,因為它同時排除了「矽電容取代論」和「MLCC 被顛覆論」兩種極端敘事。</div>
+</div>
+
+<h2>六、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義</b>:本集的個股散落在三個獨立題材裡,不是同一條供應鏈,所以分三塊掃描——<b>①電源供應器(800V 規格升級)</b>、<b>②散熱解決方案(液冷/均熱片)</b>、<b>③記憶體與伺服器機構元件(AI 機櫃需求)</b>。三塊各自有龍頭與落後者,輪動的節奏也不同。</p>
+<p><b>循環烈度判定(invest-playbook)</b>:三塊都屬於 <b>AI 資料中心資本支出驅動的結構成長</b>,但估值擺盪劇烈——同族群裡 trailing PER 從 11x 到 121x 都有。<span class="lose">台股缺 forward PE 資料源,以下一律標明是 trailing</span>,判讀時要記得成長股的 trailing 會系統性高估貴的程度,而循環見頂時 trailing 又會系統性低估風險。</p>
+
+<h3>① 電源供應器族群(800V 規格升級)</h3>
+<div style="overflow-x:auto"><table id="grpPower"></table></div>
+
+<h3>② 散熱解決方案族群</h3>
+<div style="overflow-x:auto"><table id="grpThermal"></table></div>
+
+<h3>③ 記憶體與伺服器機構元件族群</h3>
+<div style="overflow-x:auto"><table id="grpMem"></table></div>
+<p class="note">台股漲跌幅與 PER — FinMind(2026-08-07 收盤,<b>台股欄位一律為 trailing PER</b>,因 FinMind 不提供 forward)。月營收 YoY 為最新公告月份。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p><b>電源</b>:光寶科(28.89x)領漲、台達電(52.51x)落後,但基本面強度剛好相反。二線的康舒 trailing PER <b>94.30x</b> 明顯偏貴且基本面支撐薄弱,全漢(21.57x)估值合理但完全沒跟上,群光電子(11.39x)是族群裡估值最低卻逆勢下跌的一檔——<b>整個族群的「估值 ↔ 動能」關係是亂的,說明現在買的還不是族群共識</b>。</p>
+<p><b>散熱</b>:健策(121.16x)、奇鋐(45.76x)、雙鴻(29.29x)三檔同步走強,估值差距達四倍。<span class="lose">健策的 121x 在暴漲 +36.7% 之後,安全邊際已經很薄</span>;雙鴻 29.29x 是三檔裡最合理的。超眾是唯一近 1 月仍下跌(−12.1%)、沒跟上族群的一檔。</p>
+<p><b>記憶體/機構件</b>:這塊的數字最驚人。川湖近 5 日 <b>+41.5%</b>、月營收 YoY +355.5%,是本集所有標的中最猛的;群聯 +23.2%、月營收 YoY +377.6%,而 trailing PE 只有 <b>19.32x</b>——<span class="win">在成長幅度面前,群聯是三塊裡估值與成長最不匹配(便宜)的一檔</span>。南亞科(17.73x)、華邦電(18.03x)同屬低估值跟漲組。京元電子近 1 月 −21.6% 是族群裡最落後的,測試環節的受惠程度顯然不如封測與控制晶片端。</p>
+<p class="note">⚠️ <b>共同風險</b>:川湖(61.25x)與健策(121.16x)的估值是被暴增的營收撐起來的。這種結構的脆弱點在於<b>下一期月營收只要成長率放緩,估值消化的壓力會立刻反映在股價上</b>——不需要衰退,只要「成長變慢」就夠了。</p>
+</div>
+
+<h2>七、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。<b>本集多數個股為脈絡性提及,用來佐證族群輪動位置,沒有給出新的基本面數字</b>,已於卡片中標明。</p>
+
+<h2>八、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:美股快照/K線/forward 估值與歷史百分位 — Futu OpenAPI;台股指數、個股股價、月營收與 trailing PER — FinMind;forward PE 共識 EPS 與供應鏈傳言 — WebSearch(2026-07 至 08 當期)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>九、風險控管那段:主持人的自省</h2>
+<div class="card">
+<p>本集後段有一段和選股無關、但可能是最值得留著的內容:主持人自述<b>從「滿倉科技股」開始往達里歐的全天候配置(All Weather Portfolio)靠攏</b>,並明講自己「開始理解保本優先於賺更多」。實務上他也提到用量化避險(例如多聯發科、空高通來對沖 Beta)。</p>
+<div class="quote">💡 <b>這段的價值在於它和口播語氣的不一致</b>。整集在講族群輪動、講下一棒在哪,聽起來是進攻的;但主持人自己的部位配置卻在往防守走。<b>這和 EP685 的情況一樣</b>——那集口播「別等第二隻腳」很積極,他實際選的卻是續趴指數的防守。<span class="lose">口播的語氣強度,和主講人的真實部位選擇,是兩回事</span>。</div>
+<div class="quote">📌 <b>0050 那則聽眾軼事無法查證,但方向可以記</b>。聽眾靠 0050 存出 400–500 萬——金額是個人陳述,無從驗證。但它在本集的作用不是報酬率宣傳,而是被拿來對照「滿倉個股 + 高槓桿」的另一種活法。<b>7 月中小型股跌 28% 而 0050 近 1 月僅 −2.8%,這個對比本身就說明了配置的意義</b>。</div>
+</div>
+
+<h2>十、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">兩個籠統的口播數字被查到精準吻合</span>。「大盤拉到季線」(落差 0.1%)、「中小型股跌近三成」(實際 −28.05%),這種等級的精確度在感覺型口播裡不常見,<b>本集的籌碼面體感可信度應該上調</b>。</p>
+<p><span class="win">四個具體個股敘事全部通過交叉驗證</span>:台達電訂單滿但股價落後(月營收 +55.4% vs 近 1 月 −12.2%)、光寶財報後噴出(+18.2%)、力成隔天公告買回庫藏股(8/7 董事會決議屬實)、健策利空壓回後大漲(8/4 起連漲)。四則的時間點與數字都對得上。</p>
+<p><span class="win">記憶體族群的敘事被驗證為「保守」</span>。川湖月營收 YoY +355.5%、群聯 +377.6%,實際爆發力遠超節目口播給人的印象。這是少數「查完之後發現節目講得不夠猛」的案例。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">台積電那段方向錯誤</span>。「5、6 月橫盤整理後朝新高邁進」——但 4 月低 1,810 到 6 月高 2,510 是 <b>+38.7% 的強力上攻</b>,不是橫盤;現價 2,370 距高點仍 −5.6%,新高並未創到。這是本集少數具體技術面描述出錯的地方。</p>
+<p><span class="lose">川湖「殺到 1 萬」的細節有落差</span>。查證期間並無「長期整理後急殺到 1 萬元」的對應走勢,較可能是 8/4–8/6 短暫來到 9,400–10,100 區間後迅速反彈。大方向(利空後上漲)對,但敘事的戲劇性被放大了。</p>
+<p><span class="lose">第三棒(被動/功率元件)是純推測</span>。本集沒有給任何一檔被動元件股的價格或營收數字,論據是「ODM/EMS 端顯示元件仍在漲價」的供應鏈觀察加上型態推論。<b>證據強度和前兩棒差一個量級,不該用同樣的倉位對待</b>。</p>
+<p><span class="lose">HBM「12Hi 換 8Hi」與 800V ASP 數倍,都缺數字地基</span>。前者查無官方文件,後者沒有訂單金額或財測。兩則都屬於方向合理但無法驗證的展望型敘事。</p>
+<h3>風險與反方觀點</h3>
+<p>最大的風險是<b>把「落後」直接讀成「補漲機會」</b>。台達電的背離是事實,但「落後 = 遲早會漲」是假設不是結論。反方觀點很簡單:資金也可能單純不接受 52.51x 的估值(同族群光寶只要 28.89x)。<b>基本面強和股價會漲,中間隔著一個「市場願意付多少」,而這件事本集沒有討論</b>。</p>
+<p>其次,<b>已經跑完的族群估值都不便宜了</b>。健策 121.16x、川湖 61.25x、康舒 94.30x,這些是在暴漲之後的水位。而本集提到這些標的時,語氣多半是回顧「它們漲得多好」,<span class="lose">很容易被讀成「現在還可以追」</span>。真正估值與成長最匹配的其實是沒被強調的群聯(19.32x 對上 +377.6% 的營收成長)。</p>
+<p>第三,<b>美股那三檔的估值分位差異極大,不能一概而論</b>。Cloudflare 的 forward PS <b>32.88x</b> 落在近一年 <b>96.8 百分位</b>(全表最緊繃);Palantir 雖然 forward PE 91.4x 絕對值嚇人,但百分位僅 11.6%(相對自身歷史其實偏低);NVIDIA forward PE 22.15x、百分位 22.4%,是三檔裡最便宜的。<b>主持人把 PLTR 和 NET 並列為「軟體股第一棒」,但兩者的估值風險完全不同級</b>。</p>
+<h3>可信度結論</h3>
+<p>本集在<span class="win">已發生的市場數據</span>上非常可信(兩個大盤數字精準到小數點、四則個股敘事全部通過驗證),在<span class="mid">族群輪動的前兩棒</span>上有數字支撐。但在<span class="lose">第三棒推測、800V ASP 展望、HBM 規格傳言</span>上,全部缺乏可驗證的數字地基。</p>
+<p>這集適合當作「<b>七月殺完之後,錢往哪裡去</b>」的地圖來讀。但地圖上已經標記的路(光通訊、散熱、記憶體)估值都不便宜了,而還沒標的路(被動/功率元件)則連個股名字都沒給。<b>真正可操作的其實是台達電那組背離</b>——它至少有清楚的基本面數字可以持續追蹤驗證。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP686</b>「🕸」(<a href="https://youtu.be/5huhKcB-63s" target="_blank" rel="noopener">YouTube 原始連結</a>)。對 YouTube 自動語音辨識逐字稿(38,186 字元)做分析整理(整理日 2026-08-08)。逐字稿為自動 ASR,人名與個股代號多為音譯、已人工還原,無法可靠還原者已於文中標註。<br>
+<b>數字查證</b>:美股快照/K線/forward 估值與歷史百分位(NVDA / PLTR / NET / SNDK)— Futu OpenAPI(Futu 不支援台股行情);加權指數、櫃買指數、台股個股股價、月營收與 trailing PER(2330 / 2454 / 2308 / 2301 / 6239 / 8299 / 3653 / 2059 / 0050 / 6282 / 3015 / 2385 / 3017 / 3324 / 6230 / 2408 / 2344 / 2449)— FinMind;台股 forward PE 因 FinMind 無此介面,改以「現價 ÷ 法人共識 EPS」自行換算(共識 EPS 來源 — WebSearch / FactSet 當期報導),已於文中標明計算基準。所有價格與漲跌幅基準日為 <b>2026-08-07 收盤</b>。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'台達電',code:'2308',mkt:'台股',tone:'bull',said:'「線型走爛但公司非常屌、訂單超滿,資金暫時不在這裡」——若電源族群回溫可望跟漲。本集最完整的個股論述。',chk:'✅背離屬實:6 月營收 YoY <b>+55.4%</b> 創新高,但 8/7 收 1,650 元、近 1 月 <b>−12.2%</b>、距高點 −13.4%。⚠️但 trailing PER <b>52.51x</b>(forward 約 44.5x,以 FactSet 2026E EPS 37.12 元換算),是同族群光寶(28.89x)的近兩倍——資金不進來也可能單純是估值問題,不必然是「還沒輪到」。',vd:'ok'},
+ {nm:'光寶科',code:'2301',mkt:'台股',tone:'bull',said:'「財報後股價直接噴出去」,有望提振整個電源板塊的信心。',chk:'✅完全屬實:8/7 收 247 元,近 5 日 <b>+18.2%</b>、近 1 月 +15.7%,距高點僅 −2.2%;6 月營收 YoY +37.0%。💡值得注意:trailing PER <b>28.89x</b> 是電源族群裡估值與動能最匹配的一檔——<b>漲最多的反而不是最貴的</b>。',vd:'ok'},
+ {nm:'川湖',code:'2059',mkt:'台股',tone:'bull',said:'「先前 NV 漲價謠言致股價下殺到約 1 萬元」,是優質公司被錯殺的買點。',chk:'⚠️數字方向對、細節有出入:8/7 收 11,110 元(創階段新高),近 5 日 <b>+41.5%</b>、近 1 月 +34.7%,月營收 YoY <b>+355.5%</b>——營收爆發力遠超口播印象。但查證期間並無「長期整理後急殺到 1 萬」的走勢,較可能是 8/4–8/6 短暫來到 9,400–10,100 後迅速反彈。trailing PER 61.25x,估值已隨股價墊高。',vd:'warn'},
+ {nm:'健策',code:'3653',mkt:'台股',tone:'bull',said:'「17 歲聽眾買 10 股拉出四根漲停 +30%」;先前因 MCL 液冷利空壓回,優質公司被放利空是好機會。',chk:'✅方向吻合:8/4 起連續強漲,8/7 收 4,380 元,近 5 日 <b>+27.1%</b>、近 1 月 +36.7%,距高點僅 −1.6%。⚠️但 trailing PER 已達 <b>121.16x</b>,是全篇最高——「利空被錯殺」的邏輯在暴漲 +36.7% 之後已經不成立了,現在買的是完全不同的價位。',vd:'warn'},
+ {nm:'群聯',code:'8299',mkt:'台股',tone:'bull',said:'未給具體數字,僅表達「跟該公司關係好、很喜歡這家公司與主管」的個人好感。',chk:'💡數字比口播更有說服力:8/7 收 2,020 元,近 5 日 <b>+23.2%</b>(近 1 月仍 −9.0%),月營收 YoY <b>+377.6%</b>,而 trailing PE 只有 <b>19.32x</b>。<b>在本集所有標的裡,群聯是估值與成長最不匹配(相對便宜)的一檔</b>,但主持人給的是好感而非數據論證。',vd:'ok'},
+ {nm:'力成',code:'6239',mkt:'台股',tone:'neu',said:'僅是軼事:聽眾抱怨賣在阿呆谷,隔天公司就宣布買回庫藏股。',chk:'✅時間點吻合:8/7 董事會確實決議買回庫藏股(轉讓員工)。8/7 收 262.5 元,近 5 日 +11.5%,但近 1 月仍 <b>−18.0%</b>;月營收 YoY +29.4%,trailing PER 25.99x。基本面扎實但股價修復明顯落後同族群。',vd:'ok'},
+ {nm:'Palantir',code:'US.PLTR',mkt:'美股',tone:'bull',said:'財報後股價「直接射超多」,雖然貴到不可思議、forward PE 也貴,但資金願意重新湧入,是軟體股的「第一棒」。',chk:'✅漲幅屬實:8/4 財報單日 <b>+29.5%</b>,近 5 日 +39.8%、近 1 月 +30.1%,8/7 收 $172.01。💡但「貴」要拆開看:trailing PE 147.02x、forward PE 約 <b>91.4x</b> 絕對值確實嚇人,<b>可是估值百分位僅 11.6%</b>——相對自身歷史區間其實不算貴,是 EPS 基期墊高造成的。與 <a href="gooaye-ep685-stocks.html">EP685</a> 的同一個提醒。',vd:'ok'},
+ {nm:'Cloudflare',code:'US.NET',mkt:'美股',tone:'bull',said:'財報後股價噴出去,同屬估值偏貴但資金願意進駐,與 Palantir 並列為軟體股第一棒。',chk:'⚠️這才是全篇估值最緊繃的一檔:8/4 財報單日 +6.6%,近 5 日 +7.6%、近 1 月 +9.8%,8/7 收 $300.27。GAAP 仍虧損故 PE 為負,改看 PS:trailing 42.56x、forward <b>32.88x</b>,估值歷史百分位高達 <b>96.8%</b>。<b>把它和 PLTR 並列會誤導</b>——PLTR 百分位 11.6%、NET 96.8%,風險等級完全不同。',vd:'warn'},
+ {nm:'NVIDIA',code:'US.NVDA',mkt:'美股',tone:'neu',said:'脈絡性提及:7 月修正中「某材料股」先拉漲停仍難逃補跌;先前市場傳「NV 要漲價」的利空。',chk:'✅已補漲回來:8/7 收 $223.96,近 5 日 <b>+11.6%</b>、近 1 月 +9.7%。💡估值反而是本集美股三檔裡最便宜的:trailing PE 34.30x、<b>forward PE 22.15x</b>、估值百分位僅 <b>22.4%</b>。「NV 漲價謠言」本身未見官方證實,屬供應鏈耳語。',vd:'ok'},
+ {nm:'SanDisk',code:'US.SNDK',mkt:'美股',tone:'neu',said:'「剛開 guidance,因報價拉平(趨緩)略低於部分預期」,印證此前記憶體 Q3/Q4 漲幅趨緩的看法,但不代表需求受影響。',chk:'✅前半段屬實:8/5 公布財報/guidance 後股價重挫,近 1 月 <b>−29.8%</b>,8/7 收 $1,212.21。⚠️後半段是判斷不是事實:<b>forward PE 已殺到 5.37x</b>,估值百分位 73.2%——市場顯然已經 price in 相當程度的循環見頂預期,「不代表需求受影響」這句和市場的定價是有落差的。',vd:'warn'},
+ {nm:'台積電',code:'2330',mkt:'台股',tone:'neu',said:'「5、6 月橫盤整理,隨盤勢反彈再度朝新高邁進」;修正時是資金的避風港。',chk:'⚠️這段方向錯誤:FinMind 查證 4 月低 <b>1,810</b> → 6 月高 <b>2,510</b> 是 <b>+38.7% 的強力上攻</b>,不是橫盤。8/7 收 2,370 元,距近月高點仍 <b>−4.0%</b>、距 6 月高點 −5.6%,<b>新高並未創到</b>。trailing PER 31.86x,forward 約 24–25.5x(以 FactSet 2026E EPS 93–99.7 元換算)。',vd:'warn'},
+ {nm:'聯發科',code:'2454',mkt:'台股',tone:'neu',said:'電腦展展示 SOC MicroLED 方案(與國外大廠合作樣品),業內說跑得較前面,但量產需等數年,不代表未來一定放量。',chk:'✅結論保守且合理:MicroLED 展示屬實,「量產需數年」的保留態度恰當。8/7 收 3,900 元,近 5 日 +9.7%(近 1 月 −0.6%)。⚠️估值要自己算:trailing PER 64.41x;forward PE 以共識 EPS 65–66.55 元換算為 <b>59–60x</b>,但另有資料源給 34.2x——<b>兩者差近一倍</b>,提醒別直接照抄網頁上的現成倍數。',vd:'warn'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 三塊族群掃描
+const HEAD='<tr><th>代號/名稱</th><th>族群定位</th><th>相對強弱 · 近期表現</th><th>估值(trailing)</th><th>一句話看法</th></tr>';
+const render=(id,rows)=>document.getElementById(id).innerHTML=HEAD+
+ rows.map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}<div style="color:var(--ink3);font-size:12px;margin-top:4px">${r[3]}</div></td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+render('grpPower',[
+ ['2308 台達電','龍頭 · 伺服器電源技術力最強(80 PLUS Titanium)','<span class="lose">落後</span>','近 5 日 +0.6% · 近 1 月 <b>−12.2%</b> · 月營收 YoY +55.4%','PER 52.51x<div style="color:var(--ink3);font-size:12px">forward 約 44.5x</div>','基本面與股價背離最明顯的一檔,但估值是同族群光寶的近兩倍,補漲需等資金回流訊號確認'],
+ ['2301 光寶科','跟漲 · 財報先行帶動族群信心','<span class="win">領漲</span>','近 5 日 <b>+18.2%</b> · 近 1 月 +15.7% · 月營收 YoY +37.0%','PER 28.89x','族群裡估值與動能最匹配的一檔,已率先反映;漲最多的反而不是最貴的'],
+ ['6282 康舒','二線電源供應器廠','中段','近 5 日 +11.2% · 近 1 月 −18.1%','PER <b>94.30x</b>','估值明顯偏貴(近百倍),受惠族群輪動但基本面支撐薄弱,是本塊風險報酬比最差的一檔'],
+ ['3015 全漢','二線電源供應器廠','<span class="lose">落後</span>','近 5 日 +3.6% · 近 1 月 −14.6%','PER 21.57x','估值合理但動能最弱,完全沒跟上族群輪動,需確認是否有訂單能見度問題'],
+ ['2385 群光電子','電源/機構代工廠 · 產品線更廣','<span class="lose">逆勢下跌</span>','近 5 日 −4.2% · 近 1 月 −5.1%','PER 11.39x','族群裡估值最低卻完全未受惠本波輪動,需查非電源業務是否拖累(產品線廣是雙面刃)'],
+]);
+
+render('grpThermal',[
+ ['3653 健策','龍頭之一 · 均熱片+液冷模組(NVIDIA 驗證)','<span class="win">領漲</span> · 創階段新高','近 5 日 <b>+27.1%</b> · 近 1 月 +36.7% · 距高點 −1.6%','PER <b>121.16x</b>','利空壓回後應驗大漲,但估值已墊到 121 倍,追高的安全邊際極薄'],
+ ['3017 奇鋐','散熱模組大廠','<span class="win">領漲</span>','近 5 日 +20.0% · 近 1 月 +18.5%','PER 45.76x','動能與健策同步強勁,估值只有健策的三分之一,相對仍有想像空間'],
+ ['3324 雙鴻','液冷散熱龍頭之一','跟漲','近 5 日 +12.5% · 近 1 月 +10.3%','PER 29.29x','三檔裡估值最低,若散熱輪動延續仍有補漲空間,是本塊風險報酬比最好的一檔'],
+ ['6230 超眾','散熱模組廠','<span class="lose">落後</span> · 唯一近月下跌','近 5 日 −0.5% · 近 1 月 <b>−12.1%</b>','無有效值','唯一沒跟上族群回溫的一檔,落後到這個程度通常有個別因素,不宜當單純的「補漲候選」'],
+]);
+
+render('grpMem',[
+ ['2059 川湖','伺服器滑軌利基龍頭','<span class="win">最強</span> · 創階段新高','近 5 日 <b>+41.5%</b> · 近 1 月 +34.7% · 月營收 YoY <b>+355.5%</b>','PER 61.25x','營收暴發驗證 AI 機櫃需求,漲勢全篇最猛;但估值已隨營收墊高,靠下一期營收續強撐著'],
+ ['8299 群聯','NAND 控制晶片 Fabless 龍頭','領漲','近 5 日 +23.2% · 近 1 月 −9.0% · 月營收 YoY <b>+377.6%</b>','PER <b>19.32x</b>','營收成長全篇最高、估值卻是全篇最低之一,是估值與成長最不匹配(便宜)的一檔'],
+ ['6239 力成','記憶體封測代工廠','跟漲 · 庫藏股激勵','近 5 日 +11.5% · 近 1 月 <b>−18.0%</b> · 月營收 YoY +29.4%','PER 25.99x','8/7 決議買回庫藏股短線激勵,基本面扎實但股價修復明顯落後,是本塊落後補漲的候選'],
+ ['2408 南亞科','DRAM 製造','跟漲','近 5 日 +26.8% · 近 1 月 +4.9%','PER 17.73x','記憶體漲價循環的直接受惠者,估值是族群中最低;但 DRAM 循環烈度高,trailing 低不代表安全'],
+ ['2344 華邦電','利基型記憶體(NOR Flash 等)','跟漲','近 5 日 +25.8% · 近 1 月 −7.4%','PER 18.03x','與南亞科同步反彈、估值相近;利基型記憶體受 AI 直接拉動的程度不如 HBM/NAND'],
+ ['2449 京元電子','記憶體測試代工','<span class="lose">最落後</span>','近 5 日 +8.3% · 近 1 月 <b>−21.6%</b>','PER 32.84x','近 1 月跌幅最深,測試環節的受惠程度明顯不如封測與控制晶片端,估值卻不低'],
+]);
+
+// 數字查證表
+const FACTS=[
+ ['大盤拉到季線整理','「拉到季線,除非重大意外續崩機率低」','✅<b>精準吻合</b>:TAIEX 8/7 收 44,225.91,60 日均線 44,278.76,落差僅 <b>0.1%</b>。距 6/22 高點 47,741.51 為 −7.4%','ok'],
+ ['中小型股跌了近三成','籠統描述','✅<b>精準吻合</b>:櫃買指數 6/22 高 453.5 → 7/30 低 326.23,實際 <b>−28.05%</b>;8/7 收 384.19,自低點 +17.8%','ok'],
+ ['台積電 5、6 月橫盤後朝新高','「橫盤整理,隨盤勢反彈再朝新高」','⚠️<b>方向錯誤</b>:4 月低 1,810 → 6 月高 2,510 為 <b>+38.7% 強力上攻</b>,不是橫盤;現價 2,370 距高點仍 −5.6%,新高未創到','warn'],
+ ['台達電訂單超滿但線型走爛','「公司非常屌,資金暫時不在這裡」','✅屬實:6 月營收 YoY <b>+55.4%</b> 創高,但近 1 月股價 −12.2%、距高點 −13.4%,背離成立','ok'],
+ ['光寶科財報後噴出','「直接噴出去」','✅屬實:近 5 日 <b>+18.2%</b>、近 1 月 +15.7%,距高點僅 −2.2%,6 月營收 YoY +37.0%','ok'],
+ ['力成隔天公告買回庫藏股','聽眾軼事','✅時間點吻合:8/7 董事會確實決議買回庫藏股(轉讓員工)','ok'],
+ ['健策四根漲停 +30%','「17 歲聽眾買 10 股」','✅方向吻合:8/4 起連續強漲,近 5 日 +27.1%、近 1 月 +36.7%。⚠️但 trailing PER 已達 121.16x','ok'],
+ ['川湖曾被殺到 1 萬','「NV 漲價謠言致股價下殺」','⚠️細節有出入:查證期間無對應的長段整理後急殺,較可能是 8/4–8/6 短暫至 9,400–10,100 後迅速反彈。大方向(利空後上漲)對','warn'],
+ ['Palantir 財報後射超多','「貴到不可思議」','✅漲幅屬實:8/4 單日 <b>+29.5%</b>,近 5 日 +39.8%。💡但估值百分位僅 11.6%,相對自身歷史不算貴(forward PE 91.4x)','ok'],
+ ['Cloudflare 同屬貴但資金願進','與 PLTR 並列「軟體股第一棒」','⚠️並列會誤導:NET forward PS <b>32.88x</b>、估值百分位 <b>96.8%</b>(全表最緊繃);PLTR 百分位 11.6%,兩者風險等級不同','warn'],
+ ['SanDisk 報價拉平低於預期','「不代表需求受影響」','⚠️前半屬實(近 1 月 −29.8%),後半是判斷:forward PE 已殺到 5.37x、百分位 73.2%,市場已 price in 循環見頂預期','warn'],
+ ['光通訊第一個站起來、散熱跟上','族群輪動順序','✅第二棒有數字:健策 +27.1%、奇鋐 +20.0%、雙鴻 +12.5%(近 5 日),散熱轉強屬實;第一棒為 EP685 已查證的回顧','ok'],
+ ['被動/功率元件是下一棒','「ODM/EMS 端顯示元件仍在漲價」','❓純推測:本集未給任何被動元件個股的價格或營收數字,論據為型態推論加供應鏈觀察,證據強度低於前兩棒','q'],
+ ['800V 使 PS/PX ASP 飆升數倍','「某大 AI 巨頭提早往 800V 走」','❓無數字地基:未給訂單金額、出貨時程或財測。方向與台達電既有的 2027 放量說法一致,屬展望型敘事','q'],
+ ['HBM 12Hi 換 8Hi 不是末日','「市場太缺料,客戶妥協規格」','❓查無官方公開文件佐證。與 EP685 的 HBM 降規傳言同源,兩次均查不到獨立來源,屬供應鏈耳語','q'],
+ ['記憶體族群營收爆發','口播僅泛談需求敘事未變','✅實際比口播更猛:群聯月營收 YoY <b>+377.6%</b>、川湖 <b>+355.5%</b>、力成 +29.4%,敘事被驗證為保守','ok'],
+ ['0050 存出 400–500 萬','聽眾軼事','❓個人陳述無從查證。但 0050 近 1 月僅 −2.8%,對比櫃買 −28.05%,配置差異的效果本身成立','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
