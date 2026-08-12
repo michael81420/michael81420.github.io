@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP687 個股觀點整理 — 處置股兩分鐘一撮、Google 從研發者變數位房東、台股 AI 基建營收全面強但股價回檔三成</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep687-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP687 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🐧</span></h1>
+<div class="sub">這集<b>財經硬核比例明顯低於前幾集</b>——主持人在度假,近半內容是生活、運動、原生家庭與職場 Q&amp;A。硬內容集中在兩塊:<b>處置股改成「兩分鐘一撮」的市場結構變化</b>,以及 <b>Google 人事震動 + Berkshire 連續加碼所帶出的「AI 數位房東」敘事</b>,尾段才用一段話帶過台股 AI 基建的族群輪動。<br>本集查證下來最值得記的一件事:<b>「Apple 的 AI 投資最保守、YTD 表現卻最好」這句話只有在特定比較範圍內成立</b>。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP687 逐字稿分析</span>
+<span class="badge">整理日:2026-08-12</span>
+<span class="badge">姊妹篇:EP686 / EP685 個股觀點整理</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">🐧 <span class="mid">先講清楚:這集不是選股集</span>。主持人在度假,個股點名密度是近幾集最低的一集。真正的財經內容只有兩塊半:處置股新制度、Google 的角色轉變、以及尾段回答聽眾配置時順帶認同的六檔台股。<b>如果你是來找標的的,這集能給的很少</b>。</p>
+<p class="big">🏠 <span class="win">Google 那段是本集論證最紮實的部分</span>。DeepMind 人事震動(Hassabis 卸任、Jeff Dean 出走創 Discovery Loop)被解讀成「把 frontier model 的研發風險外包出去,自己專心當收租的數位房東」。這個框架和 Berkshire 的加碼時間線高度吻合:2025 Q3 買約 1,785 萬股 → 2026 Q1 加碼到約 5,800 萬股 → 2026/6 再私募認購 100 億美元。GOOG <b>forward PE 25.34x</b>、估值百分位僅 <b>3.2%</b>——在敘事這麼熱的情況下,估值反而是自身近一年區間的地板。</p>
+<p class="big">🍎 <span class="lose">「Apple AI 最保守但 YTD 最好」是選擇性比較基準</span>。AAPL YTD <b>+12.5%</b> 確實贏過同集討論的三家重壓 AI capex 的巨頭(GOOG +9.4%、MSFT +4.6%、META −9.1%),<b>但輸給 NVDA +16.8% 與 AMZN +18.0%</b>。這句話要加上「在不重押 AI capex 的巨頭裡」才站得住,少了這個限定就會被讀成「Apple 全面最強」。</p>
+<p class="big">📉 <span class="turn">台股 AI 基建的現況是「營收全面強、股價全面回檔」</span>。16 檔掃下來月營收 YoY 從 +18.6% 到 +181.8%(只有群光轉負 −12.2%),但股價普遍距 3 個月高點回檔 <b>15–30%</b>,只有台積電(−4.7%)和奇鋐(−2.2%)沒跌下來。<b>基本面與股價背離最明顯的是智邦</b>:7 月營收 YoY <b>+71.7%</b>,股價卻回檔 −21.6%。</p>
+<p class="note">★ 兩點誠實聲明:①<b>本集發布日抓不到官方時間戳</b>,依 EP681–EP686 約每 3–4 天一集的節奏推估在 <b>2026-08-11～08-12</b>。②逐字稿是自動語音辨識,本集有兩處明確的同音誤植已考證還原(見下文),<span class="lose">其餘無法還原者已標明</span>。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP687 是<b>典型的「度假集」</b>——主持人自述人在度假地,節目有將近一半在講生活、運動、原生家庭關係、待業焦慮等聽眾 Q&amp;A。財經段落只有三塊,而且份量遞減:</p>
+<div class="quote">① <b>處置股新制度</b>(市場結構觀察)→ ② <b>Google/DeepMind 人事震動 + Berkshire 加碼</b>(本集唯一完整的個股論證)→ ③ <b>台股 AI 基建族群輪動</b>(回答聽眾配置時順帶認同,幾乎沒有新論據)。</div>
+<p><b>所以這篇的重心放在前兩塊</b>。第三塊雖然點到六檔台股,但主持人只是說「認同」,沒有給任何新的基本面數字或買賣邏輯,本文的處理方式是<b>把那六檔的實際數據補齊,讓讀者自己判斷「認同」值多少</b>——這也是本篇族群掃描把範圍拉到 16 檔的原因。</p>
+<div class="quote">📌 <b>本集最值得記的一句</b>:對 Google 的定位——「<b>不再是最強研發者,而是 AI 時代的數位房東</b>」。這句話的價值在於它同時是看多和看空的理由:收租模式現金流穩,但一旦市場認定 Google 失去 frontier AI 的買權,本夢比就會被砍。<span class="mid">主持人自己也承認這是雙面刃,這種誠實在口播裡不常見</span>。</div>
+</div>
+
+<h2>二、處置股新制:兩分鐘一撮</h2>
+<div class="card">
+<p>本集開場的市場結構觀察:台股處置股的撮合方式改為<b>每兩分鐘集合競價一次</b>(從逐筆交易改為定時集合競價)。主持人的觀察是,這讓盤面變成「大家互相算計、掛假單的頻率變高」。</p>
+<div class="quote">✅ <b>制度描述準確</b>。處置股在處置期間改採定時集合競價的機制本身沒有問題,主持人對規則的描述是對的。</div>
+<div class="quote">❓ <b>但「掛假單變多、大家互相算計」無法驗證</b>。這是盤中體感描述,沒有公開數據可以逐項核實(要驗證需要委託明細與撤單率的統計)。<b>方向上合理</b>——集合競價的試撮價格本來就更容易被大單影響、且撤單成本低,誘因結構確實鼓勵掛假單。但<span class="lose">「合理」和「已發生」是兩件事,本集沒有提出任何數據</span>。</div>
+<div class="quote">💡 <b>對散戶的實務意義</b>:處置期間看到的委託簿,參考價值比平時低。在只有兩分鐘一次撮合的情況下,盤中的掛單更接近訊號戰而不是真實供需。這點和 <a href="gooaye-ep685-stocks.html">EP685</a> 提到聯發科被列處置股那段可以連起來看。</div>
+</div>
+
+<h2>三、Google:從最強研發者變成數位房東</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="節目把 DeepMind 人事震動解讀為 Google 把前沿模型研發風險外包、自己專心收雲端與 TPU 的租金,而 Berkshire 從二零二五年第三季到二零二六年六月連續三次加碼到約二百八十億美元的時間線與這個轉變高度吻合">
+  <defs><marker id="ah687a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">節目的推論鏈:人事震動 → 角色轉變 → Berkshire 用錢投票</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu / WebSearch 查證 2026-08-12。虛線箭頭＝節目的解讀,實線＝可查證的事實</text>
+
+  <rect x="20" y="60" width="210" height="80" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="34" y="82" style="fill:var(--lose);font:700 12px sans-serif">① 人事震動(節目說法)</text>
+  <text x="34" y="102" style="fill:var(--ink2);font:400 11px sans-serif">DeepMind CEO Hassabis 卸任</text>
+  <text x="34" y="120" style="fill:var(--ink2);font:400 11px sans-serif">Jeff Dean 出走創 Discovery Loop</text>
+  <text x="34" y="136" style="fill:var(--lose);font:700 10px sans-serif">⚠ 未取得獨立官方文件佐證</text>
+
+  <line x1="234" y1="100" x2="272" y2="100" style="stroke:var(--ink3);stroke-dasharray:4 3" marker-end="url(#ah687a)"/>
+
+  <rect x="276" y="60" width="214" height="80" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="290" y="82" style="fill:var(--turn);font:700 12px sans-serif">② 角色轉變(節目的解讀)</text>
+  <text x="290" y="102" style="fill:var(--ink2);font:400 11px sans-serif">frontier model 研發風險外包</text>
+  <text x="290" y="120" style="fill:var(--ink2);font:400 11px sans-serif">自己專收雲端 + TPU 的租金</text>
+  <text x="290" y="136" style="fill:var(--turn);font:700 10px sans-serif">＝「AI 時代的數位房東」</text>
+
+  <line x1="494" y1="100" x2="532" y2="100" style="stroke:var(--ink3)" marker-end="url(#ah687a)"/>
+
+  <rect x="536" y="60" width="204" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="550" y="82" style="fill:var(--win);font:700 12px sans-serif">③ 估值(可查證)</text>
+  <text x="550" y="102" style="fill:var(--ink);font:700 11px sans-serif">forward PE 25.34x</text>
+  <text x="550" y="120" style="fill:var(--win);font:700 11px sans-serif">估值百分位僅 3.2%</text>
+  <text x="550" y="136" style="fill:var(--ink3);font:400 10px sans-serif">現價 $343.00 · YTD +9.4%</text>
+
+  <text x="20" y="176" style="fill:var(--ink);font:700 12px sans-serif">Berkshire 的加碼時間線(用錢投票,三段都是公開申報)</text>
+  <line x1="40" y1="230" x2="720" y2="230" style="stroke:var(--border);stroke-width:2"/>
+
+  <circle cx="120" cy="230" r="7" style="fill:var(--win)"/>
+  <text x="120" y="256" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">2025 Q3</text>
+  <text x="120" y="272" text-anchor="middle" style="fill:var(--ink2);font:400 10px sans-serif">首建倉 ~1,785 萬股</text>
+  <text x="120" y="288" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">約 $4.3B · Buffett 主導</text>
+  <text x="120" y="212" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">@$209</text>
+
+  <circle cx="380" cy="230" r="7" style="fill:var(--win)"/>
+  <text x="380" y="256" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">2026 Q1</text>
+  <text x="380" y="272" text-anchor="middle" style="fill:var(--ink2);font:400 10px sans-serif">加碼到 ~5,800 萬股</text>
+  <text x="380" y="288" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">約 $16.6–17B · Abel 接任後</text>
+
+  <circle cx="640" cy="230" r="7" style="fill:var(--win)"/>
+  <text x="640" y="256" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">2026 / 6</text>
+  <text x="640" y="272" text-anchor="middle" style="fill:var(--ink2);font:400 10px sans-serif">私募再認購 $10B</text>
+  <text x="640" y="288" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">2026/7 總倉位約 $28B</text>
+
+  <rect x="470" y="186" width="270" height="30" rx="7" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="484" y="205" style="fill:var(--lose);font:700 11px sans-serif">⚠ 逐字稿把 Greg Abel 誤植為「Apple 上任 CEO」</text>
+</svg>
+</div>
+<p>這是本集唯一有完整論證結構的一段。主持人的推論鏈是:<b>人事出走 → 說明 Google 不再追求當最強研發者 → 轉為專心收租 → Berkshire 認同這個轉變所以持續加碼</b>。三段分開查,可信度差很多:</p>
+<div class="quote">⚠️ <b>第一段(人事震動):依節目說法,本文未取得獨立官方證實</b>。Hassabis 卸任 DeepMind CEO、Jeff Dean 離職創辦 Discovery Loop 這兩則,查證期間沒有找到可引用的官方公告或一級媒體確認。<b>不代表沒發生</b>,但在本文的標準下只能標為「節目說法」。要用這段當投資理由的人,請自己先確認消息源。</div>
+<div class="quote">✅ <b>第二段(角色轉變)是解讀,但方向與財務結構一致</b>。「把研發風險外包、自己收雲端與 TPU 的租金」是敘事,不是事實陳述。不過這個框架和 Google 近年把 TPU 對外出租、Cloud 成為主要成長引擎的實際走向是吻合的,<span class="mid">屬於合理的解讀而非硬事實</span>。</div>
+<div class="quote">✅ <b>第三段(Berkshire 加碼)規模量級查證屬實</b>。2025 Q3 首建倉約 1,785 萬股(@$209、約 43 億美元,Buffett 本人主導)、2026 Q1 在 Greg Abel 接任 CEO 後加碼到約 5,780–5,800 萬股(約 166–170 億美元)、2026 年 6 月再以私募方式認購 100 億美元,2026 年 7 月總倉位約 280 億美元。<b>這是三段裡唯一可以完整用公開申報對上的部分</b>。</div>
+<div class="quote">🔍 <b>逐字稿考證:「Apple 上任 CEO」是同音誤植</b>。逐字稿裡出現的「Apple 上任 CEO 加碼 Google」在事實上不通(Apple 不會去買 Google 的股票),查證後應為 <b>Berkshire 新任 CEO Greg Abel</b>。這種同音誤植不影響主持人的論點,但<span class="lose">如果照著逐字稿讀,會得出一個完全錯誤的事實</span>。</div>
+<div class="quote">💡 <b>估值才是這段最反直覺的地方</b>。GOOG 現價 $343.00、forward PE <b>25.34x</b>,但<b>估值歷史百分位只有 3.2%</b>——也就是說,在敘事最熱、Berkshire 三度加碼的時候,它的 forward 估值幾乎是近一年區間的地板。分析師 10 位全數 Buy、均價目標 $434.75(隱含 +26.8%)。<span class="mid">trailing 17.2x 因一次性股權利得而失真,不可用</span>——這正是本站一貫主張只看 forward 的原因。</div>
+</div>
+
+<h2>四、Apple「YTD 最好」:比較基準的陷阱</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 344" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Apple 年初至今上漲百分之十二點五確實勝過重壓 AI 資本支出的 Google、Microsoft 與 Meta,但輸給 Nvidia 的百分之十六點八與 Amazon 的百分之十八,所以最好這句話必須加上比較範圍的限定">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">「AI 最保守卻 YTD 最好」——換個比較範圍就不成立</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu 查證 2026-08-12,YTD 報酬。上組＝節目實際比較的對象,下組＝節目沒放進來比的</text>
+
+  <line x1="220" y1="56" x2="220" y2="272" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="20" y="72" style="fill:var(--ink2);font:700 11px sans-serif">節目的比較範圍:重壓 AI capex 的巨頭</text>
+
+  <text x="20" y="98" style="fill:var(--ink);font:700 12px sans-serif">AAPL</text>
+  <rect x="220" y="82" width="138" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="368" y="98" style="fill:var(--win);font:700 12px sans-serif">+12.5%　← 節目說「最好」</text>
+
+  <text x="20" y="126" style="fill:var(--ink);font:700 12px sans-serif">GOOG</text>
+  <rect x="220" y="110" width="103" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="333" y="126" style="fill:var(--ink2);font:600 12px sans-serif">+9.4%</text>
+
+  <text x="20" y="154" style="fill:var(--ink);font:700 12px sans-serif">MSFT</text>
+  <rect x="220" y="138" width="51" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="281" y="154" style="fill:var(--ink2);font:600 12px sans-serif">+4.6%</text>
+
+  <text x="20" y="182" style="fill:var(--ink);font:700 12px sans-serif">META</text>
+  <rect x="120" y="166" width="100" height="22" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="112" y="182" text-anchor="end" style="fill:var(--lose);font:700 12px sans-serif">−9.1%</text>
+
+  <text x="20" y="216" style="fill:var(--lose);font:700 11px sans-serif">節目沒放進來比的(同樣是 AI 主線)</text>
+
+  <text x="20" y="242" style="fill:var(--ink);font:700 12px sans-serif">NVDA</text>
+  <rect x="220" y="226" width="185" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="415" y="242" style="fill:var(--win);font:700 12px sans-serif">+16.8%　贏過 AAPL</text>
+
+  <text x="20" y="270" style="fill:var(--ink);font:700 12px sans-serif">AMZN</text>
+  <rect x="220" y="254" width="198" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="428" y="270" style="fill:var(--win);font:700 12px sans-serif">+18.0%　贏過 AAPL</text>
+
+  <rect x="20" y="288" width="720" height="46" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="308" style="fill:var(--ink);font:700 12px sans-serif">結論:這句話要加上「在不重押 AI capex 的巨頭裡」才成立</text>
+  <text x="36" y="327" style="fill:var(--ink2);font:400 11px sans-serif">少了這個限定,會被讀成「省下 capex 的策略勝出」——但真正贏最多的 NVDA 與 AMZN 都在 AI 主線上。</text>
+</svg>
+</div>
+<p>主持人用 Apple 對比 Google/Meta,論點是「Apple 在 AI 上投資最保守,結果 YTD 表現卻最好」。這句話<b>一半對、一半是比較基準的問題</b>:</p>
+<div class="quote">✅ <b>在節目自己劃的範圍內成立</b>。AAPL YTD <b>+12.5%</b>($271.12 → $304.91),確實贏過同集討論的三家重壓 AI capex 的雲端巨頭:GOOG +9.4%、MSFT +4.6%、META −9.1%。<b>Meta 是這批裡唯一負報酬的</b>。</div>
+<div class="quote">⚠️ <b>但範圍一放大就不成立</b>。NVDA YTD <b>+16.8%</b>、AMZN <b>+18.0%</b>,兩檔都贏過 Apple,而且兩檔都在 AI 主線上。<b>所以正確的說法是「在不重押 AI capex 的巨頭裡,Apple 表現最好」</b>,而不是「AI 投最少的贏了」。這兩句話推論出來的投資結論完全不同。</div>
+<div class="quote">💡 <b>估值上 Apple 也不是便宜的那個</b>。AAPL forward PE <b>33.25x</b>、估值百分位 37.6%;GOOG forward PE 25.34x、百分位 3.2%;META forward PE <b>19.29x</b>——<b>三檔裡 Apple 反而是 forward PE 最貴的一檔</b>。分析師結構也最分歧:25 位裡 60% Buy、24% Hold、16% Sell,目標價 $340.98(略低於現價)。<span class="lose">「保守策略勝出」的敘事在估值面沒有得到支持</span>。</div>
+<div class="quote">❓ <b>Meta「想當房東但表態不明確」缺數字</b>。主持人認為 Meta 也想走 Google 的收租路線,但沒有明確表態,靠廣告收入養 AI 雙軌。這是推論,查證期間沒有找到管理層明確表態或財報上可對應的數字。方向合理,但<b>是本集三家美股裡論據最薄的一則</b>。</div>
+</div>
+
+<h2>五、台股 AI 基建:核心不拆輪動</h2>
+<div class="card">
+<p>尾段有位聽眾自述配置是「核心不拆,押台積電、0050、散熱、台達電、智邦、貿聯-KY」,主持人表示認同,並順帶自述自己的佈局:<b>AI Power 與散熱都有買、設備買一點、光通訊買蠻多、PCB 載板嫌擁擠沒興趣、老 AI(ASIC 設計服務)已撤出資金</b>。</p>
+<div class="quote">🔍 <b>逐字稿考證:「轟等散熱」= 雙鴻/奇鋐等散熱</b>。逐字稿出現的「轟等散熱」在字面上不通,依同音判讀應為「<b>雙鴻(3324)/奇鋐(3017)等散熱</b>」——「鴻/鋐」與「轟」發音相近。這是本集第二處同音誤植。</div>
+<div class="quote">⚠️ <b>但主持人只說「認同」,沒有給任何新論據</b>。這段沒有目標價、沒有營收預估、沒有進出時機,就是對聽眾配置點頭。<b>所以下面的族群掃描是本文自己補的,不是節目內容</b>——目的是讓讀者看到「被認同的六檔」現在的實際數據長什麼樣。</div>
+<div class="quote">💡 <b>自述部位裡最有訊息量的是「老 AI 已撤出」</b>。世芯-KY 7 月營收 YoY <b>+181.8%</b>、創意電子 <b>+158.4%</b>,兩檔營收都還在暴衝,但主持人已經撤資。<b>這是一個「營收成長不等於股價會漲」的部位判斷</b>,查證下來也對得上:世芯距 3 個月高點回檔 −28.1%、創意 −13.8%,兩檔股價都沒跟上營收。<span class="mid">但撤資理由本集沒說,只能當結果看,不能當論證看</span>。</div>
+</div>
+
+<h2>六、同族群概念股掃描</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 380" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="台股 AI 硬體基建族群的月營收年增率幾乎全在正三成以上、最高到一百八十趴,但股價普遍距三個月高點回檔一成五到三成,只有台積電與奇鋐守在高點附近,形成營收強而股價弱的背離區">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">營收全面強 vs 股價全面回檔 · 左上角是背離最深的區域</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 查證 2026-08-12。橫軸＝距 3 個月高點回檔幅度 縱軸＝最新月營收 YoY</text>
+
+  <rect x="100" y="60" width="330" height="240" rx="6" style="fill:var(--turnbg);opacity:.5"/>
+  <text x="112" y="78" style="fill:var(--turn);font:700 11px sans-serif">背離區:營收強、股價卻回檔最深</text>
+  <text x="600" y="78" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">抗跌區</text>
+
+  <line x1="100" y1="60" x2="100" y2="340" style="stroke:var(--border)"/>
+  <line x1="100" y1="340" x2="740" y2="340" style="stroke:var(--border)"/>
+  <line x1="100" y1="300" x2="740" y2="300" style="stroke:var(--ink3);stroke-dasharray:4 4"/>
+  <text x="94" y="304" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">0%</text>
+  <text x="94" y="199" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">+100%</text>
+  <text x="94" y="94" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">+200%</text>
+  <text x="189" y="358" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">−30%</text>
+  <text x="366" y="358" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">−20%</text>
+  <text x="543" y="358" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">−10%</text>
+  <text x="720" y="358" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">0%</text>
+
+  <circle cx="222" cy="109" r="6" style="fill:var(--turn)"/>
+  <text x="234" y="106" style="fill:var(--ink);font:700 11px sans-serif">3661 世芯 +181.8%</text>
+  <text x="234" y="121" style="fill:var(--ink3);font:400 10px sans-serif">主持人已撤出「老 AI」</text>
+
+  <circle cx="451" cy="115" r="6" style="fill:var(--lose)"/>
+  <text x="463" y="112" style="fill:var(--ink);font:700 11px sans-serif">3081 聯亞 +176.5%</text>
+  <text x="463" y="127" style="fill:var(--lose);font:400 10px sans-serif">PE 234.5x · 純敘事溢價</text>
+
+  <circle cx="385" cy="178" r="7" style="fill:var(--win)"/>
+  <text x="397" y="175" style="fill:var(--ink);font:700 11px sans-serif">3324 雙鴻 +116.7%</text>
+  <text x="397" y="190" style="fill:var(--win);font:400 10px sans-serif">PE 24.2x · 成長最快且估值最低</text>
+
+  <circle cx="337" cy="225" r="7" style="fill:var(--turn)"/>
+  <text x="349" y="222" style="fill:var(--ink);font:700 11px sans-serif">2345 智邦 +71.7%</text>
+  <text x="349" y="237" style="fill:var(--turn);font:400 10px sans-serif">背離最明顯:股價 −21.6%</text>
+
+  <circle cx="217" cy="252" r="6" style="fill:var(--ink3)"/>
+  <text x="140" y="249" text-anchor="end" style="fill:var(--ink2);font:600 10px sans-serif">3665 貿聯</text>
+  <text x="140" y="263" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">+59.6%</text>
+  <line x1="146" y1="250" x2="208" y2="252" style="stroke:var(--border)"/>
+
+  <circle cx="174" cy="250" r="6" style="fill:var(--lose)"/>
+  <text x="180" y="290" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">2308 台達電</text>
+  <text x="180" y="305" text-anchor="middle" style="fill:var(--lose);font:400 10px sans-serif">回檔 −30.8% 最深</text>
+  <line x1="176" y1="258" x2="180" y2="278" style="stroke:var(--border)"/>
+
+  <circle cx="637" cy="253" r="8" style="fill:var(--win)"/>
+  <text x="625" y="279" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">2330 台積電</text>
+  <text x="625" y="294" text-anchor="middle" style="fill:var(--win);font:400 10px sans-serif">回檔僅 −4.7% · PE 32.5x</text>
+
+  <circle cx="681" cy="240" r="7" style="fill:var(--win)"/>
+  <text x="700" y="222" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">3017 奇鋐</text>
+  <text x="700" y="208" text-anchor="middle" style="fill:var(--win);font:400 10px sans-serif">回檔 −2.2%</text>
+
+  <circle cx="192" cy="313" r="6" style="fill:var(--lose)"/>
+  <text x="204" y="325" style="fill:var(--lose);font:700 11px sans-serif">2385 群光 −12.2%　全族群唯一營收轉負</text>
+</svg>
+</div>
+<p><b>族群定義</b>:本集點到的台股都落在同一條供應鏈——<b>AI 資料中心硬體基建</b>:晶圓代工/先進封裝、伺服器電源、網通交換器、高速傳輸線纜、散熱、PCB/ABF 載板、光通訊模組、ASIC 設計服務。這是台股受 AI 資本支出直接拉動的實體硬體鏈,和本集前段討論的 GOOG/META 這類雲端服務商本身要分開看。</p>
+<p><b>循環烈度判定(invest-playbook)</b>:整條鏈屬於 <b>Capex 驅動的結構成長</b>,但內部估值擺盪極大——trailing PE 從 11.8x 到 234.5x 都有。<span class="lose">台股缺 forward PE 資料源,以下一律標明是 trailing</span>;判讀時要記得成長股的 trailing 會系統性高估「貴」的程度,而循環見頂時 trailing 又會系統性低估風險。</p>
+<div style="overflow-x:auto"><table id="grpAI"></table></div>
+<p class="note">台股股價、回檔幅度、trailing PE 與月營收 YoY — FinMind(2026-08-12,<b>台股欄位一律為 trailing PE</b>,因 FinMind 不提供 forward)。回檔幅度為距近 3 個月高點。月營收 YoY 為 2026 年 7 月公告數。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p><b>整條鏈的營收是硬數據,而且強得一致</b>。16 檔裡 15 檔月營收 YoY 為正,區間 <b>+18.6% 到 +181.8%</b>,唯一轉負的是群光(−12.2%)。<span class="win">如果只看營收,這條鏈完全沒有轉弱的跡象</span>。</p>
+<p><b>但股價全面回檔,而且回檔幅度和營收強度幾乎無關</b>。距 3 個月高點回檔 15–30% 是常態,只有台積電(−4.7%)與奇鋐(−2.2%)守住。營收最猛的世芯(+181.8%)回檔 −28.1%、智邦(+71.7%)回檔 −21.6%,<b>而回檔最淺的台積電營收成長只有 +44.7%</b>——這說明現在市場定價的不是成長率,是安全性。</p>
+<p><b>估值分化才是這張表真正的重點</b>。載板三雄(南電 148.7x、景碩 159.2x、欣興 66.6x)與光通訊(聯亞 234.5x、華星光 101.5x)已進入純題材溢價區間;<span class="lose">聯亞的 234.5x 就算配上 +176.5% 的營收成長,也需要這個成長率再持續好幾季才撐得住</span>。相對地,雙鴻 24.2x 配 +116.7% 的營收成長、嘉澤 28.2x 是估值面最合理的兩檔——<b>但嘉澤的營收成長已明顯減速到 +18.6%,便宜有便宜的理由</b>。</p>
+<p class="note">⚠️ <b>群光是最需要標紅的一檔</b>:trailing PE 僅 11.8x 看起來是全表最便宜,但它是唯一營收 YoY 轉負(−12.2%)的一檔。<b>這種組合是價值陷阱的典型訊號,不是「低估值機會」</b>——PE 低是因為分母(過去獲利)還沒反映衰退,不是因為市場搞錯了。</p>
+<p class="note">📌 <b>和過去幾集的規律一致</b>:<a href="gooaye-ep686-stocks.html">EP686</a> 查證出的「輪動到後段時整條鏈估值全面墊高」在本集再次成立。此時該回頭看的是<b>仍然便宜的核心龍頭(台積電 32.5x)而不是已經噴完的次要供應鏈</b>——這也解釋了為什麼聽眾那套「核心不拆」的配置會被主持人認同。</p>
+</div>
+
+<h2>七、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。<b>本集台股部分全為「認同聽眾配置」的脈絡性提及,沒有給出任何新的基本面數字或目標價</b>,卡片中的數據均為本文自行查證補上。</p>
+
+<h2>八、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:美股快照/forward 估值與歷史百分位/分析師評級 — Futu OpenAPI;台股股價、月營收與 trailing PE — FinMind;Berkshire 持股申報與人事消息 — WebSearch(2026-07 至 08 當期)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>九、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">Google 那段的論證結構完整,而且結論和估值面對得上</span>。「研發風險外包、自己收租」的框架與 Berkshire 三次加碼的時間線吻合,而 GOOG forward PE 25.34x、估值百分位僅 3.2%——<b>敘事熱但估值在地板,這是少見的組合</b>。主持人同時承認下檔風險(「若市場認定 Google 失去 frontier AI 買權,本夢比會被砍」),這種雙面呈現比單邊看多有價值。</p>
+<p><span class="win">台股 AI 基建的營收數據全數查證屬實</span>。六檔被認同的標的營收都對得上:台積電 +44.7%、台達電 +47.7%、智邦 +71.7%、貿聯-KY +59.6%、雙鴻 +116.7%、奇鋐 +57.4%。<b>「核心不拆」這套配置的基本面地基是真的</b>。</p>
+<p><span class="win">「老 AI 已撤出」是一個有內容的部位判斷</span>。在世芯 +181.8%、創意 +158.4% 的營收成長下選擇撤資,而兩檔股價確實沒跟上(回檔 −28.1% / −13.8%),<b>這比「營收成長所以看多」的線性推論成熟</b>。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">「Apple AI 最保守卻 YTD 最好」是選擇性比較基準</span>。只在 GOOG/MSFT/META 這個子集內成立,一放進 NVDA(+16.8%)與 AMZN(+18.0%)就不成立。而且 Apple 的 forward PE 33.25x 是三檔裡最貴的、分析師目標價 $340.98 還略低於現價。<b>「省下 capex 的策略勝出」這個推論,數據不支持</b>。</p>
+<p><span class="lose">DeepMind 人事震動本文查不到獨立官方佐證</span>。Hassabis 卸任、Jeff Dean 創 Discovery Loop 兩則,查證期間沒有找到可引用的官方公告或一級媒體確認。整段推論鏈的第一環是最弱的一環,<b>而後面兩環都建立在它之上</b>。</p>
+<p><span class="lose">逐字稿有兩處同音誤植,照字面讀會出錯</span>。「Apple 上任 CEO」實為 Berkshire 新任 CEO Greg Abel、「轟等散熱」實為雙鴻/奇鋐等散熱。兩處都不影響論點,但<b>提醒:用 ASR 逐字稿做研究,人名與代號必須另外查證</b>。</p>
+<p><span class="lose">「處置股掛假單變多」與「Meta 想當房東」都缺數字</span>。前者是盤中體感,無公開數據可核;後者是推論,沒有管理層表態或財報數字支撐。兩則方向都合理,但都不該當事實用。</p>
+<h3>風險與反方觀點</h3>
+<p>最大的風險是<b>把「營收強 + 股價回檔」直接讀成買點</b>。這條鏈的營收確實全面強,但股價回檔的原因可能不是市場搞錯,而是市場在<b>提前定價成長率的下一階導數</b>——台達電 trailing PE 已到 56.97x、貿聯-KY 43.5x,若 800V 電源、CPO 光通訊等新規格放量時程延後,估值收縮的壓力不需要衰退就會出現,<span class="lose">只要「成長變慢」就夠了</span>。這和 <a href="gooaye-ep686-stocks.html">EP686</a> 的結論是同一個。</p>
+<p>其次,<b>Google 的「數位房東」敘事是雙面刃,不是單純的看多理由</b>。收租模式的優點是現金流穩定、不必承擔 frontier model 的軍備競賽成本;但代價是失去技術主導權的溢價。<b>如果市場某天決定「房東」該用公用事業的倍數評價,25.34x 的 forward PE 就不會顯得便宜了</b>。估值百分位 3.2% 可以解讀成「便宜」,也可以解讀成「市場已經開始下修它的成長預期」——本集只講了前一種。</p>
+<p>第三,<b>本集的財經含量低,不該用來做決策</b>。個股點名密度是近幾集最低,台股六檔全是「認同聽眾」而非主動推薦,美股三檔裡有兩檔(Apple、Meta)的論據都有明顯瑕疵。<span class="mid">把這集當成「Google 角色轉變」這一個觀點的載體來讀比較恰當,當成選股清單會失望</span>。</p>
+<h3>可信度結論</h3>
+<p>本集在<span class="win">可查證的財務與市場數據</span>上大致站得住腳(台股六檔營收全部屬實、Berkshire 加碼規模量級正確、處置股制度描述準確)。問題集中在兩處:<span class="lose">敘事層的比較基準被選擇性設定</span>(Apple YTD)、以及<span class="lose">推論鏈的第一環缺獨立佐證</span>(DeepMind 人事)。</p>
+<p>整體評級:<b>方向可信,細節需自行核實估值與比較基準</b>。這集真正值得留著的是「Google 從研發者變房東」這個框架——它提供了一個看 AI 巨頭的新角度,而且罕見地同時附上了下檔風險。至於台股那六檔,<b>節目沒有給新資訊,本文補的數據才是可操作的部分:營收全面強、股價全面回檔、估值嚴重分化,而最便宜的那檔(群光 11.8x)是唯一營收轉負的價值陷阱</b>。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP687</b>「🐧」(<a href="https://youtu.be/hasrdP2S7LA" target="_blank" rel="noopener">YouTube 原始連結</a>)。對 YouTube 自動語音辨識逐字稿做分析整理(整理日 <b>2026-08-12</b>)。<b>本集發布日無法取得官方時間戳</b>,依 EP681(07-22)→ EP686(08-08)約每 3–4 天一集的節奏推估為 2026-08-11～08-12。逐字稿為自動 ASR,人名與個股代號多為音譯;本集已考證還原兩處同音誤植(「Apple 上任 CEO」→ Berkshire 新任 CEO Greg Abel、「轟等散熱」→ 雙鴻/奇鋐等散熱),無法可靠還原者已於文中標註。<br>
+<b>數字查證</b>:美股快照/forward 估值與歷史百分位/分析師評級(GOOG / AAPL / META / NVDA / AMZN / MSFT)— Futu OpenAPI(Futu 不支援台股行情);台股股價、距高點回檔、月營收 YoY 與 trailing PE(2330 / 2308 / 2301 / 2345 / 3665 / 3324 / 3017 / 4979 / 3081 / 8046 / 3037 / 3189 / 3661 / 3443 / 3533 / 2385)— FinMind;Berkshire 持股申報、DeepMind 人事消息與處置股制度 — WebSearch(2026-07 至 08 當期)。所有價格與漲跌幅基準日為 <b>2026-08-12</b>。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'Alphabet',code:'US.GOOG',mkt:'美股',tone:'bull',said:'DeepMind 人事震動代表 Google 把 frontier model 的研發風險外包,自己專心當「AI 時代的數位房東」收雲端與 TPU 的租金;Berkshire 持續加碼是對這個轉變的認同。',chk:'✅Berkshire 加碼查證屬實:2025 Q3 首建倉約 <b>1,785 萬股</b>(@$209、約 $4.3B,Buffett 主導)→ 2026 Q1 在 Greg Abel 接任 CEO 後加碼到約 <b>5,800 萬股</b>(約 $16.6–17B)→ 2026/6 再私募認購 <b>$10B</b>,2026/7 總倉位約 $28B。⚠️但 DeepMind 人事(Hassabis 卸任、Jeff Dean 創 Discovery Loop)查證期間未取得獨立官方佐證。💡估值最反直覺:現價 $343.00、forward PE <b>25.34x</b>,估值百分位僅 <b>3.2%</b>(近一年地板);trailing 17.2x 因一次性股權利得失真不可用。分析師 10 位 100% Buy,均價目標 $434.75(隱含 +26.8%)。YTD +9.4%。',vd:'ok'},
+ {nm:'Apple',code:'US.AAPL',mkt:'美股',tone:'neu',said:'在 AI 上投資最保守,結果 YTD 表現卻最好——省下 capex 的策略反而贏了。',chk:'⚠️比較基準有問題:YTD <b>+12.5%</b>($271.12→$304.91)確實贏過同集討論的 GOOG(+9.4%)、MSFT(+4.6%)、META(−9.1%),<b>但輸給 NVDA(+16.8%)與 AMZN(+18.0%)</b>。必須加上「在不重押 AI capex 的巨頭裡」才成立。💡估值也不支持:forward PE <b>33.25x</b>(百分位 37.6%)是本集三檔美股裡最貴的;分析師 25 位 60% Buy / 24% Hold / 16% Sell,目標價 $340.98 <b>略低於現價</b>。',vd:'warn'},
+ {nm:'Meta',code:'US.META',mkt:'美股',tone:'neu',said:'類似 Google 想當房東但表態不明確,靠廣告收入養 AI 雙軌。',chk:'❓論據最薄的一則:「想當房東」查證期間未找到管理層明確表態或財報上可對應的數字,屬推論。✅可查的是表現:現價 $599.12,YTD <b>−9.1%</b>,是本集提及美股中唯一負報酬。💡但 forward PE <b>19.29x</b> 是三檔裡最便宜的——<b>表現最差和估值最低同時發生</b>,值得單獨追蹤。',vd:'q'},
+ {nm:'台積電',code:'2330',mkt:'台股',tone:'bull',said:'聽眾「核心不拆」配置的第一檔,主持人認同。未給新論據。',chk:'✅屬實且是全族群最抗跌的一檔:現價 2,415 元,<b>距 3 個月高點僅回檔 −4.7%</b>(族群常態是 15–30%);7 月營收 467.6 億、YoY <b>+44.7%</b>;trailing PER 32.47x。💡在整條鏈估值全面墊高(部分個股 100–230x)的情況下,<b>龍頭的 32.5x 反而是相對便宜的</b>——資金避風港屬性延續。',vd:'ok'},
+ {nm:'台達電',code:'2308',mkt:'台股',tone:'bull',said:'同為「核心不拆」配置之一(AI 電源),主持人認同。未給新論據。',chk:'⚠️估值需留意:現價 1,790 元(較 <a href="gooaye-ep686-stocks.html">EP686</a> 查證的 8/7 收 1,650 元,五個交易日 <b>+8.5%</b>),但 trailing PER 已達 <b>56.97x</b>,明顯偏貴。7 月營收 670.7 億、YoY +47.7%,基本面確實強;<b>然而距 3 個月高點回檔 −30.8% 是全族群最深</b>。EP686 的「基本面 vs 股價背離」在本集仍然成立,但短線急拉後追高的風險已上升。',vd:'warn'},
+ {nm:'智邦',code:'2345',mkt:'台股',tone:'bull',said:'同為「核心不拆」配置之一,主持人認同。未給新論據。',chk:'✅營收面全族群最強之一:7 月營收 394.7 億、YoY <b>+71.7%</b>,trailing PER 34.8x。⚠️但股價距 3 個月高點回檔 <b>−21.6%</b>——<b>這是本集查證下來基本面與股價背離最明顯的一檔</b>(營收成長是台積電的 1.6 倍,回檔卻是台積電的 4.6 倍)。若族群輪動延續,補漲空間相對大;但也可能是市場對白牌交換器的競爭格局有疑慮。',vd:'ok'},
+ {nm:'貿聯-KY',code:'3665',mkt:'台股',tone:'bull',said:'同為「核心不拆」配置之一(AI 伺服器高速傳輸線纜),主持人認同。未給新論據。',chk:'✅營收屬實:7 月營收 96.3 億、YoY <b>+59.6%</b>。⚠️但 trailing PER <b>43.49x</b> 不便宜,距 3 個月高點回檔 −28.4%。成長動能仍強,<b>但 AEC(高速主動電纜)題材已被討論一段時間,需留意有多少已 price in</b>。',vd:'warn'},
+ {nm:'雙鴻',code:'3324',mkt:'台股',tone:'bull',said:'散熱佈局的一部分(逐字稿「轟等散熱」考證後應為雙鴻/奇鋐等散熱),主持人自述有買。',chk:'✅本篇性價比最突出的一檔:現價 1,050 元,7 月營收 YoY <b>+116.7%</b>(全族群第三高、散熱雙雄第一),而 trailing PER 只有 <b>24.22x</b>——<b>成長最猛的同時估值卻是族群裡偏低的</b>。距 3 個月高點回檔 −18.9%。💡液冷 Cold Plate 的直接受惠者,估值與成長的匹配度是這張表裡最好的之一。',vd:'ok'},
+ {nm:'奇鋐',code:'3017',mkt:'台股',tone:'bull',said:'散熱佈局的一部分,主持人自述有買。未給新論據。',chk:'✅屬實但已反映:現價 2,910 元,7 月營收 YoY +57.4%,<b>距 3 個月高點僅回檔 −2.2%</b>——幾乎守在高點,是族群裡最抗跌的兩檔之一。⚠️代價是 trailing PER <b>38.79x</b>,是雙鴻(24.22x)的 1.6 倍。<b>風冷+液冷雙軌的溢價市場已經給了</b>,再往上需要新的催化。',vd:'ok'},
+ {nm:'世芯-KY',code:'3661',mkt:'台股',tone:'bear',said:'屬主持人自述已「撤出資金」的「老 AI」(ASIC 設計服務)族群。',chk:'💡撤資判斷和股價走勢對得上:7 月營收 YoY <b>+181.8%</b>(全族群最高),但距 3 個月高點回檔 <b>−28.1%</b>,<b>營收暴衝而股價明顯落後</b>。trailing PER 59.4x。✅這是本集少數「營收成長不等於股價會漲」的成熟判斷;⚠️但主持人沒說撤資理由,只能當結果看,不能當論證看。',vd:'ok'},
+ {nm:'AMD',code:'US.AMD',mkt:'美股',tone:'neu',said:'僅史實引用:HBM 早在 2016 年 AMD 的產品上就出現過,當時無人在意。',chk:'✅為順帶的歷史類比(HBM 確實最早商用於 AMD Fiji 世代顯卡),用來說明「技術早就存在,市場只是後來才給它估值」。<b>非本集操作重點,不需查核估值</b>。',vd:'na'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 族群掃描
+document.getElementById('grpAI').innerHTML=
+'<tr><th>代號/名稱</th><th>族群定位</th><th>相對強弱</th><th>估值(trailing)</th><th>距 3 個月高點</th><th>7 月營收 YoY</th><th>一句話看法</th></tr>'+
+[
+ ['2330 台積電','全族群共同上游 · 晶圓代工/CoWoS 封裝','<span class="win">龍頭 · 最抗跌</span>','32.5x','<span class="win">−4.7%</span>','+44.7%','資金避風港屬性延續,在整條鏈估值全面墊高後,龍頭反而是相對最便宜的一檔'],
+ ['2308 台達電','AI 伺服器電源龍頭','反彈中但估值已墊高','<b>57.0x</b>','<span class="lose">−30.8%</span>','+47.7%','訂單雖滿但回檔全族群最深,短線急拉後 PE 偏貴,追高風險上升'],
+ ['2301 光寶科','AI Power / 電源','跟漲','30.4x','−6.5%','+37.6%','電源族群財報行情已部分反映,抗跌性明顯優於台達電'],
+ ['2345 智邦','網通交換器龍頭 · 白牌交換器','<span class="turn">營收最強但股價落後</span>','34.8x','−21.6%','<b>+71.7%</b>','基本面與股價背離最明顯,若輪動延續補漲空間相對大'],
+ ['3665 貿聯-KY','AI 伺服器高速傳輸線纜(AEC)','跟漲','43.5x','−28.4%','+59.6%','估值不便宜、成長仍強,需留意 AEC 題材已 price in 多少'],
+ ['3324 雙鴻','散熱雙雄之一 · 液冷 Cold Plate','<span class="win">營收成長最快</span>','<b>24.2x</b>','−18.9%','<b>+116.7%</b>','估值反而是族群裡偏低的,成長與估值匹配度最好的一檔之一'],
+ ['3017 奇鋐(AVC)','散熱雙雄之一 · 風冷+液冷','<span class="win">最抗跌</span>','38.8x','<span class="win">−2.2%</span>','+57.4%','幾乎守在 3 個月高點,市場給的溢價已不低,再往上需要新催化'],
+ ['4979 華星光通','光通訊模組','<span class="lose">落後</span>','<b>101.5x</b>','−26.4%','+31.0%','PE 已高到需要營收持續超預期才撐得住,而營收成長是光通訊裡最低的'],
+ ['3081 聯亞','光通訊模組','營收爆發但估值極貴','<b>234.5x</b>','−15.2%','<b>+176.5%</b>','營收成長驚人但 PE 已是天文數字,屬純敘事溢價區間'],
+ ['8046 南電','PCB / ABF 載板','<span class="lose">落後</span>','<b>148.7x</b>','−10.6%','+50.2%','深度循環股,估值已墊高但股價未回到高點,追高需謹慎'],
+ ['3037 欣興','PCB / ABF 載板','相對抗跌','66.6x','−11.5%','+43.7%','載板三雄中估值相對最低,但 66x 仍不算便宜'],
+ ['3189 景碩','PCB / ABF 載板','<span class="lose">落後</span>','<b>159.2x</b>','−8.6%','+35.9%','載板族群整體估值全面偏高,是主持人明講「嫌擁擠沒興趣」的那一塊'],
+ ['3661 世芯-KY','ASIC 設計服務(老 AI)','<span class="lose">回檔深</span>','59.4x','<span class="lose">−28.1%</span>','<b>+181.8%</b>','營收全族群最高但股價最落後,主持人已撤出資金,屬高波動題材股'],
+ ['3443 創意電子','ASIC 設計服務(老 AI)','相對抗跌','<b>131.5x</b>','−13.8%','+158.4%','與世芯同族群但估值更貴一倍以上,營收同樣強勁'],
+ ['3533 嘉澤','連接器','<span class="lose">落後</span>','28.2x','<span class="lose">−32.0%</span>','+18.6%','族群中估值最便宜之一,但營收成長明顯轉弱,便宜有便宜的理由'],
+ ['2385 群光','電源','<span class="lose">落後 · 營收轉負</span>','11.8x','−29.8%','<span class="lose">−12.2%</span>','全表唯一營收 YoY 轉負;PE 看似最便宜實為價值陷阱訊號,不宜當低估值機會進場'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td><td>${r[6]}</td></tr>`).join('');
+
+// 數字查證表
+const FACTS=[
+ ['Berkshire 連續加碼 Google','「Apple 上任 CEO 加碼」(逐字稿)','✅規模量級屬實:2025 Q3 約 1,785 萬股(@$209/$4.3B)→ 2026 Q1 約 5,800 萬股($16.6–17B)→ 2026/6 私募 $10B,2026/7 總倉位約 $28B。⚠️但逐字稿人名誤植,實為 <b>Berkshire 新任 CEO Greg Abel</b>,不是 Apple','warn'],
+ ['DeepMind 人事震動','Hassabis 卸任、Jeff Dean 創 Discovery Loop','⚠️查證期間<b>未取得獨立官方公告或一級媒體確認</b>。不代表沒發生,但整段推論鏈的第一環缺佐證,而後兩環都建立在它之上','warn'],
+ ['Google 是「AI 時代的數位房東」','研發風險外包、自己收雲端+TPU 的租金','✅屬合理解讀:方向與 TPU 對外出租、Cloud 成主要成長引擎的實際走向吻合。💡估值反直覺:forward PE <b>25.34x</b>、估值百分位僅 <b>3.2%</b>,敘事熱但估值在近一年地板','ok'],
+ ['Apple AI 最保守卻 YTD 最好','「省下 capex 反而贏」','⚠️<b>選擇性比較基準</b>:AAPL +12.5% 贏 GOOG +9.4% / MSFT +4.6% / META −9.1%,但<b>輸 NVDA +16.8% 與 AMZN +18.0%</b>。須加「在不重押 AI capex 的巨頭裡」才成立','warn'],
+ ['Apple 估值','未提及','⚠️敘事沒說的部分:AAPL forward PE <b>33.25x</b> 是三檔美股中最貴(GOOG 25.34x、META 19.29x);分析師目標價 $340.98 <b>略低於現價</b> $304.91 之上的共識區間,結構最分歧(16% Sell)','warn'],
+ ['Meta 也想當房東','「表態不明確,靠廣告養 AI 雙軌」','❓推論,查無管理層明確表態或財報數字佐證。✅可查的是 YTD <b>−9.1%</b>(本集美股唯一負報酬),但 forward PE 19.29x 也是三檔最低','q'],
+ ['處置股改兩分鐘一撮','制度說明','✅制度描述準確:處置期間改採定時集合競價機制','ok'],
+ ['處置股「掛假單變多、互相算計」','盤面體感','❓無公開數據可核(需委託明細與撤單率統計)。誘因結構上合理——試撮價易被大單影響、撤單成本低——但「合理」不等於「已發生」','q'],
+ ['核心配置六檔營收','「核心不拆」,主持人認同','✅營收全數屬實(2026/7):台積電 +44.7%、台達電 +47.7%、智邦 <b>+71.7%</b>、貿聯-KY +59.6%、雙鴻 <b>+116.7%</b>、奇鋐 +57.4%。<b>但主持人只說認同,沒給任何新論據</b>','ok'],
+ ['台達電現況','核心配置之一','⚠️估值已墊高:現價 1,790 元(五個交易日 +8.5%),trailing PER <b>56.97x</b>;距 3 個月高點回檔 <b>−30.8%</b> 為全族群最深','warn'],
+ ['「轟等散熱」','逐字稿字面','🔍<b>同音誤植</b>,考證應為「<b>雙鴻(3324)/奇鋐(3017)等散熱</b>」(鴻/鋐與轟同音)。兩檔查證:雙鴻 PE 24.22x、營收 +116.7%;奇鋐 PE 38.79x、回檔僅 −2.2%','warn'],
+ ['老 AI 已撤出資金','主持人自述部位','✅與股價走勢一致:世芯 7 月營收 YoY <b>+181.8%</b> 但回檔 −28.1%、創意 +158.4% 但回檔 −13.8%,<b>營收暴衝而股價落後</b>。⚠️撤資理由本集未說明,只能當結果看','ok'],
+ ['PCB 載板「擁擠沒興趣」','主持人自述不參與','✅估值面支持這個判斷:南電 trailing PE <b>148.7x</b>、景碩 <b>159.2x</b>、欣興 66.6x,三檔都在題材溢價區間','ok'],
+ ['台股 AI 基建營收全面強','未量化','✅本文查證 16 檔:15 檔營收 YoY 為正,區間 <b>+18.6% 到 +181.8%</b>,唯一轉負是群光 −12.2%。<b>但股價普遍距 3 個月高點回檔 15–30%,只有台積電 −4.7%、奇鋐 −2.2% 守住</b>','ok'],
+ ['本集發布日','YouTube 頁面','⚠️<b>抓不到官方時間戳</b>。依 EP681(07-22)→ EP686(08-08)約每 3–4 天一集推估為 <b>2026-08-11～08-12</b>;節目內提到「中秋節快到了」與主持人在度假,與推估一致','warn'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
