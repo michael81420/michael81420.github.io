@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP688 個股觀點整理 — 800VDC 電源白皮書終於有官方出處、Cerebras×AMD 拆開推論、VSH/STM 獲利成長遠大於營收成長</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep688-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP688 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🥽</span></h1>
+<div class="sub">和 <a href="gooaye-ep687-stocks.html">EP687</a> 一樣,這集有<b>將近一半是生活內容</b>(行李箱業配、功能性訓練、下背痛、育兒 Q&amp;A)。但剩下那一半的<b>技術密度是近幾集最高的</b>:800VDC 電源架構、解構式推論、被動元件/功率半導體財報,三塊都是硬的。<br>本集查證下來最值得記的一件事:<b>本站追了好幾集的「400V→800V」題材,這次終於有正式的官方文件出處可以引用</b>——不再只是研調機構的轉述。<br>NotebookLM 逐字稿分析 ＋ Futu/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP688 逐字稿分析</span>
+<span class="badge">整理日:2026-08-15</span>
+<span class="badge">姊妹篇:EP687 / EP686 個股觀點整理</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">⚡ <span class="win">800VDC 那段是本集最有價值的部分,而且第一次有官方出處</span>。Nvidia／Google／Microsoft 確實已透過 OCP 於 <b>2026/3 聯合發表 800VDC 白皮書</b>,2026/7 再發 LVDC 固態變壓器規格 <b>v0.3</b>,<b>80+ 廠商</b>已跟進開發,MGX 相容的 800VDC 機櫃預計 2026 下半年推出。本站從 EP675 追到現在的這條題材線,終於從「研調機構說」升級成「可引用的一級文件」。</p>
+<p class="big">🔌 <span class="turn">但主持人講的是三階段路線圖,不是一次到位</span>。短期(2026–27)仍是 PRC 架構、吃 AC→800V PSU 與連接器;中期(2028–30)才走 Power Center(集中式整流器、SiC/GaN、DC UPS);長期(2030 後)才是 DC Power Block(儲能、母線槽)。<b>這代表不同環節的營收兌現時點差了好幾年</b>,現在就用 2030 的故事給 2026 的估值,是這條題材最常見的錯誤。</p>
+<p class="big">📈 <span class="win">VSH / STM 是本集數字最硬的一段,而且完全屬實</span>。「獲利成長遠大於營收成長」查證下來是對的:VSH Q2'26 營收 YoY <b>+16.6%</b> 對淨利 <b>+1303%</b>;STM 營收 <b>+26.1%</b> 對淨利 <b>+339%</b>。更少見的是,兩檔的 <b>forward PE 都落在自身近一年區間的低分位</b>(VSH 11.3%、STM 22.6%)——敘事、數字、估值三件事同時對得上,這在 podcast 口播裡很罕見。</p>
+<p class="big">🧠 <span class="lose">Cerebras 那段技術對、財務被輕輕帶過</span>。AMD Helios 做 Prefill、Cerebras WSE 做 Decode、宣稱單位功耗 tokens/sec 提升 <b>5 倍</b>——全部屬實,官方新聞稿可查。但主持人說 Cerebras「已上市一段時間」不準確(<b>2026/5 才上市,約 3 個月</b>),而且沒提到 Q2'26 <b>毛利率從 31% 崩到 14.2%、GAAP 淨損 $450.5M</b>。<span class="lose">只講籌碼面不講獲利品質,是這段最大的缺口</span>。</p>
+<p class="note">★ 一個必須先講清楚的誤解:本集口播中的「<b>POW</b>」是英文 <b>Power(電源)</b> 的口頭簡稱,<b>不是股票代號</b>。若照逐字稿字面去找「POW 這支股票」會找到完全無關的標的(Power Integrations 代號是 POWI,本集並未提及)。本集在 800VDC 那段<b>完全沒有點名任何一檔供應鏈個股</b>。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP688 的結構和 <a href="gooaye-ep687-stocks.html">EP687</a> 很像——<b>約一半是非投資內容</b>:Arwana 行李箱業配(團購價 $2,880 起)、功能性訓練與下背痛、孫安佐事件延伸的育兒 Q&amp;A。這些段落不涉及可查證的財務主張,本文不處理。</p>
+<div class="quote">但<b>投資的那一半含金量比 EP687 高很多</b>。EP687 的財經段落是「認同聽眾配置」,幾乎沒有新論據;EP688 則是<b>三塊各自獨立、都有具體技術或財務內容的討論</b>:① SpaceX 解禁籌碼面 → ② Cerebras×AMD 解構式推論 → ③ 800VDC 電源架構 → ④ QA 段的 VSH/STM 財報。</div>
+<div class="quote">📌 <b>但有一個結構性特徵要注意:本集點名的個股極少</b>。真正被明確討論的只有 VSH 與 STM 兩檔(在 QA 段),800VDC 那一整段<b>只講架構、不講標的</b>。<span class="mid">這其實是好事——講架構不推票,聽眾自己去對應供應鏈,比直接報名字負責任</span>。但也代表:本文的族群掃描是本站自己補的,不是節目內容。</div>
+</div>
+
+<h2>二、800VDC:題材追了好幾集,這次終於有官方文件</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="資料中心供電從八百伏直流是分三階段升級而不是一次到位,二零二六到二七年受惠的是電源供應器與連接器,二零二八到三零年才輪到集中式整流器與碳化矽氮化鎵,二零三零年後才是儲能與母線槽,而換成八百伏的理由是同樣四百千瓦下電流可以從六千一百安培降到四百安培">
+  <defs><marker id="ah688a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">800VDC 是分三階段升級,不是一次到位——受惠環節的兌現時點差了好幾年</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">依本集口播整理,對照 OCP／Nvidia 800VDC 白皮書(2026-03 發布、2026-07 更新 LVDC v0.3)</text>
+
+  <rect x="20" y="58" width="216" height="110" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="34" y="80" style="fill:var(--win);font:700 12px sans-serif">短期 2026–27 · 現在進行式</text>
+  <text x="34" y="100" style="fill:var(--ink);font:700 11px sans-serif">主流仍是 PRC 架構</text>
+  <text x="34" y="119" style="fill:var(--ink2);font:400 11px sans-serif">受惠:AC→800V PSU</text>
+  <text x="34" y="136" style="fill:var(--ink2);font:400 11px sans-serif">　　　軟電容、連接器</text>
+  <text x="34" y="157" style="fill:var(--ink3);font:400 10px sans-serif">口播:滲透率約 5%(來源未明)</text>
+
+  <line x1="240" y1="113" x2="262" y2="113" style="stroke:var(--ink3)" marker-end="url(#ah688a)"/>
+
+  <rect x="266" y="58" width="216" height="110" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="280" y="80" style="fill:var(--turn);font:700 12px sans-serif">中期 2028–30 · 規格制定中</text>
+  <text x="280" y="100" style="fill:var(--ink);font:700 11px sans-serif">Power Center</text>
+  <text x="280" y="119" style="fill:var(--ink2);font:400 11px sans-serif">受惠:集中式整流器</text>
+  <text x="280" y="136" style="fill:var(--ink2);font:400 11px sans-serif">　　　IGBT / SiC / GaN</text>
+  <text x="280" y="153" style="fill:var(--ink2);font:400 11px sans-serif">　　　DC UPS</text>
+
+  <line x1="486" y1="113" x2="508" y2="113" style="stroke:var(--ink3)" marker-end="url(#ah688a)"/>
+
+  <rect x="512" y="58" width="228" height="110" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="526" y="80" style="fill:var(--ink2);font:700 12px sans-serif">長期 2030+ · 只有藍圖</text>
+  <text x="526" y="100" style="fill:var(--ink);font:700 11px sans-serif">DC Power Block</text>
+  <text x="526" y="119" style="fill:var(--ink2);font:400 11px sans-serif">受惠:BESS 儲能系統</text>
+  <text x="526" y="136" style="fill:var(--ink2);font:400 11px sans-serif">　　　DC Switchboard</text>
+  <text x="526" y="153" style="fill:var(--ink2);font:400 11px sans-serif">　　　母線槽</text>
+
+  <text x="20" y="200" style="fill:var(--ink);font:700 12px sans-serif">為什麼非換不可:同樣 400kW 機櫃,54V 架構的電流大到銅排扛不住</text>
+  <text x="20" y="218" style="fill:var(--ink3);font:400 10px sans-serif">口播數字,本文未取得獨立來源核對,引用時請自行查證</text>
+
+  <text x="20" y="252" style="fill:var(--ink);font:700 12px sans-serif">54V</text>
+  <rect x="86" y="238" width="516" height="20" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="100" y="253" style="fill:var(--lose);font:700 12px sans-serif">約 6.1 kA — 低壓大電流瓶頸,銅排扛不住</text>
+
+  <text x="20" y="288" style="fill:var(--ink);font:700 12px sans-serif">800V</text>
+  <rect x="86" y="274" width="34" height="20" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="132" y="289" style="fill:var(--win);font:700 12px sans-serif">約 0.4 kA　← 電流降到 1/15,銅用量與損耗同步下降</text>
+
+  <text x="20" y="312" style="fill:var(--ink3);font:400 10px sans-serif">機櫃功率演進:目前 100 多 kW → 目標 330–570 kW。功率往上推是這整套改架構的唯一驅動力。</text>
+</svg>
+</div>
+<p>這是本集技術密度最高、也最值得留下來的一段。主持人把 800VDC 拆成三階段路線圖,並指出<b>不同階段受惠的是完全不同的環節</b>。查證下來:</p>
+<div class="quote">✅ <b>核心事實屬實,而且這次有一級文件可引用</b>。Nvidia／Google／Microsoft 確實透過 <b>OCP(Open Compute Project)於 2026/3 聯合發布 800VDC 白皮書</b>,2026/7 再發布 LVDC 固態變壓器規格 <b>v0.3</b>,<b>80+ 設備商</b>已跟進開發,MGX 相容的 800VDC 機櫃預計 <b>2026 下半年</b>推出。三階段的時程方向與白皮書一致。<span class="win">本站從 EP675 起追這條線,以前引用的都是研調機構轉述,這是第一次有官方文件可以對</span>。</div>
+<div class="quote">⚠️ <b>但幾個關鍵數字查不到獨立來源</b>。「海外研調估滲透率 5%」「54V 下電流 6.1kA、800V 降到 0.4kA」這些具體數字在逐字稿中沒有標明出處,本文也未找到可引用的一級來源。<b>不是說它錯</b>——電流換算在物理上合理(電壓提高約 15 倍,同功率下電流降約 15 倍),但<span class="lose">「合理」和「已查證」是兩件事</span>,引用時請標明來源不明。</div>
+<div class="quote">🔍 <b>必須澄清:「POW」不是股票代號</b>。逐字稿中反覆出現的「POW」是 <b>Power(電源)</b> 的口頭簡稱。若當成代號去找,會誤中 Power Integrations(POWI,forward PE 60.0x)——<b>本集完全沒有提到這檔</b>。這是本集最容易被誤讀的一處。</div>
+<div class="quote">💡 <b>對投資的實際意義:別把 2030 的故事拿來給 2026 的公司估值</b>。三階段路線圖真正的資訊量在於「時序」——現在能兌現營收的只有 PSU 與連接器,SiC/GaN 要等 2028、儲能與母線槽要等 2030。<b>這條鏈上估值最貴的幾檔(NVTS、WOLF 都還在虧損)受惠的是後段</b>,而後段的時程風險最高。這和 <a href="gooaye-ep686-stocks.html">EP686</a> 的結論一致:規格放量延後不需要衰退,估值就會先收縮。</div>
+</div>
+
+<h2>三、Cerebras × AMD:把推論拆成兩半</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 268" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="解構式推論把大型語言模型的推論拆成兩段分給不同硬體,吃算力的預填階段交給 AMD Helios,吃記憶體頻寬與延遲的解碼階段交給 Cerebras 的整片晶圓晶片,官方宣稱單位功耗的每秒 token 數可提升五倍">
+  <defs><marker id="ah688b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">解構式推論:一段推論、兩種硬體——因為前後半段吃的資源根本不同</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">2026-07-23 AMD Advancing AI 發表,官方新聞稿可查。2026 下半年經 Cerebras Cloud 提供</text>
+
+  <rect x="20" y="60" width="96" height="72" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="68" y="90" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">使用者</text>
+  <text x="68" y="110" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">送出 prompt</text>
+
+  <line x1="120" y1="96" x2="146" y2="96" style="stroke:var(--ink3)" marker-end="url(#ah688b)"/>
+
+  <rect x="150" y="60" width="266" height="118" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="164" y="82" style="fill:var(--turn);font:700 12px sans-serif">① Prefill(預填)· AMD Helios</text>
+  <text x="164" y="104" style="fill:var(--ink2);font:400 11px sans-serif">把整段 prompt 一次算完</text>
+  <text x="164" y="122" style="fill:var(--ink);font:700 11px sans-serif">瓶頸 = 純算力 / 總吞吐量</text>
+  <text x="164" y="142" style="fill:var(--ink2);font:400 11px sans-serif">→ 適合大量平行運算的 GPU</text>
+  <text x="164" y="166" style="fill:var(--ink3);font:400 10px sans-serif">批次越大越划算,對延遲不敏感</text>
+
+  <line x1="420" y1="119" x2="452" y2="119" style="stroke:var(--ink3)" marker-end="url(#ah688b)"/>
+  <text x="436" y="108" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">KV cache</text>
+
+  <rect x="456" y="60" width="284" height="118" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="470" y="82" style="fill:var(--win);font:700 12px sans-serif">② Decode(解碼)· Cerebras WSE</text>
+  <text x="470" y="104" style="fill:var(--ink2);font:400 11px sans-serif">一次吐一個 token,反覆讀權重</text>
+  <text x="470" y="122" style="fill:var(--ink);font:700 11px sans-serif">瓶頸 = 記憶體頻寬 / 延遲</text>
+  <text x="470" y="142" style="fill:var(--ink2);font:400 11px sans-serif">→ 整片晶圓 + 大量 SRAM 的強項</text>
+  <text x="470" y="166" style="fill:var(--ink3);font:400 10px sans-serif">算力再高也沒用,卡在把權重搬進來</text>
+
+  <rect x="20" y="196" width="360" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="36" y="218" style="fill:var(--win);font:700 12px sans-serif">✅ 官方宣稱:tokens/sec per watt 提升 5 倍</text>
+  <text x="36" y="238" style="fill:var(--ink2);font:400 11px sans-serif">技術描述本集完全屬實,新聞稿可查</text>
+
+  <rect x="396" y="196" width="344" height="56" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="412" y="218" style="fill:var(--lose);font:700 12px sans-serif">⚠ 但本集沒講 Cerebras 的財務狀況</text>
+  <text x="412" y="238" style="fill:var(--ink2);font:400 11px sans-serif">Q2'26 毛利率 31%→14.2%、GAAP 淨損 $450.5M</text>
+</svg>
+</div>
+<p>主持人的技術描述是對的,而且解釋得比多數財經內容清楚:<b>推論的前後半段吃的是完全不同的資源</b>,所以拆給不同硬體做,整體效率會比一種硬體全包好。</p>
+<div class="quote">✅ <b>技術與合作內容完全屬實</b>。2026/7/23 AMD 在 Advancing AI 活動正式發表此合作,官方新聞稿確認 <b>AMD Helios 負責 Prefill、Cerebras WSE 負責 Decode</b> 的分工,宣稱單位功耗下 tokens/sec 提升 <b>5 倍</b>,2026 下半年經 Cerebras Cloud 提供。<b>「Cerebras 是整片晶圓、靠 SRAM 追高頻寬」的描述也正確</b>。</div>
+<div class="quote">⚠️ <b>「已上市一段時間」不準確</b>。Cerebras(CBRS)是 <b>2026/5/13–14 才掛牌</b>,定價 $185、首日 +68%,到本文查證時只有約 <b>3 個月</b>。這不是措辭問題——<b>上市 3 個月的新股和上市三年的股票,籌碼結構完全不同</b>,而主持人這段的投資重點正好就是籌碼面。</div>
+<div class="quote">❌ <b>最大的缺口:財務狀況被完全略過</b>。CBRS Q2'26 營收 $180.1M(YoY <b>+74.3%</b>)看起來很猛,但<b>毛利率從去年同期的 31% 崩到 14.2%</b>,GAAP 淨損 <b>$450.5M</b>(YoY 惡化 245.6%),trailing 與 forward PE <b>皆為負值</b>。CEO 在財報後承認市場「誤解」其毛利率展望,股價已重挫過一次。<span class="lose">在一檔獲利品質未經證明的新股上只討論解禁籌碼,是把最大的風險排除在討論之外</span>。</div>
+<div class="quote">❓ <b>「AMD 稍早收購一家把模型邏輯刻進晶片的公司」查不到對應併購案</b>。查證期間沒有找到符合描述的公開併購案名稱。可能是記憶誤植或指涉某個較小的團隊收購,<b>本文無法確認</b>。</div>
+<div class="quote">💡 <b>值得留下來的框架</b>:「AI 推論正從單一晶片走向異質協同」這個判斷本身有價值,而且它對<b>估值的意義是負面的</b>——如果推論工作負載可以被拆開分給不同廠商,那麼「一家通吃」的溢價就會下降。<span class="mid">主持人沒往這個方向推,但這才是這則新聞對 NVDA 這類標的真正的隱含意義</span>。</div>
+</div>
+
+<h2>四、SpaceX 解禁:方向對,但實際時程細很多</h2>
+<div class="card">
+<p>主持人的觀察是:解禁前市場有下殺賣壓(推測有人用選擇權鎖利差),解禁後股價反而打底往上;解禁拆成「9 或 10 個梯次」逐步釋出,首波衝擊最大、後續遞減。</p>
+<div class="quote">⚠️ <b>方向正確,但實際結構是條件式時程表,不是均勻的 9–10 批</b>。SpaceX(現於美股交易,US.SPCX,IPO 定價 $135、現價約 $140)的解禁安排是:<b>20% 於 Q2 財報後</b> → <b>8/21、9/10、9/25、10/10、10/25 共 5 個各 7% 的定期窗</b> → <b>Q3 財報觸發約 28%</b> → 所有 180 天股份於 <b>2026/12/8 全數到期</b>。另有條件式 10% 獎勵解禁(需股價站上 IPO+30% = $175.5)。馬斯克本人約 64 億股鎖定 <b>366 天</b>,無提前解禁。</div>
+<div class="quote">✅ <b>「梯次數量」大致吻合</b>(20% + 5×7% + 28% + 尾批 ≈ 8–9 個節點),<b>「解禁前殺、解禁後止穩」的觀察與結構一致</b>——最大的兩批(20% 與 28%)都綁在財報後,市場容易提前反應。</div>
+<div class="quote">💡 <b>實務上的差別在哪</b>:「9–10 個均勻梯次」會讓人以為賣壓是平均分散的,實際上<b>賣壓高度集中在 20%、28% 和 12/8 這三個節點</b>。要操作這種籌碼面,盯的是這三個日期,不是「每次解禁都一樣」。<span class="mid">這也是新股解禁的通則:解禁是分批次的時程表,不是單一懸崖,操作上鎖定最大批次日</span>。</div>
+</div>
+
+<h2>五、VSH / STM:本集數字最硬的一段</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="威世與意法半導體都出現獲利成長遠大於營收成長的循環修復特徵,威世營收年增百分之十六點六但淨利年增百分之一千三百零三,意法營收年增百分之二十六點一但淨利年增百分之三百三十九,而兩檔的預估本益比都落在自身近一年區間的低分位">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">深循環修復期的典型特徵:營收只回一點,獲利彈回一大截</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu 查證 2026 Q2 財報,2026-08-15。橫軸為 YoY 成長率,0–400% 等比例,超出者截斷標示</text>
+
+  <line x1="120" y1="56" x2="120" y2="212" style="stroke:var(--border)"/>
+  <text x="114" y="230" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">0%</text>
+  <line x1="270" y1="56" x2="270" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="270" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+100%</text>
+  <line x1="420" y1="56" x2="420" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="420" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+200%</text>
+  <line x1="570" y1="56" x2="570" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="570" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+300%</text>
+  <line x1="720" y1="56" x2="720" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="720" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+400%</text>
+
+  <text x="20" y="76" style="fill:var(--ink);font:700 12px sans-serif">VSH 營收</text>
+  <rect x="120" y="62" width="25" height="18" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="153" y="76" style="fill:var(--ink2);font:600 11px sans-serif">+16.6%</text>
+
+  <text x="20" y="106" style="fill:var(--ink);font:700 12px sans-serif">VSH 淨利</text>
+  <rect x="120" y="92" width="596" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <path d="M710 92 L716 101 L710 110" style="fill:none;stroke:var(--win);stroke-width:2"/>
+  <text x="440" y="106" style="fill:var(--win);font:700 12px sans-serif">+1303%　(超出座標軸,低基期反彈)</text>
+
+  <text x="20" y="152" style="fill:var(--ink);font:700 12px sans-serif">STM 營收</text>
+  <rect x="120" y="138" width="39" height="18" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="167" y="152" style="fill:var(--ink2);font:600 11px sans-serif">+26.1%</text>
+
+  <text x="20" y="182" style="fill:var(--ink);font:700 12px sans-serif">STM 淨利</text>
+  <rect x="120" y="168" width="509" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="639" y="182" style="fill:var(--win);font:700 12px sans-serif">+339%</text>
+
+  <rect x="20" y="248" width="352" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="268" style="fill:var(--ink);font:700 12px sans-serif">VSH · forward PE 24.6x</text>
+  <text x="36" y="286" style="fill:var(--win);font:700 11px sans-serif">估值百分位僅 11.3% — 近一年區間的地板</text>
+
+  <rect x="388" y="248" width="352" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="404" y="268" style="fill:var(--ink);font:700 12px sans-serif">STM · forward PE 28.7x</text>
+  <text x="404" y="286" style="fill:var(--win);font:700 11px sans-serif">估值百分位 22.6% — 同樣在低分位</text>
+</svg>
+</div>
+<p>QA 段有聽眾問到被動元件與功率半導體,主持人回應:VSH(Vishay)、STM(意法半導體)近期財報顯示「<b>獲利成長速度高於營收成長速度</b>」,反映定價與基本面轉強;但轉強集中在 AI 領域,車用/PC/消費電子相對被排擠。</p>
+<div class="quote">✅ <b>完全屬實,而且是本集最扎實的數字段落</b>。VSH Q2'26 營收 $888.6M(YoY <b>+16.6%</b>)、淨利 $28.1M(YoY <b>+1303%</b>);STM Q2'26 營收 $3.487B(YoY <b>+26.1%</b>)、淨利 $225M(YoY <b>+339%</b>)。<b>「獲利成長遠大於營收成長」這句話在兩檔上都成立,而且不是小幅超越,是量級差異</b>。</div>
+<div class="quote">💡 <b>但要理解這個數字的性質:這是營運槓桿,不是需求爆發</b>。半導體/被動元件是重資產產業,產能利用率一旦從谷底回升,固定成本被攤薄,獲利的彈性就會遠大於營收。<b>VSH 的 +1303% 主要來自低基期</b>(去年同期淨利只有約 $200 萬)。<span class="mid">這是循環修復的教科書型態,不代表未來每季都會這樣</span>——第二年的比較基期就會正常化。</div>
+<div class="quote">✅ <b>更少見的是估值也對得上</b>。VSH 現價 $35.08、forward PE <b>24.6x</b>,估值百分位僅 <b>11.3%</b>;STM 現價 $54.29、forward PE <b>28.7x</b>,百分位 <b>22.6%</b>。<b>兩檔都在自身近一年區間的低分位</b>——也就是說,獲利已經明顯改善,但市場給的倍數還沒跟上。分析師端:VSH 3 家 100% Buy、目標均價 $44.33(+26.4%);STM 8 家 62.5% Buy、目標均價 $76.1(+40.2%)。</div>
+<div class="quote">⚠️ <b>但「AI 排擠車用/PC/消費」這一半沒有數字支撐</b>。主持人的說法是轉強集中在 AI、其他終端相對弱。這個方向和產業普遍認知一致,但<b>本集沒有給任何分部營收數字</b>,本文也未逐一拆解兩家的終端別營收。<span class="lose">這是推論,不是查證過的事實</span>——真要用這條理由,得自己去看兩家財報的 segment 拆解。</div>
+<div class="quote">📌 <b>對照一下 VSH 的估值變化很有意思</b>:本站在 <a href="gooaye-ep682-stocks.html">EP682</a> 前後查證時,VSH 的估值百分位還在 <b>83.2%</b>(接近一年高檔),現在掉到 <b>11.3%</b>。<b>財報明顯改善、估值百分位反而大幅回落</b>,代表這段期間的股價漲幅遠小於獲利改善幅度——這是「便宜化」而不是「追價」的型態。</div>
+</div>
+
+<h2>六、同族群概念股掃描:AI 資料中心 800V 高壓直流供電</h2>
+<div class="card">
+<p><b>族群定義</b>:AI 資料中心單櫃功耗突破 100kW、直逼 500kW+,傳統 54V 低壓大電流架構在銅排體積與導線損耗上撞牆,產業正循 Nvidia/Google/Microsoft 主導的 <b>OCP 800VDC 白皮書</b>路線圖升級:<b>PSU/連接器 → 集中式整流器 → SiC/GaN 功率元件 → 儲能/母線槽</b>。本集只點名 VSH、STM 兩檔,以下族群成員是本站跨 EP675/676/678/681/682/686 累積的清單,不是節目內容。</p>
+<p><b>循環烈度判定(invest-playbook)</b>:這條鏈可拆成兩種性質完全不同的族群。<b>功率半導體/被動元件(VSH、STM、ON、WOLF、NVTS)是深度循環股</b>——現在正處於谷底修復期,獲利彈性大但基期效應明顯;<b>電源模組/系統整合(VICR、VRT、MPWR、台達電、光寶)則是 capex 驅動的結構成長</b>,估值系統性較高。<span class="lose">兩者不能用同一套倍數比較</span>。</p>
+<div style="overflow-x:auto"><table id="grp800V"></table></div>
+<p class="note">美股 forward PE 與估值百分位 — Futu OpenAPI(2026-08-15)。<b>台股(2301、2308)Futu 不涵蓋,估值沿用本站前幾集 wiki 既有查證,且為 trailing PE</b>,不可與美股欄位直接比較。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p><b>本集點名的兩檔,剛好是這張表裡「獲利已兌現」的那一類</b>。VSH(24.6x／百分位 11.3%)與 STM(28.7x／22.6%)的共同點是:財報上的獲利改善已經發生、估值卻在自身區間低檔。<span class="win">相對地,題材純度最高的 NVTS 與 WOLF 都還在虧損,forward PE 是負值——純度和獲利往往是反向的</span>。</p>
+<p><b>估值分布呈現明顯的「純度溢價」</b>。愈接近純 800V/AI 電源題材的,估值愈貴:MPWR 51.2x、VICR 43.9x、VRT 41.8x;而業務較雜、循環性較強的反而便宜:TEL 17.9x、VSH 24.6x、APH 26.5x。<b>這不是市場定錯價,是在為「營收純度」付溢價</b>——問題在於,依三階段路線圖,SiC/GaN 這類純度最高的環節要到 2028–30 才是主戰場。</p>
+<p class="note">⚠️ <b>最容易誤讀的一檔是 POWI</b>。逐字稿的「POW」是 Power 的簡稱,不是代號,但字面很容易讓人聯想到 Power Integrations(POWI)。<b>POWI forward PE 60.0x 是這張表最貴的一檔,而本集根本沒提到它</b>——照逐字稿字面去找標的,會直接買到一檔估值最貴、且節目從未討論的股票。</p>
+<p class="note">📌 <b>台股那兩檔的時程要對上路線圖</b>:光寶科(2301)受惠的是<b>短期階段</b>(AC→800V PSU 的 ASP 升級),已經在 <a href="gooaye-ep686-stocks.html">EP686</a> 查證的財報行情裡反映過(5 日 +18.2%);台達電(2308)自述 ±400V 已量產、<b>800V 要 2027 才放量</b>——訂單能見度高,但催化劑還在一年後。<span class="mid">同一條題材線上,兩檔的兌現時點差了整整一個階段</span>。</p>
+</div>
+
+<h2>七、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。<b>本集 800VDC 那一整段沒有點名任何個股</b>,卡片中的數據均為本文自行查證補上。</p>
+
+<h2>八、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:美股快照/財報/forward 估值與歷史百分位/分析師評級 — Futu OpenAPI;AMD×Cerebras 合作、Cerebras IPO 與財報、SpaceX 解禁時程、OCP 800VDC 白皮書 — WebSearch(官方新聞稿與一級媒體)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>九、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">VSH/STM 那段是近幾集裡查證結果最乾淨的一則</span>。主張(獲利成長 &gt;&gt; 營收成長)、數字(+1303% vs +16.6%、+339% vs +26.1%)、估值(forward PE 都在近一年低分位)三件事同時對得上。<b>更難得的是,這個主張本身就自帶檢驗方法</b>——聽眾可以自己去財報上驗證,不需要相信任何人的解讀。</p>
+<p><span class="win">800VDC 的技術路線圖與官方文件對得上,而且講架構不推票</span>。三階段時程、受惠環節、驅動力(機櫃功率從 100kW 往 330–570kW 推)都與 OCP 白皮書一致。<b>整段沒有點任何一檔股票,這在口播節目裡是加分而不是扣分</b>——把架構講清楚讓聽眾自己對應供應鏈,比報名字負責任得多。</p>
+<p><span class="win">解構式推論的技術描述精準</span>。Prefill 吃算力、Decode 吃記憶體頻寬這個區分是對的,也正確解釋了為什麼 Cerebras 的 wafer-scale + 大 SRAM 在 Decode 有優勢。<b>官方宣稱的 5x tokens/sec per watt 查證屬實</b>。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">Cerebras 的財務狀況被完全略過,而那才是最大的風險</span>。「已上市一段時間」實際只有 3 個月;Q2'26 毛利率從 31% 崩到 14.2%、GAAP 淨損 $450.5M、forward PE 為負。<b>在一檔獲利品質未證明的新股上只討論解禁籌碼,等於把主要風險排除在討論之外</b>。</p>
+<p><span class="lose">SpaceX 解禁講成「9–10 個梯次」過度簡化</span>。實際是條件式時程表,賣壓高度集中在 20%、28% 與 12/8 三個節點。<b>把它想成均勻分散會誤判賣壓的時間分布</b>。</p>
+<p><span class="lose">幾個關鍵技術數字沒有出處</span>。「滲透率 5%」「6.1kA → 0.4kA」在逐字稿裡沒標來源,本文也查不到一級文件。物理上合理,但不該當已查證的事實引用。</p>
+<p><span class="lose">「AMD 收購一家把模型邏輯刻進晶片的公司」查無對應併購案</span>,本文無法確認。</p>
+<h3>風險與反方觀點</h3>
+<p>第一個風險是<b>把三階段路線圖壓縮成一個交易主題</b>。白皮書本身是可信的,但它描述的是一條跨越 2026 到 2030 的升級路徑;現在市場給 SiC/GaN(NVTS、WOLF)與電源模組(VICR 43.9x、MPWR 51.2x)的估值,反映的是後段的故事。<b>而後段的時程風險最高——規格延後一年,估值就會先收縮,不需要等到衰退</b>。這和 <a href="gooaye-ep686-stocks.html">EP686</a>、<a href="gooaye-ep687-stocks.html">EP687</a> 反覆出現的結論是同一個。</p>
+<p>第二個風險是<b>把 VSH/STM 的獲利彈性外推</b>。+1303% 與 +339% 是低基期 + 營運槓桿的組合,<b>明年同期的比較基期就會正常化</b>。深循環股最危險的時點,往往就是「獲利數字最漂亮」的那一兩季——因為那代表產能利用率已經回到高檔,再往上的空間有限。<span class="mid">現在的估值分位低是好事,但要留意這是「便宜」還是「市場已開始定價成長率的下一階導數」</span>。</p>
+<p>第三,<b>解構式推論這則新聞對 NVDA 的隱含意義是負面的,而本集沒往這個方向推</b>。如果推論工作負載可以被拆開分給不同廠商的不同硬體,那麼「單一供應商通吃」的溢價就應該下降。主持人提到 Nvidia 的 CPX 方案「雷聲大雨點小」,但沒有把這條線接到估值上。<b>NVDA 目前 forward PE 22.2x 在大型 AI 資產裡確實不貴</b>,不過異質協同架構的普及是這個估值長期的潛在下修因子。</p>
+<h3>可信度結論</h3>
+<p>本集的<span class="win">技術與財務事實查證率是近幾集最高的</span>:800VDC 白皮書、AMD×Cerebras 合作、VSH/STM 財報三大塊全部屬實,而且都能對上一級來源。這比 EP687 那種「認同聽眾配置」的內容扎實得多。</p>
+<p>問題集中在<span class="lose">「講到的部分正確、但沒講的部分才是關鍵」</span>:Cerebras 的毛利率崩壞、SpaceX 解禁的實際集中度、800V 各環節的兌現時序差。<b>這三個缺口的共同性質是,它們都會讓聽眾低估風險</b>。</p>
+<p>整體評級:<b>技術內容可信度高,可以直接用;財務結論需自行補齊被略過的那一半</b>。這集真正值得留著的是那張三階段路線圖——它提供的不是標的,而是一把<b>判斷「這檔的營收什麼時候才會出現」的尺</b>。至於 VSH/STM,是本集唯一可以照抄的部分:主張、數字、估值都對得上,而且自帶驗證方法。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP688</b>「🥽」(<a href="https://youtu.be/PD_IMPvMBc0" target="_blank" rel="noopener">YouTube 原始連結</a>)。對 YouTube 自動語音辨識逐字稿做分析整理(整理日 <b>2026-08-15</b>)。逐字稿為自動 ASR,英文縮寫與代號多為音譯;本集已澄清一處易誤讀處(<b>「POW」= Power 電源的口頭簡稱,非股票代號</b>),無法確認者已於文中標註。<br>
+<b>數字查證</b>:美股即時報價、2026 Q2 財報(利潤表)、forward 估值與歷史百分位、分析師一致預期(VSH / STM / AMD / CBRS / NVDA / SPCX / POWI / MPWR / ON / VICR / VRT / APH / TEL / NVTS / WOLF)— Futu OpenAPI(Futu 不涵蓋台股,2301 / 2308 沿用本站前幾集查證且為 trailing PE);<a href="https://newsroom.amd.com/news/aai-2026-cerebras-inference/" target="_blank" rel="noopener">AMD × Cerebras 官方新聞稿</a>、<a href="https://developer.nvidia.com/blog/building-the-800-vdc-ecosystem-for-efficient-scalable-ai-factories/" target="_blank" rel="noopener">Nvidia 800VDC 生態系文章</a>、Cerebras IPO 與 Q2'26 財報報導(CNBC)、SpaceX 解禁時程報導 — WebSearch(2026-07 至 08 當期)。所有價格基準日為 <b>2026-08-15</b>(AMD 為 8/14 收盤)。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'Vishay',code:'US.VSH',mkt:'美股',tone:'bull',said:'近期財報顯示「獲利成長速度高於營收成長速度」,反映定價與基本面轉強;但轉強集中在 AI,車用/PC/消費電子相對被排擠。',chk:'✅完全屬實,本集數字最硬的一則:Q2\'26 營收 $888.6M(YoY <b>+16.6%</b>)、淨利 $28.1M(YoY <b>+1303%</b>)——不是小幅超越,是量級差異。💡估值也對得上:現價 $35.08、forward PE <b>24.6x</b>,估值百分位僅 <b>11.3%</b>(近一年地板);本站 <a href="gooaye-ep682-stocks.html">EP682</a> 期間查證時還在 83.2%,<b>財報改善而估值分位大幅回落 = 便宜化,不是追價</b>。分析師 3 家 100% Buy、目標均價 $44.33(+26.4%)。⚠️但 +1303% 主要來自低基期(去年同期淨利僅約 $200 萬),是營運槓桿而非需求爆發,明年基期會正常化。',vd:'ok'},
+ {nm:'STMicroelectronics',code:'US.STM',mkt:'美股',tone:'bull',said:'同上——獲利成長明顯快於營收成長。',chk:'✅同樣完全屬實:Q2\'26 營收 $3.487B(YoY <b>+26.1%</b>)、淨利 $225M(YoY <b>+339%</b>)。💡現價 $54.29、forward PE <b>28.7x</b>,估值百分位 <b>22.6%</b>,同樣在低分位。分析師 8 家 62.5% Buy、目標均價 $76.1(隱含 <b>+40.2%</b>,是本集提及個股中隱含空間最大的)。<b>SiC 是 800V 路線圖中期階段(2028–30)的核心環節,但 STM 業務較雜,不是純題材股——這也是它比 NVTS/WOLF 有獲利的原因</b>。',vd:'ok'},
+ {nm:'Cerebras Systems',code:'US.CBRS',mkt:'美股',tone:'bear',said:'整片晶圓(wafer-scale)、靠大量 SRAM 追求高頻寬做 Decode;與 AMD 合作把推論拆兩半。「已上市一段時間」,投資重點在解禁籌碼面。',chk:'✅技術描述正確,合作屬實(2026/7/23 AMD Advancing AI 發表,官方新聞稿確認 Helios 做 Prefill、WSE 做 Decode,宣稱 tokens/sec per watt <b>5 倍</b>,2026H2 經 Cerebras Cloud 提供)。⚠️「已上市一段時間」不準確:<b>2026/5/13–14 才掛牌</b>(定價 $185、首日 +68%),僅約 3 個月的新股。❌<b>最大缺口是財務被完全略過</b>:Q2\'26 營收 $180.1M(YoY +74.3%)但<b>毛利率從 31% 崩到 14.2%</b>、GAAP 淨損 <b>$450.5M</b>(YoY 惡化 245.6%),trailing/forward PE 皆為負;CEO 財報後承認市場「誤解」毛利率展望,股價已重挫過。現價 $218.98,較上市高點 $311 回落。分析師 10 家 100% Buy、目標均價 $298.9——<span class="lose">但承銷團覆蓋的新股評級參考價值有限</span>。',vd:'warn'},
+ {nm:'AMD',code:'US.AMD',mkt:'美股',tone:'neu',said:'Helios 負責 Prefill 端;稍早收購一家「把模型邏輯刻進晶片」的公司。',chk:'✅合作屬實。財報面也強:Q2\'26 資料中心營收翻倍至 $6.7B(占總營收 58%),Q3 guidance $13B(YoY +41%)。8/14 收 <b>$514.39</b>(單日 +6.5%),分析師 31 家 83.9% Buy、目標均價 $656.6(最高 $1,250)。⚠️但 forward PE <b>58.4x</b>,是本集提及美股中最貴的一檔——<b>敘事真、財報強,估值不便宜</b>。❓「收購把模型邏輯刻進晶片的公司」查證期間<b>未找到對應併購案名稱</b>,無法確認。本集未對 AMD 展開個股分析。',vd:'q'},
+ {nm:'Nvidia',code:'US.NVDA',mkt:'美股',tone:'neu',said:'背景提及:先前的 CPX 方案「雷聲大雨點小」;800VDC 白皮書的主導者之一。',chk:'✅白皮書主導屬實(與 Google、Microsoft 透過 OCP 於 2026/3 聯合發布,2026/7 更新 LVDC v0.3,80+ 廠商跟進,MGX 相容 800VDC 機櫃 2026H2 推出)。💡現價 $225.16、forward PE <b>22.2x</b>,<b>在大型 AI 資產裡仍是相對最便宜的一檔</b>。⚠️但本集沒推到的一層:若解構式推論(異質協同)普及,「單一供應商通吃」的溢價會下降——<b>這是這則新聞對 NVDA 長期估值的潛在下修因子</b>,主持人提了 CPX 卻沒接到估值上。',vd:'ok'},
+ {nm:'SpaceX',code:'US.SPCX',mkt:'美股',tone:'neu',said:'解禁前市場下殺(推測有人用選擇權鎖利差),解禁後反而打底往上;解禁拆成 9 或 10 個梯次,首波衝擊最大。',chk:'⚠️方向對但過度簡化:實際是<b>條件式時程表</b>——20% 於 Q2 財報後 → 8/21、9/10、9/25、10/10、10/25 共 <b>5 個各 7%</b> 的定期窗 → Q3 財報觸發約 <b>28%</b> → 所有 180 天股份 <b>2026/12/8</b> 全數到期;另有條件式 10% 獎勵解禁(需股價站上 IPO+30% = $175.5)。馬斯克約 64 億股鎖定 366 天。✅「梯次數量」與「解禁前殺後穩」大致吻合。💡但<b>賣壓高度集中在 20%、28%、12/8 三個節點,不是均勻分散</b>——操作要盯這三個日期。現價約 $140(IPO 定價 $135),<span class="mid">私轉公新標的,估值錨定困難</span>。',vd:'warn'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 族群掃描
+document.getElementById('grp800V').innerHTML=
+'<tr><th>代號/名稱</th><th>族群定位</th><th>路線圖階段</th><th>相對強弱</th><th>forward PE</th><th>一句話看法</th></tr>'+
+[
+ ['VSH Vishay','功率半導體 + 被動元件雙棲 IDM','<span class="win">短期(現在)</span>','<span class="win">本集點名 · 獲利已兌現</span>','<b>24.6x</b><br><span class="win" style="font-size:11px">百分位 11.3%</span>','獲利兌現度最高而估值反而最便宜,是這張表裡敘事與數字最對得上的一檔'],
+ ['STM 意法半導體','SiC / 800V 功率半導體歐系 IDM','短期 + 中期','<span class="win">本集點名 · 獲利已兌現</span>','<b>28.7x</b><br><span class="win" style="font-size:11px">百分位 22.6%</span>','體質同 VSH,分析師隱含空間 +40.2% 是全表最大;業務較雜但也因此有獲利'],
+ ['ON onsemi','SiC 功率 IDM · 自有晶圓垂直整合','中期 2028–30','聽眾在 EP682 尤其看好','~27.5x<br><span style="font-size:11px;color:var(--ink3)">EP682 查證未更新</span>','產業面持續看多,但受惠時點在中期階段,須留意近期股價回檔'],
+ ['NVTS Navitas','GaN 功率半導體 · Nvidia 800V 生態合作','中期 2028–30','<span class="lose">題材最純但仍虧損</span>','<span class="lose">負值(虧損中)</span>','題材純度最高的一檔,但獲利未證明 + 受惠時點最晚,雙重時間風險'],
+ ['WOLF Wolfspeed','SiC 基板 / 元件','中期 2028–30','<span class="lose">財務壓力大</span>','<span class="lose">負值(虧損中)</span>','SiC 上游最直接,但財務體質是全表最弱,不宜當題材股買'],
+ ['VICR Vicor','高密度電源模組 · 機架級供電利基廠','短期 + 中期','EP682 點名','~43.9x<br><span style="font-size:11px;color:var(--ink3)">EP682 查證</span>','純度高但估值偏貴,純度溢價已明顯反映'],
+ ['MPWR Monolithic Power','高階電源管理 IC','短期(現在)','本集未提及','<b>51.2x</b>','題材純度高但估值也高,受惠時點雖近,倍數已把好消息算進去'],
+ ['POWI Power Integrations','電源管理 IC','短期(現在)','<span class="lose">本集未提及 · 易與口語「POW」混淆</span>','<span class="lose">60.0x</span>','<b>全表最貴</b>。注意:逐字稿的「POW」是 Power 的簡稱,不是這檔的代號'],
+ ['VRT Vertiv','資料中心電源與散熱系統整合商','全階段','本集未提及','41.8x','系統整合層級的總受惠者,但估值偏貴,成長已被充分定價'],
+ ['APH Amphenol','連接器 · 800V BU 連接器環節','短期 + 中期','本集未提及','26.5x','白皮書中期 Power Center 階段的受惠環節,估值相對合理'],
+ ['TEL TE Connectivity','連接器','短期 + 中期','本集未提及','<span class="win">17.9x</span>','<b>全表 forward PE 最低</b>,但 800V 佔營收比重低,純度換來便宜'],
+ ['2301 光寶科技(台股)','電源供應器(PSU/PBU)· 800V ASP 升級','<span class="win">短期(現在)</span>','<a href="gooaye-ep686-stocks.html">EP686</a> 財報後 5 日 +18.2%','<span style="color:var(--ink3)">— (Futu 不涵蓋)</span>','受惠時點最近的一檔,但財報行情已反映過一輪'],
+ ['2308 台達電(台股)','電源管理系統龍頭 · ±400V 已量產','中期(800V 2027 放量)','訂單滿但股價落後大盤','<span style="color:var(--ink3)">trailing 57.0x</span>','訂單能見度高,但 800V 催化劑還在一年後,時序與估值不匹配'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+// 數字查證表
+const FACTS=[
+ ['Nvidia 800VDC 電源白皮書','三階段路線圖:PRC → Power Center → DC Power Block','✅<b>核心事實屬實,且首次有一級文件可引用</b>:Nvidia/Google/Microsoft 透過 OCP 於 <b>2026/3</b> 聯合發布 800VDC 白皮書,<b>2026/7</b> 再發 LVDC 固態變壓器規格 <b>v0.3</b>,<b>80+ 廠商</b>跟進,MGX 相容 800VDC 機櫃 2026H2 推出。三階段時程方向與白皮書一致','ok'],
+ ['800VDC 滲透率約 5%','海外研調估計','⚠️<b>逐字稿未標出處,本文亦未找到可引用的一級來源</b>。列為未能獨立驗證的數字,引用時請自行查證','warn'],
+ ['54V 下 6.1kA、800V 降至 0.4kA','400kW 機櫃的低壓大電流瓶頸','⚠️同上,<b>無獨立來源</b>。物理上換算合理(電壓提高約 15 倍,同功率電流降約 15 倍),但「合理」不等於「已查證」','warn'],
+ ['「POW」','逐字稿字面','🔍<b>不是股票代號</b>,是 <b>Power(電源)</b> 的口頭簡稱。本集 800VDC 段<b>完全沒有點名任何供應鏈個股</b>;若當代號去找會誤中 Power Integrations(POWI,forward PE 60.0x,全族群最貴且本集從未提及)','warn'],
+ ['AMD × Cerebras 解構式推論','Helios 做 Prefill、WSE 做 Decode,效率提升','✅<b>完全屬實</b>:2026/7/23 AMD Advancing AI 正式發表,官方新聞稿確認分工,宣稱單位功耗 tokens/sec 提升 <b>5 倍</b>,2026 下半年經 Cerebras Cloud 提供','ok'],
+ ['Cerebras「已上市一段時間」','口播','⚠️<b>不準確</b>:2026/5/13–14 才掛牌(定價 $185、首日 +68%),僅約 <b>3 個月</b>的新股。上市 3 個月與上市三年的籌碼結構完全不同,而本段的重點正好是籌碼面','warn'],
+ ['Cerebras 財務狀況','本集未提及','❌<b>最大缺口</b>:Q2\'26 營收 $180.1M(YoY +74.3%)但<b>毛利率 31%→14.2%</b>、GAAP 淨損 <b>$450.5M</b>(YoY 惡化 245.6%),trailing/forward PE 皆為負。CEO 財報後承認市場「誤解」毛利率展望','bad'],
+ ['AMD 收購「把模型邏輯刻進晶片」的公司','口播','❓查證期間<b>未找到對應併購案名稱</b>,無法確認。可能為記憶誤植或指涉小型團隊收購','q'],
+ ['SpaceX 解禁拆 9–10 個梯次','籌碼面觀察','⚠️<b>方向對但過度簡化</b>:實為條件式時程表——20%(Q2 財報後)+ 5 個各 7% 定期窗(8/21、9/10、9/25、10/10、10/25)+ Q3 財報觸發約 28% + 12/8 全數到期;另有條件式 10% 獎勵解禁(需股價 ≥ $175.5)。<b>賣壓集中在三個節點,非均勻分散</b>','warn'],
+ ['「解禁前殺、解禁後止穩」','籌碼面觀察','✅<b>與實際結構吻合</b>:最大的兩批(20%、28%)都綁在財報後,市場容易提前反應。現價約 $140,IPO 定價 $135','ok'],
+ ['VSH 獲利成長 &gt;&gt; 營收成長','QA 段口播','✅<b>完全屬實</b>:Q2\'26 營收 $888.6M(YoY <b>+16.6%</b>)、淨利 $28.1M(YoY <b>+1303%</b>)。💡forward PE 24.6x、估值百分位僅 <b>11.3%</b>(EP682 期間還在 83.2%)。⚠️但 +1303% 主要來自低基期,屬營運槓桿而非需求爆發','ok'],
+ ['STM 獲利成長 &gt;&gt; 營收成長','QA 段口播','✅<b>完全屬實</b>:Q2\'26 營收 $3.487B(YoY <b>+26.1%</b>)、淨利 $225M(YoY <b>+339%</b>)。forward PE 28.7x、估值百分位 22.6%;分析師目標均價 $76.1,隱含 <b>+40.2%</b>','ok'],
+ ['「轉強集中在 AI,車用/PC/消費被排擠」','QA 段口播','❓<b>方向與產業共識一致,但本集未給任何分部營收數字</b>,本文亦未逐一拆解兩家的終端別營收。屬推論,不是查證過的事實','q'],
+ ['Nvidia CPX 方案「雷聲大雨點小」','背景提及','❓屬主觀評價,無明確可量化標準可核。💡但可查的是 NVDA 現價 $225.16、forward PE <b>22.2x</b>,在大型 AI 資產中仍屬相對便宜','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooaye EP688 Stock Notes — The 800VDC Whitepaper Finally Has an Official Source, Cerebras×AMD Splits Inference, and VSH/STM Earnings Far Outrun Revenue</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep688-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to index</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Gooaye EP688 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🥽</span></h1>
+<div class="sub">Like <a href="gooaye-ep687-stocks.en.html">EP687</a>, <b>close to half of this episode is lifestyle content</b> — a luggage sponsorship, functional training, lower-back pain, parenting Q&amp;A. But the other half has <b>the highest technical density in recent episodes</b>: 800VDC power architecture, disaggregated inference, and passive-component/power-semi earnings. All three are substantive.<br>The single most useful finding from fact-checking: <b>the "400V→800V" thesis this site has tracked for several episodes finally has an official document to cite</b> — no longer just research-house paraphrase.<br>NotebookLM transcript analysis + Futu/WebSearch verification. Not investment advice.</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: Gooaye EP688 transcript analysis</span>
+<span class="badge">Compiled: 2026-08-15</span>
+<span class="badge">Companions: EP687 / EP686 stock notes</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · What this episode is about</h2>
+<p class="big">⚡ <span class="win">The 800VDC segment is the most valuable part, and for the first time there is a primary source</span>. Nvidia, Google and Microsoft did jointly publish an <b>800VDC whitepaper through OCP in March 2026</b>, followed by the LVDC solid-state transformer spec <b>v0.3</b> in July 2026, with <b>80+ vendors</b> already developing to it and MGX-compatible 800VDC racks due in H2 2026. This site has tracked the thesis since EP675 on research-house paraphrase alone; this is the first citable primary document.</p>
+<p class="big">🔌 <span class="turn">But the host describes a three-stage roadmap, not a single switchover</span>. Near term (2026–27) the PRC architecture still rules and the beneficiaries are AC→800V PSUs and connectors; mid term (2028–30) brings the Power Center (centralized rectifiers, SiC/GaN, DC UPS); long term (post-2030) the DC Power Block (storage, busways). <b>Different links in the chain therefore monetize years apart</b>, and pricing 2026 companies off the 2030 story is the most common error on this theme.</p>
+<p class="big">📈 <span class="win">VSH and STM are the hardest numbers in the episode, and they check out completely</span>. "Earnings growth far outpacing revenue growth" is correct: VSH Q2'26 revenue YoY <b>+16.6%</b> against net income <b>+1303%</b>; STM revenue <b>+26.1%</b> against net income <b>+339%</b>. Rarer still, both trade at a <b>forward PE in the low percentile of their own one-year range</b> (VSH 11.3%, STM 22.6%) — narrative, numbers and valuation all lining up at once is unusual in a podcast.</p>
+<p class="big">🧠 <span class="lose">The Cerebras segment is technically right but glides past the financials</span>. AMD Helios does Prefill, Cerebras WSE does Decode, and the claimed <b>5x</b> improvement in tokens/sec per watt — all verified against the official press release. But the host's "it's been public for a while" is wrong (<b>it listed in May 2026, roughly three months ago</b>), and there is no mention that Q2'26 <b>gross margin collapsed from 31% to 14.2% with a $450.5M GAAP net loss</b>. <span class="lose">Discussing only the lockup while skipping earnings quality is the biggest gap here</span>.</p>
+<p class="note">★ One misreading to clear up first: "<b>POW</b>" in the transcript is spoken shorthand for <b>Power</b>, <b>not a ticker</b>. Chasing it as a symbol leads to a completely unrelated name (Power Integrations trades as POWI and is never mentioned in this episode). The 800VDC segment <b>names no supply-chain stock at all</b>.</p>
+</div>
+
+<h2>1. What kind of episode this is</h2>
+<div class="card">
+<p>EP688 is structured much like <a href="gooaye-ep687-stocks.en.html">EP687</a> — <b>roughly half is non-investment content</b>: an Arwana luggage sponsorship, functional training and lower-back pain, and parenting Q&amp;A. None of it carries verifiable financial claims, so this post skips it.</p>
+<div class="quote">But <b>the investing half is far richer than EP687's</b>. EP687's financial content was "I agree with your allocation" with almost no new argument; EP688 delivers <b>four independent segments, each with concrete technical or financial substance</b>: ① the SpaceX lockup schedule → ② Cerebras×AMD disaggregated inference → ③ 800VDC power architecture → ④ VSH/STM earnings in the Q&amp;A.</div>
+<div class="quote">📌 <b>One structural note: very few tickers are actually named</b>. Only VSH and STM get explicit discussion (in the Q&amp;A); the entire 800VDC segment <b>covers architecture without naming a single stock</b>. <span class="mid">That is a good thing — explaining the architecture and letting listeners map it to the supply chain themselves is more responsible than calling out names</span>. It also means the sector scan below is this site's own work, not the episode's.</div>
+</div>
+
+<h2>2. 800VDC: a thesis tracked for episodes, now with an official document</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 328" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Moving data centers to eight hundred volt direct current is a three stage upgrade rather than one switchover, with power supplies and connectors benefiting in twenty twenty six to twenty seven, centralized rectifiers and silicon carbide and gallium nitride only in twenty twenty eight to thirty, and storage and busways after twenty thirty, while the reason to switch is that at four hundred kilowatts the current drops from about six thousand one hundred amps to about four hundred amps">
+  <defs><marker id="ah688ea" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">800VDC is a three-stage upgrade — the links monetize years apart</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Compiled from the episode, cross-checked against the OCP / Nvidia 800VDC whitepaper (Mar 2026, LVDC v0.3 Jul 2026)</text>
+
+  <rect x="20" y="58" width="224" height="118" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="34" y="80" style="fill:var(--win);font:700 12px sans-serif">NEAR 2026–27 · happening now</text>
+  <text x="34" y="101" style="fill:var(--ink);font:700 11px sans-serif">PRC architecture still rules</text>
+  <text x="34" y="121" style="fill:var(--ink2);font:400 11px sans-serif">Benefits: AC→800V PSUs,</text>
+  <text x="34" y="138" style="fill:var(--ink2);font:400 11px sans-serif">soft capacitors, connectors</text>
+  <text x="34" y="163" style="fill:var(--ink3);font:400 10px sans-serif">Claimed ~5% penetration (unsourced)</text>
+
+  <line x1="248" y1="117" x2="268" y2="117" style="stroke:var(--ink3)" marker-end="url(#ah688ea)"/>
+
+  <rect x="272" y="58" width="224" height="118" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="286" y="80" style="fill:var(--turn);font:700 12px sans-serif">MID 2028–30 · spec in progress</text>
+  <text x="286" y="101" style="fill:var(--ink);font:700 11px sans-serif">Power Center</text>
+  <text x="286" y="121" style="fill:var(--ink2);font:400 11px sans-serif">Benefits: centralized</text>
+  <text x="286" y="138" style="fill:var(--ink2);font:400 11px sans-serif">rectifiers, IGBT / SiC / GaN,</text>
+  <text x="286" y="155" style="fill:var(--ink2);font:400 11px sans-serif">DC UPS</text>
+
+  <line x1="500" y1="117" x2="520" y2="117" style="stroke:var(--ink3)" marker-end="url(#ah688ea)"/>
+
+  <rect x="524" y="58" width="216" height="118" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="538" y="80" style="fill:var(--ink2);font:700 12px sans-serif">LONG 2030+ · blueprint only</text>
+  <text x="538" y="101" style="fill:var(--ink);font:700 11px sans-serif">DC Power Block</text>
+  <text x="538" y="121" style="fill:var(--ink2);font:400 11px sans-serif">Benefits: BESS storage,</text>
+  <text x="538" y="138" style="fill:var(--ink2);font:400 11px sans-serif">DC switchboards,</text>
+  <text x="538" y="155" style="fill:var(--ink2);font:400 11px sans-serif">busways</text>
+
+  <text x="20" y="208" style="fill:var(--ink);font:700 12px sans-serif">Why the switch is forced: at 400kW a 54V rack draws current copper cannot carry</text>
+  <text x="20" y="226" style="fill:var(--ink3);font:400 10px sans-serif">Figures spoken on the show; no independent source found — verify before citing</text>
+
+  <text x="20" y="260" style="fill:var(--ink);font:700 12px sans-serif">54V</text>
+  <rect x="80" y="246" width="500" height="20" rx="4" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="592" y="261" style="fill:var(--lose);font:700 12px sans-serif">~6.1 kA　← the bottleneck</text>
+
+  <text x="20" y="296" style="fill:var(--ink);font:700 12px sans-serif">800V</text>
+  <rect x="80" y="282" width="33" height="20" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="125" y="297" style="fill:var(--win);font:700 12px sans-serif">~0.4 kA　← 1/15 the current, less copper and loss</text>
+
+  <text x="20" y="320" style="fill:var(--ink3);font:400 10px sans-serif">Rack power path: 100-something kW today → 330–570 kW target. Rising rack power is the only driver of this whole redesign.</text>
+</svg>
+</div>
+<p>This is the densest and most durable part of the episode. The host breaks 800VDC into a three-stage roadmap and stresses that <b>each stage benefits an entirely different set of components</b>. Checking it:</p>
+<div class="quote">✅ <b>The core facts hold, and this time there is a primary document</b>. Nvidia, Google and Microsoft did jointly publish an <b>800VDC whitepaper through the Open Compute Project in March 2026</b>, followed by the LVDC solid-state transformer spec <b>v0.3</b> in July 2026, with <b>80+ equipment vendors</b> developing against it and MGX-compatible 800VDC racks expected in <b>H2 2026</b>. The three-stage timeline is directionally consistent with the whitepaper. <span class="win">Every prior episode's citation on this site was a research-house paraphrase; this is the first official source</span>.</div>
+<div class="quote">⚠️ <b>But several key figures have no traceable source</b>. "Overseas research houses estimate ~5% penetration" and "6.1kA at 54V dropping to 0.4kA at 800V" are stated without attribution in the transcript, and no primary source was found. <b>That does not make them wrong</b> — the current conversion is physically sound (raise voltage ~15x, current falls ~15x at the same power) — but <span class="lose">"plausible" and "verified" are different things</span>. Flag the provenance if you cite them.</div>
+<div class="quote">🔍 <b>To be explicit: "POW" is not a ticker</b>. The "POW" that recurs in the transcript is spoken shorthand for <b>Power</b>. Treated as a symbol it points at Power Integrations (POWI, forward PE 60.0x) — <b>a company this episode never mentions</b>. This is the easiest thing in EP688 to misread.</div>
+<div class="quote">💡 <b>What it means practically: don't price 2026 companies off the 2030 story</b>. The real information in the roadmap is sequencing — only PSUs and connectors can convert this into revenue today; SiC/GaN waits for 2028, storage and busways for 2030. <b>The most expensive names on this chain (NVTS and WOLF are both loss-making) are levered to the back half</b>, where timeline risk is highest. Same conclusion as <a href="gooaye-ep686-stocks.en.html">EP686</a>: a delayed spec ramp compresses multiples without any downturn required.</div>
+</div>
+
+<h2>3. Cerebras × AMD: splitting inference in two</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 280" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Disaggregated inference splits a language model request across two kinds of hardware, sending the compute bound prefill stage to AMD Helios and the memory bandwidth bound decode stage to Cerebras wafer scale chips, with an official claim of five times more tokens per second per watt">
+  <defs><marker id="ah688eb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">One request, two chips — because the two halves bottleneck on different things</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Announced 2026-07-23 at AMD Advancing AI; official press release verified. Ships via Cerebras Cloud in H2 2026</text>
+
+  <rect x="20" y="60" width="88" height="76" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="64" y="92" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">User</text>
+  <text x="64" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">sends prompt</text>
+
+  <line x1="112" y1="98" x2="136" y2="98" style="stroke:var(--ink3)" marker-end="url(#ah688eb)"/>
+
+  <rect x="140" y="60" width="278" height="126" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="154" y="82" style="fill:var(--turn);font:700 12px sans-serif">① Prefill · AMD Helios</text>
+  <text x="154" y="104" style="fill:var(--ink2);font:400 11px sans-serif">Process the whole prompt at once</text>
+  <text x="154" y="124" style="fill:var(--ink);font:700 11px sans-serif">Bottleneck = raw compute</text>
+  <text x="154" y="144" style="fill:var(--ink2);font:400 11px sans-serif">→ suits massively parallel GPUs</text>
+  <text x="154" y="172" style="fill:var(--ink3);font:400 10px sans-serif">Bigger batches pay off; latency-insensitive</text>
+
+  <line x1="422" y1="123" x2="450" y2="123" style="stroke:var(--ink3)" marker-end="url(#ah688eb)"/>
+  <text x="436" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">KV cache</text>
+
+  <rect x="454" y="60" width="286" height="126" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="468" y="82" style="fill:var(--win);font:700 12px sans-serif">② Decode · Cerebras WSE</text>
+  <text x="468" y="104" style="fill:var(--ink2);font:400 11px sans-serif">One token at a time, re-reading weights</text>
+  <text x="468" y="124" style="fill:var(--ink);font:700 11px sans-serif">Bottleneck = memory bandwidth</text>
+  <text x="468" y="144" style="fill:var(--ink2);font:400 11px sans-serif">→ wafer-scale + huge SRAM wins here</text>
+  <text x="468" y="172" style="fill:var(--ink3);font:400 10px sans-serif">More FLOPs don't help; moving weights does</text>
+
+  <rect x="20" y="206" width="352" height="60" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="36" y="228" style="fill:var(--win);font:700 12px sans-serif">✅ Official claim: 5x tokens/sec per watt</text>
+  <text x="36" y="250" style="fill:var(--ink2);font:400 11px sans-serif">The technical account in this episode is fully accurate</text>
+
+  <rect x="388" y="206" width="352" height="60" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="404" y="228" style="fill:var(--lose);font:700 12px sans-serif">⚠ What the episode never mentions</text>
+  <text x="404" y="250" style="fill:var(--ink2);font:400 11px sans-serif">Q2'26 gross margin 31%→14.2%, $450.5M GAAP loss</text>
+</svg>
+</div>
+<p>The technical account is correct, and explained more clearly than most financial coverage manages: <b>the two halves of inference consume completely different resources</b>, so splitting them across specialized hardware beats making one chip do both.</p>
+<div class="quote">✅ <b>The technology and the partnership check out entirely</b>. AMD announced it at Advancing AI on 2026-07-23; the official press release confirms the split — <b>AMD Helios on Prefill, Cerebras WSE on Decode</b> — claiming a <b>5x</b> improvement in tokens/sec per watt, shipping via Cerebras Cloud in H2 2026. <b>The description of Cerebras as wafer-scale silicon chasing bandwidth through SRAM is also correct</b>.</div>
+<div class="quote">⚠️ <b>"It's been public for a while" is inaccurate</b>. Cerebras (CBRS) <b>listed on 2026-05-13/14</b> at $185 and closed its first day +68% — roughly <b>three months</b> of trading history at the time of writing. This is not a wording quibble: <b>a three-month-old IPO and a three-year-old stock have entirely different share-supply dynamics</b>, and share supply is precisely what the host said to focus on.</div>
+<div class="quote">❌ <b>The biggest gap: the financials are skipped entirely</b>. CBRS Q2'26 revenue of $180.1M (YoY <b>+74.3%</b>) looks strong, but <b>gross margin collapsed from 31% a year ago to 14.2%</b>, GAAP net loss was <b>$450.5M</b> (245.6% worse YoY), and both trailing and forward PE are <b>negative</b>. The CEO acknowledged after the print that the market had "misunderstood" the gross margin outlook, and the stock has already been hit once. <span class="lose">Debating lockup mechanics on a name whose earnings quality is unproven leaves the largest risk out of the conversation</span>.</div>
+<div class="quote">❓ <b>"AMD recently acquired a company that etches model logic into silicon" could not be matched to any deal</b>. No public acquisition fitting that description was found. It may be a misremembering or a reference to a small team acqui-hire; <b>this post cannot confirm it</b>.</div>
+<div class="quote">💡 <b>The frame worth keeping</b>: "AI inference is moving from single chips to heterogeneous cooperation" is a useful judgment — and <b>its valuation implication is negative</b>. If inference workloads can be split across vendors, the premium for winner-take-all should compress. <span class="mid">The host doesn't push it that far, but that is what this news actually implies for a name like NVDA</span>.</div>
+</div>
+
+<h2>4. The SpaceX lockup: right direction, much finer schedule</h2>
+<div class="card">
+<p>The host's read: sellers pressured the stock ahead of the unlock (possibly hedging with options to lock in the spread), and it bottomed and rallied afterward; the unlock is spread across "nine or ten tranches," with the first hitting hardest and the impact decaying.</p>
+<div class="quote">⚠️ <b>Directionally right, but the actual structure is a conditional schedule, not nine or ten even tranches</b>. SpaceX (now trading as US.SPCX, IPO priced at $135, currently ~$140) unlocks as follows: <b>20% after the Q2 print</b> → <b>five periodic windows of 7% each on 8/21, 9/10, 9/25, 10/10, 10/25</b> → <b>~28% triggered by the Q3 print</b> → all 180-day shares expiring on <b>2026-12-08</b>. A conditional 10% incentive tranche also unlocks if the stock clears IPO+30% ($175.50). Musk's own ~6.4B shares are locked for <b>366 days</b> with no early release.</div>
+<div class="quote">✅ <b>The tranche count is roughly right</b> (20% + 5×7% + 28% + the tail ≈ 8–9 events), and <b>"pressure before, stabilize after" is consistent with the structure</b> — the two largest tranches (20% and 28%) are both tied to earnings, which the market front-runs easily.</div>
+<div class="quote">💡 <b>Why the difference matters</b>: "nine or ten even tranches" implies selling pressure is evenly distributed. In reality <b>it concentrates on three dates — the 20%, the 28%, and 12/8</b>. Trading this means watching those three, not treating every unlock alike. <span class="mid">That is the general lesson for IPO lockups: they are staged schedules, not single cliffs, so anchor on the largest tranche dates</span>.</div>
+</div>
+
+<h2>5. VSH / STM: the hardest numbers in the episode</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vishay and STMicroelectronics both show the classic deep cyclical recovery pattern where earnings rebound far more than revenue, with Vishay revenue up sixteen point six percent against net income up one thousand three hundred and three percent and STM revenue up twenty six point one percent against net income up three hundred and thirty nine percent, while both forward multiples sit in the low percentile of their own one year range">
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">The deep-cyclical recovery signature: revenue inches back, earnings snap back</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu, Q2 2026 filings, checked 2026-08-15. Axis is YoY growth, linear 0–400%; bars beyond the axis are truncated and labeled</text>
+
+  <line x1="130" y1="56" x2="130" y2="212" style="stroke:var(--border)"/>
+  <text x="124" y="230" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">0%</text>
+  <line x1="277" y1="56" x2="277" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="277" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+100%</text>
+  <line x1="424" y1="56" x2="424" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="424" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+200%</text>
+  <line x1="571" y1="56" x2="571" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="571" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+300%</text>
+  <line x1="718" y1="56" x2="718" y2="212" style="stroke:var(--border);stroke-dasharray:4 4"/>
+  <text x="718" y="230" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">+400%</text>
+
+  <text x="20" y="76" style="fill:var(--ink);font:700 12px sans-serif">VSH revenue</text>
+  <rect x="130" y="62" width="24" height="18" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="162" y="76" style="fill:var(--ink2);font:600 11px sans-serif">+16.6%</text>
+
+  <text x="20" y="106" style="fill:var(--ink);font:700 12px sans-serif">VSH net income</text>
+  <rect x="130" y="92" width="584" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <path d="M708 92 L714 101 L708 110" style="fill:none;stroke:var(--win);stroke-width:2"/>
+  <text x="380" y="106" style="fill:var(--win);font:700 12px sans-serif">+1303%　(off the chart · low base)</text>
+
+  <text x="20" y="152" style="fill:var(--ink);font:700 12px sans-serif">STM revenue</text>
+  <rect x="130" y="138" width="38" height="18" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="176" y="152" style="fill:var(--ink2);font:600 11px sans-serif">+26.1%</text>
+
+  <text x="20" y="182" style="fill:var(--ink);font:700 12px sans-serif">STM net income</text>
+  <rect x="130" y="168" width="498" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="638" y="182" style="fill:var(--win);font:700 12px sans-serif">+339%</text>
+
+  <rect x="20" y="248" width="352" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="268" style="fill:var(--ink);font:700 12px sans-serif">VSH · forward PE 24.6x</text>
+  <text x="36" y="286" style="fill:var(--win);font:700 11px sans-serif">11.3rd percentile — floor of its one-year range</text>
+
+  <rect x="388" y="248" width="352" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="404" y="268" style="fill:var(--ink);font:700 12px sans-serif">STM · forward PE 28.7x</text>
+  <text x="404" y="286" style="fill:var(--win);font:700 11px sans-serif">22.6th percentile — also near the low end</text>
+</svg>
+</div>
+<p>A listener asked about passive components and power semis. The host's answer: recent results at VSH (Vishay) and STM (STMicroelectronics) show <b>earnings growing faster than revenue</b>, reflecting firmer pricing and improving fundamentals — but the strength is concentrated in AI, while automotive, PC and consumer are relatively crowded out.</p>
+<div class="quote">✅ <b>Fully verified, and the most solid numerical segment in the episode</b>. VSH Q2'26: revenue $888.6M (YoY <b>+16.6%</b>), net income $28.1M (YoY <b>+1303%</b>). STM Q2'26: revenue $3.487B (YoY <b>+26.1%</b>), net income $225M (YoY <b>+339%</b>). <b>The claim holds for both, and not marginally — the gap is an order of magnitude</b>.</div>
+<div class="quote">💡 <b>But understand what the number is: operating leverage, not a demand explosion</b>. Semis and passives are capital-intensive; once utilization lifts off the trough, fixed costs amortize and earnings flex far harder than revenue. <b>VSH's +1303% comes mostly off a low base</b> — year-ago net income was only about $2M. <span class="mid">This is textbook cyclical recovery, not a run-rate to extrapolate</span> — next year's comparison base normalizes.</div>
+<div class="quote">✅ <b>What's rarer is that valuation agrees</b>. VSH trades at $35.08, forward PE <b>24.6x</b>, valuation percentile just <b>11.3%</b>; STM at $54.29, forward PE <b>28.7x</b>, percentile <b>22.6%</b>. <b>Both sit near the floor of their own one-year range</b> — earnings have visibly improved while the multiple has not followed. Sell side: VSH 3 analysts, 100% Buy, mean target $44.33 (+26.4%); STM 8 analysts, 62.5% Buy, mean target $76.1 (+40.2%).</div>
+<div class="quote">⚠️ <b>The "AI crowds out auto/PC/consumer" half has no numbers behind it</b>. The direction matches general industry understanding, but <b>the episode gives no segment revenue figures</b>, and this post did not break down either company's end-market mix. <span class="lose">It is inference, not verified fact</span> — to actually use that argument, read the segment disclosures yourself.</div>
+<div class="quote">📌 <b>VSH's valuation drift is worth noting</b>: around <a href="gooaye-ep682-stocks.en.html">EP682</a>, this site checked VSH at a valuation percentile of <b>83.2%</b> (near its one-year high); it now sits at <b>11.3%</b>. <b>Results improved markedly while the valuation percentile fell sharply</b> — meaning the share price rose far less than earnings did. That is the profile of a stock getting cheaper, not one being chased.</div>
+</div>
+
+<h2>6. Sector scan: AI data-center 800V high-voltage DC power</h2>
+<div class="card">
+<p><b>Sector definition</b>: as AI racks push past 100kW toward 500kW+, the legacy 54V low-voltage/high-current architecture hits a wall on busbar volume and conduction loss. The industry is upgrading along the <b>OCP 800VDC whitepaper</b> roadmap led by Nvidia, Google and Microsoft: <b>PSUs/connectors → centralized rectifiers → SiC/GaN power devices → storage/busways</b>. The episode names only VSH and STM; the members below are this site's accumulated list across EP675/676/678/681/682/686, not episode content.</p>
+<p><b>Cycle intensity (invest-playbook)</b>: this chain contains two groups with fundamentally different characters. <b>Power semis and passives (VSH, STM, ON, WOLF, NVTS) are deep cyclicals</b> — currently in trough recovery, so earnings flex hard but base effects distort; <b>power modules and system integrators (VICR, VRT, MPWR, Delta, Lite-On) are capex-driven structural growth</b> and carry systematically higher multiples. <span class="lose">The two cannot be compared on the same multiple</span>.</p>
+<div style="overflow-x:auto"><table id="grp800V"></table></div>
+<p class="note">US forward PE and valuation percentiles — Futu OpenAPI (2026-08-15). <b>Futu does not cover Taiwan, so 2301 and 2308 carry figures from this site's earlier episodes and are trailing PE</b> — not directly comparable to the US columns.</p>
+</div>
+<div class="card">
+<h3>Sector takeaways</h3>
+<p><b>The two names the episode picks happen to be the ones where earnings have already arrived</b>. VSH (24.6x / 11.3rd percentile) and STM (28.7x / 22.6th percentile) share a profile: the earnings improvement is already in the filings while the multiple sits at the low end of its own range. <span class="win">By contrast, the purest thematic plays — NVTS and WOLF — are both loss-making with negative forward PE. Purity and profitability tend to run in opposite directions here</span>.</p>
+<p><b>Valuations show a clear purity premium</b>. The closer to pure 800V/AI power exposure, the more expensive: MPWR 51.2x, VICR 43.9x, VRT 41.8x. The more diversified and cyclical names are cheaper: TEL 17.9x, VSH 24.6x, APH 26.5x. <b>That is not mispricing — it is the market paying up for revenue purity</b>. The catch is that per the three-stage roadmap, the purest links (SiC/GaN) don't reach their main stage until 2028–30.</p>
+<p class="note">⚠️ <b>The easiest name to misread is POWI</b>. "POW" in the transcript is shorthand for Power, not a ticker, but the resemblance is close enough to suggest Power Integrations (POWI). <b>POWI's 60.0x forward PE is the most expensive on this table, and the episode never mentions it</b> — chasing the transcript literally would buy the priciest name on a chain the show never discussed.</p>
+<p class="note">📌 <b>The two Taiwan names must be matched to their roadmap stage</b>. Lite-On (2301) is levered to the <b>near-term</b> stage (ASP uplift on AC→800V PSUs) and already had its move on the earnings print verified in <a href="gooaye-ep686-stocks.en.html">EP686</a> (+18.2% in five sessions). Delta (2308) says ±400V is already in volume production with <b>800V ramping only in 2027</b> — visibility is high, but the catalyst is a year out. <span class="mid">On the same thematic chain, these two monetize a full stage apart</span>.</p>
+</div>
+
+<h2>7. Stocks mentioned</h2>
+<div id="cards"></div>
+<p class="note">Tone grading: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watching / technical</span> / <span class="mid">neutral</span> / <span class="lose">cautious / trimming</span>. Read from the host's delivery; not investment advice. <b>The entire 800VDC segment names no stock</b> — all figures on those cards are this post's own verification.</p>
+
+<h2>8. Fact-check table</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">Sources: US quotes, filings, forward valuation with historical percentile, and analyst consensus — Futu OpenAPI; the AMD×Cerebras partnership, Cerebras IPO and results, SpaceX lockup schedule, and OCP 800VDC whitepaper — WebSearch (official releases and primary media). ✅ verified · ⚠️ discrepancy / caveat · ❌ unsupported · ❓ unverifiable / narrative only.</p>
+</div>
+
+<h2>9. Assessment (invest-playbook framework)</h2>
+<div class="card">
+<h3>What holds up</h3>
+<p><span class="win">The VSH/STM segment is the cleanest fact-check in recent episodes</span>. The claim (earnings growth &gt;&gt; revenue growth), the numbers (+1303% vs +16.6%, +339% vs +26.1%), and the valuation (both forward multiples in the low percentile of their own range) all line up at once. <b>Better still, the claim carries its own test</b> — a listener can verify it in the filings without trusting anyone's interpretation.</p>
+<p><span class="win">The 800VDC roadmap matches the official document, and it explains architecture without pitching stocks</span>. The three stages, the beneficiaries, and the driver (rack power climbing from 100kW toward 330–570kW) are all consistent with the OCP whitepaper. <b>Naming no stock across the whole segment is a plus, not a minus</b> — laying out the architecture and letting listeners map their own supply chain is far more responsible than calling tickers.</p>
+<p><span class="win">The disaggregated-inference explanation is precise</span>. The compute-bound Prefill vs bandwidth-bound Decode distinction is correct, and it correctly explains why Cerebras's wafer-scale silicon and large SRAM have an edge on Decode. <b>The official 5x tokens/sec-per-watt claim checks out</b>.</p>
+<h3>What to discount</h3>
+<p><span class="lose">Cerebras's financial condition is skipped, and that is the actual risk</span>. "Public for a while" is really three months; Q2'26 gross margin fell from 31% to 14.2%, GAAP net loss was $450.5M, and forward PE is negative. <b>Debating lockup mechanics on a name with unproven earnings quality leaves the main risk out of the frame</b>.</p>
+<p><span class="lose">Calling the SpaceX lockup "nine or ten tranches" oversimplifies</span>. It is a conditional schedule with pressure concentrated on the 20%, the 28%, and 12/8. <b>Treating it as evenly distributed misreads when the supply actually lands</b>.</p>
+<p><span class="lose">Several key technical figures are unsourced</span>. "~5% penetration" and "6.1kA → 0.4kA" are stated without attribution and no primary source was found. Physically plausible, but they should not be cited as verified.</p>
+<p><span class="lose">"AMD acquired a company that etches model logic into silicon" matches no findable deal</span>, and cannot be confirmed here.</p>
+<h3>Risks and the other side</h3>
+<p>The first risk is <b>compressing a three-stage roadmap into a single trade</b>. The whitepaper is credible, but it describes an upgrade path spanning 2026 to 2030. What the market currently pays for SiC/GaN (NVTS, WOLF) and power modules (VICR 43.9x, MPWR 51.2x) reflects the back half of that story — <b>and the back half carries the highest timeline risk: a one-year spec slip compresses multiples before any downturn arrives</b>. Same conclusion that recurs through <a href="gooaye-ep686-stocks.en.html">EP686</a> and <a href="gooaye-ep687-stocks.en.html">EP687</a>.</p>
+<p>The second is <b>extrapolating VSH/STM's earnings flex</b>. The +1303% and +339% are a low base plus operating leverage, and <b>the comparison base normalizes a year from now</b>. The most dangerous moment for a deep cyclical is often the quarter or two when the earnings look best, because it means utilization is already back near the high end with limited room above. <span class="mid">Low valuation percentiles are genuinely good, but watch whether that reflects "cheap" or "the market is already pricing the second derivative of growth"</span>.</p>
+<p>Third, <b>the disaggregated-inference news is negative for NVDA and the episode never follows that thread</b>. If inference workloads split across vendors and hardware types, the winner-take-all premium should compress. The host notes that Nvidia's earlier CPX effort turned out to be "all thunder, no rain," but never connects it to valuation. <b>NVDA's 22.2x forward PE is genuinely not expensive among large AI assets</b>, though the spread of heterogeneous architectures is a long-term de-rating factor on that multiple.</p>
+<h3>Credibility verdict</h3>
+<p>This episode has <span class="win">the highest verification rate in recent memory on technical and financial facts</span>: the 800VDC whitepaper, the AMD×Cerebras partnership, and the VSH/STM results all hold, and all trace back to primary sources. That is far more substantial than EP687's "I agree with your allocation" content.</p>
+<p>The problems cluster in a single pattern: <span class="lose">what is said is accurate, but what is left out is what matters</span> — Cerebras's margin collapse, the real concentration of the SpaceX unlock, and the timing gaps between 800V stages. <b>All three omissions push in the same direction: they make the risk look smaller than it is</b>.</p>
+<p>Overall: <b>the technical content is reliable and directly usable; the financial conclusions need the missing half filled in yourself</b>. What is worth keeping is that three-stage roadmap — not as a stock list, but as <b>a ruler for judging when a given company's revenue actually shows up</b>. VSH and STM are the one part you can take as-is: claim, numbers and valuation all agree, and the claim comes with its own verification method.</p>
+</div>
+
+<div class="foot">
+<b>Source</b>: Gooaye <b>EP688</b> "🥽" (<a href="https://youtu.be/PD_IMPvMBc0" target="_blank" rel="noopener">original YouTube link</a>). Analysis of the auto-generated YouTube ASR transcript (compiled <b>2026-08-15</b>). The transcript is machine-generated, so English abbreviations and symbols are often phonetic; one easily misread item has been clarified (<b>"POW" is spoken shorthand for Power, not a ticker</b>), and anything unconfirmable is flagged inline.<br>
+<b>Verification</b>: US quotes, Q2 2026 income statements, forward valuation with historical percentile, and analyst consensus (VSH / STM / AMD / CBRS / NVDA / SPCX / POWI / MPWR / ON / VICR / VRT / APH / TEL / NVTS / WOLF) — Futu OpenAPI (Futu does not cover Taiwan; 2301 and 2308 carry figures from earlier episodes and are trailing PE); <a href="https://newsroom.amd.com/news/aai-2026-cerebras-inference/" target="_blank" rel="noopener">AMD × Cerebras official press release</a>, <a href="https://developer.nvidia.com/blog/building-the-800-vdc-ecosystem-for-efficient-scalable-ai-factories/" target="_blank" rel="noopener">Nvidia 800VDC ecosystem post</a>, Cerebras IPO and Q2'26 coverage (CNBC), and SpaceX lockup reporting — WebSearch (July–August 2026). All prices as of <b>2026-08-15</b> (AMD as of the 8/14 close).<br>
+<b>Disclaimer</b>: this page compiles podcast content and verifies its figures. <b>It is not investment advice</b>. Investing carries risk; do your own research before acting.
+</div>
+
+<script>
+// Stocks: tone + verification
+const STOCKS=[
+ {nm:'Vishay',code:'US.VSH',mkt:'US',tone:'bull',said:'Recent results show earnings growing faster than revenue, reflecting firmer pricing and improving fundamentals — but the strength is concentrated in AI while auto, PC and consumer are crowded out.',chk:'✅Fully verified, and the hardest number in the episode: Q2\'26 revenue $888.6M (YoY <b>+16.6%</b>), net income $28.1M (YoY <b>+1303%</b>) — an order-of-magnitude gap, not a marginal one. 💡Valuation agrees: $35.08, forward PE <b>24.6x</b>, valuation percentile just <b>11.3%</b>. Around <a href="gooaye-ep682-stocks.en.html">EP682</a> this site checked it at 83.2%, so <b>results improved while the percentile fell sharply — getting cheaper, not being chased</b>. 3 analysts, 100% Buy, mean target $44.33 (+26.4%). ⚠️But the +1303% is mostly a low base (year-ago net income was ~$2M): operating leverage, not a demand explosion, and the base normalizes next year.',vd:'ok'},
+ {nm:'STMicroelectronics',code:'US.STM',mkt:'US',tone:'bull',said:'Same story — earnings growing markedly faster than revenue.',chk:'✅Equally verified: Q2\'26 revenue $3.487B (YoY <b>+26.1%</b>), net income $225M (YoY <b>+339%</b>). 💡$54.29, forward PE <b>28.7x</b>, valuation percentile <b>22.6%</b> — also near the low end. 8 analysts, 62.5% Buy, mean target $76.1, implying <b>+40.2%</b>, the widest upside among names mentioned here. <b>SiC is core to the roadmap\'s mid stage (2028–30), but STM is diversified rather than a pure play — which is also why it is profitable while NVTS and WOLF are not</b>.',vd:'ok'},
+ {nm:'Cerebras Systems',code:'US.CBRS',mkt:'US',tone:'bear',said:'Wafer-scale silicon chasing bandwidth with large SRAM for Decode; partnered with AMD to split inference in two. "Public for a while" — the investment angle is the lockup.',chk:'✅Technical description correct, partnership verified (announced 2026-07-23 at AMD Advancing AI; official release confirms Helios on Prefill, WSE on Decode, claiming <b>5x</b> tokens/sec per watt, shipping via Cerebras Cloud in H2 2026). ⚠️"Public for a while" is inaccurate: it <b>listed 2026-05-13/14</b> ($185 pricing, +68% first day) — roughly three months of history. ❌<b>The financials are skipped entirely</b>: Q2\'26 revenue $180.1M (YoY +74.3%) but <b>gross margin fell 31%→14.2%</b> with a <b>$450.5M</b> GAAP net loss (245.6% worse YoY); trailing and forward PE both negative. The CEO conceded after the print that the market "misunderstood" the margin outlook. Now $218.98, down from a $311 post-IPO high. 10 analysts, 100% Buy, mean target $298.9 — <span class="lose">though underwriter-covered ratings on a fresh IPO carry limited information value</span>.',vd:'warn'},
+ {nm:'AMD',code:'US.AMD',mkt:'US',tone:'neu',said:'Helios handles the Prefill side; AMD recently acquired a company that etches model logic into silicon.',chk:'✅Partnership verified. Fundamentals are strong too: Q2\'26 data center revenue doubled to $6.7B (58% of total), Q3 guidance $13B (YoY +41%). Closed <b>$514.39</b> on 8/14 (+6.5% on the day); 31 analysts, 83.9% Buy, mean target $656.6 (high $1,250). ⚠️But forward PE is <b>58.4x</b>, the most expensive US name in this episode — <b>real narrative, strong results, not a cheap multiple</b>. ❓The claimed acquisition of a company "etching model logic into silicon" <b>matches no findable deal</b> and cannot be confirmed. The episode does not analyze AMD as a position.',vd:'q'},
+ {nm:'Nvidia',code:'US.NVDA',mkt:'US',tone:'neu',said:'Mentioned in passing: the earlier CPX effort was "all thunder, no rain"; also one of the 800VDC whitepaper\'s authors.',chk:'✅Whitepaper role verified (published with Google and Microsoft via OCP in March 2026, LVDC v0.3 in July 2026, 80+ vendors developing, MGX-compatible 800VDC racks in H2 2026). 💡Now $225.16, forward PE <b>22.2x</b> — <b>still the cheapest of the large AI assets</b>. ⚠️The thread the episode never pulls: if disaggregated inference (heterogeneous cooperation) becomes standard, the winner-take-all premium compresses — <b>a long-term de-rating factor for NVDA</b>. The host raises CPX but never connects it to valuation.',vd:'ok'},
+ {nm:'SpaceX',code:'US.SPCX',mkt:'US',tone:'neu',said:'Sellers pressured the stock ahead of the unlock (possibly options hedges locking in the spread), then it bottomed and rallied; the unlock is spread over nine or ten tranches with the first hitting hardest.',chk:'⚠️Right direction, oversimplified: it is a <b>conditional schedule</b> — 20% after the Q2 print → five periodic 7% windows (8/21, 9/10, 9/25, 10/10, 10/25) → ~<b>28%</b> triggered by the Q3 print → all 180-day shares expiring <b>2026-12-08</b>; plus a conditional 10% incentive tranche if the stock clears $175.50 (IPO+30%). Musk\'s ~6.4B shares are locked 366 days. ✅The tranche count and the "pressure before, stabilize after" read are broadly consistent. 💡But <b>supply concentrates on three dates — the 20%, the 28%, and 12/8 — it is not evenly spread</b>. Now ~$140 against a $135 IPO price; <span class="mid">a newly public private-market name, so valuation anchors are hard to set</span>.',vd:'warn'},
+];
+const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Watching / technical'],neu:['p-neu','Neutral'],bear:['p-bear','Cautious / trimming']};
+const VD={ok:['✅','var(--win)','Verified'],warn:['⚠️','var(--lose)','Discrepancy / caveat'],bad:['❌','var(--lose)','Unsupported'],na:['—','var(--ink3)','No figures given'],q:['❓','var(--mid)','Unverifiable / narrative']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">"${s.said}"</div>
+ <div class="why"><b style="color:${c}">${ic} Check</b>: ${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// Sector scan
+document.getElementById('grp800V').innerHTML=
+'<tr><th>Ticker / Name</th><th>Role in the chain</th><th>Roadmap stage</th><th>Relative standing</th><th>Forward PE</th><th>One-line view</th></tr>'+
+[
+ ['VSH Vishay','Power semis + passives, dual-track IDM','<span class="win">Near (now)</span>','<span class="win">Named in episode · earnings delivered</span>','<b>24.6x</b><br><span class="win" style="font-size:11px">11.3rd pctile</span>','Best earnings delivery on the table and the cheapest multiple — narrative and numbers agree most closely here'],
+ ['STM STMicroelectronics','SiC / 800V power semis, European IDM','Near + mid','<span class="win">Named in episode · earnings delivered</span>','<b>28.7x</b><br><span class="win" style="font-size:11px">22.6th pctile</span>','Same profile as VSH; +40.2% implied upside is the widest here. Diversified — which is why it is profitable'],
+ ['ON onsemi','SiC power IDM with in-house fabs','Mid 2028–30','Listener favorite back in EP682','~27.5x<br><span style="font-size:11px;color:var(--ink3)">EP682 check, not updated</span>','Industry view stays constructive, but it monetizes in the mid stage; watch the recent drawdown'],
+ ['NVTS Navitas','GaN power semis · Nvidia 800V ecosystem partner','Mid 2028–30','<span class="lose">Purest theme, still loss-making</span>','<span class="lose">Negative (loss-making)</span>','The purest play on the theme, but unproven profitability plus the latest payoff date — risk on both axes'],
+ ['WOLF Wolfspeed','SiC substrates and devices','Mid 2028–30','<span class="lose">Balance-sheet strain</span>','<span class="lose">Negative (loss-making)</span>','Most direct SiC upstream exposure, but the weakest financial position on the table'],
+ ['VICR Vicor','High-density power modules · rack-level niche','Near + mid','Named back in EP682','~43.9x<br><span style="font-size:11px;color:var(--ink3)">EP682 check</span>','High purity but expensive — the purity premium is already visible'],
+ ['MPWR Monolithic Power','High-end power management ICs','Near (now)','Not mentioned this episode','<b>51.2x</b>','Pure theme and a near-term payoff, but the multiple already counts the good news'],
+ ['POWI Power Integrations','Power management ICs','Near (now)','<span class="lose">Not mentioned · easily confused with spoken "POW"</span>','<span class="lose">60.0x</span>','<b>Most expensive here</b>. Note: "POW" in the transcript means Power, not this ticker'],
+ ['VRT Vertiv','Data-center power and cooling system integrator','All stages','Not mentioned this episode','41.8x','The system-level beneficiary, but growth looks fully priced'],
+ ['APH Amphenol','Connectors · the 800V busbar connector link','Near + mid','Not mentioned this episode','26.5x','Levered to the whitepaper\'s mid-stage Power Center; multiple is reasonable'],
+ ['TEL TE Connectivity','Connectors','Near + mid','Not mentioned this episode','<span class="win">17.9x</span>','<b>Lowest forward PE here</b>, but 800V is a small share of revenue — the discount buys diluted exposure'],
+ ['2301 Lite-On (TW)','Power supplies (PSU/PBU) · 800V ASP uplift','<span class="win">Near (now)</span>','+18.2% over 5 sessions post-earnings in <a href="gooaye-ep686-stocks.en.html">EP686</a>','<span style="color:var(--ink3)">— (not on Futu)</span>','The nearest-term beneficiary, but one earnings-driven move is already behind it'],
+ ['2308 Delta Electronics (TW)','Power management systems leader · ±400V in volume','Mid (800V ramps 2027)','Full order book, lagging the index','<span style="color:var(--ink3)">57.0x trailing</span>','Strong visibility, but the 800V catalyst is a year out — timing and multiple are mismatched'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+
+// Fact-check table
+const FACTS=[
+ ['Nvidia 800VDC power whitepaper','Three-stage roadmap: PRC → Power Center → DC Power Block','✅<b>Core facts verified, and for the first time a citable primary document</b>: Nvidia, Google and Microsoft published the 800VDC whitepaper through OCP in <b>March 2026</b>, followed by the LVDC solid-state transformer spec <b>v0.3</b> in <b>July 2026</b>, with <b>80+ vendors</b> developing to it and MGX-compatible 800VDC racks due H2 2026. The three-stage timeline is directionally consistent','ok'],
+ ['~5% 800VDC penetration','Attributed to overseas research houses','⚠️<b>No attribution in the transcript and no citable primary source found</b>. Treated as an independently unverified figure — check it before citing','warn'],
+ ['6.1kA at 54V dropping to 0.4kA at 800V','The low-voltage/high-current bottleneck at 400kW','⚠️Same as above, <b>no independent source</b>. The conversion is physically sound (raise voltage ~15x, current falls ~15x at constant power), but "plausible" is not "verified"','warn'],
+ ['"POW"','As it appears in the transcript','🔍<b>Not a ticker</b> — spoken shorthand for <b>Power</b>. The 800VDC segment <b>names no supply-chain stock at all</b>; treating it as a symbol points at Power Integrations (POWI, forward PE 60.0x, the most expensive name on the chain and never mentioned in the episode)','warn'],
+ ['AMD × Cerebras disaggregated inference','Helios on Prefill, WSE on Decode, big efficiency gain','✅<b>Fully verified</b>: announced 2026-07-23 at AMD Advancing AI, with the official release confirming the split and claiming a <b>5x</b> improvement in tokens/sec per watt, shipping via Cerebras Cloud in H2 2026','ok'],
+ ['Cerebras "public for a while"','Spoken on the show','⚠️<b>Inaccurate</b>: it listed 2026-05-13/14 ($185 pricing, +68% first day) — roughly <b>three months</b> of trading. A three-month IPO and a three-year-old stock have entirely different share-supply dynamics, and share supply was the whole point of the segment','warn'],
+ ['Cerebras financial condition','Not mentioned in the episode','❌<b>The biggest gap</b>: Q2\'26 revenue $180.1M (YoY +74.3%) but <b>gross margin 31%→14.2%</b> and a <b>$450.5M</b> GAAP net loss (245.6% worse YoY); trailing and forward PE both negative. The CEO conceded post-print that the market "misunderstood" the margin outlook','bad'],
+ ['AMD acquiring a company that "etches model logic into silicon"','Spoken on the show','❓<b>No matching acquisition found</b>; cannot be confirmed. Possibly a misremembering or a reference to a small team acqui-hire','q'],
+ ['SpaceX lockup split into 9–10 tranches','Share-supply observation','⚠️<b>Right direction, oversimplified</b>: it is a conditional schedule — 20% (post-Q2 print) + five 7% periodic windows (8/21, 9/10, 9/25, 10/10, 10/25) + ~28% triggered by the Q3 print + full expiry on 12/8; plus a conditional 10% incentive tranche above $175.50. <b>Supply concentrates on three dates rather than spreading evenly</b>','warn'],
+ ['"Pressure before the unlock, stabilizing after"','Share-supply observation','✅<b>Consistent with the actual structure</b>: the two largest tranches (20% and 28%) are both tied to earnings, which the market front-runs. Now ~$140 against a $135 IPO price','ok'],
+ ['VSH earnings growth &gt;&gt; revenue growth','Spoken in the Q&amp;A','✅<b>Fully verified</b>: Q2\'26 revenue $888.6M (YoY <b>+16.6%</b>), net income $28.1M (YoY <b>+1303%</b>). 💡Forward PE 24.6x at just the <b>11.3rd percentile</b> (83.2% around EP682). ⚠️But the +1303% is mostly a low base — operating leverage, not a demand explosion','ok'],
+ ['STM earnings growth &gt;&gt; revenue growth','Spoken in the Q&amp;A','✅<b>Fully verified</b>: Q2\'26 revenue $3.487B (YoY <b>+26.1%</b>), net income $225M (YoY <b>+339%</b>). Forward PE 28.7x at the 22.6th percentile; mean target $76.1 implies <b>+40.2%</b>','ok'],
+ ['"Strength concentrated in AI, crowding out auto/PC/consumer"','Spoken in the Q&amp;A','❓<b>Direction matches industry consensus, but the episode gives no segment revenue figures</b> and this post did not break down either company\'s end-market mix. Inference, not verified fact','q'],
+ ['Nvidia CPX was "all thunder, no rain"','Mentioned in passing','❓A subjective judgment with no quantifiable standard to check. 💡What is checkable: NVDA at $225.16, forward PE <b>22.2x</b> — still relatively cheap among large AI assets','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What the episode said</th><th>Verification</th><th>Verdict</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
