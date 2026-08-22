@@ -26,6 +26,7 @@ var POSTS=[
   {slug:'cuda-learn-guide',           d:'2026-08-03', cat:'AI 技術分享',     zh:'CUDA．從零開始的 GPU 程式學習路線', en:'CUDA．A GPU Programming Path from Zero', draft:1},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep690-stocks',        d:'2026-08-22', cat:'股癌podcast分析', zh:'股癌 EP690 · 個股觀點整理',          en:'Gooaye EP690 · Stock Notes'},
   {slug:'gooaye-ep689-stocks',        d:'2026-08-19', cat:'股癌podcast分析', zh:'股癌 EP689 · 個股觀點整理',          en:'Gooaye EP689 · Stock Notes'},
   {slug:'gooaye-ep688-stocks',        d:'2026-08-15', cat:'股癌podcast分析', zh:'股癌 EP688 · 個股觀點整理',          en:'Gooaye EP688 · Stock Notes'},
   {slug:'gooaye-ep687-stocks',        d:'2026-08-12', cat:'股癌podcast分析', zh:'股癌 EP687 · 個股觀點整理',          en:'Gooaye EP687 · Stock Notes'},
