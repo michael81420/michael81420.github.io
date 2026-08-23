@@ -20,6 +20,7 @@ var POSTS=[
   {slug:'meta-2026q2-earnings',       d:'2026-08-03', cat:'財報分析',       sub:'Meta',      zh:'Meta．2026 Q2 財報拆解',     en:'Meta．Q2 2026 Earnings, Unpacked'},
   {slug:'tesla-2026q2-earnings',      d:'2026-08-03', cat:'財報分析',       sub:'Tesla',     zh:'Tesla．2026 Q2 財報拆解',    en:'Tesla．Q2 2026 Earnings, Unpacked'},
   {slug:'oracle-fy2026q4-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Oracle',    zh:'Oracle．FY2026 Q4 財報拆解', en:'Oracle．FY2026 Q4 Earnings, Unpacked'},
+  {slug:'github-actions-ci-cd',      d:'2026-08-22', cat:'前端開發',       zh:'GitHub Actions．幫零建置靜態站補上 CI/CD', en:'GitHub Actions．CI/CD for a Zero-Build Static Site'},
   {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'前端開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript', draft:1},
   {slug:'react-learn-guide',          d:'2026-07-21', cat:'前端開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
   {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'前端開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},

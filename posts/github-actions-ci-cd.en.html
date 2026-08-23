@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Actions．CI/CD for a Zero-Build Static Site</title>
+<meta name="description" content="This site has no framework, no npm, no build step — but publishing one post means editing five files in sync, all by hand. Two layers of checks on GitHub Actions: a zero-dependency node script for cross-file consistency, headless Chromium for layout and SVG. Green light or no deploy. Full scripts plus the four real bugs the first run caught.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="github-actions-ci-cd"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>GitHub Actions．CI/CD for a Zero-Build Static Site</h1>
+<div class="sub">This site deliberately has no framework, no npm, no build step — but publishing one post means keeping <b>five files in sync</b>, entirely by hand. Miss one and readers silently never see it.<br>The fix is to <b>turn the discipline into executable checks</b>: one zero-dependency static pass, one that actually opens a headless browser and measures the layout. <b>Green light or no deploy.</b></div>
+<div style="margin-top:10px">
+<span class="badge new">Source: built for this site</span>
+<span class="badge">Compiled: 2026-08-22</span>
+</div>
+</header>
+
+<div class="card tldr"><h2>TL;DR</h2>
+<p class="big">🧱 <span class="turn">A static site needs no build, but it still needs checks.</span> Skipping the build step removes the bundler, not the correctness guarantee. What actually breaks here is <b>cross-file consistency</b> — the post, both homepages, the sidebar index, and the sitemap all have to agree — and that is precisely what CI is good at.</p>
+<p class="big">🔍 <span class="win">Two layers, cheapest first.</span> <b>check.mjs</b> has zero dependencies and runs in about a second: five-point sync, hardcoded colors, duplicate marker ids, dead links. <b>visual.mjs</b> opens headless Chromium and loads all 80 pages at 390px wide, catching SVG text that overflows or overlaps, page-level horizontal overflow, and JS exceptions — 16 seconds.</p>
+<p class="big">🚦 <span class="win">The whole point of the CD half is making deployment blockable.</span> GitHub Pages defaults to "push to main, it ships" — a red CI ships too. Switch the Pages source to GitHub Actions and hang <code>needs: check</code> on the deploy job, and broken pages simply never reach production.</p>
+<p class="big">🐛 <span class="lose">The first run caught four classes of real bugs.</span> An entire inline script dead from an unescaped <code>stock's</code>; seven pages overflowing horizontally on mobile; two figures with overlapping labels. All had been live for weeks with no reports — because <b>nobody scrolls 80 pages at 390px looking for it</b>.</p>
+</div>
+
+<h2>The problem isn't the missing build — it's the five sync points</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="One new post requires editing five files before it is really live, and missing any one of them fails silently">
+  <defs><marker id="ahci1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">One post, five files that all have to agree</text>
+
+  <rect x="20" y="105" width="176" height="66" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="108" y="132" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">POSTS in site.js</text>
+  <text x="108" y="152" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">single source of truth</text>
+
+  <rect x="296" y="48" width="444" height="32" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="310" y="68" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.html — Chinese page, data-slug must match</text>
+
+  <rect x="296" y="93" width="444" height="32" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="310" y="113" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.en.html — English page, or lang-toggle breaks</text>
+
+  <rect x="296" y="138" width="444" height="32" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="310" y="158" style="fill:var(--ink);font:400 12px sans-serif">index.html / index.en.html — one card in each</text>
+
+  <rect x="296" y="183" width="444" height="32" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="310" y="203" style="fill:var(--ink);font:400 12px sans-serif">sitemap.xml — two lines (drafts: the exact opposite)</text>
+
+  <rect x="296" y="228" width="444" height="32" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="310" y="248" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.earn.js — earnings posts only, key = slug</text>
+
+  <line x1="198" y1="130" x2="292" y2="64" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="198" y1="133" x2="292" y2="109" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="198" y1="138" x2="292" y2="154" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="198" y1="143" x2="292" y2="199" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="198" y1="148" x2="292" y2="244" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+</svg>
+</div>
+
+<p>The price of zero build is that <b>nothing tells you when you skipped a step</b>. In a compiled project a missing import fails the build. Here, forgetting the two sitemap lines leaves the page perfectly openable and the homepage card perfectly visible — search engines just never index it. <b>Silent failure</b>, discoverable only weeks later by working backwards from traffic numbers.</p>
+<p>So the first thing worth automating isn't test logic — it's <b>translating the rules in CLAUDE.md into asserts</b>. The rules were already written down. They just lived in a document meant for humans.</p>
+</div>
+
+<h2>Two layers, cheapest first</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anything decidable by reading files stays in the static layer; only questions needing real layout results justify a browser">
+  <defs><marker id="ahci2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">The dividing line: does answering it require laying the page out?</text>
+
+  <rect x="20" y="42" width="720" height="112" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="40" y="68" style="fill:var(--ink);font:700 13px sans-serif">Layer 1 — check.mjs</text>
+  <text x="220" y="68" style="fill:var(--ink3);font:400 11px sans-serif">node fs + regex, zero deps, ~1 second</text>
+  <text x="40" y="92" style="fill:var(--ink);font:400 12px sans-serif">• five sync points, drafts kept out of the sitemap</text>
+  <text x="400" y="92" style="fill:var(--ink);font:400 12px sans-serif">• matching data-slug, lang-toggle present</text>
+  <text x="40" y="114" style="fill:var(--ink);font:400 12px sans-serif">• hardcoded hex colors (they break dark mode)</text>
+  <text x="400" y="114" style="fill:var(--ink);font:400 12px sans-serif">• duplicate marker ids on one page</text>
+  <text x="40" y="136" style="fill:var(--ink);font:400 12px sans-serif">• href/src pointing at files that don't exist</text>
+  <text x="400" y="136" style="fill:var(--ink3);font:400 11px sans-serif">test: the answer depends only on the file's text</text>
+
+  <rect x="20" y="176" width="720" height="112" rx="12" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="40" y="202" style="fill:var(--ink);font:700 13px sans-serif">Layer 2 — visual.mjs</text>
+  <text x="220" y="202" style="fill:var(--ink3);font:400 11px sans-serif">headless Chromium, 80 pages at 390px, ~16 seconds</text>
+  <text x="40" y="226" style="fill:var(--ink);font:400 12px sans-serif">• SVG text escaping its own canvas</text>
+  <text x="400" y="226" style="fill:var(--ink);font:400 12px sans-serif">• two SVG labels sitting on top of each other</text>
+  <text x="40" y="248" style="fill:var(--ink);font:400 12px sans-serif">• page-level horizontal overflow on mobile</text>
+  <text x="400" y="248" style="fill:var(--ink);font:400 12px sans-serif">• console errors and uncaught JS exceptions</text>
+  <text x="40" y="270" style="fill:var(--ink3);font:400 11px sans-serif">test: you need fonts and layout computed before you can tell</text>
+
+  <line x1="380" y1="158" x2="380" y2="172" style="stroke:var(--ink3)" marker-end="url(#ahci2)"/>
+</svg>
+</div>
+
+<h3>Layer 1: zero-dependency consistency</h3>
+<p>The whole thing is one file, <code>tools/check.mjs</code>, with nothing installed. The <b>POSTS array is sliced straight out of <code>site.js</code> and eval'd</b> — it's a file I wrote, so it doesn't need a parser:</p>
+<pre><code><span class="c">/* POSTS in site.js is the single source of truth — just eval the array literal */</span>
+<span class="k">const</span> siteJs = read(<span class="s">'assets/site.js'</span>);
+<span class="k">const</span> start = siteJs.indexOf(<span class="s">'var POSTS=['</span>);
+<span class="k">const</span> end   = siteJs.indexOf(<span class="s">'\n];'</span>, start);
+<span class="k">const</span> POSTS = eval(siteJs.slice(start + <span class="s">'var POSTS='</span>.length, end + <span class="s">2</span>));</code></pre>
+<p>After that it's rules translated into <code>if</code> statements one at a time. The earnings rule is the instructive one, because it's <b>inverted</b>:</p>
+<pre><code><span class="c">// Earnings posts live in a data table, not the card grid; everything else needs a card</span>
+<span class="k">const</span> earn = p.cat === <span class="s">'財報分析'</span>;
+<span class="k">const</span> has = idx.includes(<span class="s">`href="${href}"`</span>);
+<span class="k">if</span> (earn &amp;&amp; has)   bad(name, <span class="s">`${p.slug} is an earnings post — it must NOT have a card`</span>);
+<span class="k">if</span> (!earn &amp;&amp; !has) bad(name, <span class="s">`missing post-card for ${p.slug}`</span>);</code></pre>
+<p>Drafts work the same way: a post with <code>draft:1</code> <b>must</b> have homepage cards (so local preview shows them) and <b>must not</b> be in the sitemap. Rules of the "sometimes required, sometimes forbidden" shape are exactly the ones human memory gets backwards — once they're asserts, there's nothing left to remember.</p>
+<p>One reverse check deserves special mention: <b>scanning <code>posts/</code> for orphan pages not registered in POSTS</b>. The forward check only proves "everything registered exists"; it can't catch "exists but unregistered" — and that's the failure that makes a post vanish from both the sidebar and the homepage.</p>
+
+<h3>Layer 2: actually measure it in a browser</h3>
+<p>One class of question no regex can answer: <b>will this line of text fit inside its box?</b> Text width depends on the font, weight, tracking, and how CJK and ASCII interleave — only the layout engine knows. So layer two launches Chromium, loads pages over <code>file://</code> (this site opens directly, so no server needed), and measures in-page:</p>
+<pre><code><span class="k">for</span> (<span class="k">const</span> svg <span class="k">of</span> document.querySelectorAll(<span class="s">'svg'</span>)) {
+  <span class="k">const</span> box = svg.getBoundingClientRect();
+  <span class="k">const</span> rects = texts.map(t =&gt; t.getBoundingClientRect());
+  <span class="c">// geometry escapes the canvas -&gt; the SVG clips it, the reader never sees it</span>
+  <span class="k">if</span> (r.right &gt; box.right + <span class="s">1</span> || r.bottom &gt; box.bottom + <span class="s">1</span>) …
+  <span class="c">// overlapping by more than 2px on BOTH axes -&gt; genuinely stacked</span>
+  <span class="k">if</span> (inter(rects[i], rects[j]) &gt; <span class="s">2</span> &amp;&amp; vinter(rects[i], rects[j]) &gt; <span class="s">2</span>) …
+}</code></pre>
+<p>Using <code>getBoundingClientRect()</code> instead of <code>getBBox()</code> is the key detail: <b>the former is in screen space and folds in any <code>transform</code></b>. The latter returns a box in the element's own coordinate system, so a single transform anywhere in the figure makes every comparison wrong.</p>
+<p>Viewport is pinned at 390px — iPhone portrait. Desktop width almost never collides; narrow is the real stress test.</p>
+</div>
+
+<h2>CD: making deployment blockable</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 240" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Once Pages deploys from Actions, a failed check produces no artifact and production stays on the previous version">
+  <defs><marker id="ahci3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">needs: check — the only line that really matters</text>
+
+  <rect x="20" y="88" width="104" height="40" rx="9" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="72" y="113" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">push / PR</text>
+
+  <rect x="164" y="88" width="124" height="40" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="226" y="106" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">check.mjs</text>
+  <text x="226" y="121" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">1 sec</text>
+
+  <rect x="328" y="88" width="124" height="40" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="390" y="106" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">visual.mjs</text>
+  <text x="390" y="121" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">16 sec</text>
+
+  <rect x="524" y="44" width="216" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="632" y="70" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">deploy-pages → site is live</text>
+
+  <rect x="524" y="130" width="216" height="44" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="632" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">job halts, no artifact built</text>
+  <text x="632" y="165" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">production stays on the old version</text>
+
+  <line x1="126" y1="108" x2="160" y2="108" style="stroke:var(--ink3)" marker-end="url(#ahci3)"/>
+  <line x1="290" y1="108" x2="324" y2="108" style="stroke:var(--ink3)" marker-end="url(#ahci3)"/>
+  <path d="M454 104L478 104L478 65L520 65" style="fill:none;stroke:var(--win)" marker-end="url(#ahci3)"/>
+  <path d="M454 114L478 114L478 152L520 152" style="fill:none;stroke:var(--lose)" marker-end="url(#ahci3)"/>
+  <text x="514" y="96" text-anchor="end" style="fill:var(--win);font:600 11px sans-serif">pass</text>
+  <text x="514" y="128" text-anchor="end" style="fill:var(--lose);font:600 11px sans-serif">fail</text>
+
+  <text x="20" y="208" style="fill:var(--ink3);font:400 11px sans-serif">Before: Pages deploys from a branch — push to main and it ships, red CI or not. The check is just a notification.</text>
+  <text x="20" y="228" style="fill:var(--ink3);font:400 11px sans-serif">After: Pages deploys from Actions — a broken page never reaches the deploy step at all.</text>
+</svg>
+</div>
+
+<p>GitHub Pages deploys from a branch by default. In that mode CI is a <b>post-mortem notification</b>: the broken page shipped long before the email arrived. To give the checks teeth, switch the Pages source to Actions (repo Settings → Pages → Source → <b>GitHub Actions</b>, a one-time manual change), then:</p>
+<pre><code><span class="k">jobs</span>:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: <span class="s">22</span>}
+      - run: node tools/check.mjs
+      - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
+        working-directory: tools
+      - run: node tools/visual.mjs
+
+  deploy:
+    <span class="ok">needs: check</span>            <span class="c"># <- the only line in this file that matters</span>
+    <span class="k">if</span>: github.ref == <span class="s">'refs/heads/main'</span>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: .}
+      - uses: actions/deploy-pages@v4</code></pre>
+<p>The <code>if: github.ref == 'refs/heads/main'</code> line lets PRs run checks without deploying. Splitting <code>check</code> and <code>deploy</code> into two jobs rather than two steps of one job matters because <code>needs</code> only expresses dependencies <i>between</i> jobs — and it's what renders them as two separate boxes in the Actions UI.</p>
+
+<h3>The one npm dependency, quarantined in tools/</h3>
+<p>This project's rule is "no build tools, no npm, no frameworks." Headless checking requires Playwright, which violates that literally — so the answer was to <b>seal it inside <code>tools/</code></b>:</p>
+<table>
+<tr><th>Location</th><th>Contents</th><th>Ships with the site?</th></tr>
+<tr><td class="l"><code>tools/package.json</code></td><td>one devDependency: playwright</td><td>No — read only by CI</td></tr>
+<tr><td class="l"><code>tools/node_modules</code></td><td>~95MB of browser</td><td>No — gitignored</td></tr>
+<tr><td class="l"><code>assets/</code>, <code>posts/</code></td><td>plain HTML/CSS/JS</td><td>Yes, and <b>entirely unchanged</b></td></tr>
+</table>
+<p>The test is simply: <b>is the site itself still zero-build and zero-dependency?</b> Yes. <code>tools/</code> is scaffolding for checking; delete it and the site runs exactly the same. That's a categorically different thing from pulling in webpack to build the site.</p>
+</div>
+
+<h2>Four classes of bug the first run caught</h2>
+<div class="card">
+<p>The value of CI isn't "it won't break later" — it's that <b>it tells you immediately where it's already broken</b>. All four had been live for a while with zero reports:</p>
+<table>
+<tr><th>Bug</th><th>Impact</th><th>Why nobody noticed</th></tr>
+<tr><td class="l"><b class="lose">Unescaped apostrophe</b><br><code>the stock's fundamentals</code> inside a single-quoted string</td><td class="l">The entire inline script on the EP689 English page threw a <b>SyntaxError</b>; the stock cards and sector table <b>never rendered at all</b></td><td class="l">The top half of the page looked perfect — only the bottom was blank, and nothing shows unless you open the console</td></tr>
+<tr><td class="l"><b class="lose">Long strings that never wrap</b><br><code>Alphabet/Amazon/Meta/…</code>, <code>TSM/NVDA/MU/…</code></td><td class="l">Seven pages overflowed horizontally at 390px, pushing text off-screen to the right</td><td class="l">Completely invisible on desktop; on mobile you have to swipe right to find the clipped text</td></tr>
+<tr><td class="l"><b class="lose">Overlapping SVG labels</b><br>an EP689 chart title over a data label; an Oracle figure's number over its footnote</td><td class="l">Two runs of text stacked on each other, both harder to read</td><td class="l">The overlap is only a few px — it scans as "a bit cramped" rather than as a bug</td></tr>
+<tr><td class="l"><b class="mid">Wide tables that don't scroll</b><br>min-content width exceeding the viewport</td><td class="l">The same mobile horizontal overflow</td><td class="l">Same as above, and it's a site-wide issue belonging to no single post</td></tr>
+</table>
+<p>The fixes come at two levels. <b>The apostrophe and the SVG coordinates are per-post</b>; the other two are site-wide and took two lines of CSS:</p>
+<pre><code>body{ … <span class="ok">overflow-wrap:break-word</span>; … }              <span class="c">/* let long runs break */</span>
+@media(max-width:640px){ table{display:block;<span class="ok">overflow-x:auto</span>} }  <span class="c">/* wide tables scroll themselves */</span></code></pre>
+<p>Worth noting: <b>those two CSS lines exist because the checks forced them into existence.</b> Before CI, there was no moment at which anyone would think to measure scrollWidth across 80 pages at 390px.</p>
+</div>
+
+<h2>Two traps along the way</h2>
+<div class="card">
+<h3>Trap 1: <code>scroll-behavior:smooth</code> silently defeats the detector</h3>
+<p>The obvious way to detect horizontal overflow is "scroll all the way right, see how far it went":</p>
+<pre><code>window.scrollTo(<span class="s">9999</span>, <span class="s">0</span>);
+<span class="k">return</span> window.scrollX;   <span class="c">// always 0 — even though the page clearly scrolls</span></code></pre>
+<p><code>site.css</code> sets <code>html{scroll-behavior:smooth}</code>, which makes scrolling an async animation, so the next line still reads the pre-animation 0. I briefly concluded every overflow was a false positive and reverted a CSS fix that was actually correct. What settled it was <b>injecting a deliberately 900px-wide div and checking whether the detector noticed</b> — it didn't, which proved the detector was broken rather than the pages being fine.</p>
+<pre><code><span class="c">// The checker needs checking too: confirm it catches a case that MUST fail</span>
+<span class="k">await</span> page.evaluate(() =&gt; document.body.insertAdjacentHTML(<span class="s">'afterbegin'</span>,
+  <span class="s">'&lt;div style="width:900px;height:20px"&gt;x&lt;/div&gt;'</span>));</code></pre>
+<p>Two fixes exist: pass <code>behavior:'instant'</code> to skip the animation, or don't scroll at all and read <code>document.documentElement.scrollWidth</code>. I took the latter — it mutates no page state and removes a timing assumption.</p>
+
+<h3>Trap 2: <code>getBoundingClientRect()</code> doesn't care that you've been clipped</h3>
+<p>Every figure on this site sits inside <code>.fig{overflow-x:auto}</code>, so <b>figures being wider than the viewport is deliberate</b> — desktop fits them, mobile scrolls them inside their own box. But a naive "find elements whose right edge exceeds the viewport" flags every one of those SVGs, because <code>getBoundingClientRect()</code> reports the geometric rectangle <b>whether or not an ancestor clips it</b>.</p>
+<p>The correct question is whether <b>the page</b> scrolls, not whether <b>some element</b> is wider than the viewport. The former excludes every <code>overflow:auto</code> container for free, in one line:</p>
+<pre><code><span class="c">// .fig is overflow-x:auto — wide figures scroll themselves. Page-level overflow means something escaped.</span>
+<span class="k">if</span> (document.documentElement.scrollWidth &gt; window.innerWidth + <span class="s">1</span>)
+  out.push(<span class="s">'page overflows horizontally'</span>);</code></pre>
+</div>
+
+<h2>Deliberately not done</h2>
+<div class="card">
+<p>Each of these was considered; each came out as "not worth it yet":</p>
+<table>
+<tr><th>Skipped</th><th>Why</th><th>Add it when</th></tr>
+<tr><td class="l"><b>A second pass in dark mode</b></td><td class="l">Text geometry and console errors are theme-independent. The one theme-dependent failure — hardcoded colors — is already blocked by the <b>static</b> layer, no browser required</td><td class="l">You start doing screenshot diffing (visual regression)</td></tr>
+<tr><td class="l"><b>Lighthouse / a11y scoring</b></td><td class="l">A plain static site scores well by default; adding it just means a few points of noise drifting on every PR</td><td class="l">You start caring about Core Web Vitals, or get an accessibility report</td></tr>
+<tr><td class="l"><b>An HTML validator</b></td><td class="l">Uncorrelated with how this site actually breaks — the bugs are cross-file inconsistency and layout overflow, not unclosed tags</td><td class="l">You start accepting externally-authored HTML</td></tr>
+<tr><td class="l"><b>Caching Chromium</b></td><td class="l">The download is about 40 seconds and the whole pipeline finishes inside 90; the savings don't justify a cache action plus its invalidation problems</td><td class="l">CI time gets long enough that you stop waiting for it</td></tr>
+<tr><td class="l"><b>External link 404 checks</b></td><td class="l">Somebody else's outage turns your CI red, and re-running doesn't fix it — the textbook definition of a <b>flaky test</b></td><td class="l">Moved to a weekly schedule that notifies but never blocks deploys</td></tr>
+</table>
+<p>The shared test: <b>when this check goes red, will I actually go fix it?</b> Yes → add it. No, or can't → it's noise, and noise trains you to ignore red, including the red that mattered.</p>
+</div>
+
+<h2>The minimum version, if you want to copy it</h2>
+<div class="card">
+<table>
+<tr><th>File</th><th>Lines</th><th>Does what</th></tr>
+<tr><td class="l"><code>.github/workflows/ci.yml</code></td><td>~45</td><td class="l">Two jobs: check runs the checks, deploy hangs off <code>needs: check</code></td></tr>
+<tr><td class="l"><code>tools/check.mjs</code></td><td>~75</td><td class="l">Zero-dependency static checks — project conventions as asserts</td></tr>
+<tr><td class="l"><code>tools/visual.mjs</code></td><td>~50</td><td class="l">Headless Chromium measuring every page's layout</td></tr>
+<tr><td class="l"><code>tools/package.json</code></td><td>7</td><td class="l">One devDependency</td></tr>
+</table>
+<p>Under 200 lines total: no test framework, no config file, no fixtures. <b>The checking scripts should obey the project's simplicity rules too</b> — if the tooling gets more complicated than the thing it checks, it becomes another maintenance burden and eventually gets switched off.</p>
+<p>The ordering is worth copying as well: start with <b>the rules you've already written down but currently enforce by memory</b>. That's the highest-return slice, because the thinking is already done — the only missing piece is enforcement.</p>
+</div>
+
+<div class="foot"><b>Source</b>: this site's own CI (<code>.github/workflows/ci.yml</code>, <code>tools/check.mjs</code>, <code>tools/visual.mjs</code>). Every number here — 80 pages, 38 posts, 1s / 16s, four bug classes — comes from an actual run against this repo on 2026-08-22.<br><b>Disclaimer</b>: personal engineering notes; not technology-selection advice.</div>
+</div></body></html>

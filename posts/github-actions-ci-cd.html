@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Actions．幫零建置靜態站補上 CI/CD</title>
+<meta name="description" content="這個站沒有框架、沒有 npm、沒有建置步驟,但「一篇文章要同步五處」全靠人工紀律。用 GitHub Actions 跑兩層檢查:零依賴 node 腳本掃靜態一致性,headless Chromium 掃版面與 SVG,綠燈才讓 GitHub Pages 上線。附完整腳本與第一次跑就抓到的四類真實 bug。">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="github-actions-ci-cd"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>GitHub Actions．幫零建置靜態站補上 CI/CD</h1>
+<div class="sub">這個站刻意沒有框架、沒有 npm、沒有建置步驟——但「一篇文章要同步五個地方」完全靠人工紀律,漏一處讀者就看不到。<br>做法是<b>把紀律寫成可執行的檢查</b>:一層零依賴的靜態掃描,一層真的開 headless 瀏覽器看版面,<b>綠燈才准上線</b>。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:本站自建</span>
+<span class="badge">整理日:2026-08-22</span>
+</div>
+</header>
+
+<div class="card tldr"><h2>TL;DR</h2>
+<p class="big">🧱 <span class="turn">靜態站不需要「建置」,但需要「檢查」</span>。零建置省掉的是打包工具,不是正確性保證。這站真正會壞的地方是<b>跨檔案的一致性</b>(文章、兩份首頁、側欄清單、sitemap 要互相對得上),而那正是 CI 最擅長的事。</p>
+<p class="big">🔍 <span class="win">分兩層,便宜的先跑</span>。<b>check.mjs</b> 零依賴、1 秒跑完,用讀檔加 regex 判五處同步、寫死色碼、重複 marker id、死連結;<b>visual.mjs</b> 開 headless Chromium 把 80 個頁面在 390px 寬各載一次,抓 SVG 文字超框/重疊、整頁橫向溢出、JS 例外——16 秒。</p>
+<p class="big">🚦 <span class="win">CD 的重點只有一件事:讓部署有辦法被擋下來</span>。GitHub Pages 預設是「push 到 main 就上線」,CI 紅燈也照上。把 Pages 來源改成 GitHub Actions、deploy job 掛 <code>needs: check</code>,壞頁面才進不了線上。</p>
+<p class="big">🐛 <span class="lose">第一次跑就抓到四類真 bug</span>:一支 inline script 因為 <code>stock's</code> 沒跳脫整個掛掉、6 個頁面在手機上橫向溢出、2 張圖的文字疊在一起。這些都上線好一陣子了,沒人回報,因為<b>沒人會用 390px 逐頁看 80 個頁面</b>。</p>
+</div>
+
+<h2>問題不是「沒建置」,是「五處同步」</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一篇新文章要同時改動五個檔案才會真正上線,任何一處漏掉都是靜默失敗">
+  <defs><marker id="ahci1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">一篇文章,五個檔案都得對上</text>
+
+  <rect x="20" y="105" width="170" height="66" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="105" y="132" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">site.js 的 POSTS</text>
+  <text x="105" y="152" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">唯一事實來源</text>
+
+  <rect x="300" y="48" width="440" height="32" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="314" y="68" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.html — 中文頁,data-slug 要一致</text>
+
+  <rect x="300" y="93" width="440" height="32" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="314" y="113" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.en.html — 英文頁,lang-toggle 才切得過去</text>
+
+  <rect x="300" y="138" width="440" height="32" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+  <text x="314" y="158" style="fill:var(--ink);font:400 12px sans-serif">index.html / index.en.html — 各一張首頁卡片</text>
+
+  <rect x="300" y="183" width="440" height="32" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="314" y="203" style="fill:var(--ink);font:400 12px sans-serif">sitemap.xml — 中英兩行(草稿則反過來,不能有)</text>
+
+  <rect x="300" y="228" width="440" height="32" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="314" y="248" style="fill:var(--ink);font:400 12px sans-serif">posts/&lt;slug&gt;.earn.js — 只有財報分析要,key 等於 slug</text>
+
+  <line x1="192" y1="130" x2="296" y2="64" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="192" y1="133" x2="296" y2="109" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="192" y1="138" x2="296" y2="154" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="192" y1="143" x2="296" y2="199" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+  <line x1="192" y1="148" x2="296" y2="244" style="stroke:var(--ink3)" marker-end="url(#ahci1)"/>
+</svg>
+</div>
+
+<p>零建置的代價是:<b>沒有任何東西會告訴你漏了一步</b>。編譯型專案漏了 import 會編不過,這裡漏了 sitemap 兩行,頁面照常打得開、首頁卡片照常顯示,只是搜尋引擎永遠收不到——<b>靜默失敗</b>,而且要幾週後才會從流量數字反推出來。</p>
+<p>所以第一個要自動化的不是測試邏輯,是<b>把 CLAUDE.md 裡的規則翻譯成 assert</b>。規則本來就寫好了,只是寫在給人看的文件裡。</p>
+</div>
+
+<h2>兩層檢查:便宜的先跑</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 268" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="能用讀檔加 regex 判斷的問題留在靜態層,只有需要真實排版結果的問題才開瀏覽器">
+  <defs><marker id="ahci2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">分界線:需不需要「真的排版一次」才知道答案</text>
+
+  <rect x="20" y="46" width="340" height="196" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="40" y="74" style="fill:var(--ink);font:700 13px sans-serif">第一層 check.mjs</text>
+  <text x="40" y="94" style="fill:var(--ink3);font:400 11px sans-serif">node 內建 fs + regex,零依賴,約 1 秒</text>
+  <text x="40" y="122" style="fill:var(--ink);font:400 12px sans-serif">• 五處同步 / 草稿不進 sitemap</text>
+  <text x="40" y="145" style="fill:var(--ink);font:400 12px sans-serif">• 中英 data-slug 一致、有 lang-toggle</text>
+  <text x="40" y="168" style="fill:var(--ink);font:400 12px sans-serif">• 寫死色碼(dark mode 會爆)</text>
+  <text x="40" y="191" style="fill:var(--ink);font:400 12px sans-serif">• 同頁 marker id 重複</text>
+  <text x="40" y="214" style="fill:var(--ink);font:400 12px sans-serif">• href/src 指到不存在的檔案</text>
+  <text x="40" y="234" style="fill:var(--ink3);font:400 11px sans-serif">判準:答案只跟「檔案裡有什麼字」有關</text>
+
+  <rect x="400" y="46" width="340" height="196" rx="12" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="420" y="74" style="fill:var(--ink);font:700 13px sans-serif">第二層 visual.mjs</text>
+  <text x="420" y="94" style="fill:var(--ink3);font:400 11px sans-serif">headless Chromium,80 頁 × 390px,約 16 秒</text>
+  <text x="420" y="122" style="fill:var(--ink);font:400 12px sans-serif">• SVG 文字超出畫布</text>
+  <text x="420" y="145" style="fill:var(--ink);font:400 12px sans-serif">• SVG 兩段文字疊在一起</text>
+  <text x="420" y="168" style="fill:var(--ink);font:400 12px sans-serif">• 整頁橫向溢出(手機看得到)</text>
+  <text x="420" y="191" style="fill:var(--ink);font:400 12px sans-serif">• console error / JS 例外</text>
+  <text x="420" y="234" style="fill:var(--ink3);font:400 11px sans-serif">判準:得先算出字型與排版才知道</text>
+
+  <line x1="366" y1="144" x2="394" y2="144" style="stroke:var(--ink3)" marker-end="url(#ahci2)"/>
+  <text x="380" y="262" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">先跑左邊,壞了就不用花 16 秒開瀏覽器</text>
+</svg>
+</div>
+
+<h3>第一層:零依賴的靜態一致性</h3>
+<p>整支就一個檔案 <code>tools/check.mjs</code>,不裝任何套件。<b>POSTS 陣列直接從 <code>site.js</code> 切出來 eval</b>——那是自己寫的檔案,不需要寫 parser:</p>
+<pre><code><span class="c">/* site.js 的 POSTS 是全站唯一事實來源,直接把陣列字面值 eval 出來 */</span>
+<span class="k">const</span> siteJs = read(<span class="s">'assets/site.js'</span>);
+<span class="k">const</span> start = siteJs.indexOf(<span class="s">'var POSTS=['</span>);
+<span class="k">const</span> end   = siteJs.indexOf(<span class="s">'\n];'</span>, start);
+<span class="k">const</span> POSTS = eval(siteJs.slice(start + <span class="s">'var POSTS='</span>.length, end + <span class="s">2</span>));</code></pre>
+<p>接著就是把規則一條一條寫成 <code>if</code>。財報分析那條最有代表性——它是<b>反過來的規則</b>:</p>
+<pre><code><span class="c">// 財報分析走資料表,不進 #grid;其餘兩份 index 各要一張卡</span>
+<span class="k">const</span> earn = p.cat === <span class="s">'財報分析'</span>;
+<span class="k">const</span> has = idx.includes(<span class="s">`href="${href}"`</span>);
+<span class="k">if</span> (earn &amp;&amp; !has)  bad(name, <span class="s">`${p.slug} 是財報分析,不該有首頁卡片`</span>);
+<span class="k">if</span> (!earn &amp;&amp; !has) bad(name, <span class="s">`缺 ${p.slug} 的 post-card`</span>);</code></pre>
+<p>草稿同理:<code>draft:1</code> 的文章<b>必須</b>有首頁卡片(本機預覽要看得到)、但<b>必須不</b>在 sitemap。這種「有時候該有、有時候該沒有」的規則,人腦最容易記錯,寫成 assert 之後就再也不用記。</p>
+<p>還有一條反向檢查值得特別提:<b>掃 <code>posts/</code> 底下有沒有沒登記進 POSTS 的孤兒頁</b>。正向檢查只能保證「登記的都存在」,抓不到「存在但沒登記」——後者會讓文章從側欄和首頁整個消失。</p>
+
+<h3>第二層:真的開瀏覽器量一次</h3>
+<p>有一類問題無論如何 regex 都判不出來:<b>這行字到底會不會超出框</b>。字寬取決於字型、字重、字距、CJK 與 ASCII 混排——只有排版引擎知道。所以第二層直接開 Chromium,用 <code>file://</code> 載頁(這站本來就能直接開,不用起 server),在頁面裡量:</p>
+<pre><code><span class="k">for</span> (<span class="k">const</span> svg <span class="k">of</span> document.querySelectorAll(<span class="s">'svg'</span>)) {
+  <span class="k">const</span> box = svg.getBoundingClientRect();
+  <span class="k">const</span> rects = texts.map(t =&gt; t.getBoundingClientRect());
+  <span class="c">// 文字的幾何矩形跑出畫布 → 被 SVG 裁掉,讀者看不到</span>
+  <span class="k">if</span> (r.right &gt; box.right + <span class="s">1</span> || r.bottom &gt; box.bottom + <span class="s">1</span>) …
+  <span class="c">// 兩段文字在水平與垂直都重疊超過 2px → 真的疊在一起</span>
+  <span class="k">if</span> (inter(rects[i], rects[j]) &gt; <span class="s">2</span> &amp;&amp; vinter(rects[i], rects[j]) &gt; <span class="s">2</span>) …
+}</code></pre>
+<p>用 <code>getBoundingClientRect()</code> 而不是 <code>getBBox()</code> 是關鍵:<b>前者是螢幕座標,自動把 <code>transform</code> 算進去</b>;後者回傳的是元素自己座標系裡的框,只要圖上有任何 <code>transform</code>,比對就會錯。</p>
+<p>視窗寬度固定 390px(iPhone 直式)。桌機寬度幾乎不會撞版,窄版才是真正的壓力測試。</p>
+</div>
+
+<h2>CD:讓部署有辦法被擋下來</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 232" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="改用 Actions 部署之後,檢查沒過就不會產生 Pages artifact,線上維持前一版">
+  <defs><marker id="ahci3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">needs: check —— 唯一真正重要的一行</text>
+
+  <rect x="20" y="88" width="104" height="40" rx="9" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="72" y="113" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">push / PR</text>
+
+  <rect x="164" y="88" width="128" height="40" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="228" y="106" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">check.mjs</text>
+  <text x="228" y="121" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">1 秒</text>
+
+  <rect x="332" y="88" width="128" height="40" rx="9" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="396" y="106" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">visual.mjs</text>
+  <text x="396" y="121" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">16 秒</text>
+
+  <rect x="500" y="46" width="240" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="620" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">deploy-pages → 站上線</text>
+
+  <rect x="500" y="130" width="240" height="42" rx="9" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="620" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">job 中止,不產生 artifact</text>
+  <text x="620" y="165" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">線上維持前一版</text>
+
+  <line x1="126" y1="108" x2="160" y2="108" style="stroke:var(--ink3)" marker-end="url(#ahci3)"/>
+  <line x1="294" y1="108" x2="328" y2="108" style="stroke:var(--ink3)" marker-end="url(#ahci3)"/>
+  <path d="M462 104L482 104L482 67L496 67" style="fill:none;stroke:var(--win)" marker-end="url(#ahci3)"/>
+  <path d="M462 114L482 114L482 151L496 151" style="fill:none;stroke:var(--lose)" marker-end="url(#ahci3)"/>
+  <text x="490" y="98" text-anchor="end" style="fill:var(--win);font:600 11px sans-serif">綠</text>
+  <text x="490" y="130" text-anchor="end" style="fill:var(--lose);font:600 11px sans-serif">紅</text>
+
+  <text x="20" y="205" style="fill:var(--ink3);font:400 11px sans-serif">改之前:Pages 來源是分支,push 到 main 就直接上線——CI 紅燈也照上,檢查等於只是通知</text>
+  <text x="20" y="223" style="fill:var(--ink3);font:400 11px sans-serif">改之後:Pages 來源是 GitHub Actions,壞頁面根本走不到部署那一步</text>
+</svg>
+</div>
+
+<p>GitHub Pages 預設從分支部署。這個模式下 CI 只是<b>事後通知</b>:壞頁面早就上線了,信件才寄到。要讓檢查真的有牙齒,得把 Pages 來源換成 Actions(repo Settings → Pages → Source 選 <b>GitHub Actions</b>,手動切一次),然後:</p>
+<pre><code><span class="k">jobs</span>:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: <span class="s">22</span>}
+      - run: node tools/check.mjs
+      - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
+        working-directory: tools
+      - run: node tools/visual.mjs
+
+  deploy:
+    <span class="ok">needs: check</span>            <span class="c"># ← 整份 yaml 只有這行是重點</span>
+    <span class="k">if</span>: github.ref == <span class="s">'refs/heads/main'</span>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: .}
+      - uses: actions/deploy-pages@v4</code></pre>
+<p><code>if: github.ref == 'refs/heads/main'</code> 讓 PR 只跑檢查、不部署。<code>check</code> 跟 <code>deploy</code> 拆成兩個 job 而不是同一個 job 的兩個 step,是因為只有 job 之間才能用 <code>needs</code> 表達依賴,也才會在 Actions 頁面上顯示成兩個獨立的方塊。</p>
+
+<h3>唯一一份 npm 依賴,關在 tools/ 裡</h3>
+<p>這站的規矩是「不要加建置工具、npm、框架」。headless 檢查需要 Playwright,直接違反字面規則——所以做法是<b>把它整個關進 <code>tools/</code></b>:</p>
+<table>
+<tr><th>位置</th><th>內容</th><th>會不會進到網站</th></tr>
+<tr><td><code>tools/package.json</code></td><td>一個 devDependency: playwright</td><td>不會,只有 CI 讀</td></tr>
+<tr><td><code>tools/node_modules</code></td><td>約 95MB 的瀏覽器</td><td>不會,已加進 .gitignore</td></tr>
+<tr><td><code>assets/</code>、<code>posts/</code></td><td>純 HTML/CSS/JS</td><td>會,而且<b>完全沒變</b></td></tr>
+</table>
+<p>判準是:<b>網站本身還是零建置、零依賴嗎?</b> 是。<code>tools/</code> 是檢查用的鷹架,拿掉它站台照跑。這跟「為了做網站而引入 webpack」是完全不同的兩件事。</p>
+</div>
+
+<h2>第一次跑就抓到的四類問題</h2>
+<div class="card">
+<p>CI 的價值不是「以後不會壞」,是<b>它立刻告訴你現在已經壞在哪</b>。這四類全部是已經上線一段時間、沒有人回報的問題:</p>
+<table>
+<tr><th>問題</th><th>影響</th><th>為什麼沒被發現</th></tr>
+<tr><td class="l"><b class="lose">未跳脫的單引號</b><br><code>the stock's fundamentals</code> 寫在單引號字串裡</td><td class="l">EP689 英文頁整支 inline script <b>SyntaxError</b>,個股卡片與族群表<b>完全沒 render</b></td><td class="l">頁面上半部完全正常,只有下半段空白;不開 console 看不出來</td></tr>
+<tr><td class="l"><b class="lose">長字串不換行</b><br><code>Alphabet/Amazon/Meta/…</code>、<code>TSM/NVDA/MU/…</code></td><td class="l">7 個頁面在 390px 寬<b>整頁橫向溢出</b>,右側文字被推出畫面外</td><td class="l">桌機完全看不到;手機上要往右滑才會發現字被切掉</td></tr>
+<tr><td class="l"><b class="lose">SVG 文字重疊</b><br>EP689 圖表標題壓到資料標籤、Oracle 英文版數字壓到註解</td><td class="l">兩段字疊在一起,都變得難讀</td><td class="l">重疊只有幾 px,掃過去像是「有點擠」而不像 bug</td></tr>
+<tr><td class="l"><b class="mid">寬表格不捲</b><br>表格 min-content 寬度超過視窗</td><td class="l">同樣造成手機橫向溢出</td><td class="l">同上,而且是全站共通問題,不屬於任何一篇</td></tr>
+</table>
+<p>修法有兩種層級。<b>單引號跟 SVG 座標是逐篇修</b>;另外兩個是全站共通,兩行 CSS 一次解決:</p>
+<pre><code>body{ … <span class="ok">overflow-wrap:break-word</span>; … }              <span class="c">/* 長字串該斷就斷 */</span>
+@media(max-width:640px){ table{display:block;<span class="ok">overflow-x:auto</span>} }  <span class="c">/* 寬表格自己捲,不推寬整頁 */</span></code></pre>
+<p>值得注意的是:<b>這兩行 CSS 是被檢查逼出來的</b>。在有 CI 之前,沒有任何一刻會讓人想到要去量 80 個頁面在 390px 下的 scrollWidth。</p>
+</div>
+
+<h2>踩到的兩個坑</h2>
+<div class="card">
+<h3>坑一:<code>scroll-behavior:smooth</code> 讓偵測整個失效</h3>
+<p>最直覺的橫向溢出偵測是「捲到最右邊,看捲了多少」:</p>
+<pre><code>window.scrollTo(<span class="s">9999</span>, <span class="s">0</span>);
+<span class="k">return</span> window.scrollX;   <span class="c">// 永遠是 0 —— 但頁面明明會捲</span></code></pre>
+<p>原因是 <code>site.css</code> 有 <code>html{scroll-behavior:smooth}</code>,捲動變成非同步動畫,下一行讀到的還是動畫開始前的 0。我一度因此以為所有溢出都是誤判、還把已經修好的 CSS 又還原回去。實測驗證的方法是<b>故意塞一個 900px 的 div 進去,看偵測器抓不抓得到</b>——抓不到,才確定是偵測器壞了不是頁面沒問題。</p>
+<pre><code><span class="c">// 檢查器自己也要被檢查:先確認它抓得到「一定有問題」的情況</span>
+<span class="k">await</span> page.evaluate(() =&gt; document.body.insertAdjacentHTML(<span class="s">'afterbegin'</span>,
+  <span class="s">'&lt;div style="width:900px;height:20px"&gt;x&lt;/div&gt;'</span>));</code></pre>
+<p>解法有兩個:傳 <code>behavior:'instant'</code> 繞過動畫,或者根本不要捲——直接讀 <code>document.documentElement.scrollWidth</code>。最後用了後者,不改動頁面狀態、也少一個時序假設。</p>
+
+<h3>坑二:<code>getBoundingClientRect()</code> 不管有沒有被裁切</h3>
+<p>這站的圖都包在 <code>.fig{overflow-x:auto}</code> 裡,<b>圖比視窗寬是刻意的設計</b>(桌機自適應、手機在圖框內橫向捲)。但如果直接找「右邊界超出視窗的元素」,這些 SVG 全部會被抓成溢出——因為 <code>getBoundingClientRect()</code> 回報的是幾何矩形,<b>不管它實際上有沒有被祖先容器裁掉</b>。</p>
+<p>正確的判準是問「<b>整個頁面</b>會不會捲」,而不是「<b>有沒有元素</b>比視窗寬」。前者自動把所有 <code>overflow:auto</code> 容器排除掉,一行搞定:</p>
+<pre><code><span class="c">// .fig 有 overflow-x:auto,圖再寬也該自己捲;整頁橫向溢出才代表有東西沒包好</span>
+<span class="k">if</span> (document.documentElement.scrollWidth &gt; window.innerWidth + <span class="s">1</span>)
+  out.push(<span class="s">'整頁橫向溢出'</span>);</code></pre>
+</div>
+
+<h2>刻意沒做的事</h2>
+<div class="card">
+<p>每一項都想過,結論都是「現在加不划算」:</p>
+<table>
+<tr><th>沒做</th><th>理由</th><th>什麼時候該加</th></tr>
+<tr><td class="l"><b>light / dark 各跑一輪</b></td><td class="l">文字幾何與 console 錯誤都跟主題無關;唯一跟主題有關的失敗是寫死色碼,已經被<b>靜態層</b>擋掉了——不需要開瀏覽器驗證</td><td class="l">開始用截圖比對(視覺回歸)的時候</td></tr>
+<tr><td class="l"><b>Lighthouse / a11y 分數</b></td><td class="l">純靜態站分數本來就高,加了只是每次 PR 多幾個上下 1 分的雜訊</td><td class="l">開始在意 Core Web Vitals 或收到無障礙回報時</td></tr>
+<tr><td class="l"><b>HTML validator</b></td><td class="l">跟真實壞掉的方式沒有關聯——這站的 bug 是跨檔案不一致與版面溢出,不是標籤沒閉合</td><td class="l">開始接受外部投稿 HTML 的時候</td></tr>
+<tr><td class="l"><b>快取 Chromium</b></td><td class="l">下載約 40 秒,整條 pipeline 一分半內跑完;省下來的時間不值得多一個 cache action 的設定與失效問題</td><td class="l">CI 時間開始讓人不想等的時候</td></tr>
+<tr><td class="l"><b>外部連結 404 檢查</b></td><td class="l">會因為別人的網站掛掉而讓自己的 CI 變紅,還不能重跑解決——這是最典型的<b>不穩定測試</b></td><td class="l">改成每週排程跑、只發通知不擋部署</td></tr>
+</table>
+<p>共通的判準是:<b>這個檢查紅燈的時候,我會不會真的去修?</b> 會 → 加。不會或修不了 → 它只是噪音,而噪音會讓人開始忽略所有紅燈,連真的問題一起忽略。</p>
+</div>
+
+<h2>要抄的話,最小版本長這樣</h2>
+<div class="card">
+<table>
+<tr><th>檔案</th><th>行數</th><th>做什麼</th></tr>
+<tr><td class="l"><code>.github/workflows/ci.yml</code></td><td>約 45</td><td class="l">兩個 job:check 跑檢查,deploy 掛 <code>needs: check</code></td></tr>
+<tr><td class="l"><code>tools/check.mjs</code></td><td>約 75</td><td class="l">零依賴靜態檢查,把專案慣例翻成 assert</td></tr>
+<tr><td class="l"><code>tools/visual.mjs</code></td><td>約 50</td><td class="l">headless Chromium 逐頁量版面</td></tr>
+<tr><td class="l"><code>tools/package.json</code></td><td>7</td><td class="l">一個 devDependency</td></tr>
+</table>
+<p>總共不到 200 行,沒有測試框架、沒有設定檔、沒有 fixture。<b>檢查腳本本身也該符合專案的簡單原則</b>——如果檢查工具比被檢查的東西還複雜,遲早會變成另一個要維護的負擔,然後被停用。</p>
+<p>順序也建議照這個來:先把<b>你已經寫在文件裡、但只靠人腦執行的規則</b>翻成程式碼。那是投報率最高的一段,因為規則早就想清楚了,只差沒人強制執行。</p>
+</div>
+
+<div class="foot"><b>資料來源</b>:本站自建 CI(<code>.github/workflows/ci.yml</code>、<code>tools/check.mjs</code>、<code>tools/visual.mjs</code>);文中所有數字(80 個頁面、38 篇文章、1 秒 / 16 秒、四類問題)皆為 2026-08-22 於本 repo 實測結果。<br><b>免責聲明</b>:本頁為個人工程筆記,不構成技術選型建議。</div>
+</div></body></html>
