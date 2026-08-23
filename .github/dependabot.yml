@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # GitHub Actions 的浮動大版本 tag（@v7）會自動吃到修補與小版本，
+  # 但跨大版本不會動 —— 那種時候開一張 PR 讓人看過 release notes 再合。
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]   # 五個 action 合成一張 PR，不要開五張
