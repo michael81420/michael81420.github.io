@@ -172,8 +172,8 @@
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: {node-version: <span class="s">22</span>}
       - run: node tools/check.mjs
       - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
@@ -184,11 +184,11 @@
     <span class="ok">needs: check</span>            <span class="c"># ← 整份 yaml 只有這行是重點</span>
     <span class="k">if</span>: github.ref == <span class="s">'refs/heads/main'</span>
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with: {path: .}
-      - uses: actions/deploy-pages@v4</code></pre>
+      - uses: actions/deploy-pages@v5</code></pre>
 <p><code>if: github.ref == 'refs/heads/main'</code> 讓 PR 只跑檢查、不部署。<code>check</code> 跟 <code>deploy</code> 拆成兩個 job 而不是同一個 job 的兩個 step,是因為只有 job 之間才能用 <code>needs</code> 表達依賴,也才會在 Actions 頁面上顯示成兩個獨立的方塊。</p>
 
 <h3>唯一一份 npm 依賴,關在 tools/ 裡</h3>

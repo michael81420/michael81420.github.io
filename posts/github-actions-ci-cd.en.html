@@ -171,8 +171,8 @@
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with: {node-version: <span class="s">22</span>}
       - run: node tools/check.mjs
       - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
@@ -183,11 +183,11 @@
     <span class="ok">needs: check</span>            <span class="c"># <- the only line in this file that matters</span>
     <span class="k">if</span>: github.ref == <span class="s">'refs/heads/main'</span>
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v7
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with: {path: .}
-      - uses: actions/deploy-pages@v4</code></pre>
+      - uses: actions/deploy-pages@v5</code></pre>
 <p>The <code>if: github.ref == 'refs/heads/main'</code> line lets PRs run checks without deploying. Splitting <code>check</code> and <code>deploy</code> into two jobs rather than two steps of one job matters because <code>needs</code> only expresses dependencies <i>between</i> jobs — and it's what renders them as two separate boxes in the Actions UI.</p>
 
 <h3>The one npm dependency, quarantined in tools/</h3>
