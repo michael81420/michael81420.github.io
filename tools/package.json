@@ -1,0 +1,6 @@
+{
+  "name": "site-tools",
+  "private": true,
+  "description": "只給 CI 用的檢查腳本；站台本身仍然零建置、零依賴",
+  "devDependencies": { "playwright": "^1.56.0" }
+}

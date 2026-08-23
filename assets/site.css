@@ -33,7 +33,7 @@
 }
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
+body{margin:0;background:var(--bg);color:var(--ink);overflow-wrap:break-word;
   font-family:'Hanken Grotesk','Noto Sans TC',-apple-system,'PingFang TC',system-ui,sans-serif;
   line-height:1.65;transition:background .25s ease,color .25s ease}
 a{color:var(--accent);text-decoration:none}
@@ -160,6 +160,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;overflow:
 th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
 th{background:var(--surface2);color:var(--ink3);font-weight:600}
 tr:hover td{background:var(--surface2)}
+@media(max-width:640px){table{display:block;overflow-x:auto}} /* 寬表格自己捲,不推寬整頁 */
 
 .tag{font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600}
 .t-os{background:var(--midbg);color:var(--mid)}
