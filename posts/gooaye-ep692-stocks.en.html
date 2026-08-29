@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooaye EP692 Stock Notes — Salesforce×Anthropic's "Claudeforce" Checks Out, Nvidia/Marvell Earnings Hold Up, and the Same AI Story Splits Into Cheap Chips vs. Pricey SaaS</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep692-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to index</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Gooaye EP692 · Stock Notes <span style="font-size:16px;color:var(--win)">｜🍺</span></h1>
+<div class="sub">Roughly the first 40% of this episode is a Taiwan Beer sponsorship segment plus family-trip chat about Hokkaido, and the listener Q&amp;A is entirely career, family, and health-insurance-system talk — none of it carrying verifiable financial claims, so this post skips it.<br>The financial core sits in the back half: <b>Salesforce and Anthropic's strategic partnership, the Marvell and Nvidia earnings calls, and what OpenAI's custom inference chip means for Nvidia's moat</b>.<br>NotebookLM transcript analysis + Futu/WebSearch verification. Not investment advice.</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: Gooaye EP692 transcript analysis</span>
+<span class="badge">Compiled: 2026-08-29</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · What this episode is about</h2>
+<p class="big">🤝 <span class="win">Salesforce×Anthropic's "Claudeforce" partnership checks out, but the stock isn't cheap</span>. The official name is <b>Claudeforce</b> (the host said "Cloud Force," a slip); the "<b>37 pre-built sales skills</b>" figure is accurate. Via AWS Bedrock, Claude becomes the default reasoning engine for Agentforce Atlas Reasoning Engine, Slack AI, Slackbot, and Agentforce Coworker, with public beta in September. But <b>CRM's forward PE sits at 30.8x (88.9th percentile — expensive)</b>: an optimistic narrative doesn't mean a cheap stock.</p>
+<p class="big">📊 <span class="win">Marvell's and Nvidia's earnings-call numbers all check out</span>. Marvell's Q2 FY2027 revenue was $2.74B (+37% YoY), and Nvidia's Q2 FY2027 revenue was $96.2B (+106% YoY) with Data Center at 92% of the total. Neither company's guidance was inflated — this is one of the episode's few solidly-sourced segments.</p>
+<p class="big">🌶️ <span class="turn">The host's "OAI's HPAN chip" is actually <b>OpenAI and Broadcom's inference chip "Jalapeño"</b> (a mishearing)</span>. SemiAnalysis testing shows it beats Nvidia's GB200/GB300 on inference efficiency, but <b>that only holds for inference workloads, and real volume doesn't arrive until 2027</b> — the host's read that this "doesn't shake Nvidia's leadership" is directionally correct.</p>
+<p class="big">📉 <span class="lose">Riding the same AI narrative, valuations sit in two different worlds</span> — <b>NVDA's forward PE is just 17.7x (3.2nd percentile, near a historic low)</b>, MRVL's forward PE of 64.6x sits at only a 22.2nd percentile (also cheap relative to its own history), while <b>CRM's forward PE of 30.8x sits at an 88.9th percentile (a historic high)</b>. Same AI story — chips are cheap, SaaS is expensive.</p>
+<p class="note">★ This episode names relatively few companies — just <b>Salesforce, Marvell, Nvidia, and Alphabet</b> — with no Taiwan supply-chain names or optics/CPO plays mentioned at all. The "valuation layering" section below is this site's own framework for comparison, <b>not something said on air</b> — don't extend it to companies this episode never named.</p>
+</div>
+
+<h2>1. What kind of episode this is</h2>
+<div class="card">
+<p>Nearly the first 40% of EP692 is a Taiwan Beer (Cloud Foam Lager) sponsorship segment plus personal chat about a family trip to Hokkaido — no verifiable financial figures there. The listener Q&amp;A is entirely career-change, family relationships, and health-insurance-system chat, also with no stock content, so this post skips both.</p>
+<div class="quote">📌 <b>The financial core is in the back half, across three threads</b>: ① Salesforce and Anthropic's "Claudeforce" strategic partnership; ② the Marvell and Nvidia earnings calls and their supply-chain signals; ③ what OpenAI and Broadcom's custom inference chip means for Nvidia's moat. <span class="mid">As in most episodes, the host explains events and numbers without directly naming what to buy</span>.</div>
+</div>
+
+<h2>2. Salesforce × Anthropic's "Claudeforce" partnership: verified</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 780 260" style="width:100%;min-width:640px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anthropic's Claude becomes the default reasoning engine for Agentforce Atlas, Slack AI, Slackbot, and Agentforce Coworker inside Salesforce's trust boundary via AWS Bedrock, with the Salesforce in Claude plugin bundling 37 pre-built sales skills, public beta launching in September">
+  <defs><marker id="ah692ea" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">Claudeforce: Claude becomes the default reasoning engine across Salesforce</text>
+  <text x="20" y="42" style="fill:var(--ink3);font:400 11px sans-serif">Compiled from the Salesforce/Anthropic announcement (2026/8/26)</text>
+
+  <rect x="30" y="64" width="160" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="110" y="97" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Anthropic Claude</text>
+
+  <line x1="192" y1="92" x2="400" y2="92" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah692ea)"/>
+  <text x="296" y="78" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">via AWS Bedrock</text>
+
+  <rect x="402" y="64" width="190" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="497" y="88" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">Salesforce Trust</text>
+  <text x="497" y="106" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">Boundary</text>
+
+  <line x1="497" y1="120" x2="497" y2="146" style="stroke:var(--ink3)" marker-end="url(#ah692ea)"/>
+
+  <rect x="30" y="148" width="340" height="94" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="46" y="170" style="fill:var(--ink);font:700 12px sans-serif">Default reasoning engine for</text>
+  <text x="46" y="190" style="fill:var(--ink2);font:400 11px sans-serif">Agentforce Atlas Reasoning Engine</text>
+  <text x="46" y="207" style="fill:var(--ink2);font:400 11px sans-serif">Slack AI, Slackbot</text>
+  <text x="46" y="224" style="fill:var(--ink2);font:400 11px sans-serif">Agentforce Coworker</text>
+
+  <rect x="400" y="148" width="360" height="94" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="416" y="170" style="fill:var(--turn);font:700 12px sans-serif">"Salesforce in Claude" plugin</text>
+  <text x="416" y="190" style="fill:var(--ink2);font:400 11px sans-serif">Bundles <b>37 pre-built sales skills</b></text>
+  <text x="416" y="207" style="fill:var(--ink2);font:400 11px sans-serif">Public beta in <b>September</b></text>
+  <text x="416" y="224" style="fill:var(--ink3);font:400 10px sans-serif">Benioff × Dario Amodei jointly pushed back on "SaaS is dead"</text>
+</svg>
+</div>
+<p>The host's account: Salesforce and Anthropic partnered on "Cloud Force," bundling 37 skills/plugins, aimed at debunking the "SaaS-is-dead" thesis — the fear that AI agents will displace SaaS subscriptions. Checking it:</p>
+<div class="quote">⚠️ <b>The name is off, but the core facts and numbers are accurate</b>. The official name is <b>Claudeforce</b>, not "Cloud Force." The "Salesforce in Claude" plugin does bundle <b>37 pre-built sales skills</b> — that figure is exactly right. Via AWS Bedrock, and inside Salesforce's Trust Boundary, Claude becomes the default reasoning engine for Agentforce Atlas Reasoning Engine, Slack AI, Slackbot, and Agentforce Coworker, with public beta launching in September (official press release, 2026-08-26).</div>
+<div class="quote">✅ <b>"SaaS is dead" pushback checks out</b>. Benioff and Dario Amodei were indeed interviewed together pushing back on the idea that AI agents would end SaaS subscriptions — directionally accurate.</div>
+<div class="quote">⚠️ <b>But an optimistic narrative doesn't mean a cheap stock</b>. CRM trades at $256 (Futu, 2026-08-29), trailing PE 23.4x, but <b>forward PE is actually higher at 30.8x</b> (88.9th valuation percentile), with a 34-analyst average target of $273.35 (76.5% buy). Forward PE exceeding trailing is a sign the market has turned more conservative on future earnings growth — worth watching.</div>
+</div>
+
+<h2>3. Marvell's guidance raise: verified</h2>
+<div class="card">
+<p>The host's account: Marvell raised guidance at its earnings call, with scale-up optical interconnect chips as the main growth driver, plus a custom-chip partnership with Google. Checking it:</p>
+<div class="quote">✅ <b>The guidance numbers check out entirely</b>. Marvell's Q2 FY2027 (reported 2026-08-27) revenue was <b>$2.74B, +37% YoY</b>, a record quarter, with non-GAAP EPS of $0.94; FY2027 guidance was raised to roughly <b>$12B (+45%)</b>, and FY2028 guidance to roughly $18B. CEO Matt Murphy explicitly named scale-up optical interconnect chips as the main growth driver.</div>
+<div class="quote">⚠️ <b>The Google partnership's scope is broader than described on the show</b>. It covers AI inference accelerators, storage controllers, NICs, and memory-interface controllers — not simply "XPUs," which was a simplification.</div>
+<div class="quote">⚠️ <b>Valuation: the numbers are solid, but the stock isn't cheap</b>. MRVL trades at $216.62 (Futu, 2026-08-29), trailing PE 71.7x, forward PE 64.6x (22.2nd valuation percentile) — not expensive relative to its own history, with an 84-analyst average target of $303.64 (84% buy). The results themselves are fine, but the optics rally is being driven more by narrative and flows than by "cheap valuation" logic.</div>
+</div>
+
+<h2>4. Nvidia's earnings call + "OAI's HPAN chip": verified and clarified</h2>
+<div class="card">
+<p>The host relays Nvidia's earnings call and mentions a test of "OAI's HPAN chip" and what it means for Nvidia's moat. Checking it:</p>
+<div class="quote">✅ <b>The earnings-call numbers are directionally accurate</b>. Nvidia's Q2 FY2027 (reported 2026-08-26) revenue was <b>$96.2B, +106% YoY</b>; Data Center revenue was $89.0B, +117% YoY (92% of the total); gross margin was 75.0%; Q3 guidance is $108B ± 2% (ex-China); FY2028 guidance implies roughly 70% growth, but under a "supply-constrained" scenario; the CPU and networking businesses were raised as described; and rising HBM memory costs push the Q4 gross-margin floor down to 71–72% — all of this matches the podcast's description.</div>
+<div class="quote">⚠️ <b>The chip name needs correcting</b>: "OAI's HPAN chip" is actually <b>OpenAI and Broadcom's inference chip "Jalapeño"</b> (a mishearing, not another company's chip). SemiAnalysis independently verified it beats Nvidia's GB200/GB300 by 1.9x on inference efficiency and 3.6x on latency, but <b>that only holds for inference workloads</b>, and against Nvidia's not-yet-shipped Vera Rubin platform the total-cost gap nearly closes; only small-scale deployment lands by end of 2026, with real volume in 2027. <span class="win">The host's read — "mainly used for inference, doesn't shake the leader's position" — is directionally correct</span>, one of the episode's few technical claims that holds up completely.</div>
+<div class="quote">📌 <b>"Nvidia is overbuying optics/laser components and locking up TSMC capacity to squeeze out rivals" is the host's own inference</b>, with no official confirmation this is a deliberate strategy, though it's directionally consistent with the across-the-board shortages (CPU/networking/memory/substrates) the earnings call disclosed — moderately-to-highly credible.</div>
+<div class="quote">💡 <b>Valuation: the most notable signal this episode</b>. NVDA trades at $217.55 (Futu, 2026-08-29), trailing PE 27.5x, but <b>forward PE is just 17.7x (3.2nd valuation percentile — near the low end of its own historical range)</b>, with 29 analysts unanimously rating it Buy and an average target of $323.37. This is consistent with the "the AI core asset is actually the cheapest one" pattern this site has verified across several past episodes (EP677–EP689).</div>
+</div>
+
+<h2>5. Valuation layering: same AI story, cheap chips vs. pricey SaaS</h2>
+<div class="card">
+<p><b>Group definition</b>: the four public companies this episode names sit at different points in the AI supply chain — <b>chip-design leader</b> (Nvidia), <b>custom ASIC/networking</b> (Marvell), <b>hyperscale cloud provider and chip customer</b> (Alphabet), and <b>SaaS application layer</b> (Salesforce). This isn't a classic "sector scan" of peer stocks — it's a valuation comparison across different positions in the same AI-capex narrative, and this framing is <b>this site's own</b>, not something said on air.</p>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 780 220" style="width:100%;min-width:640px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nvidia's forward PE valuation percentile is just 3.2 percent and Marvell's just 22.2 percent, both cheap relative to their own history, while Salesforce's forward PE valuation percentile is as high as 88.9 percent — the same AI narrative produces cheap chip stocks and an expensive SaaS stock">
+  <defs><marker id="ah692eb" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">Forward PE valuation percentile (relative to own historical range)</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu OpenAPI (2026-08-29); a lower percentile means cheaper relative to own history</text>
+
+  <text x="20" y="68" style="fill:var(--ink);font:700 12px sans-serif">NVDA</text>
+  <rect x="150" y="54" width="14" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="176" y="68" style="fill:var(--win);font:700 12px sans-serif">3.2nd pctile</text>
+  <text x="150" y="85" style="fill:var(--ink3);font:400 10px sans-serif">forward 17.7x (trailing 27.5x), near a historic low</text>
+
+  <text x="20" y="118" style="fill:var(--ink);font:700 12px sans-serif">MRVL</text>
+  <rect x="150" y="104" width="98" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="260" y="118" style="fill:var(--win);font:700 12px sans-serif">22.2nd pctile</text>
+  <text x="150" y="135" style="fill:var(--ink3);font:400 10px sans-serif">forward 64.6x (trailing 71.7x), not expensive relative to own history</text>
+
+  <text x="20" y="168" style="fill:var(--ink);font:700 12px sans-serif">CRM</text>
+  <rect x="150" y="154" width="393" height="18" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="555" y="168" style="fill:var(--lose);font:700 12px sans-serif">88.9th pctile</text>
+  <text x="150" y="185" style="fill:var(--ink3);font:400 10px sans-serif">forward 30.8x (trailing 23.4x), near a historic high</text>
+
+  <text x="20" y="210" style="fill:var(--ink2);font:400 11px sans-serif">Same AI narrative — hardware chip stocks are cheap, the SaaS layer is expensive; optimism and valuation don't move together</text>
+</svg>
+</div>
+<div style="overflow-x:auto"><table id="grpAi"></table></div>
+<p class="note">Forward PE, valuation percentile, and analyst targets — Futu OpenAPI (2026-08-29). Alphabet is only mentioned this episode as deal/customer context; its own valuation wasn't separately checked.</p>
+</div>
+<div class="card">
+<h3>Takeaways</h3>
+<p><b>The chip leader (NVDA) and custom ASIC name (MRVL) both trade cheap relative to their own history, while the SaaS layer (CRM) sits at a historic high</b>. That suggests the market stays cautious about "is AI hardware overheating" while turning more optimistic about "can the AI narrative support SaaS valuations" — but whether SaaS moats can actually resist AI-agent erosion of subscription revenue is still an unproven narrative, and the valuation has already run ahead of it.</p>
+<p class="note">📌 This layering comparison is this site's own extension, <b>not something said on the show</b>; this episode named no Taiwan supply-chain plays, so don't apply "chips cheap, SaaS expensive" directly to other companies.</p>
+</div>
+
+<h2>6. Stocks mentioned</h2>
+<div id="cards"></div>
+<p class="note">Tone grading: <span class="win">bullish</span> / <span style="color:var(--turn);font-weight:700">watching / technical</span> / <span class="mid">neutral</span> / <span class="lose">cautious / trimming</span>. Read from the host's delivery; not investment advice.</p>
+
+<h2>7. Fact-check table</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">Sources: Salesforce×Anthropic partnership — official press release/CNBC (2026-08-26); Marvell earnings — earnings call (2026-08-27); Nvidia earnings — earnings call (2026-08-26); Jalapeño chip testing — SemiAnalysis; quotes, valuation, analyst targets — Futu OpenAPI (2026-08-29). ✅ verified · ⚠️ discrepancy / caveat · ❌ unsupported · ❓ unverifiable / narrative only.</p>
+</div>
+
+<h2>8. Assessment (invest-playbook framework)</h2>
+<div class="card">
+<h3>What holds up</h3>
+<p><span class="win">Both Marvell's and Nvidia's earnings-call numbers check out entirely</span> — this episode's transcription of public earnings is solid, with no inflation or padding.</p>
+<p><span class="win">The read on the Jalapeño chip test is directionally correct</span> — "wins on inference efficiency but doesn't shake the leader's position" matches SemiAnalysis's independent verification, neither over- nor under-reacting.</p>
+<p><span class="win">NVDA's forward PE of 17.7x at a 3.2nd valuation percentile continues a structural pattern this site has verified across several episodes</span> — "the AI core asset is the cheapest one" — a data-backed signal, not just talk.</p>
+<h3>What to discount</h3>
+<p><span class="lose">The Salesforce×Anthropic partnership's name was misheard ("Cloud Force" instead of "Claudeforce")</span> — it doesn't change the core facts, but shows transcript/spoken details still need to be checked one by one.</p>
+<p><span class="lose">The podcast's read on the Salesforce-Anthropic deal is optimistic without a corresponding note of caution on valuation</span> — CRM's forward PE already sits at an 88.9th percentile historic high; an optimistic narrative doesn't mean a cheap stock.</p>
+<p><span class="lose">"Nvidia deliberately overbuys components to squeeze rivals out of the supply chain" is the host's own narrative interpretation</span>, with no primary evidence — plausible but unfalsifiable.</p>
+<h3>Risks and the other side</h3>
+<p>The first risk is <b>treating the Claudeforce partnership as a certain positive catalyst for Salesforce's stock</b>. The narrative is optimistic, but forward PE has already run ahead of the story — if the agent ecosystem's adoption pace disappoints, there's real room for a valuation reset.</p>
+<p>The second risk is <b>over-reading the Jalapeño chip test as evidence Nvidia's moat is weakening</b>. The test scenario is limited to inference, the comparison benchmark is a platform that hasn't shipped yet, and real volume doesn't land until 2027 — none of those three conditions are mature enough to price into Nvidia today.</p>
+<h3>Credibility verdict</h3>
+<p>This episode's <span class="win">hard earnings numbers are highly accurate</span>, and the broad industry narrative (AI supply-chain shortages, the leader's valuation actually being cheap) is data-backed too; the main risk is <span class="lose">blending subjective supply-chain conspiracy narratives with verified earnings facts</span> — readers who take the former at face value risk overestimating how certain it is.</p>
+<p>Overall: <b>the earnings retellings are credible and usable as primary material for tracking the AI supply chain, but extended inferences like "the Salesforce partnership is bullish" or "Nvidia's supply-chain strategy" need their own valuation and context checks — don't take them at face value</b>.</p>
+</div>
+
+<div class="foot">
+<b>Source</b>: Gooaye <b>EP692</b> "🍺" (<a href="https://youtu.be/ohoIGtJ3Bwc" target="_blank" rel="noopener">original YouTube link</a>). Analysis of the auto-generated YouTube ASR transcript via NotebookLM (compiled <b>2026-08-29</b>). The transcript is machine-generated; vague or unnamed comments are flagged inline as uncertain, and anything unconfirmable is noted.<br>
+<b>Verification</b>: Salesforce×Anthropic partnership terms — official press release/CNBC (2026-08-26); Marvell and Nvidia guidance figures — respective earnings calls (2026-08-27 / 2026-08-26); Jalapeño chip testing — SemiAnalysis; US quotes, forward valuation and percentile, analyst targets — Futu OpenAPI (CRM/MRVL/NVDA, queried 2026-08-29).<br>
+<b>Disclaimer</b>: this page compiles podcast content and verifies its figures. <b>It is not investment advice</b>. Investing carries risk; do your own research before acting.
+</div>
+
+<script>
+// Stocks: tone + verification
+const STOCKS=[
+ {nm:'Nvidia',code:'US.NVDA',mkt:'US',tone:'bull',said:'Relayed earnings-call revenue, Data Center share, and gross-margin figures; a test of "OAI\'s HPAN chip" and its effect on the moat; supply shortages (CPU/networking/memory/substrates).',chk:'✅Earnings-call numbers directionally accurate: Q2 FY2027 revenue <b>$96.2B (+106% YoY)</b>, Data Center $89.0B (92% of total), gross margin 75.0%, Q3 guidance $108B ± 2%. ⚠️"OAI\'s HPAN chip" is actually <b>OpenAI×Broadcom\'s inference chip "Jalapeño"</b> (mishearing); SemiAnalysis verified it does beat Nvidia\'s GB200/GB300 on inference efficiency, but only for inference workloads, with real volume not until 2027 — <span class="win">the "doesn\'t shake the leader\'s position" read is directionally correct</span>. 💡Valuation: forward PE just <b>17.7x (3.2nd percentile, near a historic low)</b>, 29 analysts unanimously Buy — continuing this site\'s multi-episode "the AI core asset is the cheapest one" pattern.',vd:'ok'},
+ {nm:'Marvell',code:'US.MRVL',mkt:'US',tone:'turn',said:'Raised guidance at its earnings call, with scale-up optical interconnect chips as the main growth driver, plus a custom-chip partnership with Google.',chk:'✅Guidance numbers check out: Q2 FY2027 revenue <b>$2.74B (+37% YoY)</b>, a record, non-GAAP EPS $0.94; FY2027 guidance raised to roughly $12B (+45%). ⚠️The Google partnership\'s scope is broader than described, covering AI inference accelerators/storage controllers/NICs/memory-interface controllers, not simply "XPUs." 💡Valuation: forward PE 64.6x (22.2nd percentile), not expensive relative to own history, but the rally is driven more by narrative and flows.',vd:'ok'},
+ {nm:'Salesforce',code:'US.CRM',mkt:'US',tone:'turn',said:'Partnered with Anthropic on "Cloud Force," bundling 37 skills/plugins, aimed at debunking the "SaaS is dead" thesis.',chk:'⚠️Name was misheard: the official name is <b>Claudeforce</b> (not "Cloud Force"). ✅The "37 pre-built sales skills" figure is exactly right; via AWS Bedrock it becomes the default reasoning engine for Agentforce Atlas and other products, with public beta in September. ✅"SaaS is dead" pushback checks out (Benioff and Dario Amodei were interviewed together on it). 💡But <b>forward PE is actually 30.8x (88.9th percentile — expensive)</b>: an optimistic narrative doesn\'t mean a cheap stock.',vd:'warn'},
+ {nm:'Alphabet',code:'US.GOOGL',mkt:'US',tone:'neu',said:'Mentioned this episode only as customer context for Marvell\'s custom-chip partnership, without substantive discussion.',chk:'📌No specific claim about Alphabet was made this episode beyond background context; its valuation wasn\'t separately checked for this post — noted for awareness.',vd:'na'},
+];
+const TONE={bull:['p-bull','Bullish'],turn:['p-turn','Watching / technical'],neu:['p-neu','Neutral'],bear:['p-bear','Cautious / trimming']};
+const VD={ok:['✅','var(--win)','Verified'],warn:['⚠️','var(--lose)','Discrepancy / caveat'],bad:['❌','var(--lose)','Unsupported'],na:['—','var(--ink3)','No figures given'],q:['❓','var(--mid)','Unverifiable / narrative']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">"${s.said}"</div>
+ <div class="why"><b style="color:${c}">${ic} Check</b>: ${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// Valuation layering table
+document.getElementById('grpAi').innerHTML=
+'<tr><th>Ticker / Name</th><th>Position in the AI supply chain</th><th>Relative standing</th><th>Forward PE / valuation percentile</th><th>One-line view</th></tr>'+
+[
+ ['NVDA Nvidia','Chip-design leader · training + inference dual engine','Q2 revenue +106% YoY, 29 analysts <span class="win">100% Buy</span>','<b>17.7x</b><br><span class="win" style="font-size:11px">3.2nd pctile (trailing 27.5x)</span>','Earnings are rock solid, yet the cheapest valuation in the group relative to own history'],
+ ['MRVL Marvell','Custom ASIC / networking · Google partner','Q2 revenue +37% YoY, FY2027 guidance raised','64.6x<br><span class="win" style="font-size:11px">22.2nd pctile (trailing 71.7x)</span>','Solid guidance and not expensive relative to own history, but the rally leans on narrative and flows'],
+ ['CRM Salesforce','SaaS application layer · deep Claude integration','Claudeforce partnership verified, public beta in September','30.8x<br><span class="lose" style="font-size:11px">88.9th pctile (trailing 23.4x)</span>','Narrative is upbeat, but forward PE sits at a historic high — valuation has run ahead of the story'],
+ ['GOOGL Alphabet','Hyperscale cloud provider · chip customer','Mentioned only as background context this episode','<span style="color:var(--ink3)">— (not checked)</span>','Not substantively discussed this episode; noted for awareness, outside this post\'s scope'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// Fact-check table
+const FACTS=[
+ ['Salesforce partnered with Anthropic on "Cloud Force," bundling 37 skills/plugins','Spoken on the show','⚠️<b>Name was misheard</b>: the official name is Claudeforce (not "Cloud Force"); the "37 pre-built sales skills" figure is accurate, confirmed by the official press release (2026-08-26)','warn'],
+ ['"SaaS is dead" doesn\'t hold — Benioff and Dario Amodei pushed back on AI replacing SaaS','Spoken on the show','✅<b>Verified</b>: both were interviewed together pushing back on this','ok'],
+ ['Marvell raised guidance at its earnings call, with scale-up optical interconnect chips as the main growth driver','Spoken on the show','✅<b>Verified</b>: Q2 FY2027 revenue $2.74B (+37% YoY), a record; FY2027 guidance raised to roughly $12B (+45%)','ok'],
+ ['Marvell\'s custom-chip partnership with Google (XPU)','Spoken on the show','⚠️<b>Scope is broader than described</b>: covers AI inference accelerators/storage controllers/NICs/memory-interface controllers, not simply XPUs','warn'],
+ ['Nvidia earnings-call revenue, Data Center share, and gross-margin figures','Spoken on the show','✅<b>Verified</b>: Q2 FY2027 revenue $96.2B (+106% YoY), Data Center $89.0B (92% of total), gross margin 75.0%','ok'],
+ ['"OAI\'s HPAN chip" tested more efficient than Nvidia\'s, but doesn\'t shake the leader\'s position','Spoken on the show','⚠️<b>Chip name is wrong, conclusion directionally right</b>: it\'s actually OpenAI×Broadcom\'s "Jalapeño"; SemiAnalysis confirms higher inference efficiency, but only for inference workloads, with real volume not until 2027','warn'],
+ ['Nvidia overbuys optics/laser components and locks up TSMC capacity to squeeze out rivals','Spoken on the show · opinion','📌<b>This is the host\'s own inference</b>, with no official confirmation it\'s a deliberate strategy, though directionally consistent with the across-the-board shortages the earnings call disclosed','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>Claim</th><th>What the episode said</th><th>Verification</th><th>Verdict</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>

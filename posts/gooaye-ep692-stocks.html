@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP692 個股觀點整理 — Salesforce×Anthropic「Claudeforce」查證屬實、Nvidia/Marvell法說會數字站得住腳、同一波AI敘事卻現「晶片便宜、SaaS貴」估值分化</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep692-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP692 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🍺</span></h1>
+<div class="sub">本集約前四成篇幅是台啤業配與北海道家庭旅遊分享,聽眾 Q&amp;A 段落也全是職涯/家庭/健保制度討論,均不涉及可查證的財務主張,本文不處理。<br>財經核心集中在後段:<b>Salesforce×Anthropic 策略合作、Marvell/Nvidia 法說會、OpenAI 客製推論晶片對 Nvidia 護城河的影響</b>。<br>NotebookLM 逐字稿分析 ＋ Futu/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP692 逐字稿分析</span>
+<span class="badge">整理日:2026-08-29</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">🤝 <span class="win">Salesforce×Anthropic「Claudeforce」合作查證屬實,但估值不便宜</span>。正式名稱是 <b>Claudeforce</b>(節目講成「Cloud Force」,屬口誤),「<b>37 個預建銷售技能</b>」數字精準,透過 AWS Bedrock 成為 Agentforce Atlas Reasoning Engine、Slack AI、Slackbot、Agentforce Coworker 的預設推理引擎,9 月開放公測。但 <b>CRM forward PE 反而達 30.8x(估值百分位 88.9%,偏貴)</b>,敘事樂觀不代表股價便宜。</p>
+<p class="big">📊 <span class="win">Marvell、Nvidia 法說會數字全數查證屬實</span>。Marvell Q2 FY2027 營收 $27.4 億(YoY +37%),上修 FY2027 展望至約 $120 億;Nvidia Q2 FY2027 營收 $96.2B(YoY +106%),Data Center 佔比 92%。兩者財測數字沒有灌水,是本集少數紮實的一手轉述。</p>
+<p class="big">🌶️ <span class="turn">主持人提到的「OAI 的 HPAN 晶片」查證應為 OpenAI×Broadcom 合作的推論晶片「<b>Jalapeño</b>」(音譯誤差)</span>。SemiAnalysis 測試顯示其推論效率優於 Nvidia GB200/GB300,但<b>只在推論情境成立、2027 年才放量</b>,主持人「不影響龍頭地位」的解讀方向正確。</p>
+<p class="big">📉 <span class="lose">同樣搭上 AI 敘事,估值卻是兩個世界</span>——<b>NVDA forward PE 僅 17.7x(百分位 3.2%,歷史低檔)</b>、MRVL forward PE 64.6x 但百分位僅 22.2%(相對自身歷史也不貴),<b>CRM forward PE 30.8x 卻站上 88.9 百分位(歷史高檔)</b>。同一波 AI 故事,晶片股便宜、SaaS 股貴。</p>
+<p class="note">★ 本集個股點名密度偏低,只點名了 <b>Salesforce、Marvell、Nvidia、Alphabet</b> 四家掛牌公司,沒有點名任何台股概念股或光通訊/CPO 供應鏈個股。文中「估值分層」段落是本站自行用 AI 供應鏈分層框架比較,<b>非口播原話</b>,讀者不要延伸套用到未提及的個股上。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP692 開頭近四成篇幅是台啤(雲泡生啤酒)業配,加上主持人分享北海道家庭旅遊的生活點滴,沒有具體可查證的財務數字。聽眾 Q&amp;A 段落則完全是職涯轉換、家庭關係、健保制度的閒聊,同樣沒有股票內容,本文不處理。</p>
+<div class="quote">📌 <b>財經核心集中在後半段,三條主線</b>:①Salesforce 與 Anthropic 的「Claudeforce」策略合作;②Marvell、Nvidia 兩場法說會的財測與供應鏈訊號;③OpenAI 與 Broadcom 合作的客製推論晶片對 Nvidia 護城河的影響。<span class="mid">和多數集數一樣,主持人講事件、講數字,沒有直接喊「買哪一檔」</span>。</div>
+</div>
+
+<h2>二、Salesforce × Anthropic「Claudeforce」策略合作:查證</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Anthropic的Claude透過AWS Bedrock在Salesforce信任邊界內成為Agentforce Atlas推理引擎、Slack AI、Slackbot、Agentforce Coworker的預設模型，Salesforce in Claude外掛內含37個預建銷售技能，9月開放公測">
+  <defs><marker id="ah692a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">Claudeforce:Claude 成為 Salesforce 全家族的預設推理引擎</text>
+  <text x="20" y="42" style="fill:var(--ink3);font:400 11px sans-serif">依 Salesforce/Anthropic 官方公告(2026/8/26)整理</text>
+
+  <rect x="30" y="64" width="150" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="105" y="97" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Anthropic Claude</text>
+
+  <line x1="182" y1="92" x2="380" y2="92" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah692a)"/>
+  <text x="281" y="78" text-anchor="middle" style="fill:var(--ink2);font:700 11px sans-serif">透過 AWS Bedrock</text>
+
+  <rect x="382" y="64" width="180" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="472" y="88" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">Salesforce Trust</text>
+  <text x="472" y="106" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">Boundary 內</text>
+
+  <line x1="472" y1="120" x2="472" y2="146" style="stroke:var(--ink3)" marker-end="url(#ah692a)"/>
+
+  <rect x="30" y="148" width="330" height="94" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="46" y="170" style="fill:var(--ink);font:700 12px sans-serif">預設推理引擎覆蓋</text>
+  <text x="46" y="190" style="fill:var(--ink2);font:400 11px sans-serif">Agentforce Atlas Reasoning Engine</text>
+  <text x="46" y="207" style="fill:var(--ink2);font:400 11px sans-serif">Slack AI、Slackbot</text>
+  <text x="46" y="224" style="fill:var(--ink2);font:400 11px sans-serif">Agentforce Coworker</text>
+
+  <rect x="380" y="148" width="350" height="94" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="396" y="170" style="fill:var(--turn);font:700 12px sans-serif">Salesforce in Claude 外掛</text>
+  <text x="396" y="190" style="fill:var(--ink2);font:400 11px sans-serif">內含 <b>37 個預建銷售技能</b>(skills/plugin)</text>
+  <text x="396" y="207" style="fill:var(--ink2);font:400 11px sans-serif"><b>9 月</b>開放公測</text>
+  <text x="396" y="224" style="fill:var(--ink3);font:400 10px sans-serif">Benioff × Dario Amodei 同步受訪駁斥「SaaS末日論」</text>
+</svg>
+</div>
+<p>主持人的講法是:Salesforce 和 Anthropic 合作「Cloud Force」,內含 37 個 skills/plugin,藉此破除「SaaS 末日論」——AI agent 會取代 SaaS 訂閱制的悲觀預期。查證下來:</p>
+<div class="quote">⚠️ <b>名稱有口誤,但核心事實與數字準確</b>。正式名稱是 <b>Claudeforce</b>,而非「Cloud Force」;「Salesforce in Claude」plugin 確實內含 <b>37 個預建銷售技能</b>,數字完全準確。Claude 透過 AWS Bedrock、在 Salesforce Trust Boundary 內,成為 Agentforce Atlas Reasoning Engine、Slack AI、Slackbot、Agentforce Coworker 的預設推理引擎,9 月開放公測(官方新聞稿,2026-08-26)。</p>
+<div class="quote">✅ <b>「SaaS 末日論不存在」的說法屬實</b>。Benioff 與 Dario Amodei 確實同時受訪駁斥 AI agent 會終結 SaaS 訂閱制的悲觀論調,方向站得住腳。</div>
+<div class="quote">⚠️ <b>但敘事樂觀不代表股價便宜</b>。CRM 現價 $256(Futu, 2026-08-29),trailing PE 23.4x,<b>forward PE 反而較高達 30.8x</b>(估值百分位 88.9%,偏貴),34 位分析師目標價均值 $273.35(76.5% buy)。forward PE 高於 trailing,是市場對未來獲利成長預期轉趨保守的訊號,值得留意。</div>
+</div>
+
+<h2>三、Marvell 法說會上修財測:查證</h2>
+<div class="card">
+<p>主持人的講法是:Marvell 法說會上修財測,scale-up 光學互連晶片是主要成長動能,並與 Google 有客製晶片合作。查證下來:</p>
+<div class="quote">✅ <b>財測數字全數屬實</b>。Marvell Q2 FY2027(2026-08-27 公布)營收 <b>$27.4 億,YoY +37%</b>,創單季新高,non-GAAP EPS $0.94;上調 FY2027 展望至約 <b>$120 億(+45%)</b>,FY2028 上調至約 $180 億。CEO Matt Murphy 明確點出 scale-up 光學互連晶片是主要成長動能。</div>
+<div class="quote">⚠️ <b>與 Google 合作範圍比口播描述更廣</b>。合作涵蓋 AI 推論加速器、儲存控制器、NIC、記憶體介面控制器,不是單純的「XPU」——podcast 對合作範圍的描述做了簡化。</div>
+<div class="quote">⚠️ <b>估值面:財報紮實,但不算便宜</b>。MRVL 現價 $216.62(Futu, 2026-08-29),trailing PE 71.7x,forward PE 64.6x(估值百分位 22.2%),84 位分析師目標價均值 $303.64(84% buy)。財報數字本身沒有問題,但光通訊反彈更多是敘事+資金推動,不是「便宜撿貨」的邏輯。</div>
+</div>
+
+<h2>四、Nvidia 法說會 + 「OAI 的 HPAN 晶片」:查證與澄清</h2>
+<div class="card">
+<p>主持人轉述 Nvidia 法說會內容,並提到「OAI 的 HPAN 晶片」測試結果對 Nvidia 護城河的影響。查證下來:</p>
+<div class="quote">✅ <b>法說會數字大方向屬實</b>。Nvidia Q2 FY2027(2026-08-26 公布)營收 <b>$96.2B,YoY +106%</b>;Data Center $89.0B,YoY +117%(佔比 92%);毛利率 75.0%;Q3 展望 $108B±2%(不含中國);FY2028 展望約 70% 成長,但屬「供應鏈受限」情境;CPU、網路連接業務上修屬實;HBM 記憶體成本飆升,導致 Q4 毛利率底線下修至 71-72%——這些都與 podcast 描述吻合。</div>
+<div class="quote">⚠️ <b>晶片名稱需澄清</b>:「OAI 的 HPAN 晶片」實際應為 <b>OpenAI 與 Broadcom 合作的推論晶片「Jalapeño」</b>(音譯誤差,非其他公司)。SemiAnalysis 獨立驗證其推論能效比 Nvidia GB200/GB300 高 1.9 倍、延遲低 3.6 倍,但<b>只在推論情境成立</b>,且對比 Nvidia 尚未量產的 Vera Rubin 平台時,總成本已接近打平,2026 年底僅小量部署、2027 年才放量。<span class="win">主持人「最主要用途是推論、不影響龍頭地位」的解讀方向正確</span>,是本集少數技術性描述完全站得住腳的部分。</div>
+<div class="quote">📌 <b>「Nvidia 超額採購光學/雷射元件、鎖定台積電產能把對手擠出供應鏈」屬主觀推論</b>,沒有官方證實這是刻意策略,但與法說會揭露的「CPU/網通/記憶體/載板全面缺貨」客觀現象方向一致,可信度中等偏高。</div>
+<div class="quote">💡 <b>估值面:本集最值得放大的訊號</b>。NVDA 現價 $217.55(Futu, 2026-08-29),trailing PE 27.5x,<b>forward PE 僅 17.7x(估值百分位僅 3.2%,處於自身歷史區間極低檔)</b>,29 位分析師 100% buy,目標價均值 $323.37。這與本站連續多集(EP677~EP689)查證的「AI 核心資產反而最便宜」現象完全一致。</div>
+</div>
+
+<h2>五、估值分層:同一波 AI 敘事,晶片便宜、SaaS 貴</h2>
+<div class="card">
+<p><b>族群定義</b>:本集提到的四家掛牌公司分屬 AI 供應鏈的不同位置——<b>晶片設計龍頭</b>(Nvidia)、<b>客製 ASIC／網通</b>(Marvell)、<b>雲端超大規模業者兼晶片客戶</b>(Alphabet)、<b>SaaS 應用層</b>(Salesforce)。這不是傳統的「同族群概念股」,而是同一波 AI 資本支出敘事下,不同位置公司的估值分層比較——這個框架是本站自行套用,<b>非口播原話</b>。</p>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 220" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Nvidia forward PE估值百分位僅3.2%、Marvell僅22.2%，相對自身歷史都不貴，Salesforce forward PE估值百分位卻高達88.9%，同一波AI敘事下晶片股便宜、SaaS股貴">
+  <defs><marker id="ah692b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">forward PE 估值百分位(相對自身歷史區間)</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">Futu OpenAPI(2026-08-29);百分位越低代表相對自身歷史越便宜</text>
+
+  <text x="20" y="68" style="fill:var(--ink);font:700 12px sans-serif">NVDA</text>
+  <rect x="130" y="54" width="14" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="156" y="68" style="fill:var(--win);font:700 12px sans-serif">3.2 分位</text>
+  <text x="130" y="85" style="fill:var(--ink3);font:400 10px sans-serif">forward 17.7x(trailing 27.5x),歷史低檔</text>
+
+  <text x="20" y="118" style="fill:var(--ink);font:700 12px sans-serif">MRVL</text>
+  <rect x="130" y="104" width="98" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="240" y="118" style="fill:var(--win);font:700 12px sans-serif">22.2 分位</text>
+  <text x="130" y="135" style="fill:var(--ink3);font:400 10px sans-serif">forward 64.6x(trailing 71.7x),相對自身歷史也不貴</text>
+
+  <text x="20" y="168" style="fill:var(--ink);font:700 12px sans-serif">CRM</text>
+  <rect x="130" y="154" width="393" height="18" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="535" y="168" style="fill:var(--lose);font:700 12px sans-serif">88.9 分位</text>
+  <text x="130" y="185" style="fill:var(--ink3);font:400 10px sans-serif">forward 30.8x(trailing 23.4x),歷史高檔</text>
+
+  <text x="20" y="210" style="fill:var(--ink2);font:400 11px sans-serif">同一波 AI 敘事,硬體晶片股便宜、SaaS 應用層貴——敘事樂觀程度和估值高低不必然同向</text>
+</svg>
+</div>
+<div style="overflow-x:auto"><table id="grpAi"></table></div>
+<p class="note">forward PE、估值百分位、分析師目標價 — Futu OpenAPI(2026-08-29)。Alphabet 本集僅為交易/客戶脈絡提及,未另查估值。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p><b>晶片龍頭(NVDA)、客製 ASIC(MRVL)相對自身歷史都不貴,SaaS 應用層(CRM)反而站上歷史高檔</b>。這說明市場對「AI 硬體會不會過熱」仍偏謹慎、對「AI 敘事能不能撐起 SaaS 估值」反而更樂觀——但 SaaS 護城河能否真的抵禦 AI agent 侵蝕訂閱制,還是未驗證的敘事,估值卻已經跑在前面。</p>
+<p class="note">📌 這個分層比較是本站延伸,<b>不是節目原話</b>;本集沒有點名任何台股概念股,不宜把「晶片便宜、SaaS 貴」直接套用到其他公司身上。</p>
+</div>
+
+<h2>六、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
+
+<h2>七、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:Salesforce×Anthropic 合作 — 官方新聞稿/CNBC(2026-08-26);Marvell 財報 — 官方法說會(2026-08-27);Nvidia 財報 — 官方法說會(2026-08-26);Jalapeño 晶片測試 — SemiAnalysis;股價/估值/分析師目標價 — Futu OpenAPI(2026-08-29)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>八、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">Marvell、Nvidia 兩場法說會的財測數字全部經查證屬實</span>,這集在「轉述已公開財報」這塊很扎實,沒有誇大或灌水。</p>
+<p><span class="win">Jalapeño 晶片測試的解讀方向正確</span>——「推論能效贏但不動搖龍頭地位」符合 SemiAnalysis 的獨立驗證結果,沒有過度反應,也沒有低估。</p>
+<p><span class="win">NVDA forward PE 17.7x、估值百分位 3.2% 的觀察,延續了本站好幾集查證過的「AI 核心資產最便宜」結構性現象</span>,是有數據支撐的訊號,不是喊話。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">Salesforce×Anthropic 合作的名稱有口誤(「Cloud Force」應為「Claudeforce」)</span>,雖不影響核心事實,但顯示逐字稿/口播細節仍需逐一核對。</p>
+<p><span class="lose">Podcast 對 Salesforce-Anthropic 合作的解讀偏樂觀,卻沒有對應到估值面的謹慎</span>——CRM forward PE 已站上 88.9 百分位歷史高檔,敘事樂觀不等於股價便宜。</p>
+<p><span class="lose">「Nvidia 刻意超額採購元件把對手擠出供應鏈」是主持人的敘事詮釋</span>,沒有一手證據,屬於合理但無法證偽的推論。</p>
+<h3>風險與反方觀點</h3>
+<p>第一個風險是<b>把「Claudeforce 合作」當成 Salesforce 股價的確定性利多</b>。名稱敘事樂觀,但 forward PE 已經跑在故事前面,若後續 agent 生態系採用速度不如預期,估值下修風險不小。</p>
+<p>第二個風險是<b>把 Jalapeño 晶片測試結果過度解讀為 Nvidia 護城河鬆動</b>。測試情境侷限於推論、對比基準是尚未量產的平台、放量時間點在 2027 年——三個條件都不成熟,不宜提前反應在 Nvidia 的定價上。</p>
+<h3>可信度結論</h3>
+<p>本集的<span class="win">財報硬數字部分準確度很高</span>,產業敘事的大方向(AI 供應鏈缺貨、龍頭估值反而便宜)也有數據支撐;主要風險在於<span class="lose">把主觀推論的供應鏈陰謀論與查證過的財報事實混著講</span>,讀者若照單全收前者容易高估確定性。</p>
+<p>整體評級:<b>財報轉述可信,可作為追蹤 AI 供應鏈的一手素材;但「Salesforce 合作利多」「Nvidia 供應鏈策略」這類延伸推論,估值面與情境條件都需要自行查證,不宜照單全收</b>。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP692</b>「🍺」(<a href="https://youtu.be/ohoIGtJ3Bwc" target="_blank" rel="noopener">YouTube 原始連結</a>)。NotebookLM 對 YouTube 自動語音辨識逐字稿做分析整理(整理日 <b>2026-08-29</b>)。逐字稿為自動 ASR,含糊或未點名對象的評論已於文中標註存疑,無法確認者已標明。<br>
+<b>數字查證</b>:Salesforce×Anthropic 合作條款 — 官方新聞稿/CNBC(2026-08-26);Marvell、Nvidia 財測數字 — 各自法說會(2026-08-27 / 2026-08-26);Jalapeño 晶片測試 — SemiAnalysis;美股即時報價、forward 估值與百分位、分析師目標價 — Futu OpenAPI(CRM/MRVL/NVDA,查詢時間 2026-08-29)。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'Nvidia',code:'US.NVDA',mkt:'美股',tone:'bull',said:'法說會營收、Data Center 佔比、毛利率數字轉述;「OAI 的 HPAN 晶片」測試對護城河的影響;供應鏈缺貨(CPU/網通/記憶體/載板)。',chk:'✅法說會數字大方向屬實:Q2 FY2027 營收 <b>$96.2B(YoY +106%)</b>,Data Center $89.0B(佔比92%),毛利率75.0%,Q3展望$108B±2%。⚠️「OAI的HPAN晶片」應為 <b>OpenAI×Broadcom 的推論晶片「Jalapeño」</b>(音譯誤差);SemiAnalysis驗證其推論效率贏Nvidia GB200/GB300,但只在推論情境成立、2027年才放量,<span class="win">「不影響龍頭地位」解讀方向正確</span>。💡估值面:forward PE僅 <b>17.7x(估值百分位3.2%,歷史低檔)</b>,29位分析師100% buy,延續本站多集追蹤的「AI核心資產最便宜」現象。',vd:'ok'},
+ {nm:'Marvell',code:'US.MRVL',mkt:'美股',tone:'turn',said:'法說會上修財測,scale-up 光學互連晶片是主要成長動能,與 Google 有客製晶片合作。',chk:'✅財測數字屬實:Q2 FY2027營收 <b>$27.4億(YoY +37%)</b>創新高,non-GAAP EPS $0.94;上調FY2027展望至約$120億(+45%)。⚠️與Google合作範圍比口播描述更廣,涵蓋AI推論加速器/儲存控制器/NIC/記憶體介面控制器,不是單純「XPU」。💡估值面:forward PE 64.6x(估值百分位22.2%),相對自身歷史不算貴,但反彈更多是敘事+資金推動。',vd:'ok'},
+ {nm:'Salesforce',code:'US.CRM',mkt:'美股',tone:'turn',said:'和 Anthropic 合作「Cloud Force」,內含37個skills/plugin,藉此破除「SaaS末日論」。',chk:'⚠️名稱有口誤:正式名稱是 <b>Claudeforce</b>(非「Cloud Force」)。✅「37個預建銷售技能」數字精準,透過AWS Bedrock成為Agentforce Atlas等產品的預設推理引擎,9月開放公測。✅「SaaS末日論不存在」的說法屬實(Benioff×Dario Amodei同步受訪駁斥)。💡但 <b>forward PE反而達30.8x(估值百分位88.9%,偏貴)</b>,敘事樂觀不代表股價便宜。',vd:'warn'},
+ {nm:'Alphabet',code:'US.GOOGL',mkt:'美股',tone:'neu',said:'本集僅作為 Marvell 客製晶片合作的客戶脈絡被提及,未實質展開討論。',chk:'📌本集未針對 Alphabet 展開具體主張,僅作背景脈絡,本文未另查其估值,列為觀察。',vd:'na'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 估值分層表
+document.getElementById('grpAi').innerHTML=
+'<tr><th>代號/名稱</th><th>在 AI 供應鏈的位置</th><th>相對強弱</th><th>forward PE / 估值百分位</th><th>一句話看法</th></tr>'+
+[
+ ['NVDA Nvidia','晶片設計龍頭 · 訓練+推論雙引擎','Q2營收YoY+106%,29位分析師<span class="win">100% buy</span>','<b>17.7x</b><br><span class="win" style="font-size:11px">3.2分位(trailing 27.5x)</span>','法說會數字紮實,估值卻是族群裡相對自身歷史最便宜的一檔'],
+ ['MRVL Marvell','客製ASIC／網通 · Google合作夥伴','Q2營收YoY+37%,上修FY2027展望','64.6x<br><span class="win" style="font-size:11px">22.2分位(trailing 71.7x)</span>','財測紮實,相對自身歷史也不算貴,但反彈更多靠敘事+資金'],
+ ['CRM Salesforce','SaaS應用層 · 與Claude深度整合','Claudeforce合作查證屬實,9月公測','30.8x<br><span class="lose" style="font-size:11px">88.9分位(trailing 23.4x)</span>','敘事樂觀,但forward PE站上歷史高檔,估值已跑在故事前面'],
+ ['GOOGL Alphabet','雲端超大規模業者 · 晶片客戶','本集僅背景脈絡提及,未實質討論','<span style="color:var(--ink3)">— (未查證)</span>','本集未點名展開,列為觀察,非本篇查證範圍'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// 數字查證表
+const FACTS=[
+ ['Salesforce和Anthropic合作「Cloud Force」,內含37個skills/plugin','口播','⚠️<b>名稱有口誤</b>:正式名稱是Claudeforce(非「Cloud Force」);「37個預建銷售技能」數字準確,官方新聞稿(2026-08-26)證實','warn'],
+ ['「SaaS末日論不存在」,Benioff與Dario Amodei駁斥AI取代SaaS的悲觀論調','口播','✅<b>屬實</b>:兩人確實同時受訪駁斥此論調','ok'],
+ ['Marvell法說會上修財測,scale-up光學互連晶片是主要成長動能','口播','✅<b>屬實</b>:Q2 FY2027營收$27.4億(YoY+37%)創新高,上修FY2027展望至約$120億(+45%)','ok'],
+ ['Marvell與Google的客製晶片合作(XPU)','口播','⚠️<b>範圍比描述更廣</b>:涵蓋AI推論加速器/儲存控制器/NIC/記憶體介面控制器,非單純XPU','warn'],
+ ['Nvidia法說會營收、Data Center佔比、毛利率數字','口播','✅<b>屬實</b>:Q2 FY2027營收$96.2B(YoY+106%),Data Center $89.0B(佔比92%),毛利率75.0%','ok'],
+ ['「OAI的HPAN晶片」測試效率贏Nvidia,但不影響龍頭地位','口播','⚠️<b>晶片名稱有誤,結論方向正確</b>:應為OpenAI×Broadcom的「Jalapeño」;SemiAnalysis驗證推論效率確實較高,但僅推論情境成立、2027年才放量','warn'],
+ ['Nvidia超額採購光學/雷射元件、鎖定台積電產能把對手擠出供應鏈','口播 · 觀點','📌<b>屬主觀推論</b>,無官方證實此為刻意策略,但與法說會揭露的全面缺貨現象方向一致','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
