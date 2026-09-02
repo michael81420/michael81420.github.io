@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP693 個股觀點整理 — 輝達/Google認購聯發科39億美元可轉債查證屬實、NVHBM規格數字精準、台股「7月跌30%」被誇大實際僅-17%</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep693-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP693 · 個股觀點整理 <span style="font-size:16px;color:var(--win)">｜🍖</span></h1>
+<div class="sub">開場業配與跑步心得不涉財務主張,本文不處理。財經核心是<b>輝達＋Google 認購聯發科 39 億美元可轉債</b>——查證下來事實準確,但這是<b>連續第 4 個月的估值墊高過程</b>之上再疊一層題材,不是從便宜位階起漲。<br>順帶查證 <b>NVHBM 規格</b>(數字精準但比較基準有誤)、<b>博通 ASIC 龍頭地位</b>,以及主持人講的「台股 7 月跌 30%」——<b>用 TAIEX 逐日數據回測,實際跌幅是 -17.2%,被誇大近一倍</b>。<br>NotebookLM 逐字稿分析 ＋ Futu/FinMind/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP693 逐字稿分析</span>
+<span class="badge">整理日:2026-09-02</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">🤝 <span class="win">輝達＋Google 認購聯發科 39 億美元可轉債,查證屬實</span>。發行總額 <b>39 億美元</b>,輝達認購約 <b>35 億美元(占九成)</b>,Google 同步參與;9/1 消息公布聯發科股價<b>直接漲停鎖死 NT$4,315</b>,9/2 開高至 NT$4,450、最高 NT$4,565,終場拉回收 NT$4,275。轉換價 <b>NT$4,513.75</b>(較 8/31 收盤 3,925 元溢價約 <b>+15.0%</b>),最大稀釋僅約 <b>1.67%</b>。</p>
+<p class="big">📈 <span class="lose">但這是連續第 4 個月的估值墊高過程,不是便宜貨突然爆發</span>。聯發科 trailing PE 從 7/18(EP680)的 53.7x → 8/7(EP686)的 64.4x → <b>9/2 收盤已達 70.6x</b>,已明顯滑入「本夢比」象限。輝達入股是錦上添花,安全邊際已經很薄。</p>
+<p class="big">🔧 <span class="win">NVHBM 規格數字精準,但比較基準與首發客戶主持人講錯</span>。頻寬 <b>+30%</b>、功耗 <b>-15%</b> 與官方數字完全吻合,但正確比較基準是 <b>HBM4E</b>(非 HBM4);首發客戶是 <b>Amazon Annapurna Labs(Trainium4)</b>,不是聯發科。</p>
+<p class="big">📉 <span class="lose">「台股 7 月跌 30%」明顯誇大——用 TAIEX 逐日資料回測,實際跌幅是 -17.2%</span>。加權指數高點在 <b>6/23(盤中 48,218.87)</b>,一路殺到 <b>7/30 收 39,933.30</b>,跌幅 <b>-17.2%</b>,不是口播講的 30%;<b>9/1 已收在 46,948.72</b>,距歷史高點僅剩 -2.6%。</p>
+<p class="note">★ 本集個股點名密度不高,聚焦聯發科與 NVHBM 兩則事件。文中「同族群概念股掃描」段落是本站依 CLAUDE.md 慣例自行補上的 ASIC/XPU 供應鏈驗證(博通、Marvell、世芯-KY、創意電子),<b>非口播原話</b>。</p>
+</div>
+
+<h2>一、先說清楚:這集的性質</h2>
+<div class="card">
+<p>EP693 開場是三崧買中秋烤肉組合業配,接著主持人分享跑步 10K 心得,均無可查證的財務主張。後段大量聽眾 Email Q&amp;A 也多是感情/生活話題,只有一則涉及加碼策略方法論、一則涉及大盤展望,本文一併處理但不當成硬新聞查證。</p>
+<div class="quote">📌 <b>財經核心集中在中段約 15 分鐘</b>,三條線:①聯發科獲輝達/Google 投資的重磅新聞;②NVHBM 新規格;③博通 ASIC 龍頭地位的競爭敘事,尾段順帶提到台股大盤位階。<span class="mid">和多數集數一樣,主持人講事件、講數字,沒有直接喊「買哪一檔」</span>。</div>
+</div>
+
+<h2>二、輝達＋Google 認購聯發科 39 億美元可轉債:查證</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="輝達與Google認購聯發科三十九億美元可轉換公司債，輝達占約三十五億美元九成，轉換價四千五百一十三點七五元較公告前一日收盤溢價約百分之十五，消息公布後聯發科股價九月一日直接漲停鎖死四千三百一十五元，九月二日開高走高後拉回收四千二百七十五元">
+  <defs><marker id="ah693a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">39 億美元可轉債:輝達拿走九成,轉股價溢價約 15%</text>
+  <text x="20" y="42" style="fill:var(--ink3);font:400 11px sans-serif">依 WebSearch 查證整理(2026-08-31 公告);股價 — FinMind(2026-09-02)</text>
+
+  <rect x="30" y="60" width="200" height="70" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="46" y="82" style="fill:var(--win);font:700 12px sans-serif">輝達 Nvidia</text>
+  <text x="46" y="100" style="fill:var(--ink2);font:400 11px sans-serif">認購約 <b>$35 億</b>(九成)</text>
+  <text x="46" y="116" style="fill:var(--ink3);font:400 10px sans-serif">輝達史上最大單筆對台投資</text>
+
+  <rect x="30" y="140" width="200" height="60" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="46" y="162" style="fill:var(--ink);font:700 12px sans-serif">Google</text>
+  <text x="46" y="180" style="fill:var(--ink2);font:400 11px sans-serif">同步認購其餘份額</text>
+
+  <line x1="232" y1="95" x2="290" y2="95" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah693a)"/>
+  <line x1="232" y1="170" x2="290" y2="170" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah693a)"/>
+
+  <rect x="294" y="60" width="210" height="140" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="310" y="84" style="fill:var(--turn);font:700 12px sans-serif">39 億美元可轉債</text>
+  <text x="310" y="104" style="fill:var(--ink2);font:400 11px sans-serif">轉換價 <b>NT$4,513.75</b></text>
+  <text x="310" y="122" style="fill:var(--ink2);font:400 11px sans-serif">較 8/31 收盤 3,925 元</text>
+  <text x="310" y="140" style="fill:var(--turn);font:700 11px sans-serif">溢價約 +15.0%</text>
+  <text x="310" y="160" style="fill:var(--ink2);font:400 11px sans-serif">全數轉換最大稀釋</text>
+  <text x="310" y="178" style="fill:var(--win);font:700 11px sans-serif">僅約 1.67%</text>
+
+  <line x1="504" y1="130" x2="546" y2="130" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah693a)"/>
+
+  <rect x="550" y="60" width="190" height="200" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="566" y="84" style="fill:var(--ink);font:700 12px sans-serif">聯發科股價反應</text>
+  <text x="566" y="106" style="fill:var(--ink3);font:400 10px sans-serif">8/31(公告前)</text>
+  <text x="566" y="122" style="fill:var(--ink2);font:600 12px sans-serif">收 3,925 元</text>
+  <text x="566" y="146" style="fill:var(--ink3);font:400 10px sans-serif">9/1</text>
+  <text x="566" y="162" style="fill:var(--win);font:700 12px sans-serif">漲停鎖 4,315 元</text>
+  <text x="566" y="184" style="fill:var(--ink3);font:400 10px sans-serif">9/2</text>
+  <text x="566" y="200" style="fill:var(--ink2);font:600 12px sans-serif">開高走高後拉回</text>
+  <text x="566" y="216" style="fill:var(--ink2);font:600 12px sans-serif">收 4,275 元</text>
+  <text x="566" y="238" style="fill:var(--ink3);font:400 10px sans-serif">trailing PE 已達 70.6x</text>
+
+  <rect x="30" y="220" width="474" height="60" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="46" y="242" style="fill:var(--lose);font:700 11px sans-serif">⚠ 這是連續第 4 個月估值墊高的延續,不是從便宜位階起漲</text>
+  <text x="46" y="260" style="fill:var(--ink2);font:400 10px sans-serif">7/18 trailing 53.7x → 8/7 trailing 64.4x → 9/2 trailing 70.6x(見下段時間軸)</text>
+</svg>
+</div>
+<p>主持人的講法是:輝達首次投資台灣上市公司,規模是史上最大單筆對台投資,金額 35 億美元,Google 也有參與但份額較小;票息 0%,溢價約十幾%;消息公布後股價直接漲停,隔日回到平盤附近。主持人判斷這不是可疑的「賣方融資」,因為聯發科財務健全、獲利穩定,不像輝達過去投資的一些新創,本質是策略夥伴合作加選擇權——聯發科正在幫 Google 設計 TPU(v8T 是聯發科首次操刀的 TPU 案),與輝達在 N1X 筆電晶片等領域已有合作,這次是加深綁定。</p>
+<div class="quote">✅ <b>核心事實與數字查證屬實</b>。發行總額 <b>39 億美元</b>,輝達認購 <b>35 億美元(約九成)</b>,Google 同步認購,媒體普遍稱這是「輝達史上在美國境外最大單筆直接投資」。轉換價 <b>NT$4,513.75</b>,較公告前一日(8/31)收盤 3,925 元溢價約 <b>+15.0%</b>——與口播「溢價約十幾%」吻合;全數轉換最大稀釋比例約 <b>1.67%</b>,幅度不大。</div>
+<div class="quote">✅ <b>股價反應查證屬實,且比口播描述更劇烈</b>。9/1 開盤即漲停鎖死收在 <b>NT$4,315</b>;但 9/2 <b>不是「回到平盤」</b>,而是開高至 4,450 元(較前一日再跳空 +3.1%)、盤中最高衝到 4,565 元(較前一日 +5.8%),尾盤才拉回收 4,275 元(較前一日 -0.9%)。兩日走勢比「隔日平盤」更亢奮,也更有獲利了結賣壓的痕跡。</div>
+<div class="quote">✅ <b>「不是賣方融資」的判斷方向合理</b>。聯發科是獲利穩定的 IC 設計龍頭,和輝達過去投資的燒錢新創體質不同;可轉債+策略合作的結構,確實比單純現金投資更像雙方綁定 XPU/ASIC 業務的選擇權設計。</div>
+<div class="quote">⚠️ <b>分析師目標價「一致喊多」需要保留</b>。查證到花旗一則報導稱目標價上看 <b>NT$6,800</b>,但另有較早期報導顯示大摩曾給出中立評等、目標價僅約 NT$1,288(<span class="lose">時間點與是否已隨本次事件更新不明確,兩者不宜直接對照</span>)——外資對聯發科的看法本身就有分歧,不應簡化成「外資一致喊多」。</div>
+</div>
+
+<h2>三、聯發科估值:錦上添花,不是撿便宜</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 220" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="聯發科trailing本益比從七月十八日的五十三點七倍一路墊高到九月二日的七十點六倍，連續四個月估值持續墊高，輝達入股是疊加在既有題材接力之上，不是從便宜位階起漲">
+  <defs><marker id="ah693b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">聯發科 trailing PE:連續 4 個月墊高,已滑入「本夢比」象限</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind,各集查證日的收盤 trailing PE</text>
+
+  <line x1="90" y1="180" x2="720" y2="180" style="stroke:var(--border)"/>
+  <line x1="90" y1="60" x2="90" y2="180" style="stroke:var(--border)"/>
+  <text x="82" y="184" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">40x</text>
+  <text x="82" y="124" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">55x</text>
+  <text x="82" y="64" text-anchor="end" style="fill:var(--ink3);font:400 10px sans-serif">70x</text>
+  <line x1="90" y1="124" x2="720" y2="124" style="stroke:var(--ink3);stroke-dasharray:4 4"/>
+
+  <circle cx="160" cy="150" r="6" style="fill:var(--win)"/>
+  <text x="160" y="200" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">7/18(EP680)</text>
+  <text x="160" y="142" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">53.7x</text>
+
+  <circle cx="380" cy="110" r="6" style="fill:var(--turn)"/>
+  <text x="380" y="200" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">8/7(EP686)</text>
+  <text x="380" y="102" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">64.4x</text>
+
+  <circle cx="640" cy="72" r="7" style="fill:var(--lose)"/>
+  <text x="640" y="200" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">9/2(本集)</text>
+  <text x="640" y="64" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">70.6x</text>
+
+  <line x1="160" y1="150" x2="380" y2="110" style="stroke:var(--ink3);stroke-dasharray:3 3"/>
+  <line x1="380" y1="110" x2="640" y2="72" style="stroke:var(--ink3);stroke-dasharray:3 3"/>
+</svg>
+</div>
+<p>輝達入股的消息,是疊加在一個<b>已經連續數月的估值墊高趨勢</b>之上,而不是從便宜位階起漲。用 FinMind 逐次查證的 trailing PE 拉成時間軸:7/18(EP680)股價 3,370 元、trailing PE <b>53.7x</b>,主持人當時就標記過「聽眾喊 8,000–10,000 元目標價缺數字支撐」;8/7(EP686)股價 3,900 元、trailing PE <b>64.4x</b>;9/2(本集,漲停後)收 4,275 元、trailing PE 已達 <b>70.6x</b>。</p>
+<div class="quote">⚠️ <b>63 倍區間的「本夢比」定價,安全邊際已經很薄</b>。聯發科歷史正常本益比區間大致在 15–25x,現在 70.6x 是明顯偏離常態的「本夢比」定價。輝達的策略投資給了故事新的想像空間(ASIC/XPU 業務放大),但這正是主持人自己在節目中講的分類法——「本夢比的股票你會一直加碼,本益比的股票你會怕」;聯發科現在已經完全滑入「本夢比」象限,追高的風險屬性和台積電、輝達這種「越核心越便宜」的資產不一樣。</div>
+<div class="quote">📌 <b>7 月營收年增其實只有 +12.2%</b>,這波估值墊高的驅動力主要是題材接力(Google COT 傳聞、輝達入股),不是營收加速的基本面驅動——這點延續了 <a href="gooaye-ep690-stocks.html">EP690</a> 查證過的「聯發科月增轉弱、成長動能邊際放緩」的觀察。</div>
+</div>
+
+<h2>四、NVHBM 新規格:數字精準,比較基準與首發客戶講錯</h2>
+<div class="card">
+<p>主持人的講法是:輝達推出 NVHBM,把記憶體控制器從 XPU 搬進 HBM base die,比 HBM4 頻寬多 30%、功耗少 15%,還能多出晶片面積給運算單元;本質是規格從 JEDEC 標準轉向輝達自有規格,未來可能從記憶體三大廠及台積電身上多賺一手。</p>
+<div class="quote">✅ <b>頻寬與功耗數字精準屬實</b>。+30% 頻寬提升、-15% 功耗降低,與多家科技媒體報導的官方數字完全吻合。</div>
+<div class="quote">⚠️ <b>但比較基準講錯,首發客戶也不是聯發科</b>。正確的比較基準是 <b>HBM4E</b>,不是「HBM4」;首發客戶已知是 <b>Amazon Annapurna Labs(Trainium4)</b>,並非聯發科——口播暗示「聯發科若採用會交給台積電做」只是合理推論,目前沒有公開資料證實聯發科是採用方之一。額外查到的細節:NVHBM 可釋放最多 25% 的 XPU 運算面積,PHY 面積最多減少 67%。</div>
+<div class="quote">✅ <b>主持人對 NVHBM 的保留態度合理</b>。提到輝達過去也吹過一些「後來證明雷聲大雨點小」的方案,這種審慎沒有過度樂觀背書,是本集少數技術描述完全站得住腳的部分。</div>
+</div>
+
+<h2>五、博通 ASIC 龍頭地位:方向對,但「電話會議會反駁」是預判</h2>
+<div class="card">
+<p>主持人的講法是:市場上多方勢力(輝達拉攏聯發科、Marvell 也有新進展)都想從博通身上「吃肉」,但這類敘事容易被過度定價成利空,類比今年稍早的「光通貴族」恐慌——當時同類股被市場錯殺,但後來營收沒被打掉,股價後來還創新高。主持人判斷博通接下來電話會議會強力反駁市場疑慮。</p>
+<div class="quote">✅ <b>博通龍頭地位查證屬實</b>。目前仍是客製 ASIC/XPU 市場的絕對龍頭,市占約 <b>70%</b>,已鎖定 6 大 XPU 客戶(含 Google——7 代 TPU 合作史、OpenAI——2025/10 簽約 10GW 客製加速器多年合約),AI 半導體營收 Q2 FY26 年增 143% 至 108 億美元,管理層對下一季指引成長 200%+ 至 160 億美元。</div>
+<div class="quote">❓ <b>「光通貴族後來一堆創新高」的具體個股清單未逐一核實</b>。方向合理(市場對敘事性利空經常過度反應),但本文時間所限,沒有逐一查證是哪幾檔、漲了多少,標為未核實。</div>
+<div class="quote">📌 <b>「博通電話會議會強力反駁」是主持人的預判,不是已發生的事實</b>。博通法說會尚未召開,讀者應等實際財報/法說會回應後再檢視這個論點是否兌現,不宜提前當成確定結論。</div>
+<div class="quote">💡 <b>估值面:博通目前是族群裡相對便宜的一檔</b>。現價 $369.30(Futu,2026-09-02),trailing PE 61.5x,<b>forward PE 僅 28.1x(估值百分位 8.0%,歷史低檔)</b>,26 位分析師 92.3% buy、目標價均值 $521.63。市場短線把博通當成「輝達拉攏聯發科」敘事下的受害者打壓估值,但這個定價可能已經超前反應。</div>
+</div>
+
+<h2>六、台股大盤:「7 月跌 30%」被誇大,實際是 -17.2%</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="加權指數六月二十三日盤中創高四萬八千二百一十八點，一路修正到七月三十日收盤三萬九千九百三十三點，跌幅百分之十七點二，並非口播所說的三成，九月一日已收在四萬六千九百四十八點，距歷史高點僅剩百分之二點六">
+  <defs><marker id="ah693c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">TAIEX 逐日回測:實際修正 -17.2%,不是口播講的 30%</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">FinMind 逐日資料(2026-06-01 ~ 09-02)</text>
+
+  <line x1="60" y1="220" x2="720" y2="220" style="stroke:var(--border)"/>
+  <line x1="60" y1="60" x2="60" y2="220" style="stroke:var(--border)"/>
+
+  <circle cx="160" cy="80" r="7" style="fill:var(--ink)"/>
+  <text x="160" y="66" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">6/23 盤中高點</text>
+  <text x="160" y="98" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">48,218.87</text>
+
+  <line x1="160" y1="87" x2="380" y2="190" style="stroke:var(--lose);stroke-width:2" marker-end="url(#ah693c)"/>
+
+  <circle cx="380" cy="196" r="7" style="fill:var(--lose)"/>
+  <text x="380" y="216" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">7/30 收盤低點</text>
+  <text x="380" y="238" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">39,933.30</text>
+  <rect x="320" y="150" width="120" height="30" rx="6" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="380" y="170" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">實際跌幅 -17.2%</text>
+
+  <line x1="380" y1="196" x2="600" y2="90" style="stroke:var(--win);stroke-width:2" marker-end="url(#ah693c)"/>
+
+  <circle cx="600" cy="84" r="7" style="fill:var(--win)"/>
+  <text x="600" y="66" text-anchor="middle" style="fill:var(--ink);font:700 11px sans-serif">9/1 收盤</text>
+  <text x="600" y="102" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">46,948.72</text>
+  <text x="600" y="118" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">距高點僅 -2.6%</text>
+
+  <rect x="40" y="238" width="680" height="1" style="fill:var(--border)"/>
+  <text x="400" y="256" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">口播「跌 30%」若指的是主持人自己重倉的個股/持股組合,那類股跌幅確實可能更深(如聯發科同期回檔逾 23%)——但講成大盤指數本身就誇大了</text>
+</svg>
+</div>
+<p>主持人的講法是:8 月以來盤面很好,指數還沒收復 7 月最瘋狂時的高點,但差距已經在縮小,本來以為要修復到年底,沒想到反彈這麼快;有聽眾提問呼應「今年行情是不是就到 4 萬 5 千點左右」。</p>
+<div class="quote">⚠️ <b>用 TAIEX 逐日資料回測,實際跌幅是 -17.2%,不是 30%</b>。加權指數盤中歷史新高出現在 <b>6/23(48,218.87 點)</b>,隨後一路修正到 <b>7/30 收盤 39,933.30 點</b>,跌幅約 <b>-17.2%</b>——並非口播所說的「30%」。若口播「跌 30%」指的是主持人自己重倉的個股或持股組合,那類股在這波修正中確實可能跌得更深(例如聯發科同期從高點回檔逾 23%),這種情況下數字未必是刻意誇大,而是把「自己的部位」講成了「大盤」,讀者需要留意這個混淆。</div>
+<div class="quote">✅ <b>「還沒收復 7 月最瘋狂時的高點,但差距在縮小」大致成立</b>。<b>9/1 收盤已達 46,948.72 點</b>,創本波反彈以來的收盤新高,距 6/23 的歷史高點僅剩約 <b>-2.6%</b>;9/2 收 46,164.72,距高點 -4.3%。</div>
+<div class="quote">✅ <b>聽眾提到的「4 萬 5 千點」關卡,9/1 已經站上並超過</b>。這句聽眾提問在錄音當下可能已經過時,或反映的是提問寫於稍早、指數仍在 4.5 萬附近整理時的狀態。</div>
+</div>
+
+<h2>七、加碼策略方法論(非查證內容)</h2>
+<div class="card">
+<p>聽眾問加碼邏輯,主持人的回答是方法論框架而非可驗證的事實陳述:區分「本夢比」股票(動能/題材驅動,傾向持續加碼)vs「本益比」股票(價值驅動,漲多了會減碼);美股部位設有上限(約總部位 3–4 層),因為美股財報電話會議常見單日 -20% 的尾部風險;台股因有漲跌停限制、波動相對較小,較少設部位上限,更看重流動性能否進出;近年很少設目標價,因為 AI 股經常噴出 5–10 倍,遠超合理估值框架能解釋的範圍。</p>
+<p class="note">📌 這段本質上是主持人一貫的交易哲學重申,沒有新的可驗證主張,僅供讀者理解他的方法論背景,不列入下方查證表。</p>
+</div>
+
+<h2>八、同族群概念股掃描:ASIC/XPU 供應鏈</h2>
+<div class="card">
+<p><b>族群定義</b>:聯發科這次事件牽動的是<b>客製 ASIC/XPU 設計服務鏈</b>——過去由博通以 Turnkey 模式一手包辦,現在雲端巨頭(Google、Amazon、OpenAI)傾向自行整合、把周邊環節拆給多家供應商分食。本集只點名了聯發科、輝達、博通;Marvell、世芯-KY、創意電子是本站依 CLAUDE.md 慣例自行補上的同族群成員,因其同屬客製 ASIC 設計服務,且與 <a href="gooaye-ep690-stocks.html">EP690</a>、<a href="gooaye-ep692-stocks.html">EP692</a> 查證過的同一條供應鏈直接相關。</p>
+<p><b>循環烈度判定(invest-playbook)</b>:這個族群更接近「結構性成長 + 資本支出集中度」的題材,不是傳統存貨周期——訂單集中在少數幾家雲端巨頭手上,誰拿到誰的訂單決定各家的成長曲線。<span class="lose">族群內估值分位差異極大(博通 forward PE 僅 8.0 分位、Marvell 卻已到 77.7 分位),不能用同一套倍數比較</span>;台股三檔缺 forward PE 資料源,一律標明是 trailing。</p>
+<div style="overflow-x:auto"><table id="grpASIC"></table></div>
+<p class="note">美股快照/forward PE/估值百分位/分析師目標價 — Futu OpenAPI(2026-09-02);台股股價、距 3 個月高點回檔、trailing PE、7 月營收 YoY — FinMind(2026-09-02)。</p>
+</div>
+<div class="card">
+<h3>族群小結</h3>
+<p><b>同一條 ASIC/XPU 供應鏈,估值卻是兩個世界</b>。博通(forward PE 28.1x、8.0 分位)與聯發科(trailing 70.6x、連續 4 個月墊高)幾乎是族群裡估值走向相反的兩端——市場短線把博通當成「客戶自研化」趨勢下的輸家打壓估值,卻把聯發科的「拿到輝達投資」當成確定性利多推升估值,<b>但兩者背後其實是同一個故事的兩面:誰能拿到雲端巨頭的訂單</b>。</p>
+<p><b>世芯-KY 與創意電子的營收成長遠比聯發科猛,但估值也更貴</b>。世芯-KY 7 月營收年增 <b>+181.8%</b>、創意電子 <b>+158.4%</b>,兩檔的成長速度都是聯發科(+12.2%)的十倍以上;但 trailing PE 也分別到 61.6x 與 <b>151.1x</b>,創意電子已進入純題材溢價區間。<span class="lose">三檔台股距 3 個月高點都回檔 9–17%,顯示這波估值墊高後,市場對「誰能真正吃到訂單」開始出現分歧</span>。</p>
+<p class="note">📌 <b>Marvell 的估值分位在最近幾集之間變化劇烈</b>:<a href="gooaye-ep692-stocks.html">EP692</a>(8/29)查證時 forward PE 估值百分位還是 22.2 分位(相對便宜),本集(9/2)查證已升到 <b>77.7 分位</b>——短短幾個交易日內從便宜滑向偏貴,顯示這個族群的估值波動速度很快,讀者引用時務必核對查證日期。</p>
+</div>
+
+<h2>九、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。<b>世芯-KY、創意電子、Marvell 本集未被口播點名,僅出現在本站自行補上的族群掃描</b>。</p>
+
+<h2>十、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:聯發科可轉債交易條款 — WebSearch(ABMedia/TechNews/udn/聯合新聞網/財報狗/Yahoo股市,2026-08-31 公告);NVHBM 規格 — WebSearch(Tom's Hardware/wccftech/StorageReview);博通市占與客戶 — WebSearch;股價/trailing PE/月營收 — FinMind(2026-09-02);美股快照/forward PE/估值百分位/分析師目標價 — Futu OpenAPI(2026-09-02);TAIEX 逐日數據 — FinMind(2026-06-01~09-02)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>十一、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">聯發科可轉債的核心交易條款查證下來準確度很高</span>。發行總額、輝達認購比例、轉換價、稀釋比例全部對得上,股價反應也確實劇烈——這是本集「轉述一手交易新聞」最紮實的部分。</p>
+<p><span class="win">NVHBM 的頻寬與功耗數字精準,主持人對它的保留態度也合理</span>——沒有過度反應成「輝達又要吃掉記憶體廠的利潤」,只是平實轉述規格。</p>
+<p><span class="win">博通 70% ASIC 市占、6 大客戶名單查證屬實</span>,forward PE 僅 8.0 分位歷史低檔,是本集少數「敘事偏空但估值便宜」的組合,值得持續追蹤。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">「台股 7 月跌 30%」是本集最大的誇大之處</span>。用 TAIEX 逐日數據回測,實際跌幅是 -17.2%,幾乎少了一半;如果是指主持人自己的持股組合而非大盤,數字或許成立,但口播沒有做這個區分,容易誤導聽眾對大盤真實波動幅度的認知。</p>
+<p><span class="lose">NVHBM 的比較基準(HBM4 vs HBM4E)與首發客戶(聯發科 vs Amazon)兩處細節有誤</span>,雖不影響「輝達自有規格化」的大方向判斷,但顯示口播對技術規格的轉述仍需要逐字核對原始資料。</p>
+<p><span class="lose">「博通電話會議會強力反駁」是尚未發生的預判,不是事實</span>;「光通貴族後來創新高」的具體個股清單本文也未能逐一核實,兩處都應標記為主持人的觀點,不是已驗證的結論。</p>
+<h3>風險與反方觀點</h3>
+<p>最大的風險是<b>把「輝達入股=確定性利多」直接讀成買點</b>。聯發科 trailing PE 已連續 4 個月墊高到 70.6x,遠高於自身歷史正常區間(15–25x),輝達的投資給了故事新的想像空間,但也代表安全邊際已經很薄——如果 ASIC/XPU 業務放量的時程不如預期,估值收縮的壓力不需要衰退就會出現。</p>
+<p>其次,<b>把博通的估值便宜直接讀成「一定會反彈」也有風險</b>。forward PE 8.0 分位確實是歷史低檔,但這反映的可能是市場對「客戶自研化侵蝕 Turnkey 生意」的長期疑慮,而不只是短線錯殺——博通電話會議是否真的能反駁這個疑慮,現在還是未知數。</p>
+<h3>可信度結論</h3>
+<p>本集在<span class="win">一手交易新聞的轉述</span>上準確度很高(聯發科可轉債條款、NVHBM 頻寬功耗數字、博通市占客戶名單全部查證屬實),問題集中在<span class="lose">口播對大盤修正幅度的誇大描述</span>(30% vs 實際 17.2%)以及<span class="lose">部分技術細節的張冠李戴</span>(NVHBM 比較基準、首發客戶)。</p>
+<p>整體評級:<b>一手事件轉述可信,但涉及百分比、比較基準的細節需要自行核實再引用</b>。這集真正值得留著的是聯發科可轉債背後的產業邏輯——輝達正在把台灣 ASIC 設計服務鏈納入自己的生態圈,但這個故事現在已經站上 70 倍本益比的位置,追高與撿便宜是兩件事。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP693</b>「🍖」(<a href="https://youtu.be/TsMMO08ub_Q" target="_blank" rel="noopener">YouTube 原始連結</a>)。NotebookLM 對 YouTube 自動語音辨識逐字稿做分析整理(整理日 <b>2026-09-02</b>)。逐字稿為自動 ASR,含糊或未點名對象的評論已於文中標註存疑,無法確認者已標明。<br>
+<b>數字查證</b>:聯發科可轉債交易條款、NVHBM 規格、博通市占與客戶 — WebSearch(2026-08~09 當期);聯發科/世芯-KY/創意電子股價、trailing PE、月營收、TAIEX 逐日數據 — FinMind(2026-09-02);博通/Marvell/輝達美股快照、forward PE、估值百分位、分析師目標價 — Futu OpenAPI(2026-09-02,Futu 不支援台股行情)。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+// 個股:tone 語氣 + verdict 查證
+const STOCKS=[
+ {nm:'聯發科',code:'2454',mkt:'台股',tone:'turn',said:'獲輝達/Google認購39億美元可轉債,首次投資台灣上市公司;9/1消息公布股價直接漲停。',chk:'✅核心條款查證屬實:發行總額<b>39億美元</b>,輝達認購約<b>35億美元(九成)</b>;轉換價<b>NT$4,513.75</b>(較8/31收盤3,925元溢價約<b>+15.0%</b>),最大稀釋僅約<b>1.67%</b>。✅股價反應比口播描述更劇烈:9/1漲停鎖<b>4,315元</b>,9/2開高至4,450元、最高4,565元,尾盤拉回收4,275元。💡但<b>trailing PE已達70.6x</b>,是連續第4個月估值墊高(7/18的53.7x→8/7的64.4x→9/2的70.6x),輝達入股是錦上添花而非撿便宜。7月營收YoY僅+12.2%。',vd:'warn'},
+ {nm:'Nvidia',code:'US.NVDA',mkt:'美股',tone:'bull',said:'認購聯發科約35億美元可轉債,史上最大單筆對台投資;推出NVHBM新規格,頻寬+30%、功耗-15%。',chk:'✅投資規模查證屬實。✅NVHBM頻寬與功耗數字精準屬實,與官方數字完全吻合。⚠️但正確比較基準是<b>HBM4E</b>(非HBM4口播誤植),首發客戶是<b>Amazon Annapurna Labs(Trainium4)</b>,不是聯發科。💡估值面:現價$225.20(Futu,2026-09-02),trailing PE 28.5x,<b>forward PE僅18.3x(估值百分位僅2.0%,歷史極低檔)</b>,延續本站多集查證的「AI核心資產最便宜」現象。',vd:'ok'},
+ {nm:'Broadcom',code:'US.AVGO',mkt:'美股',tone:'bull',said:'ASIC/XPU市場龍頭地位面臨輝達拉攏聯發科、Marvell新進展的競爭壓力,主持人判斷市場過度反應,類比「光通貴族」恐慌後續創新高;預判電話會議會強力反駁。',chk:'✅龍頭地位查證屬實:市占約<b>70%</b>,鎖定6大XPU客戶(Google、OpenAI等),AI半導體營收Q2 FY26年增143%至108億美元。❓「光通貴族後來創新高」具體個股清單未逐一核實。📌「電話會議會強力反駁」是尚未發生的預判,非事實。💡估值面:現價$369.30,<b>forward PE僅28.1x(估值百分位8.0%,歷史低檔)</b>,26位分析師92.3% buy、目標價均值$521.63,是族群裡相對便宜的一檔。',vd:'ok'},
+ {nm:'Marvell',code:'US.MRVL',mkt:'美股',tone:'neu',said:'市場上想從博通身上「吃肉」的勢力之一,近期有新進展(細節口播未展開)。',chk:'📌口播未給具體事實主張,僅點名為競爭態勢的一員。💡估值面:現價$207.66,trailing PE 68.5x,forward PE 60.8x(<b>估值百分位77.7%,偏貴</b>)——相較<a href="gooaye-ep692-stocks.html">EP692</a>(8/29)查證時的22.2分位,短短幾個交易日內從相對便宜滑向偏貴,估值波動速度快。',vd:'warn'},
+ {nm:'世芯-KY',code:'3661',mkt:'台股',tone:'turn',said:'本集未被口播點名,屬本站依CLAUDE.md慣例自行補上的ASIC設計服務同族群成員。',chk:'✅營收成長遠勝聯發科:7月營收YoY <b>+181.8%</b>(聯發科的十餘倍),但trailing PE也達61.6x,距3個月高點回檔<b>-16.8%</b>。與<a href="gooaye-ep690-stocks.html">EP690</a>查證的「營收轉強但股價落後」現象一致。',vd:'na'},
+ {nm:'創意電子',code:'3443',mkt:'台股',tone:'turn',said:'本集未被口播點名,屬本站依CLAUDE.md慣例自行補上的ASIC設計服務同族群成員。',chk:'✅營收成長同樣強勁:7月營收YoY <b>+158.4%</b>,但trailing PE已達<b>151.1x</b>,是族群裡估值最貴的一檔,已進入純題材溢價區間;距3個月高點回檔-9.2%,是族群裡最抗跌的台股。',vd:'na'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+// 族群掃描
+document.getElementById('grpASIC').innerHTML=
+'<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>估值</th><th>一句話看法</th></tr>'+
+[
+ ['2454 聯發科(台股)','客製ASIC/XPU設計服務 · 本次事件主角','9/1漲停,trailing PE已達<span class="lose">70.6x</span>','trailing 70.6x<br><span style="color:var(--ink3);font-size:11px">— (FinMind不涵蓋forward)</span>','輝達入股是錦上添花,連續4個月估值墊高後安全邊際已薄'],
+ ['AVGO Broadcom','Turnkey龍頭 · 客戶自研化趨勢下承壓','市場短線打壓估值,26位分析師92.3% buy','<b>28.1x</b><br><span class="win" style="font-size:11px">8.0分位(trailing 61.5x)</span>','族群裡估值最便宜,「客戶自研化」疑慮可能已過度反應'],
+ ['MRVL Marvell','客製ASIC設計服務 · 想從博通身上分食','估值分位短期內快速墊高','60.8x<br><span class="lose" style="font-size:11px">77.7分位(trailing 68.5x)</span>','較EP692查證時(22.2分位)明顯轉貴,估值波動速度快'],
+ ['3661 世芯-KY','ASIC設計服務(台股)· 老AI題材','<span class="win">營收成長全族群最快</span>','61.6x<br><span class="lose" style="font-size:11px">距3個月高點 -16.8%</span>','7月營收YoY+181.8%遠勝聯發科,但股價落後、估值也不便宜'],
+ ['3443 創意電子','ASIC設計服務(台股)· 老AI題材','<span class="lose">估值全族群最貴</span>','<b>151.1x</b><br><span class="win" style="font-size:11px">距3個月高點 -9.2%(最抗跌)</span>','營收YoY+158.4%強勁,但151倍已是純題材溢價區間'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+// 數字查證表
+const FACTS=[
+ ['聯發科可轉債發行總額39億美元,輝達認購約35億(九成)','口播','✅<b>屬實</b>:多篇報導確認發行總額39億美元,輝達認購約35億(九成),Google同步認購;媒體稱輝達史上在美國境外最大單筆直接投資','ok'],
+ ['轉換價與稀釋比例','未在口播中提及,本文補查','✅<b>轉換價NT$4,513.75</b>,較8/31收盤3,925元溢價約<b>+15.0%</b>(與口播「溢價約十幾%」吻合);全數轉換最大稀釋約<b>1.67%</b>','ok'],
+ ['消息公布後股價直接漲停,隔日回到平盤附近','口播','⚠️<b>9/1漲停屬實(收4,315元)</b>,但9/2並非「回到平盤」——開高至4,450元、盤中最高4,565元,尾盤才拉回收4,275元(-0.9%),走勢比「隔日平盤」更亢奮','warn'],
+ ['分析師目標價一致喊多(花俟/大摩)','口播','⚠️<b>有出入</b>:查證到花旗一則報導稱目標價上看NT$6,800,但另有較早報導顯示大摩曾中立評等、目標價僅約NT$1,288(時間點與是否已更新不明確),外資看法本身有分歧','warn'],
+ ['NVHBM頻寬+30%、功耗-15%','口播','✅<b>屬實</b>,與Tom\'s Hardware/wccftech等多家科技媒體報導的官方數字完全吻合','ok'],
+ ['NVHBM比HBM4頻寬多30%','口播','⚠️<b>比較基準有誤</b>,正確基準應為<b>HBM4E</b>,非HBM4','warn'],
+ ['NVHBM首發客戶可能是聯發科(交由台積電代工)','口播 · 推論','⚠️<b>目前已知首發客戶是Amazon Annapurna Labs(Trainium4)</b>,並非聯發科,口播屬合理推論但未經證實','warn'],
+ ['博通ASIC/XPU市占約70%,鎖定6大客戶','口播','✅<b>屬實</b>:含Google(7代TPU合作史)、OpenAI(2025/10簽約10GW多年合約),AI半導體營收Q2 FY26年增143%至108億美元','ok'],
+ ['「光通貴族」恐慌後續同類股創新高','口播 · 歷史類比','❓具體個股清單與漲幅未逐一核實,方向合理(市場對敘事性利空常過度反應)但缺數據佐證','q'],
+ ['博通電話會議會強力反駁市場疑慮','口播 · 預判','📌尚未發生的預判,非既定事實,應等實際法說會回應後再檢視','q'],
+ ['台股8月盤面好,還沒收復7月最瘋狂時的高點,差距在縮小','口播','✅方向大致成立:9/1收盤46,948.72點創反彈以來新高,距6/23歷史高點(48,218.87)僅剩約-2.6%','ok'],
+ ['台股7月修正跌幅約30%','口播','⚠️明顯誇大:TAIEX逐日回測,6/23盤中高點48,218.87→7/30收盤低點39,933.30,實際跌幅-17.2%,不到口播數字的六成;若指主持人自身持股組合則可能成立,但講成大盤會誤導',   'warn'],
+ ['聽眾提問「今年行情是不是就到4萬5千點」','聽眾Email','✅9/1已站上並超過4萬5千點(收46,948.72),這句提問在錄音當下可能已經過時','ok'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
