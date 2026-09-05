@@ -10,6 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
+  {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry', draft:1},
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
   {slug:'cloudflare-2026q2-earnings', d:'2026-08-07', cat:'財報分析',       sub:'Cloudflare',zh:'Cloudflare．2026 Q2 財報拆解', en:'Cloudflare．Q2 2026 Earnings, Unpacked'},
   {slug:'palantir-2026q2-earnings',   d:'2026-08-05', cat:'財報分析',       sub:'Palantir',  zh:'Palantir．2026 Q2 財報拆解', en:'Palantir．Q2 2026 Earnings, Unpacked'},
