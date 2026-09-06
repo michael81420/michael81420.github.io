@@ -428,7 +428,37 @@ function initArticle(){
   }
 }
 
+/* 站徽列（第一層）：全站唯一一份，由 JS 注入 —— 改這個函式就全站生效，不必動 87 個 HTML。
+   高度已由 site.css 的 body{padding-top} 預留，注入不會造成版面跳動。 */
+var SOCIAL=[
+  {u:'https://www.linkedin.com/in/hc-hsieh-michael', n:'LinkedIn', p:'M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z'},
+  {u:'https://github.com/michael81420',              n:'GitHub',   p:'M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.27-.01-1.16-.02-2.1-3.34.7-4.04-1.4-4.04-1.4-.55-1.36-1.34-1.72-1.34-1.72-1.09-.72.08-.71.08-.71 1.2.08 1.84 1.21 1.84 1.21 1.07 1.78 2.81 1.27 3.5.97.11-.76.42-1.27.76-1.56-2.67-.29-5.47-1.3-5.47-5.77 0-1.27.47-2.31 1.23-3.13-.12-.29-.53-1.48.12-3.08 0 0 1-.31 3.3 1.19a11.6 11.6 0 0 1 6 0c2.3-1.5 3.3-1.19 3.3-1.19.65 1.6.24 2.79.12 3.08.77.82 1.23 1.86 1.23 3.13 0 4.48-2.81 5.47-5.49 5.76.43.36.81 1.08.81 2.18 0 1.57-.01 2.84-.01 3.23 0 .31.21.68.83.56C20.56 21.88 24 17.49 24 12.29 24 5.78 18.63.5 12 .5z'}
+];
+function initSitebar(){
+  var base=location.pathname.indexOf('/posts/')>=0?'../':'';
+  var ext=LANG==='en'?'.en.html':'.html';
+  var h='<div class="sitebar-in">'
+    +'<a class="brand" href="'+base+'index'+ext+'">'
+    +'<img class="site-mark" src="'+base+'favicon.png" alt="">michael</a><nav>'
+    +'<a href="'+base+'about'+ext+'">'+(LANG==='en'?'About':'關於我')+'</a>';
+  SOCIAL.forEach(function(s){
+    h+='<a class="icon-link" href="'+s.u+'" target="_blank" rel="noopener" aria-label="'+s.n+'">'
+      +'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="'+s.p+'"/></svg></a>';
+  });
+  var bar=document.createElement('div');
+  bar.className='sitebar';
+  bar.innerHTML=h+'</nav></div>';
+  document.body.insertBefore(bar, document.body.firstChild);
+  // 語言／主題鈕一律掛站徽列：文章與 about 頁原本寫在第二層 topbar 裡，整組搬上來；首頁本來就沒有，直接生一組
+  var nav=bar.querySelector('nav'), acts=document.querySelector('.topbar .tb-actions');
+  if(acts) nav.appendChild(acts);
+  else nav.insertAdjacentHTML('beforeend',
+        '<div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button>'
+       +'<button class="theme-toggle" onclick="toggleTheme()">☾</button></div>');
+}
+
 document.addEventListener('DOMContentLoaded',function(){
+  initSitebar();
   updateThemeIcons(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
   document.querySelectorAll('.lang-toggle').forEach(function(b){b.textContent=LANG==='en'?'中':'EN';});
   initHome();
