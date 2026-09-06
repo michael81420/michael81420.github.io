@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>【原型】財報總覽</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
+<style>.topbar{position:static}</style>
+</head><body><div class="wrap">
+<div class="topbar"><a class="btn-back" href="index.html">← 回到列表</a><button class="theme-toggle" onclick="toggleTheme()">☾</button></div>
+
+<header>
+  <h1>財報總覽</h1>
+  <div class="sub">一行一家,六組數字同時攤開。點卡片展開細節,點代號進完整拆解。</div>
+  <div style="margin-top:10px"><span class="badge">原型,不會發佈</span><span class="badge new">2026 Q2</span></div>
+</header>
+
+<div id="stage" style="margin-top:20px"></div>
+
+<div class="foot"><b>原型說明</b>:GOOGL / META 數字取自對應文章的核心數字表(Q2'26 / Q1'26 / Q2'25 三期);<b>其餘 6 家為版面用的示意數字,不是真的</b>。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。</div>
+</div>
+
+<script src="_proto-earnings.js"></script>
+<script>
+protoNav('_proto-overview.html');
+drawEarnings(document.getElementById('stage'));
+</script>
+</body></html>
