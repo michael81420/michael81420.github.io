@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP695 個股觀點整理 — Google 罕見自曝 AI 回本效率:TPU回本砍半到1年、GPU回本壓縮到2年內,但效能倍數說法屬行銷語言;另談台積電CPO定價權、Palantir風險與Intel期權操作</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep695-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP695 · 個股觀點整理 <span style="font-size:16px;color:var(--ink3)">｜🍊</span></h1>
+<div class="sub">本集不是傳統選股集,主軸是主持人拆解 <b>Google Cloud 負責人 Thomas Kurian 在高盛 Communacopia + Technology Conference(2026/9/8-9)公開發言的 AI infra 投報數字</b>,外加兩題聽眾信箱 Q&amp;A(CPO 供應鏈定價權、Palantir 競爭疑慮)與一段 Intel 期權交易個人分享。核心數字:<b>新客戶獲取速度較去年快 2 倍、>$1 億美元大型合約年增 2 倍以上、commit 客戶超額消費 >50%、每條產品線年營收皆 >$10 億;通用 GPU 伺服器回收期已壓縮到 <2 年,自研 TPU 回收期再砍半到 ~1 年</b>——經 WebSearch 交叉查證多家媒體報導一致,屬本集少數有紮實第一手數據支撐的段落。<br>主持人本集刻意沒有點名任何台股概念股,不要期待選股清單。<br>NotebookLM 逐字稿分析 ＋ Futu/WebSearch 數字核實,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP695 逐字稿分析</span>
+<span class="badge">整理日:2026-09-09</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這集在講什麼</h2>
+<p class="big">🟢 <span class="win">Google Cloud 罕見自曝 AI infra 具體投報數字,查證下來屬實</span>。新客戶獲取速度 <b>2 倍於去年</b>、>$1 億美元大型合約年成長 <b>2 倍以上</b>、commit 客戶超額消費 <b>>50%</b>、每條產品線年營收皆 <b>>$10 億</b>;通用 GPU 伺服器回收期 <b><2 年</b>,自研 TPU 回收期再砍半到 <b>~1 年</b>——這類具體單位經濟指標比市場情緒判斷更有訊號價值,且經多家媒體交叉報導一致。</p>
+<p class="big">⚠️ <span class="lose">效能倍數說法(2.7 倍訓練、80% 推論、優於 CPU 30%、成本 1/2.5)是行銷語言,別照單全收</span>。這些數字未見第三方獨立驗證,主持人自己也提醒該打折,和上面的回收期硬數據不是同一個可信度等級。</p>
+<p class="big">🤝 <span class="mid">聽眾問 CPO 供應鏈定價權落在誰身上,主持人稱台積電是關鍵瓶頸但「經營風格有品」</span>,不像記憶體廠趁缺貨暴力漲價——純觀點延伸,無新查證數字。</p>
+<p class="big">🎯 <span class="mid">聽眾問 Google DeepMind 切軍工/政府業務是否會擊垮 Palantir,主持人稱「完全不擔心」</span>——邏輯自洽但也是標準的「不回答風險」安撫話術,無可查證數字。</p>
+<p class="big">💰 <span style="color:var(--turn);font-weight:700">主持人自曝 Intel 買權操作抓到一波 +21% 大漲</span>,並談美股融資成本(常見 10%+)遠高於台股(約 3%)。</p>
+<p class="note">★ 本集重點是 Google 揭露的單位經濟數字,不是選股集——沒有新增任何台股概念股主張。</p>
+</div>
+
+<h2>一、先說清楚:這集在講什麼</h2>
+<div class="card">
+<p>EP695 開場先鋪陳大盤情緒(加權指數從 4 萬 2 漲到 4 萬 7,「4 萬 2 會煩、4 萬 7 還是會煩」),接著進入本集主軸:拆解 Google Cloud 負責人 Thomas Kurian 在高盛科技會議上的公開發言,重點是 AI infra 的具體投報數字。中段是兩題聽眾信箱 Q&amp;A(CPO 光通訊供應鏈定價權、Palantir 是否受 Google 軍工業務威脅),後段是主持人分享自己操作 Intel 買權的經驗與台美融資成本差異。</p>
+<div class="quote">📌 這集<b>沒有點名任何台股概念股</b>,台積電只在 Q&amp;A 中被動提及,不要以為整集在選股。真正的看點是 Google 這段罕見的「公司主動揭露具體單位經濟指標」,比空泛的產業敘事更值得記錄。</div>
+</div>
+
+<h2>二、Google Cloud 罕見自曝 AI infra 回本效率</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Google雲端負責人在高盛會議揭露，新客戶獲取速度是去年的兩倍，超過一億美元的大型合約年增兩倍以上，承諾用量客戶超額消費超過百分之五十，每條產品線年營收都超過十億美元；通用GPU伺服器的回本期已經壓縮到兩年以內，而自研TPU的回本期進一步砍半到大約一年，這些數字經多家媒體交叉查證屬實">
+  <defs><marker id="ah695a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="24" style="fill:var(--ink);font:700 14px sans-serif">Kurian 在高盛會議揭露的 4 項 AI infra 硬數據</text>
+  <text x="20" y="42" style="fill:var(--ink3);font:400 11px sans-serif">WebSearch 交叉查證(2026/9/8-9 高盛 Communacopia 會議),多家媒體報導一致</text>
+
+  <rect x="20" y="60" width="170" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="32" y="82" style="fill:var(--ink2);font:600 11px sans-serif">新客戶獲取速度</text>
+  <text x="32" y="102" style="fill:var(--win);font:700 15px sans-serif">2 倍</text>
+  <text x="32" y="118" style="fill:var(--ink3);font:400 10px sans-serif">較去年同期</text>
+
+  <rect x="200" y="60" width="170" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="212" y="82" style="fill:var(--ink2);font:600 11px sans-serif">&gt;$1億美元合約</text>
+  <text x="212" y="102" style="fill:var(--win);font:700 15px sans-serif">2 倍以上</text>
+  <text x="212" y="118" style="fill:var(--ink3);font:400 10px sans-serif">年成長</text>
+
+  <rect x="380" y="60" width="170" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="392" y="82" style="fill:var(--ink2);font:600 11px sans-serif">commit 客戶</text>
+  <text x="392" y="102" style="fill:var(--win);font:700 15px sans-serif">超額消費 &gt;50%</text>
+
+  <rect x="560" y="60" width="180" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="572" y="82" style="fill:var(--ink2);font:600 11px sans-serif">各產品線年營收</text>
+  <text x="572" y="102" style="fill:var(--win);font:700 15px sans-serif">皆 &gt;$10 億</text>
+
+  <rect x="90" y="160" width="240" height="110" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="106" y="184" style="fill:var(--ink);font:700 12px sans-serif">通用 GPU 伺服器</text>
+  <text x="106" y="210" style="fill:var(--ink2);font:600 13px sans-serif">回本期 &lt; 2 年</text>
+  <text x="106" y="232" style="fill:var(--ink3);font:400 10px sans-serif">外租/雲端出租模式</text>
+  <text x="106" y="248" style="fill:var(--ink3);font:400 10px sans-serif">已較過去週期明顯縮短</text>
+
+  <line x1="330" y1="215" x2="418" y2="215" style="stroke:var(--ink3);stroke-width:2" marker-end="url(#ah695a)"/>
+  <text x="335" y="205" style="fill:var(--ink3);font:400 10px sans-serif">自研晶片</text>
+
+  <rect x="422" y="160" width="240" height="110" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="438" y="184" style="fill:var(--win);font:700 12px sans-serif">自研 TPU</text>
+  <text x="438" y="210" style="fill:var(--win);font:700 15px sans-serif">回本期 ~1 年</text>
+  <text x="438" y="232" style="fill:var(--ink3);font:400 10px sans-serif">較 GPU 再砍半</text>
+  <text x="438" y="248" style="fill:var(--ink3);font:400 10px sans-serif">硬體投資效率明顯提升</text>
+
+  <text x="20" y="292" style="fill:var(--ink2);font:400 11px sans-serif">這 4 項數字經多家媒體交叉查證屬實,是本集少數有紮實第一手數據支撐的段落</text>
+</svg>
+</div>
+<p>主持人的講法是:Google Cloud 負責人 Thomas Kurian 在高盛科技會議上,難得地把 AI infra 的具體投報數字攤開來講,而不是只講敘事。</p>
+<div class="quote">✅ <b>4 項核心數字查證屬實</b>:新客戶獲取速度 2 倍於去年、>$1 億美元大型合約年增 2 倍以上、commit 客戶超額消費 >50%、每條產品線年營收皆 >$10 億。WebSearch 交叉查證 CNBC、Converge Digest、Seeking Alpha 等多家媒體報導一致。</div>
+<div class="quote">✅ <b>回本期數字查證屬實</b>:通用 GPU 伺服器回收期已壓縮到 <b>&lt;2 年</b>,自研 TPU 回收期進一步砍半到 <b>~1 年</b>——這是罕見的具體單位經濟指標,比空泛的「AI 需求很強」敘事更有訊號價值,也比市場情緒判斷更可信。</div>
+</div>
+
+<h2>三、但效能倍數是行銷語言,三層可信度別混為一談</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="本集主張可分三層可信度：回本期等硬數據已交叉查證屬實最可信；訓練推論效能倍數屬公司行銷語言未經第三方獨立驗證需要打折；台積電經營風格有品、Palantir不受威脅等屬純觀點無可查證數字僅供參考">
+  <defs><marker id="ah695b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="22" style="fill:var(--ink);font:700 14px sans-serif">本集主張的三層可信度</text>
+  <text x="20" y="40" style="fill:var(--ink3);font:400 11px sans-serif">同一集節目裡,不同段落的可信度差很多,不能一律照單全收</text>
+
+  <rect x="20" y="60" width="220" height="160" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="36" y="84" style="fill:var(--win);font:700 12px sans-serif">✅ 硬數據</text>
+  <text x="36" y="106" style="fill:var(--ink2);font:400 11px sans-serif">GPU 回本&lt;2年</text>
+  <text x="36" y="122" style="fill:var(--ink2);font:400 11px sans-serif">→ TPU 回本~1年</text>
+  <text x="36" y="144" style="fill:var(--ink2);font:400 11px sans-serif">新客戶/大合約/</text>
+  <text x="36" y="160" style="fill:var(--ink2);font:400 11px sans-serif">超額消費數字</text>
+  <text x="36" y="190" style="fill:var(--win);font:700 11px sans-serif">多家媒體交叉查證</text>
+  <text x="36" y="206" style="fill:var(--win);font:700 11px sans-serif">一致,可信度最高</text>
+
+  <rect x="270" y="60" width="220" height="160" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+  <text x="286" y="84" style="fill:var(--turn);font:700 12px sans-serif">⚠️ 行銷語言</text>
+  <text x="286" y="106" style="fill:var(--ink2);font:400 11px sans-serif">訓練效能優於市場</text>
+  <text x="286" y="122" style="fill:var(--ink2);font:400 11px sans-serif">2.7倍、推論80%、</text>
+  <text x="286" y="138" style="fill:var(--ink2);font:400 11px sans-serif">優於CPU 30%、</text>
+  <text x="286" y="154" style="fill:var(--ink2);font:400 11px sans-serif">成本僅1/2.5</text>
+  <text x="286" y="184" style="fill:var(--turn);font:700 11px sans-serif">公司自己講的,</text>
+  <text x="286" y="200" style="fill:var(--turn);font:700 11px sans-serif">未見第三方驗證</text>
+
+  <rect x="520" y="60" width="220" height="160" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="536" y="84" style="fill:var(--ink);font:700 12px sans-serif">❓ 純觀點</text>
+  <text x="536" y="106" style="fill:var(--ink2);font:400 11px sans-serif">台積電經營風格</text>
+  <text x="536" y="122" style="fill:var(--ink2);font:400 11px sans-serif">有品、Palantir</text>
+  <text x="536" y="138" style="fill:var(--ink2);font:400 11px sans-serif">完全不擔心、CSP</text>
+  <text x="536" y="154" style="fill:var(--ink2);font:400 11px sans-serif">墊錢邏輯持久</text>
+  <text x="536" y="184" style="fill:var(--ink3);font:700 11px sans-serif">無可查證數字,</text>
+  <text x="536" y="200" style="fill:var(--ink3);font:700 11px sans-serif">僅供參考</text>
+</svg>
+</div>
+<div class="quote">⚠️ <b>效能倍數是公司行銷語言,需要打折</b>。訓練效能優於市場 2.7 倍、推論優於市場 80%、優於 CPU 30%、成本僅競品 1/2.5——這些數字都是 Google 自己講的,未見第三方獨立驗證,連主持人自己都提醒這類數字帶宣傳性質,不能跟上一段的回本期硬數據放在同一個可信度等級。</div>
+</div>
+
+<h2>四、聽眾 Q&amp;A:CPO 供應鏈定價權、Palantir 風險</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="qaTable"></table></div>
+<p class="note">屬聽眾提問回應,主持人觀點為主,無新增可獨立查證的數字。</p>
+</div>
+
+<h2>五、Intel 期權交易分享與台美融資成本差異</h2>
+<div class="card">
+<p>主持人自述近期操作 Intel 買權(Call),「抓到一波大漲」,順帶分享美股融資成本(常見 10% 以上)遠高於台股(約 3%)的差異。</p>
+<div class="quote">✅ <b>Intel 股價一波大漲查證屬實</b>:從 7/28 低點約 $86 一路衝到 9/8 收盤 $104.47(區間高點約 $106),漲幅約 <b>+21%</b>,確有明顯一波急拉,與口播吻合。但公司仍虧損(trailing PE 負值),<b>forward PE 已墊高到 90.4x</b>(較 7/29 查證的 74x 更貴),追高風險已比先前明顯升高。</p>
+<div class="quote">✅ <b>台美融資利率差異方向合理</b>:美股融資利率常見 10% 以上、台股約 3% 的說法屬合理區間描述,惟實際利率因券商與帳戶條件而異,本文未逐一查證每家報價。</div>
+</div>
+
+<h2>六、同族群概念股掃描:AI infra 資本支出／回本效應族群</h2>
+<div class="card">
+<p><b>族群定義</b>:這集的核心是「AI 資本支出到底划不划算」——歸在同一個題材下的是<b>雲端資本支出與晶片效率</b>族群:自建/自研晶片的雲端業者(Google)、GPU 業界基準(NVIDIA)、同樣採「先墊錢、靠合約分期回收」商業模式的雲端服務商(Oracle),以及供應鏈瓶頸環節(台積電)。範圍只做本集實際提到、且有查證數字支撐的個股,不強制涵蓋所有雲端巨頭。</p>
+<div style="overflow-x:auto"><table id="grpAIInfra"></table></div>
+</div>
+
+<h2>七、提到的個股</h2>
+<div id="cards"></div>
+<p class="note">語氣分級:<span class="win">看多</span> / <span style="color:var(--turn);font-weight:700">觀察/技術面</span> / <span class="mid">中性</span> / <span class="lose">偏淡 / 調節</span>。依口播語氣判讀,非買賣建議。</p>
+
+<h2>八、關鍵數字查證表</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="factTable"></table></div>
+<p class="note">查證來源:Google Cloud infra 數字 — WebSearch(高盛 Communacopia + Technology Conference,2026/9/8-9,CNBC/Converge Digest/Seeking Alpha 等多家媒體報導);股價數據 — Futu(2026-09-08 收盤)。✅ 屬實 · ⚠️ 有出入/需留意 · ❌ 缺乏支撐 · ❓ 查不到/純敘事。</p>
+</div>
+
+<h2>九、客觀評論(invest-playbook 框架)</h2>
+<div class="card">
+<h3>站得住腳的部分</h3>
+<p><span class="win">Google Cloud 揭露的 4 項 AI infra 數字查證下來準確度很高</span>,新客戶獲取速度、大合約成長、commit 客戶超額消費、產品線營收門檻,經多家媒體交叉報導一致。</p>
+<p><span class="win">TPU 回本期較 GPU 再砍半到 ~1 年,是本集最有訊號價值的一句話</span>——具體單位經濟指標比空泛的「AI 需求很強」敘事更值得記錄,這點已寫入本站知識庫的可複用教訓。</p>
+<p><span class="win">Intel 股價急拉 +21% 的口播描述查證屬實</span>,時間點也吻合。</p>
+<h3>要打折扣的部分</h3>
+<p><span class="lose">效能倍數說法(2.7 倍/80%/30%/2.5 分之一)是公司行銷語言</span>,未見第三方獨立驗證,不該跟回本期硬數據混為一談——這是本集最需要提醒讀者分層看待的地方。</p>
+<p><span class="lose">台積電「經營風格有品」、Palantir「完全不擔心」都是純觀點安撫式回應</span>,沒有新增任何可查證數字,是延續既有立場的重複論述而非新事實。</p>
+<h3>風險與反方觀點</h3>
+<p>Intel forward PE 已墊高到 90.4x,追高買權操作的個人分享不構成可複製的投資建議,期權槓桿放大風險,一般投資人跟單風險偏高。</p>
+<p>Google/Oracle 這類「先墊錢、靠合約分期回收」的 CSP 商業模式,市場對循環融資是否會引發泡沫的疑慮尚未消退,主持人認為現金流強勁、週期可能比想像更持久,但這仍是需要持續觀察的產業結構性風險,而非已被證偽的疑慮。</p>
+<h3>可信度結論</h3>
+<p>本集在<span class="win">Google Cloud 揭露的具體單位經濟數字</span>上準確度很高,是近期少見的「公司主動揭露硬數據」段落;但<span class="lose">效能倍數屬行銷語言,台積電/Palantir 相關發言是重複既有觀點的純觀點延伸</span>,沒有新增可查證事實。整體評級:<b>回本期等硬數據可信度高,值得記錄;效能倍數與純觀點段落需要打折,不能跟硬數據同等看待</b>。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:股癌 <b>EP695</b>「🍊」(<a href="https://www.youtube.com/watch?v=OcTI4yvvn2I" target="_blank" rel="noopener">YouTube 原始連結</a>)。NotebookLM 對 YouTube 自動語音辨識逐字稿做分析整理(整理日 <b>2026-09-09</b>)。逐字稿為自動 ASR,含糊或未點名對象的評論已於文中標註存疑,無法確認者已標明。<br>
+<b>數字查證</b>:Google Cloud infra 數字 — WebSearch(高盛 Communacopia + Technology Conference,2026/9/8-9 多家媒體報導);股價與估值數據 — Futu(2026-09-08 收盤)。<br>
+<b>免責聲明</b>:本頁為 podcast 內容彙整與數據查證,<b>不構成任何投資建議</b>。投資有風險,決策前請自行查證。
+</div>
+
+<script>
+document.getElementById('qaTable').innerHTML=
+'<tr><th>提問</th><th>主持人回應</th><th>性質</th></tr>'+
+[
+ ['CPO 光通訊供應鏈,定價權落在哪個環節?','台積電是關鍵瓶頸,但「經營風格有品」,不像記憶體廠趁缺貨暴力漲價','❓純觀點延伸,與過往集數立場一致,無新查證數字'],
+ ['Google DeepMind 切軍工/政府業務,會不會擊垮 Palantir?','「完全不擔心」,市場非零和賽局','❓純觀點安撫,邏輯自洽但無可查證數字,屬標準的「不回答風險」話術'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+
+const STOCKS=[
+ {nm:'Alphabet(Google)',code:'US.GOOG',mkt:'美股',tone:'bull',said:'新客戶獲取速度2倍於去年,>$1億美元大合約年增2倍以上,commit客戶超額消費>50%,各產品線年營收皆>$10億;GPU回本<2年,自研TPU回本再砍半到~1年。',chk:'✅4項核心數字與回本期數字均查證屬實,多家媒體交叉報導一致。⚠️訓練效能2.7倍/推論80%/優於CPU 30%/成本1/2.5是行銷語言,未見第三方獨立驗證。現價$335.38,trailing PE 16.8x(受一次性股權利得干擾),<b>forward PE 24.7x</b>,估值百分位僅14.5%。',vd:'ok'},
+ {nm:'台積電',code:'2330',mkt:'台股',tone:'mid',said:'CPO供應鏈的關鍵瓶頸,但經營風格有品,不像記憶體廠趁缺貨暴力漲價。',chk:'❓純觀點延伸,與既有集數立場一致(多集已驗證抗跌、估值偏低),本集無新增查證數字。ADR現價$439,trailing PE 32.4x,<b>forward PE 22.3x</b>。',vd:'q'},
+ {nm:'Intel',code:'US.INTC',mkt:'美股',tone:'turn',said:'近期操作Intel買權,抓到一波大漲;美股融資利率常見10%以上,台股約3%。',chk:'✅股價急拉查證屬實:7/28低點約$86→9/8收盤$104.47,約<b>+21%</b>。⚠️公司仍虧損(trailing PE負值),<b>forward PE已墊高到90.4x</b>(較7/29查證的74x更貴),個人期權分享不構成可複製建議。',vd:'ok'},
+ {nm:'Palantir',code:'US.PLTR',mkt:'美股',tone:'mid',said:'Google DeepMind切軍工/政府業務不會擊垮Palantir,完全不擔心。',chk:'❓純觀點安撫,邏輯自洽但無可查證數字,屬標準「不回答風險」話術。現價$170.3,trailing PE 145.6x,<b>forward PE 89.5x</b>,仍是本集提及個股中估值最貴者之一。',vd:'q'},
+ {nm:'NVIDIA',code:'US.NVDA',mkt:'美股',tone:'mid',said:'僅作為Google TPU回本速度對比的參照基準帶到,無獨立論點。',chk:'—無新主張。現價$225.7,trailing PE 28.5x,<b>forward PE 18.4x</b>,延續前幾集「AI核心資產反而估值最便宜」的一貫定位。',vd:'na'},
+ {nm:'Oracle',code:'US.ORCL',mkt:'美股',tone:'mid',said:'CSP商業模式:先花大錢買硬體,靠5年期合約分期收回,本質是墊錢者;市場擔心循環融資引發泡沫,但現金流強勁、週期可能比想像更持久。',chk:'❓產業結構性觀點,與既有法說會記錄的RPO/循環融資邏輯一致,本集無新增Oracle專屬數字。現價$162.5(較8/3財報後低點$129.87已反彈約+25%),trailing PE 27.9x,<b>forward PE 24.6x</b>。',vd:'q'},
+];
+const TONE={bull:['p-bull','看多'],turn:['p-turn','觀察/技術面'],neu:['p-neu','中性'],bear:['p-bear','偏淡 / 調節'],mid:['p-neu','中性']};
+const VD={ok:['✅','var(--win)','屬實'],warn:['⚠️','var(--lose)','有出入/需留意'],bad:['❌','var(--lose)','缺乏支撐'],na:['—','var(--ink3)','未給數字'],q:['❓','var(--mid)','查不到/純敘事']};
+const box=document.getElementById('cards');const g=document.createElement('div');g.className='cards';
+STOCKS.forEach(s=>{const[cls,lab]=TONE[s.tone];const[ic,c,vl]=VD[s.vd];
+ const d=document.createElement('div');d.className='scard';
+ d.innerHTML=`<div class="nm">${s.nm}<span class="code">${s.code} · ${s.mkt}</span></div>
+ <div class="said">「${s.said}」</div>
+ <div class="why"><b style="color:${c}">${ic} 查證</b>:${s.chk}</div>
+ <span class="pill ${cls}" style="margin-top:10px">${lab}</span>`;g.appendChild(d);});
+box.appendChild(g);
+
+document.getElementById('grpAIInfra').innerHTML=
+'<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>forward PE</th><th>一句話看法</th></tr>'+
+[
+ ['GOOG Alphabet','自研TPU回本最快,本集數字揭露主角','估值百分位僅<span class="win">14.5%</span>,相對同業並不貴','24.7x','自曝回本數字如屬實,是罕見的具體單位經濟訊號,而非空泛敘事'],
+ ['NVDA NVIDIA','GPU業界基準,TPU回本對比的參照點','估值持續是AI核心資產中最便宜的<span class="win">一個</span>','18.4x','即便Google TPU自建加速,NVDA GPU仍是外部客戶主要選項,尚未看到替代跡象'],
+ ['ORCL Oracle','CSP同商業模式,先墊錢建硬體靠合約回收','財報後低點已反彈<span class="win">+25%</span>','24.6x','與Google揭露的「先墊錢、靠合約分期回收」邏輯一致,循環融資疑慮尚未消退'],
+ ['2330 台積電','供應鏈瓶頸,CPO光通訊定價權關鍵環節','forward PE相對保守,近期區間盤整','22.3x','「經營風格有品」不趁缺貨亂漲價,是主持人對其長期信任的理由'],
+].map(r=>`<tr><td><b>${r[0]}</b></td><td style="color:var(--ink2)">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('');
+
+const FACTS=[
+ ['Google新客戶獲取速度2倍於去年,>$1億美元大合約年增2倍以上,commit客戶超額消費>50%,各產品線年營收皆>$10億','口播','✅<b>屬實</b>:WebSearch交叉查證CNBC、Converge Digest、Seeking Alpha等多家媒體報導一致','ok'],
+ ['通用GPU伺服器回本期<2年','口播','✅<b>屬實</b>,多家媒體報導一致','ok'],
+ ['自研TPU回本期進一步砍半到~1年','口播','✅<b>屬實</b>,是本集最有訊號價值的具體單位經濟指標','ok'],
+ ['TPU訓練效能優於市場2.7倍、推論優於市場80%、優於CPU 30%、成本僅競品1/2.5','口播','⚠️<b>公司行銷語言</b>,未見第三方獨立驗證,主持人自己也提醒該打折','warn'],
+ ['台積電是CPO關鍵瓶頸,但經營風格有品不趁機亂漲價','口播','❓<b>純觀點延伸</b>,與過往集數立場一致,無新查證數字','q'],
+ ['Google DeepMind軍工/政府業務不會擊垮Palantir','口播','❓<b>純觀點安撫</b>,邏輯自洽但無可查證數字','q'],
+ ['Intel買權操作抓到一波大漲','口播','✅<b>屬實</b>:7/28約$86→9/8收盤$104.47,約+21%','ok'],
+ ['美股融資利率常見10%以上,台股約3%','口播','✅<b>方向合理</b>,惟實際利率因券商與帳戶條件而異,未逐一查證每家報價','warn'],
+ ['CSP先墊錢、靠合約分期回收的商業模式,週期可能比想像更持久','口播','❓<b>產業結構性觀點</b>,與既有記錄的RPO/循環融資邏輯一致,無新數字','q'],
+];
+document.getElementById('factTable').innerHTML='<tr><th>主張</th><th>影片說法</th><th>查證結果</th><th>判定</th></tr>'+
+FACTS.map(f=>{const[ic,c,vl]=VD[f[3]];return `<tr><td><b>${f[0]}</b></td><td style="color:var(--ink2)">${f[1]}</td><td>${f[2]}</td><td style="color:${c};font-weight:700;white-space:nowrap">${ic} ${vl}</td></tr>`;}).join('');
+</script>
+</div></body></html>
