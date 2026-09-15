@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32．IoT Learning Log 01: The Board, the Breadboard and Every Module I Tested</title>
+<meta name="description" content="Step one of learning IoT: get to know the hardware on the desk. This log covers the ESP32 DevKit itself, how a breadboard connects, the electrical basics you need before wiring, and the seven modules I actually wired up over three days — each with a diagram, pinout and wiring logic. No code yet.">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="esp32-iot-log-01"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>ESP32．IoT Learning Log 01: The Board, the Breadboard and Every Module I Tested</h1>
+<div class="sub">Step one of learning IoT: get to know the hardware on the desk. This log covers the ESP32 DevKit itself, how a breadboard connects, the electrical basics you need before wiring, and the seven modules I actually wired up over three days — each with a diagram, pinout and wiring logic. <b>No code yet.</b></div>
+<div style="margin-top:10px">
+<span class="badge new">Source: my own ESP32 bench notes</span>
+<span class="badge">Stage: 1 / 5, the parts</span>
+<span class="badge">Compiled: 2026-09-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">Before wiring any module, ask three things: <span class="win">what voltage, is GND shared, which bus?</span></p>
+<ul>
+<li>An ESP32 DevKit is a USB-serial chip + the ESP32 + 4 MB flash. <b>Pins are 3.3V logic and not 5V-tolerant.</b></li>
+<li>Not every pin is free: 6–11 run the flash, 34–39 are input-only, 0/2/5/12/15 are strapping pins, 1/3 are USB serial.</li>
+<li>Breadboard: 5-hole columns connect, rails run lengthwise, the center gap splits the halves.</li>
+<li>There are only four connection styles: <b>GPIO</b> (one pin per job), <b>I2C</b> (two wires + addresses), <b>SPI</b> (shared bus + chip select), <b>UART</b> (TX to RX).</li>
+<li>Tested: on-board LED, 4-digit 7-segment display, 1602 LCD (I2C), 1.8" TFT (SPI), 4-leg button, ISD1820 recorder, 4×3 matrix keypad. Not yet: HC-SR04, buzzer.</li>
+</ul>
+</div>
+
+<h2>The path: where I am</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 170" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five-stage path: I am at stage 1, with a small peek at networking">
+<defs><marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="40" width="120" height="64" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="80" y="66" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">1 The parts</text>
+<text x="80" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 · modules</text>
+<line x1="142" y1="72" x2="166" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="170" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="230" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 Basics</text>
+<text x="230" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">V · R · pull-up</text>
+<line x1="292" y1="72" x2="316" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="320" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3 Buses</text>
+<text x="380" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO · I2C · SPI</text>
+<line x1="442" y1="72" x2="466" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="470" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="530" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4 Networking</text>
+<text x="530" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi · HTTP · BLE</text>
+<line x1="592" y1="72" x2="616" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="620" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="680" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5 Real build</text>
+<text x="680" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">sensors · power</text>
+<text x="80" y="132" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">▲ I am here</text>
+<text x="80" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">started 2026-09</text>
+<text x="530" y="132" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">▲ peeked ahead</text>
+<text x="530" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">WiFi stock ticker</text>
+</svg>
+</div>
+<p>I split IoT into five stages. This log is stage 1, "the parts", plus the basics of stages 2 and 3 — without voltage and bus concepts you can't even wire things correctly. I've peeked at stage 4 (a WiFi stock ticker), but that was following along, not understanding yet.</p>
+<table>
+<tr><th>Date</th><th>What I did</th><th>Key takeaway</th></tr>
+<tr><td>09-14</td><td>Toolchain, LED blink, 7-seg display, 1602 LCD</td><td>Upload needs a Port; Debug needs JTAG hardware; I2C uses addresses</td></tr>
+<tr><td>09-15</td><td>1.8" TFT, Win95 boot screen, button, ISD1820</td><td>SPI wants the hardware pins; wire buttons diagonally; PLAYE vs PLAYL</td></tr>
+<tr><td>09-16</td><td>Retro-Mac ticker (WiFi + Snake), switched to a matrix keypad</td><td>Buttons need shared GND; measure the keypad ribbon order, don't guess</td></tr>
+</table>
+</div>
+
+<h2>The star: ESP32 DevKit</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A DevKit is a USB-serial chip, the ESP32 and flash; code is flashed over USB and UART, then runs after reboot">
+<defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="168" y="34" width="584" height="84" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
+<text x="176" y="28" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">On the DevKit board</text>
+<rect x="20" y="48" width="110" height="58" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="75.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Mac</text>
+<text x="75.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">arduino-cli / IDE</text>
+<rect x="180" y="48" width="150" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="255.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB-serial chip</text>
+<text x="255.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">CH340 / CP2102</text>
+<rect x="400" y="48" width="140" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="470.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32 chip</text>
+<text x="470.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">dual-core, WiFi+BT</text>
+<rect x="610" y="48" width="130" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="675.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Flash 4MB</text>
+<text x="675.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">program lives here</text>
+<line x1="132" y1="77" x2="178" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="155.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">USB</text>
+<line x1="332" y1="77" x2="398" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="365.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">UART</text>
+<line x1="542" y1="77" x2="608" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="575.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">SPI</text>
+<text x="20" y="150" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Other parts on the board</text>
+<rect x="20" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="88" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V regulator</text>
+<text x="88" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB 5V → 3.3V</text>
+<rect x="164" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="232" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN button</text>
+<text x="232" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">= reset</text>
+<rect x="308" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="376" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BOOT button</text>
+<text x="376" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">hold if upload stalls</text>
+<rect x="452" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="520" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">On-board LED</text>
+<text x="520" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">wired to GPIO 2</text>
+<rect x="596" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="664" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">PCB antenna</text>
+<text x="664" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi / BT 2.4GHz</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">From code to board</text>
+<rect x="20" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="136" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">① Compile</text>
+<text x="136" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">on the Mac: .ino → .bin</text>
+<text x="136" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">no board needed</text>
+<line x1="253" y1="299" x2="263" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<rect x="264" y="264" width="232" height="70" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="286" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② Upload (flash)</text>
+<text x="380" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">written to flash over USB</text>
+<text x="380" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">needs a Port selected</text>
+<line x1="497" y1="299" x2="507" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<rect x="508" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="624" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ Reboot and run</text>
+<text x="624" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">runs from flash</text>
+<text x="624" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">survives power-off</text>
+</svg>
+</div>
+<p>The ESP32 is Espressif's microcontroller: dual-core with built-in WiFi and Bluetooth (both Classic and BLE). A "DevKit" puts it on a breadboard-friendly board, adding a USB-serial chip, a 3.3V regulator, EN/BOOT buttons and an on-board LED.</p>
+<h3>Things that confused me at first</h3>
+<table>
+<tr><th>What happened</th><th>Why</th></tr>
+<tr><td>IDE doesn't auto-detect the board</td><td>The USB chip is a generic CH340/CP2102, so the computer only sees "a serial port". Pick <b>ESP32 Dev Module</b> manually.</td></tr>
+<tr><td>Debug button fails</td><td>Debugging needs a JTAG adapter (e.g. ESP-Prog); the DevKit's USB chip only speaks UART. Print-debugging is normal.</td></tr>
+<tr><td>Compiles but upload fails</td><td>Compiling only needs a board; uploading also needs a <b>Port</b>.</td></tr>
+<tr><td>Resource busy</td><td>Only one program can hold the serial port; close Serial Monitor first.</td></tr>
+<tr><td>Stuck at Connecting.....</td><td>Hold BOOT until writing starts.</td></tr>
+</table>
+<h3>My board's spec</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">Wireless</div><div class="kd">WiFi 2.4 GHz (no 5 GHz), Classic Bluetooth, BLE</div><div class="ke">S3/C3 are BLE-only; S2 has no Bluetooth</div></div>
+<div class="kcard"><div class="kt">Memory</div><div class="kd">4 MB flash for code; RAM is only a few hundred KB</div><div class="ke">Big web pages won't fit; small JSON is fine</div></div>
+<div class="kcard"><div class="kt">Voltage</div><div class="kd">Chip and pins run at 3.3V; USB's 5V comes out on VIN</div><div class="ke">Never feed 5V into a GPIO</div></div>
+</div>
+</div>
+
+<h2>Pin map: which pins are usable</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 580" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit pins by role: green is free GPIO, blue is input-only, yellow is strapping, red is to avoid">
+<rect x="290" y="30" width="180" height="440" rx="12" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="320" y="50" width="120" height="150" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<path d="M335 62h14v14h14v-14h14v14h14v-14h14v14h14" style="fill:none;stroke:var(--ink2);stroke-width:1.5"/>
+<text x="380" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32-WROOM-32</text>
+<text x="380" y="148" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">(chip + flash + antenna)</text>
+<circle cx="380" cy="236" r="5" style="fill:var(--turn)"/>
+<text x="380" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">LED</text>
+<rect x="322" y="424" width="36" height="18" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="340" y="437" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">EN</text>
+<rect x="400" y="424" width="46" height="18" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="423" y="437" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">BOOT</text>
+<rect x="350" y="462" width="60" height="34" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="484" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB</text>
+<circle cx="300" cy="80" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="80" x2="296" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="70" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="255" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN</text>
+<text x="218" y="84" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">press = reset</text>
+<circle cx="300" cy="106" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="106" x2="296" y2="106" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="96" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="110" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">36 VP</text>
+<circle cx="300" cy="132" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="132" x2="296" y2="132" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="122" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="136" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">39 VN</text>
+<circle cx="300" cy="158" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="158" x2="296" y2="158" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="148" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="162" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">34</text>
+<circle cx="300" cy="184" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="184" x2="296" y2="184" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="174" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">35</text>
+<circle cx="300" cy="210" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="210" x2="296" y2="210" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="200" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="214" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">32</text>
+<text x="218" y="214" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C1</text>
+<circle cx="300" cy="236" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="236" x2="296" y2="236" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="226" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="240" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">33</text>
+<text x="218" y="240" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C2</text>
+<circle cx="300" cy="262" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="262" x2="296" y2="262" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="252" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="266" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">25</text>
+<text x="218" y="266" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C3 · ISD PLAYE</text>
+<circle cx="300" cy="288" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="288" x2="296" y2="288" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="278" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="292" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">26</text>
+<text x="218" y="292" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R1</text>
+<circle cx="300" cy="314" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="314" x2="296" y2="314" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="304" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="318" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">27</text>
+<text x="218" y="318" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R3</text>
+<circle cx="300" cy="340" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="340" x2="296" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="344" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">14</text>
+<circle cx="300" cy="366" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="366" x2="296" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="356" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="255" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
+<text x="218" y="370" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">must not be HIGH at boot</text>
+<circle cx="300" cy="392" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="392" x2="296" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="382" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="396" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">13</text>
+<text x="218" y="396" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R4</text>
+<circle cx="300" cy="418" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="418" x2="296" y2="418" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="408" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="255" y="422" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<circle cx="300" cy="444" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="444" x2="296" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="255" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN</text>
+<text x="218" y="448" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">5V from USB</text>
+<circle cx="460" cy="80" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="80" x2="476" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="70" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">23</text>
+<text x="542" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT MOSI</text>
+<circle cx="460" cy="106" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="106" x2="476" y2="106" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="96" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="110" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">22</text>
+<text x="542" y="110" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">LCD SCL</text>
+<circle cx="460" cy="132" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="132" x2="476" y2="132" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="122" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="505" y="136" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">TX0 1</text>
+<text x="542" y="136" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB serial, avoid</text>
+<circle cx="460" cy="158" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="158" x2="476" y2="158" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="148" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="505" y="162" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">RX0 3</text>
+<text x="542" y="162" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB serial, avoid</text>
+<circle cx="460" cy="184" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="184" x2="476" y2="184" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="174" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">21</text>
+<text x="542" y="188" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">LCD SDA</text>
+<circle cx="460" cy="210" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="210" x2="476" y2="210" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="200" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="214" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">19</text>
+<circle cx="460" cy="236" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="236" x2="476" y2="236" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="226" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="240" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">18</text>
+<text x="542" y="240" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT SCK</text>
+<circle cx="460" cy="262" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="262" x2="476" y2="262" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="252" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="266" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5</text>
+<text x="542" y="266" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT CS</text>
+<circle cx="460" cy="288" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="288" x2="476" y2="288" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="278" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">TX2 17</text>
+<text x="542" y="292" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT RST</text>
+<circle cx="460" cy="314" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="314" x2="476" y2="314" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="304" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="318" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">RX2 16</text>
+<text x="542" y="318" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT DC</text>
+<circle cx="460" cy="340" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="340" x2="476" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="344" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
+<text x="542" y="344" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">keypad R2 · button</text>
+<circle cx="460" cy="366" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="366" x2="476" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="356" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<text x="542" y="370" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">on-board LED</text>
+<circle cx="460" cy="392" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="392" x2="476" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="382" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="396" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">15</text>
+<circle cx="460" cy="418" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="418" x2="476" y2="418" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="408" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="505" y="422" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<circle cx="460" cy="444" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="444" x2="476" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="505" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="542" y="448" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V out</text>
+<rect x="20" y="522" width="14" height="14" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="40" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">general GPIO</text>
+<rect x="145" y="522" width="14" height="14" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="165" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">input only</text>
+<rect x="270" y="522" width="14" height="14" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="290" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">strapping, careful</text>
+<rect x="395" y="522" width="14" height="14" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="415" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">avoid</text>
+<rect x="520" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="540" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">power</text>
+<rect x="645" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="665" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">reset</text>
+<text x="380" y="566" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Example: 30-pin DOIT DevKit V1, antenna up. Pin order varies by maker, trust the silkscreen. GPIO 6–11 drive the flash and are not broken out.</text>
+</svg>
+</div>
+<p>Most ESP32 GPIOs can be remapped internally, but some pins come with built-in limits. This is how I choose pins; the small labels beside the diagram show what I actually wired.</p>
+<table>
+<tr><th>Group</th><th>GPIO</th><th>What to watch</th></tr>
+<tr><td><span class="lose">Flash</span></td><td>6–11</td><td>Used by on-board flash; touching them crashes the board</td></tr>
+<tr><td><span class="lose">Boot-critical</span></td><td>12</td><td>If HIGH at boot, flash voltage is set to 1.8V and it won't boot</td></tr>
+<tr><td><span class="mid">Strapping</span></td><td>0, 2, 5, 15</td><td>Read at boot; external circuits can break flashing or booting</td></tr>
+<tr><td><span class="lose">UART0</span></td><td>1, 3</td><td>USB upload and serial output use these</td></tr>
+<tr><td>Input-only</td><td>34, 35, 36, 39</td><td>No output and no internal pull-up</td></tr>
+<tr><td><span class="win">Hardware I2C</span></td><td>21 SDA, 22 SCL</td><td>Library default, nothing to configure</td></tr>
+<tr><td><span class="win">Hardware SPI (VSPI)</span></td><td>18 SCK, 23 MOSI, 19 MISO, 5 CS</td><td>Fastest; other pins fall back to software SPI</td></tr>
+<tr><td>ADC2</td><td>0, 2, 4, 12–15, 25–27</td><td>Can't read analog while WiFi is on; use ADC1 (32–39)</td></tr>
+</table>
+</div>
+
+<h2>Breadboards: circuits without soldering</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 430" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Breadboard: 5-hole columns connect, rails run lengthwise, the gap splits halves, so parts straddle it">
+<rect x="20" y="20" width="480" height="390" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<line x1="50" y1="30" x2="482" y2="30" style="stroke:var(--lose);stroke-width:1.5"/>
+<line x1="50" y1="76" x2="482" y2="76" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="36" y="48" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">+</text>
+<text x="36" y="66" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">−</text>
+<line x1="50" y1="350" x2="482" y2="350" style="stroke:var(--lose);stroke-width:1.5"/>
+<line x1="50" y1="396" x2="482" y2="396" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="36" y="368" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">+</text>
+<text x="36" y="386" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">−</text>
+<circle cx="62" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<text x="62" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<text x="158" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5</text>
+<text x="278" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">10</text>
+<text x="398" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">15</text>
+<text x="40" y="114" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">a</text>
+<circle cx="62" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="134" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">b</text>
+<circle cx="62" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="154" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">c</text>
+<circle cx="62" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="174" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d</text>
+<circle cx="62" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="194" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">e</text>
+<circle cx="62" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<rect x="50" y="202" width="432" height="20" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="266" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">center gap: halves not joined</text>
+<text x="40" y="240" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">f</text>
+<circle cx="62" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="260" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">g</text>
+<circle cx="62" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">h</text>
+<circle cx="62" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">i</text>
+<circle cx="62" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="320" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">j</text>
+<circle cx="62" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<rect x="125" y="100" width="18" height="100" rx="6" style="fill:none;stroke:var(--win);stroke-width:2"/>
+<rect x="125" y="226" width="18" height="100" rx="6" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<rect x="50" y="35" width="432" height="18" rx="6" style="fill:none;stroke:var(--lose);stroke-width:2"/>
+<rect x="366" y="176" width="64" height="74" rx="6" style="fill:var(--surface2);stroke:var(--accent)"/>
+<circle cx="398.0" cy="213" r="12" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
+<text x="374" y="162" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">button</text>
+<text x="518" y="48" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">① 5 holes in a column = 1 node</text>
+<text x="518" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">green a–e are joined</text>
+<text x="518" y="82" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">blue f–j is a separate node</text>
+<text x="518" y="114" text-anchor="start" style="fill:var(--lose);font:700 12px sans-serif">② Rails run lengthwise</text>
+<text x="518" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">red + to 3V3, blue − to GND</text>
+<text x="518" y="148" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">long boards may split mid-way</text>
+<text x="518" y="180" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">③ Parts straddle the gap</text>
+<text x="518" y="198" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">so both sides don't short</text>
+<text x="518" y="230" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">④ ESP32 DevKit is wide</text>
+<text x="518" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">may leave just one free row</text>
+<text x="518" y="264" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">tip: two boards side by side</text>
+<text x="518" y="296" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">⑤ Short jumpers, push fully in</text>
+<text x="518" y="314" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">loose wires are bug #1</text>
+</svg>
+</div>
+<p>Inside a breadboard are metal clip strips. Knowing <b>which holes are the same wire</b> is most of it: holes a–e in one column are joined; f–j is another group; the red/blue rails run the full length.</p>
+<ul>
+<li><b>Using the rails</b>: run the ESP32's 3V3 to red + and GND to blue −; modules tap power nearby and GND is shared automatically.</li>
+<li><b>Don't mix 5V and 3.3V on one rail</b>: use the other rail for 5V modules (1602 LCD, HC-SR04) and label it.</li>
+<li><b>My buttons did nothing</b>: I'd wired two legs of the same internal pair, which are always connected. Diagonal legs fixed it (see the button section).</li>
+</ul>
+</div>
+
+<h2>Electrical basics before wiring</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An LED loop needs a current-limiting resistor, and every module must share GND or signals have no reference">
+<text x="20" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">One LED loop</text>
+<rect x="20" y="50" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="52" y="70" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3V3</text>
+<line x1="84" y1="65" x2="130" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="130" y="55" width="70" height="20" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="165" y="48" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">330Ω</text>
+<line x1="200" y1="65" x2="250" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<path d="M250 53L250 77L272 65Z" style="fill:var(--winbg);stroke:var(--win);stroke-width:1.5"/>
+<line x1="272" y1="53" x2="272" y2="77" style="stroke:var(--win);stroke-width:2"/>
+<text x="262" y="44" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">LED</text>
+<line x1="272" y1="65" x2="320" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="320" y1="65" x2="320" y2="150" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="320" y1="150" x2="84" y2="150" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="20" y="135" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="52" y="155" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<path d="M200 140l-10 5l10 5" style="fill:none;stroke:var(--accent);stroke-width:1.5"/>
+<text x="200" y="132" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">current I</text>
+<text x="20" y="196" text-anchor="start" style="fill:var(--ink);font:700 16px sans-serif">V = I × R</text>
+<text x="20" y="216" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">(3.3V − ~2.0V LED) ÷ 330Ω ≈ 4 mA</text>
+<text x="20" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">the resistor limits current; skip it and something burns</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">keep a GPIO pin ≤ 20 mA, it is not a power supply</text>
+<text x="410" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Common ground: tie every GND</text>
+<rect x="410" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="458" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<text x="458" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="458" y1="100" x2="458" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<rect x="526" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="574" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">LCD</text>
+<text x="574" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="574" y1="100" x2="574" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<rect x="642" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="690" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Button</text>
+<text x="690" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="690" y1="100" x2="690" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<line x1="430" y1="140" x2="710" y2="140" style="stroke:var(--win);stroke-width:3"/>
+<text x="570" y="160" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">one shared GND rail</text>
+<text x="410" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Voltage is a difference between two points</text>
+<text x="410" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">HIGH means 3.3V above GND</text>
+<text x="410" y="232" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">no shared GND = no shared reference</text>
+<text x="410" y="250" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">→ random reads or nothing at all</text>
+</svg>
+</div>
+<div class="kbox">
+<div class="kcard"><div class="kt">Voltage V</div><div class="kd">The potential difference between two points, like water pressure. ESP32 HIGH = 3.3V, LOW = 0V.</div></div>
+<div class="kcard"><div class="kt">Current I</div><div class="kd">How much actually flows, in mA. Too much current is what burns parts.</div></div>
+<div class="kcard"><div class="kt">Resistance R</div><div class="kd">Limits current. V = I × R tells you what resistor to use for a given voltage.</div></div>
+<div class="kcard"><div class="kt">Digital vs analog</div><div class="kd">Digital is just HIGH/LOW; analog is a continuous voltage turned into a number (0–4095) by the ADC.</div></div>
+<div class="kcard"><div class="kt">PWM</div><div class="kd">Fast on/off switching fakes "half on": the duty ratio sets brightness or motor speed.</div></div>
+<div class="kcard"><div class="kt">Pull-up / pull-down</div><div class="kd">Gives an unconnected input a defined level so it doesn't float.</div></div>
+</div>
+</div>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 pins take 3.3V only; step 5V outputs down with a divider or level shifter">
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">3.3V vs 5V logic</text>
+<line x1="80" y1="260" x2="80" y2="22.399999999999977" style="stroke:var(--ink3);stroke-width:1.5"/>
+<line x1="76" y1="260" x2="84" y2="260" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="264" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">0V</text>
+<line x1="76" y1="216" x2="84" y2="216" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="220" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">1V</text>
+<line x1="76" y1="172" x2="84" y2="172" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="176" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">2V</text>
+<line x1="76" y1="128" x2="84" y2="128" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="132" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">3V</text>
+<line x1="76" y1="84" x2="84" y2="84" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="88" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">4V</text>
+<line x1="76" y1="40" x2="84" y2="40" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="44" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">5V</text>
+<rect x="100" y="114.80000000000001" width="90" height="145.2" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="145" y="136.8" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">ESP32 out</text>
+<text x="145" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V</text>
+<rect x="220" y="40" width="90" height="220" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="265" y="62" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">5V module out</text>
+<text x="265" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5V</text>
+<line x1="90" y1="101.6" x2="330" y2="101.6" style="stroke:var(--lose);stroke-width:1.5;stroke-dasharray:4 3"/>
+<text x="334" y="105.6" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">ESP32 max ≈ 3.6V</text>
+<text x="20" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V into an ESP32 pin exceeds its rating</text>
+<text x="20" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">3.3V into a 5V module: usually HIGH, not guaranteed</text>
+<text x="480" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Fix: a voltage divider</text>
+<rect x="480" y="50" width="130" height="30" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="545" y="70" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Echo 5V out</text>
+<line x1="545" y1="80" x2="545" y2="96" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="535" y="96" width="20" height="40" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="565" y="120" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">1kΩ</text>
+<line x1="545" y1="136" x2="545" y2="160" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="545" cy="160" r="3.5" style="fill:var(--ink)"/>
+<line x1="545" y1="160" x2="640" y2="160" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="640" y="146" width="100" height="28" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="690" y="165" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO ≈ 3.3V</text>
+<line x1="545" y1="160" x2="545" y2="180" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="535" y="180" width="20" height="40" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="565" y="204" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">2kΩ</text>
+<line x1="545" y1="220" x2="545" y2="240" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="531" y1="240" x2="559" y2="240" style="stroke:var(--ink);stroke-width:2"/>
+<text x="545" y="258" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
+<text x="480" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V × 2k ÷ (1k + 2k) ≈ 3.3V</text>
+<text x="480" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">for two-way I2C use a level shifter</text>
+</svg>
+</div>
+<p>This is the trap I hit most: many starter modules are designed for the 5V Arduino Uno. <b>The ESP32 outputs and accepts 3.3V only.</b> A module that only listens is usually fine; one that sends 5V back (HC-SR04 Echo, the 1602 backpack pull-ups) needs handling.</p>
+</div>
+
+<h2>How pins connect to the ESP32: four styles</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four ways to connect: GPIO one pin per job, I2C two wires with addresses, SPI a shared bus plus chip-select, UART TX to RX">
+<rect x="20" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="106" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO</text>
+<rect x="62" y="60" width="88" height="26" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="106" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="106" y1="86" x2="106" y2="150" style="stroke:var(--win);stroke-width:2"/>
+<text x="114" y="122" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">GPIO</text>
+<rect x="62" y="150" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="106" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">module</text>
+<text x="106" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">one pin, one job</text>
+<text x="106" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1 wire per signal</text>
+<line x1="36" y1="246" x2="176" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="106" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">I used it for</text>
+<text x="106" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">button · LED · ISD · 7-seg</text>
+<rect x="204" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="290" y="46" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">I2C</text>
+<rect x="246" y="60" width="88" height="26" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="290" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="278" y1="86" x2="278" y2="118" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="302" y1="86" x2="302" y2="110" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="218" y1="118" x2="362" y2="118" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="218" y1="110" x2="362" y2="110" style="stroke:var(--turn);stroke-width:2"/>
+<text x="218" y="104" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">SDA / SCL</text>
+<line x1="246" y1="118" x2="246" y2="150" style="stroke:var(--turn);stroke-width:1.5"/>
+<rect x="216" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="250" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0x27</text>
+<line x1="326" y1="118" x2="326" y2="150" style="stroke:var(--turn);stroke-width:1.5"/>
+<rect x="296" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="330" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0x3C</text>
+<text x="290" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 wires, many devices</text>
+<text x="290" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">devices picked by address</text>
+<line x1="220" y1="246" x2="360" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="290" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">I used it for</text>
+<text x="290" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1602 LCD</text>
+<rect x="388" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="474" y="46" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">SPI</text>
+<rect x="430" y="60" width="88" height="26" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="474" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="474" y1="86" x2="474" y2="112" style="stroke:var(--mid);stroke-width:2"/>
+<line x1="402" y1="112" x2="546" y2="112" style="stroke:var(--mid);stroke-width:2"/>
+<text x="402" y="104" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">SCK / MOSI</text>
+<line x1="424" y1="112" x2="424" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
+<rect x="400" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="434" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">dev 1</text>
+<path d="M444 86 L450 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
+<line x1="504" y1="112" x2="504" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
+<rect x="480" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="514" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">dev 2</text>
+<path d="M504 86 L530 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
+<text x="474" y="142" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">CS</text>
+<text x="474" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">shared clock + data</text>
+<text x="474" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">+1 CS wire per device</text>
+<line x1="404" y1="246" x2="544" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="474" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">I used it for</text>
+<text x="474" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1.8" TFT</text>
+<rect x="572" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="658" y="46" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">UART</text>
+<rect x="614" y="60" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="658" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<rect x="614" y="150" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="658" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB-serial</text>
+<line x1="638" y1="86" x2="678" y2="150" style="stroke:var(--accent);stroke-width:2"/>
+<line x1="678" y1="86" x2="638" y2="150" style="stroke:var(--accent);stroke-width:2"/>
+<text x="624" y="106" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">TX</text>
+<text x="692" y="106" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
+<text x="624" y="140" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">TX</text>
+<text x="692" y="140" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
+<text x="658" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">one-to-one, no clock</text>
+<text x="658" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">both agree on baud</text>
+<line x1="588" y1="246" x2="728" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="658" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">I used it for</text>
+<text x="658" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB upload · Serial</text>
+</svg>
+</div>
+<p>Read a new module's pin names and you can tell which style it uses:</p>
+<table>
+<tr><th>Pin names look like</th><th>Style</th><th>How to wire</th></tr>
+<tr><td>IN, OUT, SIG, PLAYE, Trig, Echo</td><td>GPIO</td><td>Any safe GPIO, one wire per signal</td></tr>
+<tr><td>SDA, SCL</td><td>I2C</td><td>SDA→21, SCL→22; share among devices, told apart by address</td></tr>
+<tr><td>SCK/CLK, MOSI/DIN, MISO, CS, DC</td><td>SPI</td><td>SCK→18, MOSI→23, MISO→19; one CS per device</td></tr>
+<tr><td>TX, RX</td><td>UART</td><td>Cross over: their TX→ESP32 RX; avoid 1/3, use 16/17</td></tr>
+<tr><td>VCC, VIN, GND</td><td>Power</td><td>3.3V or 5V per module; GND always shared</td></tr>
+</table>
+<p class="quote"><b>Names can lie</b>: the 1.8" TFT is printed SCL/SDA, which looks like I2C, but it's really SPI SCK/MOSI. The giveaway is the CS and DC pins, which only SPI has.</p>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Six steps for any module: voltage, common GND, bus type, fixed pins first, safe pins for the rest, then resistors">
+<defs><marker id="m4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="132" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">① Check voltage</text>
+<text x="132" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">does it want 3.3V or 5V?</text>
+<text x="132" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5V outputs need stepping down</text>
+<line x1="246" y1="60" x2="266" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="268" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② Wire GND first</text>
+<text x="380" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">every GND tied together</text>
+<text x="380" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">no common GND, nothing works</text>
+<line x1="494" y1="60" x2="514" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="516" y="20" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="628" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ Identify the bus</text>
+<text x="628" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO / I2C / SPI / UART</text>
+<text x="628" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">read the pin names</text>
+<rect x="20" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="132" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">④ Fixed pins first</text>
+<text x="132" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 21/22, SPI 18/23</text>
+<text x="132" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">hardware pins, zero config</text>
+<line x1="246" y1="164" x2="266" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="268" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑤ Pick safe pins</text>
+<text x="380" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">avoid 12, 1/3; mind 0/2/5/15</text>
+<text x="380" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">34–39 are input-only</text>
+<line x1="494" y1="164" x2="514" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="516" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="628" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑥ Add resistors</text>
+<text x="628" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">pull-up inputs, limit LEDs</text>
+<text x="628" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">use internal pull-ups</text>
+<path d="M692 102 L692 112 L132 112 L132 122" style="fill:none;stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+</svg>
+</div>
+</div>
+
+<h2>Module ①: the on-board LED (first test)</h2>
+<div class="card">
+<p>No wiring. GPIO 2 already drives a blue LED on the board; blink it every second while printing over serial, and you verify three things at once: <b>upload, serial, and GPIO</b>. The circuit is the "one LED loop" diagram above, with the resistor already on the board.</p>
+<p>Result: upload worked and the LED blinked, but the serial output was garbage (see gotchas at the end).</p>
+</div>
+
+<h2>Module ②: 4-digit 7-segment display</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 360" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 4-digit 7-segment display uses 8 segment and 4 digit lines, lighting digits in fast rotation so all look on">
+<defs><marker id="m5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">One digit: 7 segments + dp</text>
+<rect x="72" y="52" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">a</text>
+<rect x="72" y="122" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="116" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">g</text>
+<rect x="72" y="192" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="218" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">d</text>
+<rect x="60" y="64" width="10" height="56" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="48" y="96" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">f</text>
+<rect x="130" y="64" width="10" height="56" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="152" y="96" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">b</text>
+<rect x="60" y="134" width="10" height="56" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="48" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">e</text>
+<rect x="130" y="134" width="10" height="56" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="152" y="166" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">c</text>
+<circle cx="156" cy="198" r="6" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="178" y="202" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">dp</text>
+<text x="100" y="250" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">b + c lit = shows "1"</text>
+<text x="250" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Four digits share segment lines, lit in turn</text>
+<rect x="260" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="288" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<line x1="288" y1="128" x2="288" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="288" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D1</text>
+<rect x="330" y="44" width="56" height="84" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="358" y="96" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">2</text>
+<line x1="358" y1="128" x2="358" y2="170" style="stroke:var(--accent);stroke-width:2"/>
+<text x="358" y="186" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">D2</text>
+<rect x="400" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="428" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">3</text>
+<line x1="428" y1="128" x2="428" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="428" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D3</text>
+<rect x="470" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="498" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">4</text>
+<line x1="498" y1="128" x2="498" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="498" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D4</text>
+<line x1="256" y1="60" x2="540" y2="60" style="stroke:var(--turn);stroke-width:1.5"/>
+<line x1="256" y1="80" x2="540" y2="80" style="stroke:var(--turn);stroke-width:1.5"/>
+<line x1="256" y1="100" x2="540" y2="100" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="548" y="84" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">a–g, dp: 8 wires</text>
+<text x="548" y="102" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">shared by all digits</text>
+<text x="260" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">8 segment + 4 digit lines = 12 pins</text>
+<text x="260" y="234" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">330Ω on each segment line only</text>
+<text x="20" y="280" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Timeline: only one digit is on at any instant</text>
+<rect x="20" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="61" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D1 2ms</text>
+<rect x="110" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="151" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D2 2ms</text>
+<rect x="200" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="241" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D3 2ms</text>
+<rect x="290" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="331" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D4 2ms</text>
+<rect x="380" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="421" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D1 2ms</text>
+<rect x="470" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="511" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D2 2ms</text>
+<rect x="560" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="601" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D3 2ms</text>
+<rect x="650" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="691" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D4 2ms</text>
+<text x="380" y="348" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">8 ms per round ≈ 125 rounds/s, so all four look lit</text>
+</svg>
+</div>
+<p>Something like a 5641AS/3461AS with 12 pins. The key is the split of duties: 8 segment lines choose <b>what shape</b>, 4 digit lines choose <b>which digit</b>. Same-named segments are joined across all four digits, so only one digit can be lit at a time; fast rotation fools the eye.</p>
+<table>
+<tr><th>Display pin</th><th>Role</th><th>ESP32</th></tr>
+<tr><td>11 / 7 / 4 / 2</td><td>a / b / c / d</td><td>13 / 14 / 27 / 26</td></tr>
+<tr><td>1 / 10 / 5 / 3</td><td>e / f / g / dp</td><td>25 / 33 / 32 / 4</td></tr>
+<tr><td>12 / 9 / 8 / 6</td><td>digit 1 / 2 / 3 / 4</td><td>19 / 21 / 22 / 23</td></tr>
+</table>
+<ul>
+<li><b>Pin numbering</b>: face-up with the dp at the bottom, bottom row 1–6 left to right, top row 12–7 left to right.</li>
+<li><b>330Ω on every segment line</b>, none on digit lines. With a full digit lit, current piles into the digit pin near the GPIO limit; add transistors for long runs.</li>
+<li><b>Common cathode vs anode</b>: cathode lights when the digit pin is LOW, anode is the opposite. Not sure which? Use a meter:</li>
+</ul>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diode mode: red on a segment, black on a digit; if it glows it is common cathode, if only swapped it is common anode">
+<rect x="20" y="20" width="150" height="210" rx="14" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="40" width="110" height="44" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="95" y="70" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">1.84 V</text>
+<circle cx="95" cy="146" r="34" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<line x1="95" y1="146" x2="70" y2="124" style="stroke:var(--accent);stroke-width:3"/>
+<text x="95" y="200" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">diode mode →|</text>
+<circle cx="150" cy="50" r="4" style="fill:var(--lose)"/>
+<circle cx="150" cy="74" r="4" style="fill:var(--ink)"/>
+<path d="M150 50 C 230 50, 270 0, 348 34" style="fill:none;stroke:var(--lose);stroke-width:2"/>
+<path d="M150 74 C 240 74, 250 -6, 318 34" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<text x="235" y="110" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">red probe = +</text>
+<text x="235" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">black probe = −</text>
+<rect x="300" y="30" width="190" height="150" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="318" y="56" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
+<text x="348" y="56" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">11</text>
+<text x="378" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">10</text>
+<text x="408" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">9</text>
+<text x="438" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">8</text>
+<text x="468" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">7</text>
+<text x="318" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<text x="348" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">2</text>
+<text x="378" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">3</text>
+<text x="408" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">4</text>
+<text x="438" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5</text>
+<text x="468" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">6</text>
+<rect x="330" y="72" width="40" height="70" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="338" y="76" width="24" height="6" rx="2" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="350" y="116" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D1</text>
+<circle cx="348" cy="38" r="4" style="fill:var(--lose)"/>
+<circle cx="318" cy="38" r="4" style="fill:var(--ink)"/>
+<text x="395" y="200" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">display face-up, dp at bottom</text>
+<text x="520" y="40" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Map pins with a multimeter</text>
+<text x="520" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">red on pin 11 (segment a)</text>
+<text x="520" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">black on pin 12 (digit 1)</text>
+<text x="520" y="110" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">a glows / reads 1.6–2.0V</text>
+<text x="520" y="128" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">→ common cathode</text>
+<text x="520" y="154" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">only lights when swapped</text>
+<text x="520" y="172" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">→ common anode</text>
+<text x="520" y="198" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">OL = no connection</text>
+<text x="520" y="216" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">reversed is safe at these voltages</text>
+</svg>
+</div>
+</div>
+
+<h2>Module ③: 1602 LCD + I2C backpack</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 1602 I2C backpack needs 4 wires, SDA to 21 and SCL to 22, but it pulls the lines up to 5V">
+<rect x="20" y="30" width="200" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="36" y="50" width="168" height="50" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="50" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="60" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="70" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="80" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="90" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="100" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="110" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="120" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="130" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="140" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="150" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="160" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="170" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="180" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="190" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="40" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="50" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="60" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="70" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="80" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="90" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="100" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="110" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="120" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="130" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="140" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="150" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="160" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="170" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="180" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="190" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="120" y="142" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">front: 16 chars × 2 rows</text>
+<rect x="20" y="170" width="200" height="120" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="190" width="70" height="40" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="75" y="214" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PCF8574</text>
+<circle cx="160" cy="210" r="13" style="fill:var(--turnbg);stroke:var(--turn);stroke-width:1.5"/>
+<path d="M152 210h16" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<text x="160" y="244" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">contrast pot</text>
+<text x="75" y="248" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C backpack</text>
+<text x="120" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">address 0x27 (or 0x3F)</text>
+<rect x="320" y="59" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="74" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<line x1="384" y1="70" x2="480" y2="70" style="stroke:var(--ink3);stroke-width:2"/>
+<rect x="480" y="59" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="74" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<rect x="320" y="99" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="114" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VCC</text>
+<line x1="384" y1="110" x2="480" y2="110" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="480" y="99" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="522" y="114" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN 5V</text>
+<text x="576" y="114" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">1602 needs 5V to be readable</text>
+<rect x="320" y="139" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
+<line x1="384" y1="150" x2="480" y2="150" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="480" y="139" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 21</text>
+<text x="576" y="154" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">default I2C data</text>
+<rect x="320" y="179" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
+<line x1="384" y1="190" x2="480" y2="190" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="480" y="179" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 22</text>
+<text x="576" y="194" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">default I2C clock</text>
+<text x="352" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Backpack</text>
+<text x="522" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
+<path d="M220 214 H300 V70 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<path d="M300 110 H316 M300 150 H316 M300 190 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<rect x="300" y="232" width="440" height="70" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="520" y="256" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">⚠ Backpack pulls SDA/SCL up to 5V</text>
+<text x="520" y="276" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 pins are not 5V-tolerant: it often works, but it is a gamble</text>
+<text x="520" y="292" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">safe: add a level shifter or remove the pull-ups</text>
+</svg>
+</div>
+<p>A bare 1602 needs a dozen wires; the PCF8574 on the backpack turns it into I2C with just 4. This was my first "bus": more I2C devices can share SDA/SCL, told apart by <b>address</b>.</p>
+<table>
+<tr><th>Symptom</th><th>Check first</th></tr>
+<tr><td>Backlight on, no text</td><td>Nine times out of ten it's contrast: turn the blue pot</td></tr>
+<tr><td>Only a row of blocks</td><td>Powered but I2C isn't talking: try 0x3F instead of 0x27, or SDA/SCL swapped</td></tr>
+<tr><td>Faint text on 3.3V</td><td>The 1602 wants 5V; use VIN</td></tr>
+<tr><td>Text past 16 chars vanishes</td><td>Each row has 40 cells of memory but shows 16; no auto-wrap</td></tr>
+</table>
+</div>
+
+<h2>Module ④: 1.8" TFT color screen (SPI)</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TFT labels say SCL/SDA but it is SPI: clock on 18 and data on 23, with DC, RST and CS on plain pins">
+<rect x="20" y="40" width="170" height="300" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<rect x="34" y="56" width="110" height="140" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="89" y="120" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">128 × 160</text>
+<text x="89" y="140" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">ST7735</text>
+<text x="89" y="230" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1.8" TFT</text>
+<text x="89" y="250" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">SPI</text>
+<rect x="240" y="53" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="68" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<line x1="304" y1="64" x2="420" y2="64" style="stroke:var(--ink3);stroke-width:2"/>
+<rect x="420" y="53" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="68" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<rect x="240" y="89" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VCC</text>
+<line x1="304" y1="100" x2="420" y2="100" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="420" y="89" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="462" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="516" y="104" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V logic, no shifting</text>
+<rect x="240" y="125" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
+<line x1="304" y1="136" x2="420" y2="136" style="stroke:var(--accent);stroke-width:2"/>
+<rect x="420" y="125" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 18</text>
+<text x="516" y="140" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">really SPI SCK, not I2C</text>
+<rect x="240" y="161" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
+<line x1="304" y1="172" x2="420" y2="172" style="stroke:var(--accent);stroke-width:2"/>
+<rect x="420" y="161" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 23</text>
+<text x="516" y="176" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">really SPI MOSI</text>
+<rect x="240" y="197" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RS / DC</text>
+<line x1="304" y1="208" x2="420" y2="208" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="197" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 16</text>
+<text x="516" y="212" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">command vs pixel data</text>
+<rect x="240" y="233" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RES</text>
+<line x1="304" y1="244" x2="420" y2="244" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="233" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 17</text>
+<text x="516" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">hardware reset</text>
+<rect x="240" y="269" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">CS</text>
+<line x1="304" y1="280" x2="420" y2="280" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="269" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 5</text>
+<text x="516" y="284" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">chip select: listens on LOW</text>
+<rect x="240" y="305" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BL</text>
+<line x1="304" y1="316" x2="420" y2="316" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="420" y="305" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="462" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="516" y="320" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">backlight always on</text>
+<text x="272" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">TFT pin</text>
+<text x="462" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
+<path d="M190 190 H228 M228 64 V316 M228 64 H240 M228 100 H240 M228 136 H240 M228 172 H240 M228 208 H240 M228 244 H240 M228 280 H240 M228 316 H240" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<text x="20" y="372" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">18/23 are the hardware SPI (VSPI) pins; other pins fall back to slow software SPI.</text>
+</svg>
+</div>
+<p>A small red board, 128×160, ST7735 driver, 3.3V logic — wires straight to the ESP32 without level shifting. Data only flows to the screen, so no MISO. I used it for a Windows 95 boot screen and a retro-Mac stock ticker.</p>
+<ul>
+<li><b>Why CS on GPIO 5</b>: it's the VSPI default CS; it is a strapping pin, but its default HIGH matches CS's idle HIGH, so no conflict.</li>
+<li><b>DC and RST on 16/17</b>: plain pins, not strapping pins. (On a WROVER with PSRAM, 16/17 are taken.)</li>
+<li><b>Offset image or red/blue swapped</b>: these boards come in black/green/red-tab variants needing different init settings. Mine is black tab.</li>
+</ul>
+</div>
+
+<h2>Module ⑤: 4-leg push button</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Button: one leg to GPIO, the diagonal leg to GND, internal pull-up; released reads HIGH, pressed reads LOW">
+<defs><marker id="m3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Button + internal pull-up</text>
+<rect x="20" y="40" width="200" height="170" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
+<text x="30" y="58" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">inside the ESP32</text>
+<text x="120" y="84" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3.3V</text>
+<line x1="120" y1="90" x2="120" y2="104" style="stroke:var(--accent);stroke-width:1.5"/>
+<rect x="110" y="104" width="20" height="44" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="150" y="130" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">pull-up</text>
+<line x1="120" y1="148" x2="120" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="120" y1="176" x2="220" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="120" cy="176" r="3" style="fill:var(--ink)"/>
+<text x="70" y="180" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">read</text>
+<rect x="220" y="164" width="64" height="24" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="252" y="181" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 4</text>
+<line x1="284" y1="176" x2="330" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="334" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<line x1="338" y1="176" x2="370" y2="160" style="stroke:var(--accent);stroke-width:2"/>
+<circle cx="376" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<text x="356" y="150" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">button</text>
+<line x1="380" y1="176" x2="410" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="410" y1="176" x2="410" y2="206" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="396" y1="206" x2="424" y2="206" style="stroke:var(--ink);stroke-width:2"/>
+<line x1="401" y1="212" x2="419" y2="212" style="stroke:var(--ink);stroke-width:2"/>
+<text x="410" y="232" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
+<rect x="20" y="250" width="196" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="118" y="272" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">released: pulled to 3.3V</text>
+<text x="118" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">HIGH = 1</text>
+<rect x="230" y="250" width="196" height="56" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="328" y="272" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">pressed: shorted to GND</text>
+<text x="328" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">LOW = 0</text>
+<text x="20" y="336" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">Without a pull-up the pin floats and reads noise; the internal one saves a resistor.</text>
+<text x="470" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Inside a 4-leg button</text>
+<rect x="540" y="70" width="110" height="110" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<circle cx="595" cy="125" r="26" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
+<rect x="526" y="76" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="512" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1</text>
+<rect x="650" y="76" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="678" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<rect x="526" y="166" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="512" y="174" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3</text>
+<rect x="650" y="166" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="678" y="174" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
+<line x1="540" y1="80" x2="650" y2="80" style="stroke:var(--win);stroke-width:3"/>
+<line x1="540" y1="170" x2="650" y2="170" style="stroke:var(--win);stroke-width:3"/>
+<text x="595" y="60" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">1–2 always joined</text>
+<text x="595" y="200" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">3–4 always joined</text>
+<line x1="570" y1="94" x2="620" y2="156" style="stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3"/>
+<text x="470" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">pressing joins top pair to bottom</text>
+<text x="470" y="252" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">wire 1–2 = always on, press does nothing</text>
+<text x="470" y="270" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">wire diagonal 1–4, never wrong</text>
+<text x="470" y="300" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Bounce: contacts chatter for a few ms</text>
+<path d="M470 332h40v-18h4v18h4v-18h4v18h4v-18h60" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<text x="630" y="330" text-anchor="start" style="fill:var(--accent);font:400 11px sans-serif">ignore &lt;30ms chatter</text>
+</svg>
+</div>
+<p>The simplest input, hiding three ideas: <b>pull-ups</b> (a defined level when released), <b>the 4-leg internals</b> (wire diagonally), and <b>bounce</b> (one press chatters several times). My first version used 5 buttons for up/down/left/right/OK, with all button GNDs chained and one wire to the ESP32 GND — which is correct.</p>
+<p>Short vs long press is just timing: under 30 ms is noise, released before 3 s is a short press, held to 3 s counts as long immediately.</p>
+</div>
+
+<h2>Module ⑥: ISD1820 record/playback module</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820: PLAYE plays the whole clip on one rising edge; PLAYL plays only while held HIGH">
+<rect x="20" y="40" width="210" height="170" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
+<circle cx="70" cy="90" r="18" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="70" y="126" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">mic</text>
+<rect x="116" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="130" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="130" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">REC</text>
+<rect x="152" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="166" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="166" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYE</text>
+<rect x="188" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="202" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="202" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYL</text>
+<rect x="40" y="150" width="80" height="36" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="80" y="173" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ISD1820</text>
+<rect x="150" y="150" width="60" height="36" rx="18" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="180" y="173" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">spkr</text>
+<text x="125" y="30" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Record/playback module</text>
+<text x="20" y="236" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">VCC → 3V3   GND → GND</text>
+<text x="20" y="256" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE → GPIO 25</text>
+<text x="20" y="276" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">hold REC and speak (~10 s)</text>
+<text x="20" y="294" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">plays only what was recorded</text>
+<text x="280" y="30" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">PLAYE edge-trigger vs PLAYL level-trigger</text>
+<text x="280" y="74" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE</text>
+<path d="M370 84h40v-24h14v24h316" style="fill:none;stroke:var(--win);stroke-width:2"/>
+<text x="360" y="114" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">audio</text>
+<rect x="410" y="102" width="250" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="740" y="74" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">one pulse → plays to the end</text>
+<text x="280" y="174" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">PLAYL</text>
+<path d="M370 184h40v-24h140v24h190" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<text x="360" y="214" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">audio</text>
+<rect x="410" y="202" width="140" height="18" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="740" y="174" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">plays while HIGH, stops on LOW</text>
+<text x="280" y="272" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">My boot screen pulses PLAYE for 50 ms as loading starts.</text>
+<text x="280" y="292" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">To cut the sound on long-press, switch to PLAYL.</text>
+</svg>
+</div>
+<p>Hold REC to record ~10 s into the chip; the ESP32 only "presses play" — the purest GPIO-output example: raise one pin briefly.</p>
+<ul>
+<li><b>Power it from 3.3V</b>: on 5V, the ESP32's 3.3V HIGH may not register as HIGH.</li>
+<li><b>What it can't do</b>: no programmed melodies (use a passive buzzer) and no Bluetooth audio (use an I2S module like the MAX98357A or a ready-made BT receiver board).</li>
+</ul>
+</div>
+
+<h2>Module ⑦: 4×3 matrix keypad</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Matrix keypad: drive one column LOW, see which row follows, and the pair locates the key; measure the real pin order">
+<line x1="60" y1="60" x2="260" y2="60" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="64" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R1</text>
+<text x="290" y="64" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 26</text>
+<line x1="60" y1="116" x2="260" y2="116" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="120" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R2</text>
+<text x="290" y="120" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 4</text>
+<line x1="60" y1="172" x2="260" y2="172" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="176" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R3</text>
+<text x="290" y="176" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 27</text>
+<line x1="60" y1="228" x2="260" y2="228" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="232" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R4</text>
+<text x="290" y="232" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 13</text>
+<line x1="100" y1="36" x2="100" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="100" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C1</text>
+<text x="100" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">32</text>
+<line x1="164" y1="36" x2="164" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="164" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C2</text>
+<text x="164" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">33</text>
+<line x1="228" y1="36" x2="228" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="228" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C3</text>
+<text x="228" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">25</text>
+<rect x="80" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1</text>
+<rect x="144" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<rect x="208" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3</text>
+<rect x="80" y="98" width="40" height="36" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="100" y="121" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">4</text>
+<rect x="144" y="98" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="121" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5</text>
+<rect x="208" y="98" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="121" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">6</text>
+<rect x="80" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">7</text>
+<rect x="144" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">8</text>
+<rect x="208" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">9</text>
+<rect x="80" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">*</text>
+<rect x="144" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0</text>
+<rect x="208" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">#</text>
+<text x="30" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">12 keys on 7 wires: 4 rows × 3 cols</text>
+<text x="100" y="308" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">column GPIO</text>
+<text x="420" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Scanning: which key is down?</text>
+<rect x="420" y="36" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="56" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">① Drive column C1 LOW</text>
+<text x="436" y="74" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">other columns float</text>
+<rect x="420" y="94" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="114" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">② Read the 4 row lines</text>
+<text x="436" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">rows idle HIGH via pull-ups</text>
+<rect x="420" y="152" width="320" height="48" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="436" y="172" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">③ R2 went LOW</text>
+<text x="436" y="190" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">C1 × R2 = key "4"</text>
+<rect x="420" y="210" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="230" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">④ Next column, repeat</text>
+<text x="436" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">hundreds of scans per second</text>
+<rect x="20" y="326" width="720" height="50" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="36" y="346" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">Gotcha: ribbon order ≠ R1 R2 R3 R4 C1 C2 C3</text>
+<text x="36" y="364" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Keys 1/2/3 all hit 26, so 26 is R1; 1/4/7/* all hit 32, so 32 is C1. Let the board report it.</text>
+</svg>
+</div>
+<p>Five buttons cost 5 pins plus GND wires; a matrix keypad does 12 keys on 7 wires, no GND and no resistors. The price is scanning: pull one column low at a time and see which row follows.</p>
+<ul>
+<li><b>Row lines need pull-ups</b>, so not 34–39 (no internal pull-up); also avoid GPIO 12.</li>
+<li><b>Float the columns you aren't scanning</b> so pressing two keys can't short outputs.</li>
+<li><b>Biggest lesson</b>: R1–R4/C1–C3 are the keypad's internal rows and columns, <b>not the ribbon's left-to-right order</b>. Wiring "R1…C3 left to right" made every key wrong; having the board report which two GPIOs connect let me deduce the mapping from 6 key presses, with no rewiring.</li>
+</ul>
+</div>
+
+<h2>My current GPIO allocation</h2>
+<div class="card">
+<p>The retro-Mac ticker (TFT + keypad) is what runs on the board now; LCD, 7-seg and ISD were separate earlier tests and overlap pins — only one setup is wired at a time.</p>
+<table>
+<tr><th>GPIO</th><th>Ticker (now)</th><th>Earlier tests</th></tr>
+<tr><td>2</td><td>—</td><td>on-board LED</td></tr>
+<tr><td>4</td><td>keypad R2</td><td>button, 7-seg dp</td></tr>
+<tr><td>5 / 16 / 17</td><td>TFT CS / DC / RST</td><td>TFT</td></tr>
+<tr><td>18 / 23</td><td>TFT SCK / MOSI</td><td>TFT; 23 was also 7-seg digit 4</td></tr>
+<tr><td>21 / 22</td><td>—</td><td>LCD SDA/SCL; 7-seg digits 2/3</td></tr>
+<tr><td>25</td><td>keypad C3</td><td>ISD1820 PLAYE, 7-seg e</td></tr>
+<tr><td>26 / 27 / 13</td><td>keypad R1 / R3 / R4</td><td>7-seg d / c / a</td></tr>
+<tr><td>32 / 33</td><td>keypad C1 / C2</td><td>7-seg g / f</td></tr>
+<tr><td>14 / 19</td><td>—</td><td>7-seg b / digit 1</td></tr>
+</table>
+</div>
+
+<h2>On the desk, not tested yet</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Not tested yet: HC-SR04 is an ultrasonic ranger needing 5V with a divided Echo; buzzers are active or passive">
+<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">HC-SR04 ultrasonic ranger (not a speaker)</text>
+<rect x="20" y="40" width="220" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<circle cx="80" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="180" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="80" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">T</text>
+<text x="180" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">R</text>
+<line x1="62" y1="130" x2="62" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="62" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">VCC</text>
+<line x1="98" y1="130" x2="98" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="98" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Trig</text>
+<line x1="134" y1="130" x2="134" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="134" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Echo</text>
+<line x1="170" y1="130" x2="170" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="170" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<text x="260" y="60" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">T sends 40 kHz, R hears the echo</text>
+<text x="260" y="80" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">round-trip time → 2 cm to 4 m</text>
+<text x="260" y="104" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">VCC needs 5V (VIN)</text>
+<text x="260" y="122" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">Echo outputs 5V → divide it first</text>
+<text x="260" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">Trig works with 3.3V</text>
+<text x="20" y="200" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Buzzer: active or passive?</text>
+<rect x="20" y="214" width="350" height="96" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<circle cx="70" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="70" cy="262" r="5" style="fill:var(--ink3)"/>
+<text x="120" y="238" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">Active</text>
+<text x="120" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">sealed black bottom</text>
+<text x="120" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">steady beep on power</text>
+<text x="120" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">on/off only, no melody</text>
+<rect x="390" y="214" width="350" height="96" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<circle cx="440" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="440" cy="262" r="5" style="fill:var(--ink3)"/>
+<text x="490" y="238" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">Passive</text>
+<text x="490" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">green PCB visible</text>
+<text x="490" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">just a click on power</text>
+<text x="490" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">can play tunes via tone()</text>
+</svg>
+</div>
+<p>I first thought the HC-SR04 was a speaker (the two silver cans look like one); it's an ultrasonic ranger. It's next on the list because it exercises "5V module + divider", which I haven't built yet.</p>
+</div>
+
+<h2>Gotcha: garbled serial output (unsolved)</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART samples at an agreed baud rate; if the rates differ the sample points drift and you read garbage">
+<text x="20" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">UART has no clock: the receiver samples at an agreed speed</text>
+<path d="M20 50 L60 50 L60 50 L112 50 L112 50 L112 90 L164 90 L164 90 L164 50 L216 50 L216 50 L216 90 L268 90 L268 90 L268 90 L320 90 L320 90 L320 50 L372 50 L372 50 L372 90 L424 90 L424 90 L424 50 L476 50 L476 50 L476 50 L528 50 L528 50 L528 90 L580 90 L580 90 L580 50 L632 50" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<text x="86.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">idle</text>
+<text x="138.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">start</text>
+<text x="190.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d0</text>
+<text x="242.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d1</text>
+<text x="294.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d2</text>
+<text x="346.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d3</text>
+<text x="398.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d4</text>
+<text x="450.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d5</text>
+<text x="502.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d6</text>
+<text x="554.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d7</text>
+<text x="606.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">stop</text>
+<circle cx="138.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="190.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="242.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="294.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="346.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="398.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="450.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="502.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="554.0" cy="136" r="4" style="fill:var(--win)"/>
+<text x="20" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">ok</text>
+<circle cx="138.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="208.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="278.4" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="348.6" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="418.8" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="489.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="559.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="629.4000000000001" cy="160" r="4" style="fill:var(--lose)"/>
+<text x="20" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">bad</text>
+<text x="660" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">115200 ↔ 115200</text>
+<text x="660" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">115200 ↔ 74880</text>
+<text x="20" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">With a speed mismatch the sample points drift and the bytes become garbage (���). Tolerance is only ~±2–3%.</text>
+</svg>
+</div>
+<p>Serial Monitor is set to 115200 to match the code, yet the output is still garbage, and it's unsolved. Current hypothesis: a 26 MHz crystal instead of 40 MHz shifts the real rate to 74880. Next step: try 74880 in Serial Monitor. Until then I debug by drawing state on the screen (that's how the button and keypad tests worked).</p>
+</div>
+
+<h2>Basics to learn next</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">Multimeter</div><div class="kd">Measure voltage, continuity for pin-finding, diode mode for LEDs</div><div class="ke">stage 2</div></div>
+<div class="kcard"><div class="kt">Power budget</div><div class="kd">How much current USB gives, what the 3.3V regulator can drive, when to add a supply</div><div class="ke">stage 2</div></div>
+<div class="kcard"><div class="kt">Level shifting</div><div class="kd">Divider (one-way) vs a BSS138 module (two-way, for I2C)</div><div class="ke">stage 2</div></div>
+<div class="kcard"><div class="kt">ADC and PWM</div><div class="kd">Read pots and photoresistors; dim LEDs, drive servos</div><div class="ke">stage 2–3</div></div>
+<div class="kcard"><div class="kt">More I2C</div><div class="kd">Address scanning, multiple devices, pull-up sizing</div><div class="ke">stage 3</div></div>
+<div class="kcard"><div class="kt">Sensors</div><div class="kd">HC-SR04 ranging, temp/humidity (DHT/BME280), PIR motion</div><div class="ke">stage 3</div></div>
+<div class="kcard"><div class="kt">WiFi and networking</div><div class="kd">HTTP/HTTPS, NTP time, MQTT; the ESP32 as a web server</div><div class="ke">stage 4</div></div>
+<div class="kcard"><div class="kt">Keep secrets out of code</div><div class="kd">Don't hard-code WiFi passwords in shared files; use a separate config or provisioning</div><div class="ke">stage 4</div></div>
+<div class="kcard"><div class="kt">BLE and Bluetooth</div><div class="kd">BLE is low-power and iPhone-friendly; Classic suits audio streaming</div><div class="ke">stage 4</div></div>
+<div class="kcard"><div class="kt">Low power and finishing</div><div class="kd">Deep sleep, battery power, perfboard soldering, an enclosure</div><div class="ke">stage 5</div></div>
+</div>
+</div>
+
+<div class="foot"><b>Sources</b>:My own ESP32 bench work and tests, 2026-09-14 to 09-16; pin facts follow Espressif's ESP32 documentation and the common DOIT DevKit V1 pinout — always check your own board's silkscreen.<br><b>Disclaimer</b>:Personal learning notes. Verify your module's specs before wiring; wrong wiring can damage hardware.</div>
+
+</div></body></html>

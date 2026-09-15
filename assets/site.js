@@ -10,6 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
+  {slug:'esp32-iot-log-01',          d:'2026-09-16', cat:'物聯網',         zh:'ESP32．IoT 學習日誌 01：板子、麵包板與測過的模組', en:'ESP32．IoT Learning Log 01: The Board, the Breadboard and Every Module I Tested'},
   {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry', draft:1},
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
   {slug:'cloudflare-2026q2-earnings', d:'2026-08-07', cat:'財報分析',       sub:'Cloudflare',zh:'Cloudflare．2026 Q2 財報拆解', en:'Cloudflare．Q2 2026 Earnings, Unpacked'},
@@ -85,7 +86,8 @@ var CATL={
   '財報分析':        {zh:'財報分析',        en:'Earnings'},
   'AI 技術分享':     {zh:'AI 技術分享',     en:'AI Notes'},
   '前端開發':        {zh:'前端開發',        en:'Frontend'},
-  '旅遊':            {zh:'旅遊',            en:'Travel'}
+  '旅遊':            {zh:'旅遊',            en:'Travel'},
+  '物聯網':          {zh:'物聯網',          en:'IoT'}
 };
 var LANG=(document.documentElement.getAttribute('lang')||'').toLowerCase().indexOf('en')===0?'en':'zh';
 // 本機預覽（file:// 或 localhost）：草稿一併顯示，方便發佈前看版。線上永遠隱藏。

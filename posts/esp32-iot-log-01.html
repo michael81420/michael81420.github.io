@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32．IoT 學習日誌 01：板子、麵包板與測過的模組</title>
+<meta name="description" content="物聯網學習的第一步：先把手上的硬體認清楚。這篇整理 ESP32 DevKit 本身、麵包板怎麼導通、接線前該懂的電學基礎，以及三天內實際接過的七種模組——每個都附圖、腳位與接線邏輯。先不談程式碼。">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="esp32-iot-log-01"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>ESP32．IoT 學習日誌 01：板子、麵包板與測過的模組</h1>
+<div class="sub">物聯網學習的第一步：先把手上的硬體認清楚。這篇整理 ESP32 DevKit 本身、麵包板怎麼導通、接線前該懂的電學基礎，以及三天內實際接過的七種模組——每個都附圖、腳位與接線邏輯。<b>先不談程式碼。</b></div>
+<div style="margin-top:10px">
+<span class="badge new">來源:自己的 ESP32 實作紀錄</span>
+<span class="badge">階段:1 / 5 認識硬體</span>
+<span class="badge">整理日:2026-09-16</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">接任何模組前先問三件事：<span class="win">它吃幾伏？GND 接了沒？走哪種介面？</span></p>
+<ul>
+<li>ESP32 DevKit = USB 轉序列晶片 + ESP32 晶片 + 4MB flash。<b>腳位是 3.3V 邏輯，不耐 5V。</b></li>
+<li>不是每支腳都能隨便用：6–11 接 flash、34–39 只能輸入、0/2/5/12/15 是開機腳、1/3 是 USB 序列。</li>
+<li>麵包板：直排 5 孔相通、電源軌橫向相通、中溝隔開兩半。</li>
+<li>模組連接只有四種邏輯：<b>GPIO</b>（一腳一事）、<b>I2C</b>（兩線靠位址）、<b>SPI</b>（共用匯流排 + 片選）、<b>UART</b>（TX 接 RX）。</li>
+<li>測過：板載 LED、4 位七段顯示器、1602 LCD（I2C）、1.8 吋 TFT（SPI）、4 腳按鈕、ISD1820 錄放音、4×3 矩陣鍵盤。還沒測：HC-SR04、蜂鳴器。</li>
+</ul>
+</div>
+
+<h2>學習路線：我在哪一步</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 170" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="學習路線五階段，目前在第一階段認識硬體，聯網只先偷跑了一點">
+<defs><marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="40" width="120" height="64" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="80" y="66" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">1 認識硬體</text>
+<text x="80" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32・模組・麵包板</text>
+<line x1="142" y1="72" x2="166" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="170" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="230" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 電路基礎</text>
+<text x="230" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">電壓・電阻・上拉</text>
+<line x1="292" y1="72" x2="316" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="320" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3 通訊介面</text>
+<text x="380" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO · I2C · SPI</text>
+<line x1="442" y1="72" x2="466" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="470" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="530" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4 聯網</text>
+<text x="530" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi · HTTP · BLE</text>
+<line x1="592" y1="72" x2="616" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
+<rect x="620" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="680" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5 做成作品</text>
+<text x="680" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">感測・供電・外殼</text>
+<text x="80" y="132" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">▲ 現在在這</text>
+<text x="80" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">2026-09 起步</text>
+<text x="530" y="132" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">▲ 已先偷跑一點</text>
+<text x="530" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">看盤機連 WiFi 抓行情</text>
+</svg>
+</div>
+<p>把 IoT 拆成五階段。這篇只做第一階段「認識硬體」，順帶把第二、三階段的基本觀念補上——因為不懂電壓和介面，連線都接不對。第四階段的 WiFi 已經先偷跑（做了一台連網看盤機），但那是照著做出來的，還不算真的懂。</p>
+<table>
+<tr><th>日期</th><th>做了什麼</th><th>學到的重點</th></tr>
+<tr><td>09-14</td><td>裝環境、LED 閃爍、七段顯示器、1602 LCD</td><td>上傳要選 Port；Debug 鍵要 JTAG 硬體；I2C 靠位址</td></tr>
+<tr><td>09-15</td><td>1.8 吋 TFT、Win95 開機畫面、按鈕、ISD1820</td><td>SPI 要走硬體固定腳；按鈕接對角；PLAYE vs PLAYL</td></tr>
+<tr><td>09-16</td><td>復古 Mac 看盤機（WiFi + 貪吃蛇）、改用矩陣鍵盤</td><td>按鈕要共地；鍵盤排線順序要實測，不能猜</td></tr>
+</table>
+</div>
+
+<h2>主角：ESP32 DevKit 板子</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit 其實是 USB 轉序列晶片加 ESP32 加 flash，程式經 USB 與 UART 燒進 flash 後重開機執行">
+<defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="168" y="34" width="584" height="84" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
+<text x="176" y="28" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">DevKit 板子上</text>
+<rect x="20" y="48" width="110" height="58" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="75.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Mac</text>
+<text x="75.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">arduino-cli / IDE</text>
+<rect x="180" y="48" width="150" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="255.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB 轉序列晶片</text>
+<text x="255.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">CH340 / CP2102</text>
+<rect x="400" y="48" width="140" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="470.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32 晶片</text>
+<text x="470.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">雙核・WiFi + 藍牙</text>
+<rect x="610" y="48" width="130" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="675.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Flash 4MB</text>
+<text x="675.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">程式存在這裡</text>
+<line x1="132" y1="77" x2="178" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="155.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">USB</text>
+<line x1="332" y1="77" x2="398" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="365.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">UART</text>
+<line x1="542" y1="77" x2="608" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<text x="575.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">SPI</text>
+<text x="20" y="150" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">板上其他零件</text>
+<rect x="20" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="88" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V 穩壓</text>
+<text x="88" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB 5V → 3.3V</text>
+<rect x="164" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="232" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN 鍵</text>
+<text x="232" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">= 重開機</text>
+<rect x="308" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="376" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BOOT 鍵</text>
+<text x="376" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">燒錄卡住時按住</text>
+<rect x="452" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="520" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">板載 LED</text>
+<text x="520" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">接在 GPIO 2</text>
+<rect x="596" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="664" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">PCB 天線</text>
+<text x="664" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi / BT 2.4GHz</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">從程式到板子</text>
+<rect x="20" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="136" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">① 編譯</text>
+<text x="136" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">在 Mac 上 .ino → .bin</text>
+<text x="136" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">這步不需要接板子</text>
+<line x1="253" y1="299" x2="263" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<rect x="264" y="264" width="232" height="70" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="286" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② 上傳（燒錄）</text>
+<text x="380" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">經 USB 寫進 flash</text>
+<text x="380" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">要先選好 Port</text>
+<line x1="497" y1="299" x2="507" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
+<rect x="508" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="624" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ 重開機執行</text>
+<text x="624" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">從 flash 讀出來跑</text>
+<text x="624" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">斷電也不會消失</text>
+</svg>
+</div>
+<p>ESP32 是樂鑫（Espressif）的微控制器晶片：雙核、內建 WiFi 與藍牙（傳統藍牙 + BLE 都有）。「DevKit」是把晶片做成方便插麵包板的開發板，多了 USB 轉序列晶片、3.3V 穩壓器、EN／BOOT 兩顆按鈕和一顆板載 LED。</p>
+<h3>幾個一開始就搞混的觀念</h3>
+<table>
+<tr><th>現象</th><th>原因</th></tr>
+<tr><td>IDE 自動偵測不到板子</td><td>USB 晶片是通用的 CH340/CP2102，電腦只看到「一個序列埠」。手動選 <b>ESP32 Dev Module</b> 即可。</td></tr>
+<tr><td>按 Debug 報錯</td><td>Debug 要 JTAG 轉換器（如 ESP-Prog），DevKit 上的 USB 晶片只會 UART。除錯靠印訊息就好。</td></tr>
+<tr><td>編譯過了但上傳失敗</td><td>編譯只需要選板子，上傳還要選 <b>Port</b>。</td></tr>
+<tr><td>Resource busy</td><td>序列埠一次只能一個程式開，Serial Monitor 開著就上傳不了。</td></tr>
+<tr><td>燒錄卡在 Connecting.....</td><td>按住 BOOT 鍵不放，開始寫入再放開。</td></tr>
+</table>
+<h3>我這塊板子的規格</h3>
+<div class="kbox">
+<div class="kcard"><div class="kt">無線</div><div class="kd">WiFi 2.4GHz（連不上 5GHz）、傳統藍牙、BLE</div><div class="ke">S3/C3 只有 BLE，S2 沒有藍牙</div></div>
+<div class="kcard"><div class="kt">記憶體</div><div class="kd">Flash 4MB 放程式；RAM 只有幾百 KB</div><div class="ke">抓大網頁會塞不下，適合小份 JSON</div></div>
+<div class="kcard"><div class="kt">電壓</div><div class="kd">晶片與腳位 3.3V；USB 供 5V 從 VIN 腳出來</div><div class="ke">5V 不能直接進 GPIO</div></div>
+</div>
+</div>
+
+<h2>腳位地圖：哪些腳能用</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 580" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 DevKit 腳位依用途分色：綠色一般 GPIO 可放心用，藍色只能輸入，黃色開機腳要小心，紅色避開">
+<rect x="290" y="30" width="180" height="440" rx="12" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="320" y="50" width="120" height="150" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<path d="M335 62h14v14h14v-14h14v14h14v-14h14v14h14" style="fill:none;stroke:var(--ink2);stroke-width:1.5"/>
+<text x="380" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32-WROOM-32</text>
+<text x="380" y="148" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">（晶片 + flash + 天線）</text>
+<circle cx="380" cy="236" r="5" style="fill:var(--turn)"/>
+<text x="380" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">LED</text>
+<rect x="322" y="424" width="36" height="18" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="340" y="437" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">EN</text>
+<rect x="400" y="424" width="46" height="18" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="423" y="437" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">BOOT</text>
+<rect x="350" y="462" width="60" height="34" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="484" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB</text>
+<circle cx="300" cy="80" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="80" x2="296" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="70" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="255" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN</text>
+<text x="218" y="84" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">按下 = 重置</text>
+<circle cx="300" cy="106" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="106" x2="296" y2="106" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="96" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="110" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">36 VP</text>
+<circle cx="300" cy="132" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="132" x2="296" y2="132" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="122" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="136" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">39 VN</text>
+<circle cx="300" cy="158" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="158" x2="296" y2="158" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="148" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="162" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">34</text>
+<circle cx="300" cy="184" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="184" x2="296" y2="184" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="174" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="255" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">35</text>
+<circle cx="300" cy="210" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="210" x2="296" y2="210" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="200" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="214" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">32</text>
+<text x="218" y="214" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C1</text>
+<circle cx="300" cy="236" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="236" x2="296" y2="236" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="226" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="240" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">33</text>
+<text x="218" y="240" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C2</text>
+<circle cx="300" cy="262" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="262" x2="296" y2="262" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="252" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="266" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">25</text>
+<text x="218" y="266" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C3・ISD PLAYE</text>
+<circle cx="300" cy="288" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="288" x2="296" y2="288" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="278" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="292" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">26</text>
+<text x="218" y="292" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R1</text>
+<circle cx="300" cy="314" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="314" x2="296" y2="314" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="304" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="318" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">27</text>
+<text x="218" y="318" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R3</text>
+<circle cx="300" cy="340" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="340" x2="296" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="344" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">14</text>
+<circle cx="300" cy="366" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="366" x2="296" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="356" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="255" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
+<text x="218" y="370" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">開機時不能是 HIGH</text>
+<circle cx="300" cy="392" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="392" x2="296" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="382" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="255" y="396" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">13</text>
+<text x="218" y="396" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R4</text>
+<circle cx="300" cy="418" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="418" x2="296" y2="418" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="408" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="255" y="422" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<circle cx="300" cy="444" r="4" style="fill:var(--ink3)"/>
+<line x1="284" y1="444" x2="296" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="226" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="255" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN</text>
+<text x="218" y="448" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">USB 的 5V</text>
+<circle cx="460" cy="80" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="80" x2="476" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="70" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">23</text>
+<text x="542" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT MOSI</text>
+<circle cx="460" cy="106" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="106" x2="476" y2="106" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="96" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="110" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">22</text>
+<text x="542" y="110" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">LCD SCL</text>
+<circle cx="460" cy="132" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="132" x2="476" y2="132" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="122" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="505" y="136" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">TX0 1</text>
+<text x="542" y="136" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB 序列，避開</text>
+<circle cx="460" cy="158" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="158" x2="476" y2="158" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="148" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="505" y="162" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">RX0 3</text>
+<text x="542" y="162" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB 序列，避開</text>
+<circle cx="460" cy="184" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="184" x2="476" y2="184" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="174" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="188" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">21</text>
+<text x="542" y="188" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">LCD SDA</text>
+<circle cx="460" cy="210" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="210" x2="476" y2="210" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="200" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="214" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">19</text>
+<circle cx="460" cy="236" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="236" x2="476" y2="236" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="226" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="240" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">18</text>
+<text x="542" y="240" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT SCK</text>
+<circle cx="460" cy="262" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="262" x2="476" y2="262" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="252" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="266" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5</text>
+<text x="542" y="266" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT CS</text>
+<circle cx="460" cy="288" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="288" x2="476" y2="288" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="278" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">TX2 17</text>
+<text x="542" y="292" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT RST</text>
+<circle cx="460" cy="314" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="314" x2="476" y2="314" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="304" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="318" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">RX2 16</text>
+<text x="542" y="318" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">TFT DC</text>
+<circle cx="460" cy="340" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="340" x2="476" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="505" y="344" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
+<text x="542" y="344" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R2・按鈕</text>
+<circle cx="460" cy="366" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="366" x2="476" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="356" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<text x="542" y="370" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">板載 LED</text>
+<circle cx="460" cy="392" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="392" x2="476" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="382" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="505" y="396" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">15</text>
+<circle cx="460" cy="418" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="418" x2="476" y2="418" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="408" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="505" y="422" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<circle cx="460" cy="444" r="4" style="fill:var(--ink3)"/>
+<line x1="464" y1="444" x2="476" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
+<rect x="476" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="505" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="542" y="448" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V 輸出</text>
+<rect x="20" y="522" width="14" height="14" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="40" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">一般 GPIO</text>
+<rect x="145" y="522" width="14" height="14" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="165" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">只能輸入</text>
+<rect x="270" y="522" width="14" height="14" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="290" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">開機腳，小心</text>
+<rect x="395" y="522" width="14" height="14" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="415" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">避開</text>
+<rect x="520" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="540" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電源</text>
+<rect x="645" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="665" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">重置</text>
+<text x="380" y="566" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">以 30-pin DOIT DevKit V1、天線朝上為例；各家腳位順序不同，請以板上絲印為準。GPIO 6–11 接內部 flash，這塊板沒拉出來。</text>
+</svg>
+</div>
+<p>ESP32 的 GPIO 大多能在內部「重新指派」功能，但有幾類腳天生有限制。下表是我挑腳時的依據，圖上右側／左側的小字是我目前實際的用法。</p>
+<table>
+<tr><th>類別</th><th>GPIO</th><th>要注意什麼</th></tr>
+<tr><td><span class="lose">接 flash</span></td><td>6–11</td><td>板上 flash 在用，接了會當機（多數 DevKit 沒拉出來）</td></tr>
+<tr><td><span class="lose">開機腳</span></td><td>12</td><td>開機時若是 HIGH 會把 flash 電壓設成 1.8V，開不了機</td></tr>
+<tr><td><span class="mid">strapping</span></td><td>0, 2, 5, 15</td><td>開機時晶片會讀它們的電位；外接電路可能讓燒錄或開機失敗</td></tr>
+<tr><td><span class="lose">UART0</span></td><td>1, 3</td><td>USB 燒錄和序列輸出走這兩支</td></tr>
+<tr><td>只能輸入</td><td>34, 35, 36, 39</td><td>不能輸出，也沒有內建上拉（鍵盤列線用不了）</td></tr>
+<tr><td><span class="win">硬體 I2C</span></td><td>21 SDA, 22 SCL</td><td>函式庫預設，不用另外指定</td></tr>
+<tr><td><span class="win">硬體 SPI（VSPI）</span></td><td>18 SCK, 23 MOSI, 19 MISO, 5 CS</td><td>走這幾支最快；換別的腳會變軟體模擬</td></tr>
+<tr><td>ADC2</td><td>0, 2, 4, 12–15, 25–27</td><td>開 WiFi 時不能讀類比值，類比感測器要改用 ADC1（32–39）</td></tr>
+</table>
+</div>
+
+<h2>麵包板：不用焊接的電路板</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 430" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="麵包板直排五孔相通、電源軌橫向相通、中溝把左右隔開，所以按鈕和晶片要跨中溝插">
+<rect x="20" y="20" width="480" height="390" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<line x1="50" y1="30" x2="482" y2="30" style="stroke:var(--lose);stroke-width:1.5"/>
+<line x1="50" y1="76" x2="482" y2="76" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="36" y="48" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">+</text>
+<text x="36" y="66" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">−</text>
+<line x1="50" y1="350" x2="482" y2="350" style="stroke:var(--lose);stroke-width:1.5"/>
+<line x1="50" y1="396" x2="482" y2="396" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="36" y="368" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">+</text>
+<text x="36" y="386" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">−</text>
+<circle cx="62" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="44" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="62" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="364" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="62" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="382" r="3.2" style="fill:var(--ink3)"/>
+<text x="62" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<text x="158" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5</text>
+<text x="278" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">10</text>
+<text x="398" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">15</text>
+<text x="40" y="114" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">a</text>
+<circle cx="62" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="110" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="134" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">b</text>
+<circle cx="62" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="130" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="154" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">c</text>
+<circle cx="62" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="150" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="174" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d</text>
+<circle cx="62" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="170" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="194" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">e</text>
+<circle cx="62" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="190" r="3.2" style="fill:var(--ink3)"/>
+<rect x="50" y="202" width="432" height="20" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="266" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">中溝：左右兩半不相通</text>
+<text x="40" y="240" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">f</text>
+<circle cx="62" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="236" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="260" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">g</text>
+<circle cx="62" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="256" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">h</text>
+<circle cx="62" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="276" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="300" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">i</text>
+<circle cx="62" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="296" r="3.2" style="fill:var(--ink3)"/>
+<text x="40" y="320" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">j</text>
+<circle cx="62" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="86" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="110" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="134" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="158" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="182" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="206" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="230" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="254" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="278" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="302" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="326" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="350" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="374" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="398" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="422" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="446" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<circle cx="470" cy="316" r="3.2" style="fill:var(--ink3)"/>
+<rect x="125" y="100" width="18" height="100" rx="6" style="fill:none;stroke:var(--win);stroke-width:2"/>
+<rect x="125" y="226" width="18" height="100" rx="6" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<rect x="50" y="35" width="432" height="18" rx="6" style="fill:none;stroke:var(--lose);stroke-width:2"/>
+<rect x="366" y="176" width="64" height="74" rx="6" style="fill:var(--surface2);stroke:var(--accent)"/>
+<circle cx="398.0" cy="213" r="12" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
+<text x="374" y="162" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">按鈕</text>
+<text x="518" y="48" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">① 直排 5 孔是同一條線</text>
+<text x="518" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">綠框 a–e 互相導通</text>
+<text x="518" y="82" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">藍框 f–j 是另一條，隔著中溝</text>
+<text x="518" y="114" text-anchor="start" style="fill:var(--lose);font:700 12px sans-serif">② 電源軌整條橫向相通</text>
+<text x="518" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">紅 + 接 3V3，藍 − 接 GND</text>
+<text x="518" y="148" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">長板中間可能斷開，先測</text>
+<text x="518" y="180" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">③ 晶片／按鈕要跨中溝</text>
+<text x="518" y="198" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">兩側腳才不會被短路在一起</text>
+<text x="518" y="230" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">④ ESP32 DevKit 很寬</text>
+<text x="518" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">插上後一側可能只剩 1 排孔</text>
+<text x="518" y="264" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">常見做法：兩塊麵包板並排</text>
+<text x="518" y="296" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">⑤ 跳線短、插到底</text>
+<text x="518" y="314" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">鬆脫是新手最常見的 bug</text>
+</svg>
+</div>
+<p>麵包板裡面是一條條金屬夾片。記住「<b>哪些孔是同一條線</b>」就懂了一大半：同一直排 a–e 的 5 個孔導通；f–j 是另一組；上下的紅藍電源軌是整條橫向導通。</p>
+<ul>
+<li><b>電源軌怎麼用</b>：把 ESP32 的 3V3 接到紅色 +、GND 接到藍色 −，其他模組就近從軌道取電，GND 也自然共用了。</li>
+<li><b>5V 與 3.3V 別混在同一條軌</b>：需要 5V 的模組（1602 LCD、HC-SR04）接另一邊的軌，並標清楚。</li>
+<li><b>我的按鈕沒反應</b>：後來發現是 4 腳按鈕接到「同一組」的兩腳，等於永遠導通。改接對角就好了（見下方按鈕段）。</li>
+</ul>
+</div>
+
+<h2>接線前要懂的電學基礎</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LED 迴路要串電阻限流，所有模組的 GND 必須接在一起，否則訊號沒有共同參考點">
+<text x="20" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一顆 LED 的迴路</text>
+<rect x="20" y="50" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="52" y="70" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3V3</text>
+<line x1="84" y1="65" x2="130" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="130" y="55" width="70" height="20" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="165" y="48" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">330Ω</text>
+<line x1="200" y1="65" x2="250" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<path d="M250 53L250 77L272 65Z" style="fill:var(--winbg);stroke:var(--win);stroke-width:1.5"/>
+<line x1="272" y1="53" x2="272" y2="77" style="stroke:var(--win);stroke-width:2"/>
+<text x="262" y="44" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">LED</text>
+<line x1="272" y1="65" x2="320" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="320" y1="65" x2="320" y2="150" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="320" y1="150" x2="84" y2="150" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="20" y="135" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="52" y="155" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<path d="M200 140l-10 5l10 5" style="fill:none;stroke:var(--accent);stroke-width:1.5"/>
+<text x="200" y="132" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">電流 I</text>
+<text x="20" y="196" text-anchor="start" style="fill:var(--ink);font:700 16px sans-serif">V = I × R</text>
+<text x="20" y="216" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">(3.3V − LED 約 2.0V) ÷ 330Ω ≈ 4 mA</text>
+<text x="20" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電阻負責限流：不串電阻，LED 或 GPIO 會燒</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">GPIO 單腳建議 ≤ 20 mA，不是電源</text>
+<text x="410" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">共地：所有 GND 接在一起</text>
+<rect x="410" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="458" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<text x="458" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="458" y1="100" x2="458" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<rect x="526" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="574" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">LCD</text>
+<text x="574" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="574" y1="100" x2="574" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<rect x="642" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="690" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">按鈕</text>
+<text x="690" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<line x1="690" y1="100" x2="690" y2="140" style="stroke:var(--win);stroke-width:2"/>
+<line x1="430" y1="140" x2="710" y2="140" style="stroke:var(--win);stroke-width:3"/>
+<text x="570" y="160" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">同一條 GND 軌</text>
+<text x="410" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電壓是「兩點之間」的差</text>
+<text x="410" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">HIGH 是相對 GND 的 3.3V</text>
+<text x="410" y="232" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">沒共地 = 沒有共同參考點</text>
+<text x="410" y="250" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">→ 訊號亂跳、完全沒反應</text>
+</svg>
+</div>
+<div class="kbox">
+<div class="kcard"><div class="kt">電壓 V</div><div class="kd">兩點之間的「電位差」，像水壓。ESP32 的 HIGH = 3.3V、LOW = 0V。</div></div>
+<div class="kcard"><div class="kt">電流 I</div><div class="kd">實際流過的量，單位 mA。燒東西的通常是電流太大。</div></div>
+<div class="kcard"><div class="kt">電阻 R</div><div class="kd">限制電流。V = I × R，給定電壓就能算出該串多大的電阻。</div></div>
+<div class="kcard"><div class="kt">數位 vs 類比</div><div class="kd">數位只有 HIGH/LOW；類比是連續電壓，由 ADC 轉成數字（0–4095）。</div></div>
+<div class="kcard"><div class="kt">PWM</div><div class="kd">用快速開關模擬「半亮」：開的時間比例（duty）決定亮度或馬達速度。</div></div>
+<div class="kcard"><div class="kt">上拉／下拉</div><div class="kd">讓沒接東西的輸入腳有固定電位，避免「浮接」亂跳。</div></div>
+</div>
+</div>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 腳位只能吃 3.3V，5V 模組的輸出要先用分壓電阻或電平轉換降壓">
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">3.3V 與 5V 邏輯</text>
+<line x1="80" y1="260" x2="80" y2="22.399999999999977" style="stroke:var(--ink3);stroke-width:1.5"/>
+<line x1="76" y1="260" x2="84" y2="260" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="264" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">0V</text>
+<line x1="76" y1="216" x2="84" y2="216" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="220" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">1V</text>
+<line x1="76" y1="172" x2="84" y2="172" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="176" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">2V</text>
+<line x1="76" y1="128" x2="84" y2="128" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="132" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">3V</text>
+<line x1="76" y1="84" x2="84" y2="84" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="88" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">4V</text>
+<line x1="76" y1="40" x2="84" y2="40" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="66" y="44" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">5V</text>
+<rect x="100" y="114.80000000000001" width="90" height="145.2" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="145" y="136.8" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">ESP32 輸出</text>
+<text x="145" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V</text>
+<rect x="220" y="40" width="90" height="220" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="265" y="62" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">5V 模組輸出</text>
+<text x="265" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5V</text>
+<line x1="90" y1="101.6" x2="330" y2="101.6" style="stroke:var(--lose);stroke-width:1.5;stroke-dasharray:4 3"/>
+<text x="334" y="105.6" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">ESP32 耐壓上限 ≈ 3.6V</text>
+<text x="20" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V 訊號直接進 ESP32 腳位 = 超規，可能慢慢燒壞</text>
+<text x="20" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">反過來 3.3V 給 5V 模組：多半認得 HIGH，但不保證</text>
+<text x="480" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">解法：分壓電阻</text>
+<rect x="480" y="50" width="130" height="30" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="545" y="70" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Echo 5V 輸出</text>
+<line x1="545" y1="80" x2="545" y2="96" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="535" y="96" width="20" height="40" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="565" y="120" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">1kΩ</text>
+<line x1="545" y1="136" x2="545" y2="160" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="545" cy="160" r="3.5" style="fill:var(--ink)"/>
+<line x1="545" y1="160" x2="640" y2="160" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="640" y="146" width="100" height="28" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="690" y="165" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO ≈ 3.3V</text>
+<line x1="545" y1="160" x2="545" y2="180" style="stroke:var(--ink);stroke-width:1.5"/>
+<rect x="535" y="180" width="20" height="40" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="565" y="204" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">2kΩ</text>
+<line x1="545" y1="220" x2="545" y2="240" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="531" y1="240" x2="559" y2="240" style="stroke:var(--ink);stroke-width:2"/>
+<text x="545" y="258" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
+<text x="480" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V × 2k ÷ (1k + 2k) ≈ 3.3V</text>
+<text x="480" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">I2C 雙向線改用電平轉換模組</text>
+</svg>
+</div>
+<p>這是我目前最常碰到的坑：很多入門模組是給 5V 的 Arduino Uno 設計的。<b>ESP32 輸出 3.3V、只能吃 3.3V</b>。模組「只收訊號」通常沒事；模組會「送 5V 訊號回來」（HC-SR04 的 Echo、1602 背板的上拉）就要處理。</p>
+</div>
+
+<h2>Pin 腳怎麼跟 ESP32 連：四種邏輯</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四種連接方式：GPIO 一腳一事、I2C 兩線靠位址、SPI 共用匯流排加片選、UART 一對一 TX 接 RX">
+<rect x="20" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="106" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO</text>
+<rect x="62" y="60" width="88" height="26" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="106" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="106" y1="86" x2="106" y2="150" style="stroke:var(--win);stroke-width:2"/>
+<text x="114" y="122" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">GPIO</text>
+<rect x="62" y="150" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="106" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">模組</text>
+<text x="106" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">一腳管一件事</text>
+<text x="106" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">每個訊號 1 條線</text>
+<line x1="36" y1="246" x2="176" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="106" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
+<text x="106" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">按鈕・LED・ISD・七段</text>
+<rect x="204" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="290" y="46" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">I2C</text>
+<rect x="246" y="60" width="88" height="26" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="290" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="278" y1="86" x2="278" y2="118" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="302" y1="86" x2="302" y2="110" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="218" y1="118" x2="362" y2="118" style="stroke:var(--turn);stroke-width:2"/>
+<line x1="218" y1="110" x2="362" y2="110" style="stroke:var(--turn);stroke-width:2"/>
+<text x="218" y="104" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">SDA / SCL</text>
+<line x1="246" y1="118" x2="246" y2="150" style="stroke:var(--turn);stroke-width:1.5"/>
+<rect x="216" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="250" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0x27</text>
+<line x1="326" y1="118" x2="326" y2="150" style="stroke:var(--turn);stroke-width:1.5"/>
+<rect x="296" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="330" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0x3C</text>
+<text x="290" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 條線掛很多台</text>
+<text x="290" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">靠「位址」分辨是誰</text>
+<line x1="220" y1="246" x2="360" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="290" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
+<text x="290" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1602 LCD</text>
+<rect x="388" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="474" y="46" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">SPI</text>
+<rect x="430" y="60" width="88" height="26" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="474" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<line x1="474" y1="86" x2="474" y2="112" style="stroke:var(--mid);stroke-width:2"/>
+<line x1="402" y1="112" x2="546" y2="112" style="stroke:var(--mid);stroke-width:2"/>
+<text x="402" y="104" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">SCK / MOSI</text>
+<line x1="424" y1="112" x2="424" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
+<rect x="400" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="434" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">裝置1</text>
+<path d="M444 86 L450 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
+<line x1="504" y1="112" x2="504" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
+<rect x="480" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="514" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">裝置2</text>
+<path d="M504 86 L530 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
+<text x="474" y="142" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">CS</text>
+<text x="474" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">共用時脈與資料線</text>
+<text x="474" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">每台多 1 條 CS 片選</text>
+<line x1="404" y1="246" x2="544" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="474" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
+<text x="474" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1.8 吋 TFT</text>
+<rect x="572" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="658" y="46" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">UART</text>
+<rect x="614" y="60" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
+<text x="658" y="78" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
+<rect x="614" y="150" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="658" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB-serial</text>
+<line x1="638" y1="86" x2="678" y2="150" style="stroke:var(--accent);stroke-width:2"/>
+<line x1="678" y1="86" x2="638" y2="150" style="stroke:var(--accent);stroke-width:2"/>
+<text x="624" y="106" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">TX</text>
+<text x="692" y="106" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
+<text x="624" y="140" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">TX</text>
+<text x="692" y="140" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
+<text x="658" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">一對一，沒有時脈</text>
+<text x="658" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">雙方先講好速度 baud</text>
+<line x1="588" y1="246" x2="728" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
+<text x="658" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
+<text x="658" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB 燒錄・Serial</text>
+</svg>
+</div>
+<p>拿到新模組先看腳位名稱，就能判斷它屬於哪一種：</p>
+<table>
+<tr><th>腳位名稱長這樣</th><th>是哪種</th><th>怎麼接</th></tr>
+<tr><td>IN, OUT, SIG, PLAYE, Trig, Echo</td><td>GPIO</td><td>任一支安全 GPIO，一條線對一個訊號</td></tr>
+<tr><td>SDA, SCL</td><td>I2C</td><td>SDA→21、SCL→22；多台共用，靠位址區分</td></tr>
+<tr><td>SCK/CLK, MOSI/DIN, MISO, CS, DC</td><td>SPI</td><td>SCK→18、MOSI→23、MISO→19；每台一條 CS</td></tr>
+<tr><td>TX, RX</td><td>UART</td><td>交叉接：對方 TX→ESP32 RX；避開 1/3，改用 16/17</td></tr>
+<tr><td>VCC, VIN, GND</td><td>電源</td><td>看模組吃 3.3V 還是 5V；GND 一律接在一起</td></tr>
+</table>
+<p class="quote"><b>名稱會騙人</b>：1.8 吋 TFT 上印的是 SCL／SDA，看起來像 I2C，其實是 SPI 的 SCK／MOSI。判斷依據是它還有 CS、DC 這種 SPI 才有的腳。</p>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="接任何模組的六步：看電壓、先共地、認介面、固定腳優先、其餘挑安全腳、最後補電阻">
+<defs><marker id="m4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="132" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">① 看電壓</text>
+<text x="132" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">模組吃 3.3V 還是 5V？</text>
+<text x="132" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">輸出 5V 要降壓</text>
+<line x1="246" y1="60" x2="266" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="268" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="380" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② 先接 GND</text>
+<text x="380" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">所有 GND 接在一起</text>
+<text x="380" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">沒共地什麼都不準</text>
+<line x1="494" y1="60" x2="514" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="516" y="20" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="628" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ 認介面</text>
+<text x="628" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO / I2C / SPI / UART</text>
+<text x="628" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">看腳位名稱判斷</text>
+<rect x="20" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="132" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">④ 固定腳優先</text>
+<text x="132" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 21/22、SPI 18/23</text>
+<text x="132" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">硬體腳最快、免設定</text>
+<line x1="246" y1="164" x2="266" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="268" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑤ 其餘挑安全腳</text>
+<text x="380" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">避開 12、1/3；0/2/5/15 小心</text>
+<text x="380" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">34–39 只能當輸入</text>
+<line x1="494" y1="164" x2="514" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+<rect x="516" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="628" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑥ 補電阻</text>
+<text x="628" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">輸入要上拉，LED 要限流</text>
+<text x="628" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">內建上拉能用就用</text>
+<path d="M692 102 L692 112 L132 112 L132 122" style="fill:none;stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
+</svg>
+</div>
+</div>
+
+<h2>測過的模組 ①：板載 LED（第一個測試）</h2>
+<div class="card">
+<p>不用接任何線。板子上 GPIO 2 已經連著一顆藍色 LED，讓它每秒閃一次，同時從序列埠印字——一次驗證三件事：<b>上傳通不通、序列埠通不通、GPIO 動不動</b>。電路長相見上方「一顆 LED 的迴路」圖，板上已經幫你串好電阻了。</p>
+<p>結果：上傳成功、LED 有閃，但序列埠讀出來是亂碼（見文末踩坑）。</p>
+</div>
+
+<h2>測過的模組 ②：4 位數七段顯示器</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 360" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四位七段顯示器用 8 條段線加 4 條位選線，程式快速輪流點亮每一位，人眼看起來像同時亮">
+<defs><marker id="m5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一位數：7 段 + 小數點</text>
+<rect x="72" y="52" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">a</text>
+<rect x="72" y="122" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="116" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">g</text>
+<rect x="72" y="192" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="218" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">d</text>
+<rect x="60" y="64" width="10" height="56" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="48" y="96" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">f</text>
+<rect x="130" y="64" width="10" height="56" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="152" y="96" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">b</text>
+<rect x="60" y="134" width="10" height="56" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="48" y="166" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">e</text>
+<rect x="130" y="134" width="10" height="56" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="152" y="166" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">c</text>
+<circle cx="156" cy="198" r="6" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="178" y="202" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">dp</text>
+<text x="100" y="250" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">亮 b、c = 顯示「1」</text>
+<text x="250" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">四位數共用段線，輪流點亮（多工掃描）</text>
+<rect x="260" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="288" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<line x1="288" y1="128" x2="288" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="288" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位1</text>
+<rect x="330" y="44" width="56" height="84" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="358" y="96" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">2</text>
+<line x1="358" y1="128" x2="358" y2="170" style="stroke:var(--accent);stroke-width:2"/>
+<text x="358" y="186" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">位2</text>
+<rect x="400" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="428" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">3</text>
+<line x1="428" y1="128" x2="428" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="428" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位3</text>
+<rect x="470" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="498" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">4</text>
+<line x1="498" y1="128" x2="498" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
+<text x="498" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位4</text>
+<line x1="256" y1="60" x2="540" y2="60" style="stroke:var(--turn);stroke-width:1.5"/>
+<line x1="256" y1="80" x2="540" y2="80" style="stroke:var(--turn);stroke-width:1.5"/>
+<line x1="256" y1="100" x2="540" y2="100" style="stroke:var(--turn);stroke-width:1.5"/>
+<text x="548" y="84" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">a–g、dp 共 8 條</text>
+<text x="548" y="102" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">四位並聯</text>
+<text x="260" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">8 段線 + 4 位選線 = 12 腳</text>
+<text x="260" y="234" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">每條段線串 330Ω；位選線不串</text>
+<text x="20" y="280" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">時間軸：同一瞬間只有一位在亮</text>
+<rect x="20" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="61" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位1 2ms</text>
+<rect x="110" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="151" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位2 2ms</text>
+<rect x="200" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="241" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位3 2ms</text>
+<rect x="290" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="331" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位4 2ms</text>
+<rect x="380" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="421" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位1 2ms</text>
+<rect x="470" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="511" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位2 2ms</text>
+<rect x="560" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="601" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位3 2ms</text>
+<rect x="650" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="691" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位4 2ms</text>
+<text x="380" y="348" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">一輪 8ms ≈ 每秒 125 輪，人眼看起來四位同時亮</text>
+</svg>
+</div>
+<p>型號類似 5641AS／3461AS，12 支腳。重點是理解「段線」和「位選線」的分工：8 條段線決定<b>顯示什麼形狀</b>，4 條位選線決定<b>亮哪一位</b>。四位的同名段在內部接在一起，所以一次只能亮一位，靠快速輪流騙過眼睛。</p>
+<table>
+<tr><th>顯示器腳</th><th>功能</th><th>ESP32</th></tr>
+<tr><td>11 / 7 / 4 / 2</td><td>a / b / c / d</td><td>13 / 14 / 27 / 26</td></tr>
+<tr><td>1 / 10 / 5 / 3</td><td>e / f / g / dp</td><td>25 / 33 / 32 / 4</td></tr>
+<tr><td>12 / 9 / 8 / 6</td><td>第 1 / 2 / 3 / 4 位</td><td>19 / 21 / 22 / 23</td></tr>
+</table>
+<ul>
+<li><b>腳位編號</b>：正面朝自己、小數點在下，下排左到右 1–6，上排左到右 12–7。</li>
+<li><b>每條段線串 330Ω</b>，位選線不串。一位全亮時電流會集中在位選腳，已經接近 GPIO 上限，長時間使用要加電晶體。</li>
+<li><b>共陰 vs 共陽</b>：共陰極是位選腳接 LOW 才亮，共陽極相反。不知道是哪種？用電表量：</li>
+</ul>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三用電表二極體檔紅筆接段、黑筆接位，微亮就是共陰極，要對調才亮就是共陽極">
+<rect x="20" y="20" width="150" height="210" rx="14" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="40" width="110" height="44" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="95" y="70" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">1.84 V</text>
+<circle cx="95" cy="146" r="34" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<line x1="95" y1="146" x2="70" y2="124" style="stroke:var(--accent);stroke-width:3"/>
+<text x="95" y="200" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">二極體檔 →|</text>
+<circle cx="150" cy="50" r="4" style="fill:var(--lose)"/>
+<circle cx="150" cy="74" r="4" style="fill:var(--ink)"/>
+<path d="M150 50 C 230 50, 270 0, 348 34" style="fill:none;stroke:var(--lose);stroke-width:2"/>
+<path d="M150 74 C 240 74, 250 -6, 318 34" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<text x="235" y="110" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">紅筆 = 正極</text>
+<text x="235" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">黑筆 = 負極</text>
+<rect x="300" y="30" width="190" height="150" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="318" y="56" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
+<text x="348" y="56" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">11</text>
+<text x="378" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">10</text>
+<text x="408" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">9</text>
+<text x="438" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">8</text>
+<text x="468" y="56" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">7</text>
+<text x="318" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
+<text x="348" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">2</text>
+<text x="378" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">3</text>
+<text x="408" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">4</text>
+<text x="438" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5</text>
+<text x="468" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">6</text>
+<rect x="330" y="72" width="40" height="70" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="338" y="76" width="24" height="6" rx="2" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="350" y="116" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位1</text>
+<circle cx="348" cy="38" r="4" style="fill:var(--lose)"/>
+<circle cx="318" cy="38" r="4" style="fill:var(--ink)"/>
+<text x="395" y="200" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">顯示器正面，小數點朝下</text>
+<text x="520" y="40" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">用電表確認腳位</text>
+<text x="520" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">紅筆 pin 11（a 段）</text>
+<text x="520" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">黑筆 pin 12（第 1 位）</text>
+<text x="520" y="110" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">a 段微亮 / 讀到 1.6–2.0V</text>
+<text x="520" y="128" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">→ 共陰極</text>
+<text x="520" y="154" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">要對調紅黑才亮</text>
+<text x="520" y="172" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">→ 共陽極</text>
+<text x="520" y="198" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">顯示 OL = 沒導通</text>
+<text x="520" y="216" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">接反不會燒：3.3V 低於反向耐壓</text>
+</svg>
+</div>
+</div>
+
+<h2>測過的模組 ③：1602 LCD + I2C 背板</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="1602 LCD 的 I2C 背板只要 4 條線，SDA 接 21、SCL 接 22，但背板會把訊號上拉到 5V">
+<rect x="20" y="30" width="200" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<rect x="36" y="50" width="168" height="50" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="50" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="60" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="70" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="80" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="90" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="100" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="110" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="120" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="130" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="140" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="150" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="160" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="170" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="180" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="190" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="40" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="50" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="60" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="70" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="80" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="90" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="100" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="110" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="120" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="130" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="140" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="150" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="160" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="170" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="180" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<rect x="190" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="120" y="142" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">正面：16 字 × 2 行</text>
+<rect x="20" y="170" width="200" height="120" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<rect x="40" y="190" width="70" height="40" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="75" y="214" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PCF8574</text>
+<circle cx="160" cy="210" r="13" style="fill:var(--turnbg);stroke:var(--turn);stroke-width:1.5"/>
+<path d="M152 210h16" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<text x="160" y="244" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">對比旋鈕</text>
+<text x="75" y="248" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 背板</text>
+<text x="120" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位址 0x27（或 0x3F）</text>
+<rect x="320" y="59" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="74" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<line x1="384" y1="70" x2="480" y2="70" style="stroke:var(--ink3);stroke-width:2"/>
+<rect x="480" y="59" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="74" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<rect x="320" y="99" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="114" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VCC</text>
+<line x1="384" y1="110" x2="480" y2="110" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="480" y="99" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="522" y="114" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN 5V</text>
+<text x="576" y="114" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">1602 要 5V 才看得清楚</text>
+<rect x="320" y="139" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
+<line x1="384" y1="150" x2="480" y2="150" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="480" y="139" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 21</text>
+<text x="576" y="154" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 預設 I2C 資料</text>
+<rect x="320" y="179" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="352" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
+<line x1="384" y1="190" x2="480" y2="190" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="480" y="179" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="522" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 22</text>
+<text x="576" y="194" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 預設 I2C 時脈</text>
+<text x="352" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">背板腳</text>
+<text x="522" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
+<path d="M220 214 H300 V70 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<path d="M300 110 H316 M300 150 H316 M300 190 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<rect x="300" y="232" width="440" height="70" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="520" y="256" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">⚠ 背板把 SDA/SCL 上拉到 5V</text>
+<text x="520" y="276" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 腳位不耐 5V：多數人直接接也能動，但是在賭</text>
+<text x="520" y="292" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">穩妥做法：加 I2C 電平轉換，或拆掉背板上拉電阻</text>
+</svg>
+</div>
+<p>1602 原本要接十幾條線，背板上的 PCF8574 晶片把它轉成 I2C，只剩 4 條。這是我第一次用到「匯流排」：SDA／SCL 兩條線上可以再掛別的 I2C 裝置，靠<b>位址</b>分辨在跟誰說話。</p>
+<table>
+<tr><th>症狀</th><th>先檢查</th></tr>
+<tr><td>背光亮但沒有字</td><td>九成是對比沒調：轉背板上的藍色可變電阻</td></tr>
+<tr><td>只看到一排方塊</td><td>有電但 I2C 沒通：位址 0x27 換 0x3F 試，或 SDA/SCL 接反</td></tr>
+<tr><td>接 3.3V 字很淡</td><td>1602 要吃 5V，改接 VIN</td></tr>
+<tr><td>超過 16 個字不見</td><td>每行記憶體有 40 格、只露前 16 格；不會自動換行</td></tr>
+</table>
+</div>
+
+<h2>測過的模組 ④：1.8 吋 TFT 彩色螢幕（SPI）</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TFT 標 SCL 與 SDA 但其實是 SPI，時脈 18、資料 23 走硬體 SPI，DC、RST、CS 用一般腳">
+<rect x="20" y="40" width="170" height="300" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<rect x="34" y="56" width="110" height="140" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="89" y="120" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">128 × 160</text>
+<text x="89" y="140" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">ST7735</text>
+<text x="89" y="230" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1.8 吋 TFT</text>
+<text x="89" y="250" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">SPI</text>
+<rect x="240" y="53" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="68" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<line x1="304" y1="64" x2="420" y2="64" style="stroke:var(--ink3);stroke-width:2"/>
+<rect x="420" y="53" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="68" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
+<rect x="240" y="89" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VCC</text>
+<line x1="304" y1="100" x2="420" y2="100" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="420" y="89" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="462" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="516" y="104" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V 邏輯，不必轉電平</text>
+<rect x="240" y="125" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
+<line x1="304" y1="136" x2="420" y2="136" style="stroke:var(--accent);stroke-width:2"/>
+<rect x="420" y="125" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 18</text>
+<text x="516" y="140" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其實是 SPI SCK（不是 I2C）</text>
+<rect x="240" y="161" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
+<line x1="304" y1="172" x2="420" y2="172" style="stroke:var(--accent);stroke-width:2"/>
+<rect x="420" y="161" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 23</text>
+<text x="516" y="176" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其實是 SPI MOSI</text>
+<rect x="240" y="197" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RS / DC</text>
+<line x1="304" y1="208" x2="420" y2="208" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="197" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 16</text>
+<text x="516" y="212" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">指令 or 像素資料</text>
+<rect x="240" y="233" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RES</text>
+<line x1="304" y1="244" x2="420" y2="244" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="233" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 17</text>
+<text x="516" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">硬體重置</text>
+<rect x="240" y="269" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">CS</text>
+<line x1="304" y1="280" x2="420" y2="280" style="stroke:var(--turn);stroke-width:2"/>
+<rect x="420" y="269" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="462" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 5</text>
+<text x="516" y="284" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">片選：LOW 才聽</text>
+<rect x="240" y="305" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="272" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BL</text>
+<line x1="304" y1="316" x2="420" y2="316" style="stroke:var(--mid);stroke-width:2"/>
+<rect x="420" y="305" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="462" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
+<text x="516" y="320" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">背光常亮（改接 GPIO 可調光）</text>
+<text x="272" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">TFT 腳</text>
+<text x="462" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
+<path d="M190 190 H228 M228 64 V316 M228 64 H240 M228 100 H240 M228 136 H240 M228 172 H240 M228 208 H240 M228 244 H240 M228 280 H240 M228 316 H240" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
+<text x="20" y="372" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">18 / 23 是硬體 SPI（VSPI）固定腳：接別的腳就變軟體模擬，fillScreen 會慢到看得見一行一行刷。</text>
+</svg>
+</div>
+<p>紅色小板、128×160、ST7735 驅動、3.3V 邏輯，跟 ESP32 直接接不用轉電平。資料只從 ESP32 送往螢幕，所以不需要 MISO。我用它做了仿 Windows 95 開機畫面和復古 Mac 風格的看盤機。</p>
+<ul>
+<li><b>為什麼 CS 選 GPIO 5</b>：它是 VSPI 預設 CS；雖然是 strapping 腳，但預設 HIGH，跟 CS 閒置時的 HIGH 一致，不衝突。</li>
+<li><b>DC、RST 選 16／17</b>：普通腳、不是開機腳，最保險。（若板子是有 PSRAM 的 WROVER，16／17 會被占用。）</li>
+<li><b>畫面偏移或紅藍對調</b>：這類板子有 black／green／red tab 版本，初始化參數要換。我的是 black tab。</li>
+</ul>
+</div>
+
+<h2>測過的模組 ⑤：4 腳按鈕</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="按鈕一腳接 GPIO、對角那腳接 GND，配內建上拉：沒按讀到 HIGH，按下讀到 LOW">
+<defs><marker id="m3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">按鈕 + 內建上拉（INPUT_PULLUP）</text>
+<rect x="20" y="40" width="200" height="170" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
+<text x="30" y="58" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">ESP32 晶片內部</text>
+<text x="120" y="84" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3.3V</text>
+<line x1="120" y1="90" x2="120" y2="104" style="stroke:var(--accent);stroke-width:1.5"/>
+<rect x="110" y="104" width="20" height="44" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="150" y="130" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">上拉電阻</text>
+<line x1="120" y1="148" x2="120" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="120" y1="176" x2="220" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="120" cy="176" r="3" style="fill:var(--ink)"/>
+<text x="70" y="180" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">讀取</text>
+<rect x="220" y="164" width="64" height="24" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="252" y="181" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 4</text>
+<line x1="284" y1="176" x2="330" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<circle cx="334" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<line x1="338" y1="176" x2="370" y2="160" style="stroke:var(--accent);stroke-width:2"/>
+<circle cx="376" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<text x="356" y="150" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">按鈕</text>
+<line x1="380" y1="176" x2="410" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="410" y1="176" x2="410" y2="206" style="stroke:var(--ink);stroke-width:1.5"/>
+<line x1="396" y1="206" x2="424" y2="206" style="stroke:var(--ink);stroke-width:2"/>
+<line x1="401" y1="212" x2="419" y2="212" style="stroke:var(--ink);stroke-width:2"/>
+<text x="410" y="232" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
+<rect x="20" y="250" width="196" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="118" y="272" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">沒按：被拉到 3.3V</text>
+<text x="118" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">HIGH = 1</text>
+<rect x="230" y="250" width="196" height="56" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="328" y="272" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">按下：直通 GND</text>
+<text x="328" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">LOW = 0</text>
+<text x="20" y="336" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">沒有上拉，腳位「浮接」會隨雜訊亂跳；用內建上拉就不必外接電阻。</text>
+<text x="470" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">4 腳按鈕的內部</text>
+<rect x="540" y="70" width="110" height="110" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<circle cx="595" cy="125" r="26" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
+<rect x="526" y="76" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="512" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1</text>
+<rect x="650" y="76" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="678" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<rect x="526" y="166" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="512" y="174" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3</text>
+<rect x="650" y="166" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="678" y="174" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
+<line x1="540" y1="80" x2="650" y2="80" style="stroke:var(--win);stroke-width:3"/>
+<line x1="540" y1="170" x2="650" y2="170" style="stroke:var(--win);stroke-width:3"/>
+<text x="595" y="60" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">1–2 永遠相通</text>
+<text x="595" y="200" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">3–4 永遠相通</text>
+<line x1="570" y1="94" x2="620" y2="156" style="stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3"/>
+<text x="470" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">按下才把上下兩組接通</text>
+<text x="470" y="252" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">接同組 1–2 = 永遠導通，按了沒反應</text>
+<text x="470" y="270" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">接對角 1–4 最保險</text>
+<text x="470" y="300" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">機械彈跳：按下瞬間會抖幾毫秒</text>
+<path d="M470 332h40v-18h4v18h4v-18h4v18h4v-18h60" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
+<text x="630" y="330" text-anchor="start" style="fill:var(--accent);font:400 11px sans-serif">忽略 &lt;30ms 的抖動</text>
+</svg>
+</div>
+<p>最簡單的輸入裝置，但藏了三個觀念：<b>上拉</b>（沒按時要有確定的電位）、<b>4 腳的內部連法</b>（接對角）、<b>彈跳</b>（按一下其實抖了好幾下）。我第一版用 5 顆按鈕當上下左右＋確認，所有按鈕的 GND 串在一起再拉一條到 ESP32 的 GND——這樣接是對的。</p>
+<p>短按／長按其實只是「按下多久」的判斷：按下不到 30ms 當雜訊、放開時小於 3 秒算短按、按滿 3 秒當下就算長按。</p>
+</div>
+
+<h2>測過的模組 ⑥：ISD1820 錄放音模組</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820 的 PLAYE 收到一次上升緣就播完整段，PLAYL 則是維持 HIGH 才播、拉低就停">
+<rect x="20" y="40" width="210" height="170" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
+<circle cx="70" cy="90" r="18" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="70" y="126" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">麥克風</text>
+<rect x="116" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="130" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="130" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">REC</text>
+<rect x="152" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="166" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="166" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYE</text>
+<rect x="188" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="202" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="202" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYL</text>
+<rect x="40" y="150" width="80" height="36" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="80" y="173" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ISD1820</text>
+<rect x="150" y="150" width="60" height="36" rx="18" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="180" y="173" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">喇叭</text>
+<text x="125" y="30" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">錄放音模組：聲音存在晶片裡</text>
+<text x="20" y="236" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">VCC → 3V3　GND → GND</text>
+<text x="20" y="256" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE → GPIO 25</text>
+<text x="20" y="276" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">先按住 REC 對麥克風錄（約 10 秒）</text>
+<text x="20" y="294" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">只能播錄進去的聲音，不能用程式寫歌</text>
+<text x="280" y="30" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">PLAYE 邊緣觸發 vs PLAYL 電位觸發</text>
+<text x="280" y="74" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE</text>
+<path d="M370 84h40v-24h14v24h316" style="fill:none;stroke:var(--win);stroke-width:2"/>
+<text x="360" y="114" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">播放</text>
+<rect x="410" y="102" width="250" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="740" y="74" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">一個短脈衝 → 整段播完</text>
+<text x="280" y="174" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">PLAYL</text>
+<path d="M370 184h40v-24h140v24h190" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<text x="360" y="214" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">播放</text>
+<rect x="410" y="202" width="140" height="18" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="740" y="174" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">HIGH 多久播多久，拉低就停</text>
+<text x="280" y="272" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">我的開機畫面用 PLAYE：拉高 50ms，讀取畫面一出現就開始播。</text>
+<text x="280" y="292" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">想在長按關機時切掉聲音，就得改接 PLAYL。</text>
+</svg>
+</div>
+<p>按住 REC 對麥克風錄約 10 秒，聲音存在晶片裡；ESP32 只負責「按播放鍵」——所以它是最純粹的 GPIO 輸出例子：一支腳拉高一下就好。</p>
+<ul>
+<li><b>電源接 3.3V</b>：接 5V 的話，ESP32 送出的 3.3V HIGH 可能不夠被認成 HIGH。</li>
+<li><b>它做不到的事</b>：不能用程式寫歌（要改用無源蜂鳴器），也不能播藍牙音樂（要用 I2S 音訊模組如 MAX98357A，或現成藍牙接收板）。</li>
+</ul>
+</div>
+
+<h2>測過的模組 ⑦：4×3 矩陣鍵盤</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="矩陣鍵盤一次把一欄拉低、讀哪條列線跟著變低，欄乘列就定位出按鍵；實際腳位順序要實測">
+<line x1="60" y1="60" x2="260" y2="60" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="64" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R1</text>
+<text x="290" y="64" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 26</text>
+<line x1="60" y1="116" x2="260" y2="116" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="120" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R2</text>
+<text x="290" y="120" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 4</text>
+<line x1="60" y1="172" x2="260" y2="172" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="176" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R3</text>
+<text x="290" y="176" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 27</text>
+<line x1="60" y1="228" x2="260" y2="228" style="stroke:var(--turn);stroke-width:2"/>
+<text x="30" y="232" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R4</text>
+<text x="290" y="232" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 13</text>
+<line x1="100" y1="36" x2="100" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="100" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C1</text>
+<text x="100" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">32</text>
+<line x1="164" y1="36" x2="164" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="164" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C2</text>
+<text x="164" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">33</text>
+<line x1="228" y1="36" x2="228" y2="250" style="stroke:var(--accent);stroke-width:2"/>
+<text x="228" y="270" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">C3</text>
+<text x="228" y="288" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">25</text>
+<rect x="80" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1</text>
+<rect x="144" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
+<rect x="208" y="42" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3</text>
+<rect x="80" y="98" width="40" height="36" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="100" y="121" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">4</text>
+<rect x="144" y="98" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="121" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5</text>
+<rect x="208" y="98" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="121" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">6</text>
+<rect x="80" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">7</text>
+<rect x="144" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">8</text>
+<rect x="208" y="154" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="177" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">9</text>
+<rect x="80" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="100" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">*</text>
+<rect x="144" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="164" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0</text>
+<rect x="208" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
+<text x="228" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">#</text>
+<text x="30" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">12 鍵只用 7 條線：4 列 × 3 欄</text>
+<text x="100" y="308" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">欄腳 GPIO</text>
+<text x="420" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">掃描：怎麼知道按了哪顆</text>
+<rect x="420" y="36" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="56" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">① 把欄 C1 拉 LOW</text>
+<text x="436" y="74" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其他欄設浮接</text>
+<rect x="420" y="94" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="114" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">② 讀 4 條列線</text>
+<text x="436" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">列線平常被上拉成 HIGH</text>
+<rect x="420" y="152" width="320" height="48" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="436" y="172" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">③ R2 變 LOW</text>
+<text x="436" y="190" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">C1 × R2 = 按的是「4」</text>
+<rect x="420" y="210" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="436" y="230" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">④ 換下一欄重複</text>
+<text x="436" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">一秒掃上百次</text>
+<rect x="20" y="326" width="720" height="50" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="36" y="346" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">踩坑：排線順序 ≠ R1 R2 R3 R4 C1 C2 C3</text>
+<text x="36" y="364" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">實測按 1/2/3 都出現 26 → 26 是 R1；按 1/4/7/* 都出現 32 → 32 是 C1。讓板子自己回報比猜快。</text>
+</svg>
+</div>
+<p>5 顆按鈕要 5 支腳加一堆 GND 線；換成矩陣鍵盤，12 顆鍵只要 7 條線，而且不用接 GND、不用電阻。代價是要「掃描」：輪流把某一欄拉低，看哪一列跟著變低。</p>
+<ul>
+<li><b>列線要能上拉</b>，所以不能用 34–39（沒有內建上拉）；也避開 GPIO 12。</li>
+<li><b>沒在掃的欄設成浮接</b>，同時按兩顆鍵才不會短路。</li>
+<li><b>最大教訓</b>：R1–R4／C1–C3 是鍵盤內部的列與欄，<b>不是排線上左到右的順序</b>。我照「左到右 R1…C3」接，結果按鍵全錯；改成讓板子回報「哪兩支 GPIO 接通」，按 6 顆鍵就推出正確對應，線完全不用重接。</li>
+</ul>
+</div>
+
+<h2>我目前的 GPIO 分配總表</h2>
+<div class="card">
+<p>復古 Mac 看盤機（TFT + 鍵盤）是目前板子上跑的專案，LCD、七段、ISD 是之前單獨測試時的接法，彼此有重疊腳位——同一時間只接一組。</p>
+<table>
+<tr><th>GPIO</th><th>看盤機（現在）</th><th>之前的測試</th></tr>
+<tr><td>2</td><td>—</td><td>板載 LED</td></tr>
+<tr><td>4</td><td>鍵盤 R2</td><td>按鈕、七段 dp</td></tr>
+<tr><td>5 / 16 / 17</td><td>TFT CS / DC / RST</td><td>TFT</td></tr>
+<tr><td>18 / 23</td><td>TFT SCK / MOSI</td><td>TFT；23 也當過七段位 4</td></tr>
+<tr><td>21 / 22</td><td>—</td><td>LCD SDA / SCL；七段位 2 / 3</td></tr>
+<tr><td>25</td><td>鍵盤 C3</td><td>ISD1820 PLAYE、七段 e</td></tr>
+<tr><td>26 / 27 / 13</td><td>鍵盤 R1 / R3 / R4</td><td>七段 d / c / a</td></tr>
+<tr><td>32 / 33</td><td>鍵盤 C1 / C2</td><td>七段 g / f</td></tr>
+<tr><td>14 / 19</td><td>—</td><td>七段 b / 位 1</td></tr>
+</table>
+</div>
+
+<h2>手邊有、但還沒測的零件</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="手邊還沒測的兩個零件：HC-SR04 是超音波測距要 5V 且 Echo 需分壓，蜂鳴器要先分有源或無源">
+<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">HC-SR04 超音波測距（不是喇叭）</text>
+<rect x="20" y="40" width="220" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<circle cx="80" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="180" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="80" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">T</text>
+<text x="180" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">R</text>
+<line x1="62" y1="130" x2="62" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="62" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">VCC</text>
+<line x1="98" y1="130" x2="98" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="98" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Trig</text>
+<line x1="134" y1="130" x2="134" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="134" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Echo</text>
+<line x1="170" y1="130" x2="170" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
+<text x="170" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
+<text x="260" y="60" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">T 發 40kHz 超音波，R 收回聲</text>
+<text x="260" y="80" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">來回時間 → 距離，約 2cm–4m</text>
+<text x="260" y="104" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">VCC 要 5V（接 VIN）</text>
+<text x="260" y="122" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">Echo 輸出 5V → 先分壓再進 GPIO</text>
+<text x="260" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">Trig 用 3.3V 就能觸發</text>
+<text x="20" y="200" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">蜂鳴器：先分有源還是無源</text>
+<rect x="20" y="214" width="350" height="96" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<circle cx="70" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="70" cy="262" r="5" style="fill:var(--ink3)"/>
+<text x="120" y="238" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">有源</text>
+<text x="120" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">底部黑膠封死</text>
+<text x="120" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">通電「嗶——」固定一個音</text>
+<text x="120" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">只能開關，寫不了旋律</text>
+<rect x="390" y="214" width="350" height="96" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<circle cx="440" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<circle cx="440" cy="262" r="5" style="fill:var(--ink3)"/>
+<text x="490" y="238" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">無源</text>
+<text x="490" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">底部看得到電路板</text>
+<text x="490" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">通電只「喀」一聲</text>
+<text x="490" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">用 tone() 可以寫歌</text>
+</svg>
+</div>
+<p>我原本以為 HC-SR04 是喇叭（兩個銀色圓筒很像），其實是超音波測距。它是下一個要測的，因為剛好會用到「5V 模組 + 分壓」這個還沒實作過的觀念。</p>
+</div>
+
+<h2>踩坑紀錄：序列埠亂碼（未解）</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART 靠雙方約定的 baud 取樣，速度不一致時取樣點逐位偏移，讀出來就是亂碼">
+<text x="20" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">UART 沒有時脈線：接收端靠「約好的速度」取樣</text>
+<path d="M20 50 L60 50 L60 50 L112 50 L112 50 L112 90 L164 90 L164 90 L164 50 L216 50 L216 50 L216 90 L268 90 L268 90 L268 90 L320 90 L320 90 L320 50 L372 50 L372 50 L372 90 L424 90 L424 90 L424 50 L476 50 L476 50 L476 50 L528 50 L528 50 L528 90 L580 90 L580 90 L580 50 L632 50" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<text x="86.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">閒置</text>
+<text x="138.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">起始</text>
+<text x="190.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d0</text>
+<text x="242.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d1</text>
+<text x="294.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d2</text>
+<text x="346.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d3</text>
+<text x="398.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d4</text>
+<text x="450.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d5</text>
+<text x="502.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d6</text>
+<text x="554.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d7</text>
+<text x="606.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">停止</text>
+<circle cx="138.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="190.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="242.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="294.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="346.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="398.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="450.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="502.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="554.0" cy="136" r="4" style="fill:var(--win)"/>
+<text x="20" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">對</text>
+<circle cx="138.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="208.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="278.4" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="348.6" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="418.8" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="489.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="559.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="629.4000000000001" cy="160" r="4" style="fill:var(--lose)"/>
+<text x="20" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">錯</text>
+<text x="660" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">115200 ↔ 115200</text>
+<text x="660" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">115200 ↔ 74880</text>
+<text x="20" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">速度對不上，取樣點越飄越遠，讀到一串垃圾 → Serial Monitor 看到「���」。容忍度只有約 ±2–3%。</text>
+</svg>
+</div>
+<p>Serial Monitor 已經設成跟程式一樣的 115200，讀出來仍是亂碼，這個問題到現在還沒解。目前推測：板子的晶振可能是 26MHz 而非 40MHz，導致實際速度偏成 74880。下一步是把 Serial Monitor 改成 74880 驗證。在解決之前，我都用螢幕顯示狀態來除錯（按鈕、鍵盤測試都是這樣做的）。</p>
+</div>
+
+<h2>接下來要學的基本知識清單</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">三用電表</div><div class="kd">量電壓、通路檔找腳位、二極體檔判斷 LED 極性</div><div class="ke">階段 2</div></div>
+<div class="kcard"><div class="kt">供電與電流預算</div><div class="kd">USB 能給多少電流？3.3V 穩壓器帶得動幾個模組？什麼時候要外接電源</div><div class="ke">階段 2</div></div>
+<div class="kcard"><div class="kt">電平轉換</div><div class="kd">分壓電阻（單向）vs BSS138 模組（雙向，I2C 用）</div><div class="ke">階段 2</div></div>
+<div class="kcard"><div class="kt">ADC 與 PWM</div><div class="kd">讀可變電阻、光敏電阻；調 LED 亮度、控制伺服馬達</div><div class="ke">階段 2–3</div></div>
+<div class="kcard"><div class="kt">I2C 進階</div><div class="kd">掃描位址、同一匯流排掛多台、上拉電阻大小</div><div class="ke">階段 3</div></div>
+<div class="kcard"><div class="kt">感測器</div><div class="kd">HC-SR04 測距、溫濕度（DHT／BME280）、人體紅外線 PIR</div><div class="ke">階段 3</div></div>
+<div class="kcard"><div class="kt">WiFi 與網路</div><div class="kd">HTTP/HTTPS、NTP 對時、MQTT；ESP32 自己當網頁伺服器</div><div class="ke">階段 4</div></div>
+<div class="kcard"><div class="kt">帳密不進程式碼</div><div class="kd">WiFi 密碼別寫死在會公開的檔案；改用獨立設定檔或配網模式</div><div class="ke">階段 4</div></div>
+<div class="kcard"><div class="kt">BLE 與藍牙</div><div class="kd">BLE 省電、iPhone 可連；傳統藍牙適合音訊串流</div><div class="ke">階段 4</div></div>
+<div class="kcard"><div class="kt">低功耗與成品化</div><div class="kd">deep sleep、電池供電、焊洞洞板、做外殼</div><div class="ke">階段 5</div></div>
+</div>
+</div>
+
+<div class="foot"><b>資料來源</b>:本人 2026-09-14 至 09-16 的 ESP32 實作與測試紀錄；腳位資訊以樂鑫 ESP32 官方文件與 DOIT DevKit V1 常見腳位圖為準，各廠牌板子請以實物絲印為準。<br><b>免責聲明</b>:本頁為個人學習筆記，接線前請自行確認模組規格，錯誤接線可能損壞硬體。</div>
+
+</div></body></html>
