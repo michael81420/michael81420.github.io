@@ -1,161 +1,166 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head>
+<html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ESP32．IoT 學習日誌 01：板子、麵包板與測過的模組</title>
-<meta name="description" content="物聯網學習的第一步：先把手上的硬體認清楚。這篇整理 ESP32 DevKit 本身、麵包板怎麼導通、接線前該懂的電學基礎，以及三天內實際接過的七種模組——每個都附圖、腳位與接線邏輯。先不談程式碼。">
+<title>ESP32．Getting Into IoT: From One Board to Your First Module</title>
+<meta name="description" content="The first hurdle in IoT isn't code — it's the board and the pile of wires. Following the order "know the parts → circuit basics → buses", this covers every part of an ESP32 DevKit, how a breadboard connects, why you can't pick pins at random, and the four ways any module talks to an ESP32. No code anywhere.">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <link rel="icon" href="../favicon.png">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="esp32-iot-log-01"><div class="wrap">
-<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+</head><body data-slug="esp32-iot-intro"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
-<h1>ESP32．IoT 學習日誌 01：板子、麵包板與測過的模組</h1>
-<div class="sub">物聯網學習的第一步：先把手上的硬體認清楚。這篇整理 ESP32 DevKit 本身、麵包板怎麼導通、接線前該懂的電學基礎，以及三天內實際接過的七種模組——每個都附圖、腳位與接線邏輯。<b>先不談程式碼。</b></div>
+<h1>ESP32．Getting Into IoT: From One Board to Your First Module</h1>
+<div class="sub">The first hurdle in IoT isn't code — it's the board and the pile of wires. Following the order "know the parts → circuit basics → buses", this covers every part of an ESP32 DevKit, how a breadboard connects, why you can't pick pins at random, and the four ways any module talks to an ESP32. <b>No code anywhere.</b></div>
 <div style="margin-top:10px">
-<span class="badge new">來源:自己的 ESP32 實作紀錄</span>
-<span class="badge">階段:1 / 5 認識硬體</span>
-<span class="badge">整理日:2026-09-16</span>
+<span class="badge new">Type: beginner guide / hardware</span>
+<span class="badge">Scope: stages 1–3 of five</span>
+<span class="badge">Compiled: 2026-09-16</span>
 </div>
 </header>
 
 <div class="card tldr">
 <h2>TL;DR</h2>
-<p class="big">接任何模組前先問三件事：<span class="win">它吃幾伏？GND 接了沒？走哪種介面？</span></p>
+<p class="big">Before wiring any module, ask three things: <span class="win">what voltage, is GND shared, which bus?</span></p>
 <ul>
-<li>ESP32 DevKit = USB 轉序列晶片 + ESP32 晶片 + 4MB flash。<b>腳位是 3.3V 邏輯，不耐 5V。</b></li>
-<li>不是每支腳都能隨便用：6–11 接 flash、34–39 只能輸入、0/2/5/12/15 是開機腳、1/3 是 USB 序列。</li>
-<li>麵包板：直排 5 孔相通、電源軌橫向相通、中溝隔開兩半。</li>
-<li>模組連接只有四種邏輯：<b>GPIO</b>（一腳一事）、<b>I2C</b>（兩線靠位址）、<b>SPI</b>（共用匯流排 + 片選）、<b>UART</b>（TX 接 RX）。</li>
-<li>測過：板載 LED、4 位七段顯示器、1602 LCD（I2C）、1.8 吋 TFT（SPI）、4 腳按鈕、ISD1820 錄放音、4×3 矩陣鍵盤。還沒測：HC-SR04、蜂鳴器。</li>
+<li>An ESP32 DevKit is a USB-serial chip + the ESP32 + flash. <b>Pins are 3.3V logic and not 5V-tolerant.</b></li>
+<li>Not every pin is free: 6–11 run the flash, 34–39 are input-only, 0/2/5/12/15 are strapping pins, 1/3 are USB serial.</li>
+<li>Breadboard: 5-hole columns connect, rails run lengthwise, the center gap splits the halves.</li>
+<li>There are only four connection styles: <b>GPIO</b> (one pin per job), <b>I2C</b> (two wires + addresses), <b>SPI</b> (shared bus + chip select), <b>UART</b> (TX to RX). The pin names tell you which.</li>
+<li>The second half walks through common modules, each illustrating one wiring pattern: LED, 7-segment display, 1602 LCD, 1.8" TFT, button, matrix keypad, sound module.</li>
 </ul>
 </div>
 
-<h2>學習路線：我在哪一步</h2>
+<h2>How this guide is laid out</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 170" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="學習路線五階段，目前在第一階段認識硬體，聯網只先偷跑了一點">
+<svg viewBox="0 0 760 178" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five stages of learning IoT; this article covers the first three: parts, basics and buses">
 <defs><marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="40" width="120" height="64" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="80" y="66" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">1 認識硬體</text>
-<text x="80" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32・模組・麵包板</text>
+<text x="80" y="66" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">1 The parts</text>
+<text x="80" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 · modules</text>
 <line x1="142" y1="72" x2="166" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
 <rect x="170" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="230" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 電路基礎</text>
-<text x="230" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">電壓・電阻・上拉</text>
+<text x="230" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 Basics</text>
+<text x="230" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">V · R · pull-up</text>
 <line x1="292" y1="72" x2="316" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
 <rect x="320" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="380" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3 通訊介面</text>
+<text x="380" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3 Buses</text>
 <text x="380" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO · I2C · SPI</text>
 <line x1="442" y1="72" x2="466" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
 <rect x="470" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="530" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4 聯網</text>
+<text x="530" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4 Networking</text>
 <text x="530" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi · HTTP · BLE</text>
 <line x1="592" y1="72" x2="616" y2="72" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m1)"/>
 <rect x="620" y="40" width="120" height="64" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="680" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5 做成作品</text>
-<text x="680" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">感測・供電・外殼</text>
-<text x="80" y="132" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">▲ 現在在這</text>
-<text x="80" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">2026-09 起步</text>
-<text x="530" y="132" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">▲ 已先偷跑一點</text>
-<text x="530" y="150" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">看盤機連 WiFi 抓行情</text>
+<text x="680" y="66" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5 Real build</text>
+<text x="680" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">sensors · power</text>
+<path d="M20 118 V132 H440 V118" style="fill:none;stroke:var(--win);stroke-width:1.5"/>
+<text x="230" y="152" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">Covered here: the hardware and the wiring logic</text>
+<path d="M470 118 V132 H740 V118" style="fill:none;stroke:var(--ink3);stroke-width:1.5;stroke-dasharray:4 3"/>
+<text x="605" y="152" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Only workable once 1–3 are solid</text>
 </svg>
 </div>
-<p>把 IoT 拆成五階段。這篇只做第一階段「認識硬體」，順帶把第二、三階段的基本觀念補上——因為不懂電壓和介面，連線都接不對。第四階段的 WiFi 已經先偷跑（做了一台連網看盤機），但那是照著做出來的，還不算真的懂。</p>
+<p>The five stages build on each other: without voltage you'll wire it wrong, without buses you'll pick the wrong pins — and no amount of networking code lights an LED that isn't wired. So this guide covers <b>the first three stages</b>, then checks them against real modules, each one a representative of a wiring pattern.</p>
 <table>
-<tr><th>日期</th><th>做了什麼</th><th>學到的重點</th></tr>
-<tr><td>09-14</td><td>裝環境、LED 閃爍、七段顯示器、1602 LCD</td><td>上傳要選 Port；Debug 鍵要 JTAG 硬體；I2C 靠位址</td></tr>
-<tr><td>09-15</td><td>1.8 吋 TFT、Win95 開機畫面、按鈕、ISD1820</td><td>SPI 要走硬體固定腳；按鈕接對角；PLAYE vs PLAYL</td></tr>
-<tr><td>09-16</td><td>復古 Mac 看盤機（WiFi + 貪吃蛇）、改用矩陣鍵盤</td><td>按鈕要共地；鍵盤排線順序要實測，不能猜</td></tr>
+<tr><th>Stage</th><th>What you need</th><th>What happens if you skip it</th></tr>
+<tr><td>1 The parts</td><td>Board anatomy, pin limits, how a breadboard connects</td><td>Wires that aren't really connected, or a strapping pin that stops the board booting</td></tr>
+<tr><td>2 Circuit basics</td><td>V/I/R, common ground, pull-ups, 3.3V vs 5V</td><td>Floating reads, burnt LEDs, GPIOs killed by 5V</td></tr>
+<tr><td>3 Buses</td><td>Telling GPIO, I2C, SPI and UART apart, and picking pins</td><td>Library defaults don't match your wiring; blank screens, silent devices</td></tr>
+<tr><td>4 Networking</td><td>WiFi, HTTP/MQTT, BLE, time sync</td><td>(not covered here; needs stages 1–3 first)</td></tr>
+<tr><td>5 Real build</td><td>Sensors, power, low power, soldering and enclosures</td><td>(not covered here)</td></tr>
 </table>
 </div>
 
-<h2>主角：ESP32 DevKit 板子</h2>
+<h2>Stage 1-1: What's on an ESP32 DevKit</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit 其實是 USB 轉序列晶片加 ESP32 加 flash，程式經 USB 與 UART 燒進 flash 後重開機執行">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A DevKit is a USB-serial chip, the ESP32 and flash; code is flashed over USB and UART, then runs after reboot">
 <defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="168" y="34" width="584" height="84" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
-<text x="176" y="28" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">DevKit 板子上</text>
+<text x="176" y="28" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">On the DevKit board</text>
 <rect x="20" y="48" width="110" height="58" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="75.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Mac</text>
 <text x="75.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">arduino-cli / IDE</text>
 <rect x="180" y="48" width="150" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="255.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB 轉序列晶片</text>
+<text x="255.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">USB-serial chip</text>
 <text x="255.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">CH340 / CP2102</text>
 <rect x="400" y="48" width="140" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="470.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32 晶片</text>
-<text x="470.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">雙核・WiFi + 藍牙</text>
+<text x="470.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32 chip</text>
+<text x="470.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">dual-core, WiFi+BT</text>
 <rect x="610" y="48" width="130" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="675.0" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Flash 4MB</text>
-<text x="675.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">程式存在這裡</text>
+<text x="675.0" y="92" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">program lives here</text>
 <line x1="132" y1="77" x2="178" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
 <text x="155.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">USB</text>
 <line x1="332" y1="77" x2="398" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
 <text x="365.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">UART</text>
 <line x1="542" y1="77" x2="608" y2="77" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
 <text x="575.0" y="69" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">SPI</text>
-<text x="20" y="150" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">板上其他零件</text>
+<text x="20" y="150" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Other parts on the board</text>
 <rect x="20" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="88" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V 穩壓</text>
+<text x="88" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V regulator</text>
 <text x="88" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB 5V → 3.3V</text>
 <rect x="164" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="232" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN 鍵</text>
-<text x="232" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">= 重開機</text>
+<text x="232" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN button</text>
+<text x="232" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">= reset</text>
 <rect x="308" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="376" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BOOT 鍵</text>
-<text x="376" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">燒錄卡住時按住</text>
+<text x="376" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BOOT button</text>
+<text x="376" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">hold if upload stalls</text>
 <rect x="452" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="520" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">板載 LED</text>
-<text x="520" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">接在 GPIO 2</text>
+<text x="520" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">On-board LED</text>
+<text x="520" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">wired to GPIO 2</text>
 <rect x="596" y="162" width="136" height="58" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="664" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">PCB 天線</text>
+<text x="664" y="186" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">PCB antenna</text>
 <text x="664" y="206" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">WiFi / BT 2.4GHz</text>
-<text x="20" y="252" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">從程式到板子</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">From code to board</text>
 <rect x="20" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="136" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">① 編譯</text>
-<text x="136" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">在 Mac 上 .ino → .bin</text>
-<text x="136" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">這步不需要接板子</text>
+<text x="136" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">① Compile</text>
+<text x="136" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">on the Mac: .ino → .bin</text>
+<text x="136" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">no board needed</text>
 <line x1="253" y1="299" x2="263" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
 <rect x="264" y="264" width="232" height="70" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="380" y="286" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② 上傳（燒錄）</text>
-<text x="380" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">經 USB 寫進 flash</text>
-<text x="380" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">要先選好 Port</text>
+<text x="380" y="286" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② Upload (flash)</text>
+<text x="380" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">written to flash over USB</text>
+<text x="380" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">needs a Port selected</text>
 <line x1="497" y1="299" x2="507" y2="299" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m2)"/>
 <rect x="508" y="264" width="232" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="624" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ 重開機執行</text>
-<text x="624" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">從 flash 讀出來跑</text>
-<text x="624" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">斷電也不會消失</text>
+<text x="624" y="286" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ Reboot and run</text>
+<text x="624" y="305" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">runs from flash</text>
+<text x="624" y="322" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">survives power-off</text>
 </svg>
 </div>
-<p>ESP32 是樂鑫（Espressif）的微控制器晶片：雙核、內建 WiFi 與藍牙（傳統藍牙 + BLE 都有）。「DevKit」是把晶片做成方便插麵包板的開發板，多了 USB 轉序列晶片、3.3V 穩壓器、EN／BOOT 兩顆按鈕和一顆板載 LED。</p>
-<h3>幾個一開始就搞混的觀念</h3>
+<div class="fig" style="margin:2px 0 4px"><img src="../assets/img/esp32-devkit.jpg" alt="Photo of an ESP32 development board next to a breadboard" style="width:100%;max-width:340px;display:block;margin:0 auto;border-radius:12px;border:1px solid var(--border)"></div>
+<div style="text-align:center;font-size:11.5px;color:var(--ink3);margin:0 0 16px">The real thing: the silver can is the ESP32-WROOM module, BOOT and EN sit beside the micro-USB port, and the GPIO numbers are printed along both edges. This is a 38-pin version.</div>
+<p>The ESP32 is Espressif's microcontroller: dual-core, with 2.4 GHz WiFi and Bluetooth built in (the classic part has both Classic and BLE). A "DevKit" mounts it on a breadboard-friendly board with a USB-serial chip, a 3.3V regulator, EN/BOOT buttons and an on-board LED.</p>
+<h3>How code gets into the board</h3>
+<p>"Compiling" turns <code>.ino</code> into machine code on your computer, with the board uninvolved; "uploading" (flashing) writes it into the board's flash chip over USB, where it stays — unplug and replug and the same program runs. That's why compiling only needs a board selected, while uploading also needs a Port.</p>
 <table>
-<tr><th>現象</th><th>原因</th></tr>
-<tr><td>IDE 自動偵測不到板子</td><td>USB 晶片是通用的 CH340/CP2102，電腦只看到「一個序列埠」。手動選 <b>ESP32 Dev Module</b> 即可。</td></tr>
-<tr><td>按 Debug 報錯</td><td>Debug 要 JTAG 轉換器（如 ESP-Prog），DevKit 上的 USB 晶片只會 UART。除錯靠印訊息就好。</td></tr>
-<tr><td>編譯過了但上傳失敗</td><td>編譯只需要選板子，上傳還要選 <b>Port</b>。</td></tr>
-<tr><td>Resource busy</td><td>序列埠一次只能一個程式開，Serial Monitor 開著就上傳不了。</td></tr>
-<tr><td>燒錄卡在 Connecting.....</td><td>按住 BOOT 鍵不放，開始寫入再放開。</td></tr>
+<tr><th>Common beginner situation</th><th>Why</th></tr>
+<tr><td>The IDE doesn't auto-detect the board</td><td>The USB chip is a generic CH340/CP2102, so the computer only sees "a serial port". Pick <b>ESP32 Dev Module</b> manually.</td></tr>
+<tr><td>Debug reports <code>unable to open ftdi device</code></td><td>Step debugging needs a JTAG adapter such as ESP-Prog; the DevKit's USB chip only does UART. On classic ESP32, print-debugging is the norm.</td></tr>
+<tr><td>Compiles fine but "no upload port provided"</td><td>Compiling needs only a board; uploading also needs a <b>Port</b>.</td></tr>
+<tr><td><code>Resource busy</code> during upload</td><td>Only one program can hold the serial port at a time; close the Serial Monitor.</td></tr>
+<tr><td>Stuck at <code>Connecting.....</code></td><td>The board isn't in download mode. Hold <b>BOOT</b> until writing starts.</td></tr>
+<tr><td>Serial Monitor shows only garbage</td><td>The two baud rates don't match, or the board's crystal differs from what the core assumes (a classic case: 115200 set, 74880 actual).</td></tr>
 </table>
-<h3>我這塊板子的規格</h3>
 <div class="kbox">
-<div class="kcard"><div class="kt">無線</div><div class="kd">WiFi 2.4GHz（連不上 5GHz）、傳統藍牙、BLE</div><div class="ke">S3/C3 只有 BLE，S2 沒有藍牙</div></div>
-<div class="kcard"><div class="kt">記憶體</div><div class="kd">Flash 4MB 放程式；RAM 只有幾百 KB</div><div class="ke">抓大網頁會塞不下，適合小份 JSON</div></div>
-<div class="kcard"><div class="kt">電壓</div><div class="kd">晶片與腳位 3.3V；USB 供 5V 從 VIN 腳出來</div><div class="ke">5V 不能直接進 GPIO</div></div>
+<div class="kcard"><div class="kt">Wireless</div><div class="kd">Classic ESP32: 2.4 GHz WiFi (no 5 GHz) + Classic Bluetooth + BLE</div><div class="ke">S3/C3 are BLE-only; S2 has no Bluetooth</div></div>
+<div class="kcard"><div class="kt">Memory</div><div class="kd">Typically 4 MB of flash for code; only a few hundred KB of RAM</div><div class="ke">Whole web pages won't fit; small JSON does</div></div>
+<div class="kcard"><div class="kt">Voltage</div><div class="kd">Chip and pins at 3.3V; USB's 5V appears on VIN</div><div class="ke">Never feed 5V into a GPIO</div></div>
 </div>
 </div>
 
-<h2>腳位地圖：哪些腳能用</h2>
+<h2>Stage 1-2: The pin map</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 580" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 DevKit 腳位依用途分色：綠色一般 GPIO 可放心用，藍色只能輸入，黃色開機腳要小心，紅色避開">
+<svg viewBox="0 0 760 596" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit pins by role: green is free GPIO, blue is input-only, yellow is strapping, red is to avoid">
 <rect x="290" y="30" width="180" height="440" rx="12" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="320" y="50" width="120" height="150" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <path d="M335 62h14v14h14v-14h14v14h14v-14h14v14h14" style="fill:none;stroke:var(--ink2);stroke-width:1.5"/>
 <text x="380" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32-WROOM-32</text>
-<text x="380" y="148" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">（晶片 + flash + 天線）</text>
+<text x="380" y="148" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">(chip + flash + antenna)</text>
 <circle cx="380" cy="236" r="5" style="fill:var(--turn)"/>
 <text x="380" y="258" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">LED</text>
 <rect x="322" y="424" width="36" height="18" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -168,7 +173,7 @@
 <line x1="284" y1="80" x2="296" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="70" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="255" y="84" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">EN</text>
-<text x="218" y="84" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">按下 = 重置</text>
+<text x="218" y="84" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">press = reset</text>
 <circle cx="300" cy="106" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="106" x2="296" y2="106" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="96" width="58" height="20" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
@@ -189,27 +194,27 @@
 <line x1="284" y1="210" x2="296" y2="210" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="200" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="214" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">32</text>
-<text x="218" y="214" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C1</text>
+<text x="218" y="214" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C1</text>
 <circle cx="300" cy="236" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="236" x2="296" y2="236" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="226" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="240" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">33</text>
-<text x="218" y="240" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C2</text>
+<text x="218" y="240" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C2</text>
 <circle cx="300" cy="262" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="262" x2="296" y2="262" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="252" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="266" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">25</text>
-<text x="218" y="266" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 C3・ISD PLAYE</text>
+<text x="218" y="266" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad C3 · audio trigger</text>
 <circle cx="300" cy="288" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="288" x2="296" y2="288" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="278" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="292" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">26</text>
-<text x="218" y="292" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R1</text>
+<text x="218" y="292" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R1</text>
 <circle cx="300" cy="314" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="314" x2="296" y2="314" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="304" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="318" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">27</text>
-<text x="218" y="318" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R3</text>
+<text x="218" y="318" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R3</text>
 <circle cx="300" cy="340" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="340" x2="296" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -218,12 +223,12 @@
 <line x1="284" y1="366" x2="296" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="356" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
 <text x="255" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
-<text x="218" y="370" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">開機時不能是 HIGH</text>
+<text x="218" y="370" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">must not be HIGH at boot</text>
 <circle cx="300" cy="392" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="392" x2="296" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="382" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="255" y="396" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">13</text>
-<text x="218" y="396" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R4</text>
+<text x="218" y="396" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">keypad R4</text>
 <circle cx="300" cy="418" r="4" style="fill:var(--ink3)"/>
 <line x1="284" y1="418" x2="296" y2="418" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="408" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
@@ -232,7 +237,7 @@
 <line x1="284" y1="444" x2="296" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="226" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
 <text x="255" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN</text>
-<text x="218" y="448" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">USB 的 5V</text>
+<text x="218" y="448" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">5V from USB</text>
 <circle cx="460" cy="80" r="4" style="fill:var(--ink3)"/>
 <line x1="464" y1="80" x2="476" y2="80" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="70" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -247,12 +252,12 @@
 <line x1="464" y1="132" x2="476" y2="132" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="122" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
 <text x="505" y="136" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">TX0 1</text>
-<text x="542" y="136" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB 序列，避開</text>
+<text x="542" y="136" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB serial, avoid</text>
 <circle cx="460" cy="158" r="4" style="fill:var(--ink3)"/>
 <line x1="464" y1="158" x2="476" y2="158" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="148" width="58" height="20" rx="5" style="fill:var(--losebg);stroke:var(--losebd)"/>
 <text x="505" y="162" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">RX0 3</text>
-<text x="542" y="162" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB 序列，避開</text>
+<text x="542" y="162" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">USB serial, avoid</text>
 <circle cx="460" cy="184" r="4" style="fill:var(--ink3)"/>
 <line x1="464" y1="184" x2="476" y2="184" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="174" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -286,12 +291,12 @@
 <line x1="464" y1="340" x2="476" y2="340" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="330" width="58" height="20" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="505" y="344" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
-<text x="542" y="344" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">鍵盤 R2・按鈕</text>
+<text x="542" y="344" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">keypad R2 · button</text>
 <circle cx="460" cy="366" r="4" style="fill:var(--ink3)"/>
 <line x1="464" y1="366" x2="476" y2="366" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="356" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="505" y="370" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2</text>
-<text x="542" y="370" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">板載 LED</text>
+<text x="542" y="370" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">on-board LED</text>
 <circle cx="460" cy="392" r="4" style="fill:var(--ink3)"/>
 <line x1="464" y1="392" x2="476" y2="392" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="382" width="58" height="20" rx="5" style="fill:var(--midbg);stroke:var(--midbd)"/>
@@ -304,40 +309,41 @@
 <line x1="464" y1="444" x2="476" y2="444" style="stroke:var(--border);stroke-width:1.5"/>
 <rect x="476" y="434" width="58" height="20" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
 <text x="505" y="448" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
-<text x="542" y="448" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V 輸出</text>
+<text x="542" y="448" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V out</text>
 <rect x="20" y="522" width="14" height="14" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="40" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">一般 GPIO</text>
+<text x="40" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">general GPIO</text>
 <rect x="145" y="522" width="14" height="14" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
-<text x="165" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">只能輸入</text>
+<text x="165" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">input only</text>
 <rect x="270" y="522" width="14" height="14" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
-<text x="290" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">開機腳，小心</text>
+<text x="290" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">strapping, careful</text>
 <rect x="395" y="522" width="14" height="14" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
-<text x="415" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">避開</text>
+<text x="415" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">avoid</text>
 <rect x="520" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--accent)"/>
-<text x="540" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電源</text>
+<text x="540" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">power</text>
 <rect x="645" y="522" width="14" height="14" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="665" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">重置</text>
-<text x="380" y="566" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">以 30-pin DOIT DevKit V1、天線朝上為例；各家腳位順序不同，請以板上絲印為準。GPIO 6–11 接內部 flash，這塊板沒拉出來。</text>
+<text x="665" y="533" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">reset</text>
+<text x="380" y="562" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">A 30-pin DOIT DevKit V1 with the antenna up; the side labels are typical assignments.</text>
+<text x="380" y="580" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Boards come in 30/36/38-pin versions, so trust the silkscreen. GPIO 6–11 drive the flash and are usually not broken out.</text>
 </svg>
 </div>
-<p>ESP32 的 GPIO 大多能在內部「重新指派」功能，但有幾類腳天生有限制。下表是我挑腳時的依據，圖上右側／左側的小字是我目前實際的用法。</p>
+<p>Most ESP32 GPIOs can be remapped internally, which makes it look like anything goes — but a few groups have built-in limits, and hitting one means a board that won't boot or a signal you can never read. Check this table before choosing:</p>
 <table>
-<tr><th>類別</th><th>GPIO</th><th>要注意什麼</th></tr>
-<tr><td><span class="lose">接 flash</span></td><td>6–11</td><td>板上 flash 在用，接了會當機（多數 DevKit 沒拉出來）</td></tr>
-<tr><td><span class="lose">開機腳</span></td><td>12</td><td>開機時若是 HIGH 會把 flash 電壓設成 1.8V，開不了機</td></tr>
-<tr><td><span class="mid">strapping</span></td><td>0, 2, 5, 15</td><td>開機時晶片會讀它們的電位；外接電路可能讓燒錄或開機失敗</td></tr>
-<tr><td><span class="lose">UART0</span></td><td>1, 3</td><td>USB 燒錄和序列輸出走這兩支</td></tr>
-<tr><td>只能輸入</td><td>34, 35, 36, 39</td><td>不能輸出，也沒有內建上拉（鍵盤列線用不了）</td></tr>
-<tr><td><span class="win">硬體 I2C</span></td><td>21 SDA, 22 SCL</td><td>函式庫預設，不用另外指定</td></tr>
-<tr><td><span class="win">硬體 SPI（VSPI）</span></td><td>18 SCK, 23 MOSI, 19 MISO, 5 CS</td><td>走這幾支最快；換別的腳會變軟體模擬</td></tr>
-<tr><td>ADC2</td><td>0, 2, 4, 12–15, 25–27</td><td>開 WiFi 時不能讀類比值，類比感測器要改用 ADC1（32–39）</td></tr>
+<tr><th>Group</th><th>GPIO</th><th>What to watch</th></tr>
+<tr><td><span class="lose">Flash</span></td><td>6–11</td><td>Used by the on-board flash; touching them crashes the board (usually not broken out)</td></tr>
+<tr><td><span class="lose">Boot-critical</span></td><td>12</td><td>If HIGH at boot, flash voltage is set to 1.8V and the board won't start</td></tr>
+<tr><td><span class="mid">Strapping</span></td><td>0, 2, 5, 15</td><td>Read at boot; external circuits can break flashing or booting</td></tr>
+<tr><td><span class="lose">UART0</span></td><td>1, 3</td><td>USB flashing and serial output use these; reuse causes conflicts</td></tr>
+<tr><td>Input-only</td><td>34, 35, 36, 39</td><td>No output and no internal pull-up — buttons and keypad rows won't work</td></tr>
+<tr><td><span class="win">Hardware I2C</span></td><td>21 SDA, 22 SCL</td><td>The library default; wire here and there's nothing to configure</td></tr>
+<tr><td><span class="win">Hardware SPI (VSPI)</span></td><td>18 SCK, 23 MOSI, 19 MISO, 5 CS</td><td>Fastest path; other pins fall back to software SPI, slow enough to watch</td></tr>
+<tr><td>ADC2</td><td>0, 2, 4, 12–15, 25–27</td><td>Can't read analog while WiFi is on; use ADC1 (32–39) for analog sensors</td></tr>
 </table>
 </div>
 
-<h2>麵包板：不用焊接的電路板</h2>
+<h2>Stage 1-3: The breadboard</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 430" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="麵包板直排五孔相通、電源軌橫向相通、中溝把左右隔開，所以按鈕和晶片要跨中溝插">
+<svg viewBox="0 0 760 430" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Breadboard: 5-hole columns connect, rails run lengthwise, the gap splits halves, so parts straddle it">
 <rect x="20" y="20" width="480" height="390" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <line x1="50" y1="30" x2="482" y2="30" style="stroke:var(--lose);stroke-width:1.5"/>
 <line x1="50" y1="76" x2="482" y2="76" style="stroke:var(--turn);stroke-width:1.5"/>
@@ -519,7 +525,7 @@
 <circle cx="446" cy="190" r="3.2" style="fill:var(--ink3)"/>
 <circle cx="470" cy="190" r="3.2" style="fill:var(--ink3)"/>
 <rect x="50" y="202" width="432" height="20" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="266" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">中溝：左右兩半不相通</text>
+<text x="266" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">center gap: halves not joined</text>
 <text x="40" y="240" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">f</text>
 <circle cx="62" cy="236" r="3.2" style="fill:var(--ink3)"/>
 <circle cx="86" cy="236" r="3.2" style="fill:var(--ink3)"/>
@@ -620,35 +626,41 @@
 <rect x="50" y="35" width="432" height="18" rx="6" style="fill:none;stroke:var(--lose);stroke-width:2"/>
 <rect x="366" y="176" width="64" height="74" rx="6" style="fill:var(--surface2);stroke:var(--accent)"/>
 <circle cx="398.0" cy="213" r="12" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
-<text x="374" y="162" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">按鈕</text>
-<text x="518" y="48" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">① 直排 5 孔是同一條線</text>
-<text x="518" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">綠框 a–e 互相導通</text>
-<text x="518" y="82" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">藍框 f–j 是另一條，隔著中溝</text>
-<text x="518" y="114" text-anchor="start" style="fill:var(--lose);font:700 12px sans-serif">② 電源軌整條橫向相通</text>
-<text x="518" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">紅 + 接 3V3，藍 − 接 GND</text>
-<text x="518" y="148" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">長板中間可能斷開，先測</text>
-<text x="518" y="180" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">③ 晶片／按鈕要跨中溝</text>
-<text x="518" y="198" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">兩側腳才不會被短路在一起</text>
-<text x="518" y="230" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">④ ESP32 DevKit 很寬</text>
-<text x="518" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">插上後一側可能只剩 1 排孔</text>
-<text x="518" y="264" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">常見做法：兩塊麵包板並排</text>
-<text x="518" y="296" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">⑤ 跳線短、插到底</text>
-<text x="518" y="314" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">鬆脫是新手最常見的 bug</text>
+<text x="374" y="162" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">button</text>
+<text x="518" y="48" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">① 5 holes in a column = 1 node</text>
+<text x="518" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">green a–e are joined</text>
+<text x="518" y="82" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">blue f–j is a separate node</text>
+<text x="518" y="114" text-anchor="start" style="fill:var(--lose);font:700 12px sans-serif">② Rails run lengthwise</text>
+<text x="518" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">red + to 3V3, blue − to GND</text>
+<text x="518" y="148" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">long boards may split mid-way</text>
+<text x="518" y="180" text-anchor="start" style="fill:var(--accent);font:700 12px sans-serif">③ Parts straddle the gap</text>
+<text x="518" y="198" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">so both sides don't short</text>
+<text x="518" y="230" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">④ ESP32 DevKit is wide</text>
+<text x="518" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">may leave just one free row</text>
+<text x="518" y="264" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">tip: two boards side by side</text>
+<text x="518" y="296" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">⑤ Short jumpers, push fully in</text>
+<text x="518" y="314" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">loose wires are bug #1</text>
 </svg>
 </div>
-<p>麵包板裡面是一條條金屬夾片。記住「<b>哪些孔是同一條線</b>」就懂了一大半：同一直排 a–e 的 5 個孔導通；f–j 是另一組；上下的紅藍電源軌是整條橫向導通。</p>
+<div class="fig" style="margin:2px 0 4px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<img src="../assets/img/breadboard.jpg" alt="Photo of a 400-point breadboard showing rows a–j and the red and blue power rails" style="width:100%;max-width:330px;border-radius:12px;border:1px solid var(--border)">
+<img src="../assets/img/breadboard-contacts.jpg" alt="A breadboard taken apart, showing the metal clip strips inside" style="width:100%;max-width:330px;border-radius:12px;border:1px solid var(--border)">
+</div>
+<div style="text-align:center;font-size:11.5px;color:var(--ink3);margin:0 0 16px">Left: the top, with the red and blue power rails. Right: opened up, the metal clips are the wires — <b>one clip = one node</b>; the long strips are the rails and the short ones are the 5-hole columns.</div>
+<p>Knowing <b>which holes are the same wire</b> is most of it: the 5 holes a–e in a column are one node; f–j is another; the red/blue rails run the full length. Two legs in the same group are simply shorted together.</p>
 <ul>
-<li><b>電源軌怎麼用</b>：把 ESP32 的 3V3 接到紅色 +、GND 接到藍色 −，其他模組就近從軌道取電，GND 也自然共用了。</li>
-<li><b>5V 與 3.3V 別混在同一條軌</b>：需要 5V 的模組（1602 LCD、HC-SR04）接另一邊的軌，並標清楚。</li>
-<li><b>我的按鈕沒反應</b>：後來發現是 4 腳按鈕接到「同一組」的兩腳，等於永遠導通。改接對角就好了（見下方按鈕段）。</li>
+<li><b>Using the rails</b>: run 3V3 to the red + and GND to the blue −; modules then tap power nearby and share GND automatically.</li>
+<li><b>Don't mix 5V and 3.3V on one rail</b>: give 5V modules the other rail and label it, or 5V will eventually reach a GPIO.</li>
+<li><b>Long boards often split their rails in the middle</b> — common on 830-point boards; check before wiring.</li>
+<li><b>DevKits are wide</b>: they can leave just one free row on each side. Two boards side by side (or an expansion base) is the usual fix.</li>
 </ul>
 </div>
 
-<h2>接線前要懂的電學基礎</h2>
+<h2>Stage 2: The electrical basics</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LED 迴路要串電阻限流，所有模組的 GND 必須接在一起，否則訊號沒有共同參考點">
-<text x="20" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一顆 LED 的迴路</text>
+<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An LED loop needs a current-limiting resistor, and every module must share GND or signals have no reference">
+<text x="20" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">One LED loop</text>
 <rect x="20" y="50" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--accent)"/>
 <text x="52" y="70" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3V3</text>
 <line x1="84" y1="65" x2="130" y2="65" style="stroke:var(--ink);stroke-width:1.5"/>
@@ -664,12 +676,12 @@
 <rect x="20" y="135" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="52" y="155" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
 <path d="M200 140l-10 5l10 5" style="fill:none;stroke:var(--accent);stroke-width:1.5"/>
-<text x="200" y="132" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">電流 I</text>
+<text x="200" y="132" text-anchor="middle" style="fill:var(--accent);font:400 11px sans-serif">current I</text>
 <text x="20" y="196" text-anchor="start" style="fill:var(--ink);font:700 16px sans-serif">V = I × R</text>
-<text x="20" y="216" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">(3.3V − LED 約 2.0V) ÷ 330Ω ≈ 4 mA</text>
-<text x="20" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電阻負責限流：不串電阻，LED 或 GPIO 會燒</text>
-<text x="20" y="252" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">GPIO 單腳建議 ≤ 20 mA，不是電源</text>
-<text x="410" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">共地：所有 GND 接在一起</text>
+<text x="20" y="216" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">(3.3V − ~2.0V LED) ÷ 330Ω ≈ 4 mA</text>
+<text x="20" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">the resistor limits current; skip it and something burns</text>
+<text x="20" y="252" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">keep a GPIO pin ≤ 20 mA, it is not a power supply</text>
+<text x="410" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Common ground: tie every GND</text>
 <rect x="410" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="458" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ESP32</text>
 <text x="458" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
@@ -679,30 +691,34 @@
 <text x="574" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
 <line x1="574" y1="100" x2="574" y2="140" style="stroke:var(--win);stroke-width:2"/>
 <rect x="642" y="50" width="96" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="690" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">按鈕</text>
+<text x="690" y="72" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Button</text>
 <text x="690" y="90" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
 <line x1="690" y1="100" x2="690" y2="140" style="stroke:var(--win);stroke-width:2"/>
 <line x1="430" y1="140" x2="710" y2="140" style="stroke:var(--win);stroke-width:3"/>
-<text x="570" y="160" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">同一條 GND 軌</text>
-<text x="410" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">電壓是「兩點之間」的差</text>
-<text x="410" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">HIGH 是相對 GND 的 3.3V</text>
-<text x="410" y="232" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">沒共地 = 沒有共同參考點</text>
-<text x="410" y="250" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">→ 訊號亂跳、完全沒反應</text>
+<text x="570" y="160" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">one shared GND rail</text>
+<text x="410" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Voltage is a difference between two points</text>
+<text x="410" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">HIGH means 3.3V above GND</text>
+<text x="410" y="232" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">no shared GND = no shared reference</text>
+<text x="410" y="250" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">→ random reads or nothing at all</text>
 </svg>
 </div>
 <div class="kbox">
-<div class="kcard"><div class="kt">電壓 V</div><div class="kd">兩點之間的「電位差」，像水壓。ESP32 的 HIGH = 3.3V、LOW = 0V。</div></div>
-<div class="kcard"><div class="kt">電流 I</div><div class="kd">實際流過的量，單位 mA。燒東西的通常是電流太大。</div></div>
-<div class="kcard"><div class="kt">電阻 R</div><div class="kd">限制電流。V = I × R，給定電壓就能算出該串多大的電阻。</div></div>
-<div class="kcard"><div class="kt">數位 vs 類比</div><div class="kd">數位只有 HIGH/LOW；類比是連續電壓，由 ADC 轉成數字（0–4095）。</div></div>
-<div class="kcard"><div class="kt">PWM</div><div class="kd">用快速開關模擬「半亮」：開的時間比例（duty）決定亮度或馬達速度。</div></div>
-<div class="kcard"><div class="kt">上拉／下拉</div><div class="kd">讓沒接東西的輸入腳有固定電位，避免「浮接」亂跳。</div></div>
+<div class="kcard"><div class="kt">Voltage V</div><div class="kd">The potential difference between two points, like water pressure. ESP32 HIGH = 3.3V, LOW = 0V.</div></div>
+<div class="kcard"><div class="kt">Current I</div><div class="kd">How much actually flows, in mA. Too much current is what burns parts.</div></div>
+<div class="kcard"><div class="kt">Resistance R</div><div class="kd">Limits current. V = I × R tells you which resistor to use at a given voltage.</div></div>
+<div class="kcard"><div class="kt">Common ground</div><div class="kd">Every GND must be tied together, or signals have no shared reference.</div></div>
+<div class="kcard"><div class="kt">Digital vs analog</div><div class="kd">Digital is HIGH/LOW; analog is a continuous voltage the ADC turns into a number (0–4095 on ESP32).</div></div>
+<div class="kcard"><div class="kt">PWM</div><div class="kd">Fast switching fakes "half on": the duty ratio sets brightness or motor speed.</div></div>
 </div>
 </div>
 <div class="card">
+<h3>Pull-ups: why a floating pin is a problem</h3>
+<p>An input with nothing holding it high or low behaves like an antenna, flickering with ambient noise. A pull-up resistor holds it at 3.3V by default; pressing the button shorts it to GND. So button logic is inverted: <b>released = HIGH, pressed = LOW</b>. The ESP32 has built-in pull-ups, so no external resistor is needed.</p>
+</div>
+<div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 腳位只能吃 3.3V，5V 模組的輸出要先用分壓電阻或電平轉換降壓">
-<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">3.3V 與 5V 邏輯</text>
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 pins take 3.3V only; step 5V outputs down with a divider or level shifter">
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">3.3V vs 5V logic</text>
 <line x1="80" y1="260" x2="80" y2="22.399999999999977" style="stroke:var(--ink3);stroke-width:1.5"/>
 <line x1="76" y1="260" x2="84" y2="260" style="stroke:var(--ink3);stroke-width:1.5"/>
 <text x="66" y="264" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">0V</text>
@@ -717,18 +733,18 @@
 <line x1="76" y1="40" x2="84" y2="40" style="stroke:var(--ink3);stroke-width:1.5"/>
 <text x="66" y="44" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">5V</text>
 <rect x="100" y="114.80000000000001" width="90" height="145.2" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="145" y="136.8" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">ESP32 輸出</text>
+<text x="145" y="136.8" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">ESP32 out</text>
 <text x="145" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3.3V</text>
 <rect x="220" y="40" width="90" height="220" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
-<text x="265" y="62" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">5V 模組輸出</text>
+<text x="265" y="62" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">5V module out</text>
 <text x="265" y="220" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">5V</text>
 <line x1="90" y1="101.6" x2="330" y2="101.6" style="stroke:var(--lose);stroke-width:1.5;stroke-dasharray:4 3"/>
-<text x="334" y="105.6" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">ESP32 耐壓上限 ≈ 3.6V</text>
-<text x="20" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V 訊號直接進 ESP32 腳位 = 超規，可能慢慢燒壞</text>
-<text x="20" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">反過來 3.3V 給 5V 模組：多半認得 HIGH，但不保證</text>
-<text x="480" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">解法：分壓電阻</text>
+<text x="334" y="105.6" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">ESP32 max ≈ 3.6V</text>
+<text x="20" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V into an ESP32 pin exceeds its rating</text>
+<text x="20" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">3.3V into a 5V module: usually HIGH, not guaranteed</text>
+<text x="480" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Fix: a voltage divider</text>
 <rect x="480" y="50" width="130" height="30" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
-<text x="545" y="70" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Echo 5V 輸出</text>
+<text x="545" y="70" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Echo 5V out</text>
 <line x1="545" y1="80" x2="545" y2="96" style="stroke:var(--ink);stroke-width:1.5"/>
 <rect x="535" y="96" width="20" height="40" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="565" y="120" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">1kΩ</text>
@@ -744,16 +760,16 @@
 <line x1="531" y1="240" x2="559" y2="240" style="stroke:var(--ink);stroke-width:2"/>
 <text x="545" y="258" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
 <text x="480" y="290" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">5V × 2k ÷ (1k + 2k) ≈ 3.3V</text>
-<text x="480" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">I2C 雙向線改用電平轉換模組</text>
+<text x="480" y="308" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">for two-way I2C use a level shifter</text>
 </svg>
 </div>
-<p>這是我目前最常碰到的坑：很多入門模組是給 5V 的 Arduino Uno 設計的。<b>ESP32 輸出 3.3V、只能吃 3.3V</b>。模組「只收訊號」通常沒事；模組會「送 5V 訊號回來」（HC-SR04 的 Echo、1602 背板的上拉）就要處理。</p>
+<p>This is the classic beginner trap: many modules were designed for the 5V Arduino Uno. <b>The ESP32 outputs 3.3V and accepts 3.3V only.</b> A module that merely listens is usually fine; one that sends signals back (an ultrasonic Echo pin, an LCD backpack's pull-ups) must be handled.</p>
 </div>
 
-<h2>Pin 腳怎麼跟 ESP32 連：四種邏輯</h2>
+<h2>Stage 3: Only four ways to connect</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四種連接方式：GPIO 一腳一事、I2C 兩線靠位址、SPI 共用匯流排加片選、UART 一對一 TX 接 RX">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Four ways to connect: GPIO one pin per job, I2C two wires with addresses, SPI a shared bus plus chip-select, UART TX to RX">
 <rect x="20" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="106" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO</text>
 <rect x="62" y="60" width="88" height="26" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -761,12 +777,12 @@
 <line x1="106" y1="86" x2="106" y2="150" style="stroke:var(--win);stroke-width:2"/>
 <text x="114" y="122" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">GPIO</text>
 <rect x="62" y="150" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="106" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">模組</text>
-<text x="106" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">一腳管一件事</text>
-<text x="106" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">每個訊號 1 條線</text>
+<text x="106" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">module</text>
+<text x="106" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">one pin, one job</text>
+<text x="106" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1 wire per signal</text>
 <line x1="36" y1="246" x2="176" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
-<text x="106" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
-<text x="106" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">按鈕・LED・ISD・七段</text>
+<text x="106" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Typical example</text>
+<text x="106" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">button · LED · ISD · 7-seg</text>
 <rect x="204" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="290" y="46" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">I2C</text>
 <rect x="246" y="60" width="88" height="26" rx="5" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
@@ -782,10 +798,10 @@
 <line x1="326" y1="118" x2="326" y2="150" style="stroke:var(--turn);stroke-width:1.5"/>
 <rect x="296" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="330" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0x3C</text>
-<text x="290" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 條線掛很多台</text>
-<text x="290" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">靠「位址」分辨是誰</text>
+<text x="290" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">2 wires, many devices</text>
+<text x="290" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">devices picked by address</text>
 <line x1="220" y1="246" x2="360" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
-<text x="290" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
+<text x="290" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Typical example</text>
 <text x="290" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1602 LCD</text>
 <rect x="388" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="474" y="46" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">SPI</text>
@@ -796,18 +812,18 @@
 <text x="402" y="104" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">SCK / MOSI</text>
 <line x1="424" y1="112" x2="424" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
 <rect x="400" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="434" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">裝置1</text>
+<text x="434" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">dev 1</text>
 <path d="M444 86 L450 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
 <line x1="504" y1="112" x2="504" y2="150" style="stroke:var(--mid);stroke-width:1.5"/>
 <rect x="480" y="150" width="68" height="26" rx="5" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="514" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">裝置2</text>
+<text x="514" y="168" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">dev 2</text>
 <path d="M504 86 L530 150" style="fill:none;stroke:var(--lose);stroke-width:1.2;stroke-dasharray:4 3"/>
 <text x="474" y="142" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">CS</text>
-<text x="474" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">共用時脈與資料線</text>
-<text x="474" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">每台多 1 條 CS 片選</text>
+<text x="474" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">shared clock + data</text>
+<text x="474" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">+1 CS wire per device</text>
 <line x1="404" y1="246" x2="544" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
-<text x="474" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
-<text x="474" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1.8 吋 TFT</text>
+<text x="474" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Typical example</text>
+<text x="474" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1.8" TFT</text>
 <rect x="572" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="658" y="46" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">UART</text>
 <rect x="614" y="60" width="88" height="26" rx="5" style="fill:var(--surface2);stroke:var(--accent)"/>
@@ -820,71 +836,132 @@
 <text x="692" y="106" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
 <text x="624" y="140" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">TX</text>
 <text x="692" y="140" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">RX</text>
-<text x="658" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">一對一，沒有時脈</text>
-<text x="658" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">雙方先講好速度 baud</text>
+<text x="658" y="208" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">one-to-one, no clock</text>
+<text x="658" y="228" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">both agree on baud</text>
 <line x1="588" y1="246" x2="728" y2="246" style="stroke:var(--border);stroke-width:1.5"/>
-<text x="658" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">我用在</text>
-<text x="658" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB 燒錄・Serial</text>
+<text x="658" y="268" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Typical example</text>
+<text x="658" y="288" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">USB upload · Serial</text>
 </svg>
 </div>
-<p>拿到新模組先看腳位名稱，就能判斷它屬於哪一種：</p>
+<p>Read the pin names printed on a new module and you can tell which style it uses:</p>
 <table>
-<tr><th>腳位名稱長這樣</th><th>是哪種</th><th>怎麼接</th></tr>
-<tr><td>IN, OUT, SIG, PLAYE, Trig, Echo</td><td>GPIO</td><td>任一支安全 GPIO，一條線對一個訊號</td></tr>
-<tr><td>SDA, SCL</td><td>I2C</td><td>SDA→21、SCL→22；多台共用，靠位址區分</td></tr>
-<tr><td>SCK/CLK, MOSI/DIN, MISO, CS, DC</td><td>SPI</td><td>SCK→18、MOSI→23、MISO→19；每台一條 CS</td></tr>
-<tr><td>TX, RX</td><td>UART</td><td>交叉接：對方 TX→ESP32 RX；避開 1/3，改用 16/17</td></tr>
-<tr><td>VCC, VIN, GND</td><td>電源</td><td>看模組吃 3.3V 還是 5V；GND 一律接在一起</td></tr>
+<tr><th>Pin names look like</th><th>Style</th><th>How to wire</th></tr>
+<tr><td>IN, OUT, SIG, Trig, Echo</td><td>GPIO</td><td>Any safe GPIO, one wire per signal</td></tr>
+<tr><td>SDA, SCL</td><td>I2C</td><td>SDA→21, SCL→22; devices share the two wires, told apart by address</td></tr>
+<tr><td>SCK/CLK, MOSI/DIN, MISO, CS, DC</td><td>SPI</td><td>SCK→18, MOSI→23, MISO→19; one CS per device</td></tr>
+<tr><td>TX, RX</td><td>UART</td><td>Cross over: their TX→ESP32 RX; avoid 1/3, use 16/17</td></tr>
+<tr><td>VCC, VIN, GND</td><td>Power</td><td>3.3V or 5V per the module; GND always shared</td></tr>
 </table>
-<p class="quote"><b>名稱會騙人</b>：1.8 吋 TFT 上印的是 SCL／SDA，看起來像 I2C，其實是 SPI 的 SCK／MOSI。判斷依據是它還有 CS、DC 這種 SPI 才有的腳。</p>
+<p class="quote"><b>Names can lie</b>: the common 1.8" TFT is printed SCL/SDA, which looks like I2C, but they're really SPI's SCK/MOSI. The giveaway is the CS and DC pins, which only SPI has.</p>
+</div>
+<div class="card">
+<h3>Why UART needs an agreed speed</h3>
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="接任何模組的六步：看電壓、先共地、認介面、固定腳優先、其餘挑安全腳、最後補電阻">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART samples at an agreed baud rate; if the rates differ the sample points drift and you read garbage">
+<text x="20" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">UART has no clock: the receiver samples at an agreed speed</text>
+<path d="M20 50 L60 50 L60 50 L112 50 L112 50 L112 90 L164 90 L164 90 L164 50 L216 50 L216 50 L216 90 L268 90 L268 90 L268 90 L320 90 L320 90 L320 50 L372 50 L372 50 L372 90 L424 90 L424 90 L424 50 L476 50 L476 50 L476 50 L528 50 L528 50 L528 90 L580 90 L580 90 L580 50 L632 50" style="fill:none;stroke:var(--ink);stroke-width:2"/>
+<text x="86.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">idle</text>
+<text x="138.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">start</text>
+<text x="190.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d0</text>
+<text x="242.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d1</text>
+<text x="294.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d2</text>
+<text x="346.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d3</text>
+<text x="398.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d4</text>
+<text x="450.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d5</text>
+<text x="502.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d6</text>
+<text x="554.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d7</text>
+<text x="606.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">stop</text>
+<circle cx="138.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="190.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="242.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="294.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="346.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="398.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="450.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="502.0" cy="136" r="4" style="fill:var(--win)"/>
+<circle cx="554.0" cy="136" r="4" style="fill:var(--win)"/>
+<text x="20" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">ok</text>
+<circle cx="138.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="208.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="278.4" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="348.6" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="418.8" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="489.0" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="559.2" cy="160" r="4" style="fill:var(--lose)"/>
+<circle cx="629.4000000000001" cy="160" r="4" style="fill:var(--lose)"/>
+<text x="20" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">bad</text>
+<text x="660" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">115200 ↔ 115200</text>
+<text x="660" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">115200 ↔ 74880</text>
+<text x="20" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">With a speed mismatch the sample points drift and the bytes become garbage (���). Tolerance is only ~±2–3%.</text>
+</svg>
+</div>
+<p>UART has just TX and RX and <b>no clock line</b>, so the receiver can't tell how wide a bit is — it times its own samples from the agreed baud rate. That's why the Serial Monitor has a 115200 setting: the dropdown changes the decoding tempo on the computer side only. If the two numbers differ, the same voltages decode into garbage. Tolerance is about ±2–3%.</p>
+</div>
+<div class="card">
+<h3>A fixed routine for picking pins</h3>
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Six steps for any module: voltage, common GND, bus type, fixed pins first, safe pins for the rest, then resistors">
 <defs><marker id="m4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="132" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">① 看電壓</text>
-<text x="132" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">模組吃 3.3V 還是 5V？</text>
-<text x="132" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">輸出 5V 要降壓</text>
+<text x="132" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">① Check voltage</text>
+<text x="132" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">does it want 3.3V or 5V?</text>
+<text x="132" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">5V outputs need stepping down</text>
 <line x1="246" y1="60" x2="266" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
 <rect x="268" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="380" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② 先接 GND</text>
-<text x="380" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">所有 GND 接在一起</text>
-<text x="380" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">沒共地什麼都不準</text>
+<text x="380" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">② Wire GND first</text>
+<text x="380" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">every GND tied together</text>
+<text x="380" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">no common GND, nothing works</text>
 <line x1="494" y1="60" x2="514" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
 <rect x="516" y="20" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="628" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ 認介面</text>
+<text x="628" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">③ Identify the bus</text>
 <text x="628" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GPIO / I2C / SPI / UART</text>
-<text x="628" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">看腳位名稱判斷</text>
+<text x="628" y="86" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">read the pin names</text>
 <rect x="20" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="132" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">④ 固定腳優先</text>
-<text x="132" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 21/22、SPI 18/23</text>
-<text x="132" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">硬體腳最快、免設定</text>
+<text x="132" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">④ Fixed pins first</text>
+<text x="132" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 21/22, SPI 18/23</text>
+<text x="132" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">hardware pins, zero config</text>
 <line x1="246" y1="164" x2="266" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
 <rect x="268" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="380" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑤ 其餘挑安全腳</text>
-<text x="380" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">避開 12、1/3；0/2/5/15 小心</text>
-<text x="380" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">34–39 只能當輸入</text>
+<text x="380" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑤ Pick safe pins</text>
+<text x="380" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">avoid 12, 1/3; mind 0/2/5/15</text>
+<text x="380" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">34–39 are input-only</text>
 <line x1="494" y1="164" x2="514" y2="164" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
 <rect x="516" y="124" width="224" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="628" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑥ 補電阻</text>
-<text x="628" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">輸入要上拉，LED 要限流</text>
-<text x="628" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">內建上拉能用就用</text>
+<text x="628" y="150" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">⑥ Add resistors</text>
+<text x="628" y="172" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">pull-up inputs, limit LEDs</text>
+<text x="628" y="190" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">use internal pull-ups</text>
 <path d="M692 102 L692 112 L132 112 L132 122" style="fill:none;stroke:var(--ink3);stroke-width:1.5" marker-end="url(#m4)"/>
 </svg>
 </div>
 </div>
 
-<h2>測過的模組 ①：板載 LED（第一個測試）</h2>
+<h2>Checking it against real modules</h2>
 <div class="card">
-<p>不用接任何線。板子上 GPIO 2 已經連著一顆藍色 LED，讓它每秒閃一次，同時從序列埠印字——一次驗證三件事：<b>上傳通不通、序列埠通不通、GPIO 動不動</b>。電路長相見上方「一顆 LED 的迴路」圖，板上已經幫你串好電阻了。</p>
-<p>結果：上傳成功、LED 有閃，但序列埠讀出來是亂碼（見文末踩坑）。</p>
+<p>The pile of modules in a starter kit boils down to a few wiring patterns. Rather than memorising pinouts one by one, recognise the pattern — get that right and you can wire a different brand or model just as easily.</p>
+<table>
+<tr><th>Module</th><th>Pattern</th><th>Concept it teaches</th></tr>
+<tr><td>On-board LED</td><td>GPIO output</td><td>Drive a pin high/low; current limiting</td></tr>
+<tr><td>4-digit 7-segment</td><td>Many GPIOs + scanning</td><td>Multiplexing, common cathode/anode, current limits</td></tr>
+<tr><td>1602 LCD + I2C</td><td>I2C</td><td>Buses and addresses, the 5V pull-up risk</td></tr>
+<tr><td>1.8" TFT</td><td>SPI</td><td>Hardware pins, chip select, command vs data</td></tr>
+<tr><td>4-leg button</td><td>GPIO input</td><td>Pull-ups, bounce, internal contacts</td></tr>
+<tr><td>4×3 matrix keypad</td><td>GPIO matrix</td><td>Scanning to save pins, switching pin modes</td></tr>
+<tr><td>Sound module</td><td>GPIO trigger</td><td>Edge vs level triggering</td></tr>
+</table>
 </div>
 
-<h2>測過的模組 ②：4 位數七段顯示器</h2>
+<h2>Pattern ①: GPIO output — start with the on-board LED</h2>
+<div class="card">
+<p>The first sketch needs no wiring: on most DevKits GPIO 2 already drives an LED. Blink it once a second while printing over serial and you verify three things at once — <b>upload, serial and GPIO</b>. With those confirmed, later module problems can't be blamed on the setup.</p>
+<p>An external LED needs its own resistor (see the "one LED loop" diagram above): a single ESP32 pin should stay under about 20 mA, and wiring an LED straight between GPIO and GND asks it to take the maximum.</p>
+</div>
+
+<h2>Pattern ②: many GPIOs and scanning — the 4-digit 7-segment</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 360" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四位七段顯示器用 8 條段線加 4 條位選線，程式快速輪流點亮每一位，人眼看起來像同時亮">
+<svg viewBox="0 0 760 360" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A 4-digit 7-segment display uses 8 segment and 4 digit lines, lighting digits in fast rotation so all look on">
 <defs><marker id="m5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
-<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一位數：7 段 + 小數點</text>
+<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">One digit: 7 segments + dp</text>
 <rect x="72" y="52" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="100" y="46" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">a</text>
 <rect x="72" y="122" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -901,77 +978,74 @@
 <text x="152" y="166" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">c</text>
 <circle cx="156" cy="198" r="6" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
 <text x="178" y="202" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">dp</text>
-<text x="100" y="250" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">亮 b、c = 顯示「1」</text>
-<text x="250" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">四位數共用段線，輪流點亮（多工掃描）</text>
+<text x="100" y="250" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">b + c lit = shows "1"</text>
+<text x="250" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Four digits share segment lines, lit in turn</text>
 <rect x="260" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="288" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">1</text>
 <line x1="288" y1="128" x2="288" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
-<text x="288" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位1</text>
+<text x="288" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D1</text>
 <rect x="330" y="44" width="56" height="84" rx="6" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="358" y="96" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">2</text>
 <line x1="358" y1="128" x2="358" y2="170" style="stroke:var(--accent);stroke-width:2"/>
-<text x="358" y="186" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">位2</text>
+<text x="358" y="186" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">D2</text>
 <rect x="400" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="428" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">3</text>
 <line x1="428" y1="128" x2="428" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
-<text x="428" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位3</text>
+<text x="428" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D3</text>
 <rect x="470" y="44" width="56" height="84" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="498" y="96" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">4</text>
 <line x1="498" y1="128" x2="498" y2="170" style="stroke:var(--ink3);stroke-width:1.2"/>
-<text x="498" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位4</text>
+<text x="498" y="186" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D4</text>
 <line x1="256" y1="60" x2="540" y2="60" style="stroke:var(--turn);stroke-width:1.5"/>
 <line x1="256" y1="80" x2="540" y2="80" style="stroke:var(--turn);stroke-width:1.5"/>
 <line x1="256" y1="100" x2="540" y2="100" style="stroke:var(--turn);stroke-width:1.5"/>
-<text x="548" y="84" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">a–g、dp 共 8 條</text>
-<text x="548" y="102" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">四位並聯</text>
-<text x="260" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">8 段線 + 4 位選線 = 12 腳</text>
-<text x="260" y="234" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">每條段線串 330Ω；位選線不串</text>
-<text x="20" y="280" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">時間軸：同一瞬間只有一位在亮</text>
+<text x="548" y="84" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">a–g, dp: 8 wires</text>
+<text x="548" y="102" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">shared by all digits</text>
+<text x="260" y="214" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">8 segment + 4 digit lines = 12 pins</text>
+<text x="260" y="234" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">330Ω on each segment line only</text>
+<text x="20" y="280" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Timeline: only one digit is on at any instant</text>
 <rect x="20" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="61" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位1 2ms</text>
+<text x="61" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D1 2ms</text>
 <rect x="110" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="151" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位2 2ms</text>
+<text x="151" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D2 2ms</text>
 <rect x="200" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="241" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位3 2ms</text>
+<text x="241" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D3 2ms</text>
 <rect x="290" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="331" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位4 2ms</text>
+<text x="331" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D4 2ms</text>
 <rect x="380" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="421" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位1 2ms</text>
+<text x="421" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D1 2ms</text>
 <rect x="470" y="294" width="82" height="30" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="511" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位2 2ms</text>
+<text x="511" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D2 2ms</text>
 <rect x="560" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="601" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位3 2ms</text>
+<text x="601" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D3 2ms</text>
 <rect x="650" y="294" width="82" height="30" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="691" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">位4 2ms</text>
-<text x="380" y="348" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">一輪 8ms ≈ 每秒 125 輪，人眼看起來四位同時亮</text>
+<text x="691" y="314" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">D4 2ms</text>
+<text x="380" y="348" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">8 ms per round ≈ 125 rounds/s, so all four look lit</text>
 </svg>
 </div>
-<p>型號類似 5641AS／3461AS，12 支腳。重點是理解「段線」和「位選線」的分工：8 條段線決定<b>顯示什麼形狀</b>，4 條位選線決定<b>亮哪一位</b>。四位的同名段在內部接在一起，所以一次只能亮一位，靠快速輪流騙過眼睛。</p>
+<p>Common parts such as the 5641AS or 3461AS have 12 pins. The key is what each kind of line does: 8 segment lines pick <b>the shape</b>, 4 digit lines pick <b>which digit</b>. Same-named segments are joined across digits, so only one digit is lit at a time and fast rotation fools the eye. This trick — multiplexing — comes back in LED matrices and keypads.</p>
 <table>
-<tr><th>顯示器腳</th><th>功能</th><th>ESP32</th></tr>
-<tr><td>11 / 7 / 4 / 2</td><td>a / b / c / d</td><td>13 / 14 / 27 / 26</td></tr>
-<tr><td>1 / 10 / 5 / 3</td><td>e / f / g / dp</td><td>25 / 33 / 32 / 4</td></tr>
-<tr><td>12 / 9 / 8 / 6</td><td>第 1 / 2 / 3 / 4 位</td><td>19 / 21 / 22 / 23</td></tr>
+<tr><th>Watch out for</th><th>Detail</th></tr>
+<tr><td>Pin numbering</td><td>Face-up with the dp at the bottom: bottom row 1–6 left to right, top row 12–7 left to right</td></tr>
+<tr><td>Resistors</td><td>330Ω (or 470Ω) on each of the 8 segment lines; none on the digit lines</td></tr>
+<tr><td>Current</td><td>With a whole digit lit, current piles into that digit pin near the GPIO limit — add transistors for continuous use</td></tr>
+<tr><td>Cathode vs anode</td><td>A common-cathode digit lights when its pin goes LOW, common-anode is the opposite — check which you have</td></tr>
 </table>
-<ul>
-<li><b>腳位編號</b>：正面朝自己、小數點在下，下排左到右 1–6，上排左到右 12–7。</li>
-<li><b>每條段線串 330Ω</b>，位選線不串。一位全亮時電流會集中在位選腳，已經接近 GPIO 上限，長時間使用要加電晶體。</li>
-<li><b>共陰 vs 共陽</b>：共陰極是位選腳接 LOW 才亮，共陽極相反。不知道是哪種？用電表量：</li>
-</ul>
+<h3>Not sure which? Ask a multimeter</h3>
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三用電表二極體檔紅筆接段、黑筆接位，微亮就是共陰極，要對調才亮就是共陽極">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diode mode: red on a segment, black on a digit; if it glows it is common cathode, if only swapped it is common anode">
 <rect x="20" y="20" width="150" height="210" rx="14" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="40" y="40" width="110" height="44" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="95" y="70" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">1.84 V</text>
 <circle cx="95" cy="146" r="34" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
 <line x1="95" y1="146" x2="70" y2="124" style="stroke:var(--accent);stroke-width:3"/>
-<text x="95" y="200" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">二極體檔 →|</text>
+<text x="95" y="200" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">diode mode →|</text>
 <circle cx="150" cy="50" r="4" style="fill:var(--lose)"/>
 <circle cx="150" cy="74" r="4" style="fill:var(--ink)"/>
 <path d="M150 50 C 230 50, 270 0, 348 34" style="fill:none;stroke:var(--lose);stroke-width:2"/>
 <path d="M150 74 C 240 74, 250 -6, 318 34" style="fill:none;stroke:var(--ink);stroke-width:2"/>
-<text x="235" y="110" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">紅筆 = 正極</text>
-<text x="235" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">黑筆 = 負極</text>
+<text x="235" y="110" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">red probe = +</text>
+<text x="235" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">black probe = −</text>
 <rect x="300" y="30" width="190" height="150" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="318" y="56" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">12</text>
 <text x="348" y="56" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">11</text>
@@ -987,27 +1061,27 @@
 <text x="468" y="170" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">6</text>
 <rect x="330" y="72" width="40" height="70" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <rect x="338" y="76" width="24" height="6" rx="2" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="350" y="116" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位1</text>
+<text x="350" y="116" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">D1</text>
 <circle cx="348" cy="38" r="4" style="fill:var(--lose)"/>
 <circle cx="318" cy="38" r="4" style="fill:var(--ink)"/>
-<text x="395" y="200" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">顯示器正面，小數點朝下</text>
-<text x="520" y="40" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">用電表確認腳位</text>
-<text x="520" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">紅筆 pin 11（a 段）</text>
-<text x="520" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">黑筆 pin 12（第 1 位）</text>
-<text x="520" y="110" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">a 段微亮 / 讀到 1.6–2.0V</text>
-<text x="520" y="128" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">→ 共陰極</text>
-<text x="520" y="154" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">要對調紅黑才亮</text>
-<text x="520" y="172" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">→ 共陽極</text>
-<text x="520" y="198" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">顯示 OL = 沒導通</text>
-<text x="520" y="216" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">接反不會燒：3.3V 低於反向耐壓</text>
+<text x="395" y="200" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">display face-up, dp at bottom</text>
+<text x="520" y="40" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Map pins with a multimeter</text>
+<text x="520" y="66" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">red on pin 11 (segment a)</text>
+<text x="520" y="84" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">black on pin 12 (digit 1)</text>
+<text x="520" y="110" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">a glows / reads 1.6–2.0V</text>
+<text x="520" y="128" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">→ common cathode</text>
+<text x="520" y="154" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">only lights when swapped</text>
+<text x="520" y="172" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">→ common anode</text>
+<text x="520" y="198" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">OL = no connection</text>
+<text x="520" y="216" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">reversed is safe at these voltages</text>
 </svg>
 </div>
 </div>
 
-<h2>測過的模組 ③：1602 LCD + I2C 背板</h2>
+<h2>Pattern ③: I2C — the 1602 LCD with a backpack</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="1602 LCD 的 I2C 背板只要 4 條線，SDA 接 21、SCL 接 22，但背板會把訊號上拉到 5V">
+<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The 1602 I2C backpack needs 4 wires, SDA to 21 and SCL to 22, but it pulls the lines up to 5V">
 <rect x="20" y="30" width="200" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
 <rect x="36" y="50" width="168" height="50" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="40" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -1042,15 +1116,15 @@
 <rect x="170" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
 <rect x="180" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
 <rect x="190" y="76" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="120" y="142" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">正面：16 字 × 2 行</text>
+<text x="120" y="142" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">front: 16 chars × 2 rows</text>
 <rect x="20" y="170" width="200" height="120" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="40" y="190" width="70" height="40" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="75" y="214" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PCF8574</text>
 <circle cx="160" cy="210" r="13" style="fill:var(--turnbg);stroke:var(--turn);stroke-width:1.5"/>
 <path d="M152 210h16" style="fill:none;stroke:var(--turn);stroke-width:2"/>
-<text x="160" y="244" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">對比旋鈕</text>
-<text x="75" y="248" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C 背板</text>
-<text x="120" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">位址 0x27（或 0x3F）</text>
+<text x="160" y="244" text-anchor="middle" style="fill:var(--turn);font:400 11px sans-serif">contrast pot</text>
+<text x="75" y="248" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">I2C backpack</text>
+<text x="120" y="280" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">address 0x27 (or 0x3F)</text>
 <rect x="320" y="59" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="352" y="74" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
 <line x1="384" y1="70" x2="480" y2="70" style="stroke:var(--ink3);stroke-width:2"/>
@@ -1061,48 +1135,50 @@
 <line x1="384" y1="110" x2="480" y2="110" style="stroke:var(--mid);stroke-width:2"/>
 <rect x="480" y="99" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="522" y="114" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">VIN 5V</text>
-<text x="576" y="114" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">1602 要 5V 才看得清楚</text>
+<text x="576" y="114" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">1602 needs 5V to be readable</text>
 <rect x="320" y="139" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="352" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
 <line x1="384" y1="150" x2="480" y2="150" style="stroke:var(--turn);stroke-width:2"/>
 <rect x="480" y="139" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="522" y="154" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 21</text>
-<text x="576" y="154" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 預設 I2C 資料</text>
+<text x="576" y="154" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">default I2C data</text>
 <rect x="320" y="179" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="352" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
 <line x1="384" y1="190" x2="480" y2="190" style="stroke:var(--turn);stroke-width:2"/>
 <rect x="480" y="179" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="522" y="194" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 22</text>
-<text x="576" y="194" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 預設 I2C 時脈</text>
-<text x="352" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">背板腳</text>
+<text x="576" y="194" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">default I2C clock</text>
+<text x="352" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Backpack</text>
 <text x="522" y="44" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
 <path d="M220 214 H300 V70 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
 <path d="M300 110 H316 M300 150 H316 M300 190 H316" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
 <rect x="300" y="232" width="440" height="70" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
-<text x="520" y="256" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">⚠ 背板把 SDA/SCL 上拉到 5V</text>
-<text x="520" y="276" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 腳位不耐 5V：多數人直接接也能動，但是在賭</text>
-<text x="520" y="292" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">穩妥做法：加 I2C 電平轉換，或拆掉背板上拉電阻</text>
+<text x="520" y="256" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">⚠ Backpack pulls SDA/SCL up to 5V</text>
+<text x="520" y="276" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ESP32 pins are not 5V-tolerant: it often works, but it is a gamble</text>
+<text x="520" y="292" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">safe: add a level shifter or remove the pull-ups</text>
 </svg>
 </div>
-<p>1602 原本要接十幾條線，背板上的 PCF8574 晶片把它轉成 I2C，只剩 4 條。這是我第一次用到「匯流排」：SDA／SCL 兩條線上可以再掛別的 I2C 裝置，靠<b>位址</b>分辨在跟誰說話。</p>
+<div class="fig" style="margin:2px 0 4px"><img src="../assets/img/lcd1602.jpg" alt="Photo of a 16×2 character LCD module with a 14-pin header along the bottom" style="width:100%;max-width:420px;display:block;margin:0 auto;border-radius:12px;border:1px solid var(--border)"></div>
+<div style="text-align:center;font-size:11.5px;color:var(--ink3);margin:0 0 16px">A bare 1602 module: 14 pins along the bottom edge (16-pin versions with backlight pins are common too), meaning a dozen wires. An I2C backpack solders onto the back and turns them into four.</div>
+<p>The PCF8574 on the backpack translates I2C into the parallel signals the LCD wants, turning a dozen wires into four. That's the value of a <b>bus</b>: more I2C devices can hang on the same SDA/SCL, told apart by address (0x27 for PCF8574, 0x3F for PCF8574A).</p>
 <table>
-<tr><th>症狀</th><th>先檢查</th></tr>
-<tr><td>背光亮但沒有字</td><td>九成是對比沒調：轉背板上的藍色可變電阻</td></tr>
-<tr><td>只看到一排方塊</td><td>有電但 I2C 沒通：位址 0x27 換 0x3F 試，或 SDA/SCL 接反</td></tr>
-<tr><td>接 3.3V 字很淡</td><td>1602 要吃 5V，改接 VIN</td></tr>
-<tr><td>超過 16 個字不見</td><td>每行記憶體有 40 格、只露前 16 格；不會自動換行</td></tr>
+<tr><th>Symptom</th><th>Check first</th></tr>
+<tr><td>Backlight on, no text</td><td>Nine times out of ten it's contrast: turn the blue pot until characters or blocks appear</td></tr>
+<tr><td>Only a row of blocks</td><td>Powered but I2C isn't talking: the address may be 0x3F, or SDA/SCL are swapped</td></tr>
+<tr><td>Faint text on 3.3V</td><td>The 1602 wants 5V; move power to VIN</td></tr>
+<tr><td>Text past 16 characters vanishes</td><td>Each row holds 40 characters in memory but only 16 are visible, and there's no auto-wrap</td></tr>
 </table>
 </div>
 
-<h2>測過的模組 ④：1.8 吋 TFT 彩色螢幕（SPI）</h2>
+<h2>Pattern ④: SPI — the 1.8" color TFT</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TFT 標 SCL 與 SDA 但其實是 SPI，時脈 18、資料 23 走硬體 SPI，DC、RST、CS 用一般腳">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TFT labels say SCL/SDA but it is SPI: clock on 18 and data on 23, with DC, RST and CS on plain pins">
 <rect x="20" y="40" width="170" height="300" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <rect x="34" y="56" width="110" height="140" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="89" y="120" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">128 × 160</text>
 <text x="89" y="140" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">ST7735</text>
-<text x="89" y="230" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1.8 吋 TFT</text>
+<text x="89" y="230" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">1.8" TFT</text>
 <text x="89" y="250" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">SPI</text>
 <rect x="240" y="53" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="68" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GND</text>
@@ -1114,93 +1190,94 @@
 <line x1="304" y1="100" x2="420" y2="100" style="stroke:var(--mid);stroke-width:2"/>
 <rect x="420" y="89" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="462" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
-<text x="516" y="104" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V 邏輯，不必轉電平</text>
+<text x="516" y="104" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">3.3V logic, no shifting</text>
 <rect x="240" y="125" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SCL</text>
 <line x1="304" y1="136" x2="420" y2="136" style="stroke:var(--accent);stroke-width:2"/>
 <rect x="420" y="125" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="462" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 18</text>
-<text x="516" y="140" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其實是 SPI SCK（不是 I2C）</text>
+<text x="516" y="140" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">really SPI SCK, not I2C</text>
 <rect x="240" y="161" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">SDA</text>
 <line x1="304" y1="172" x2="420" y2="172" style="stroke:var(--accent);stroke-width:2"/>
 <rect x="420" y="161" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="462" y="176" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 23</text>
-<text x="516" y="176" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其實是 SPI MOSI</text>
+<text x="516" y="176" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">really SPI MOSI</text>
 <rect x="240" y="197" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RS / DC</text>
 <line x1="304" y1="208" x2="420" y2="208" style="stroke:var(--turn);stroke-width:2"/>
 <rect x="420" y="197" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="462" y="212" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 16</text>
-<text x="516" y="212" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">指令 or 像素資料</text>
+<text x="516" y="212" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">command vs pixel data</text>
 <rect x="240" y="233" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">RES</text>
 <line x1="304" y1="244" x2="420" y2="244" style="stroke:var(--turn);stroke-width:2"/>
 <rect x="420" y="233" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="462" y="248" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 17</text>
-<text x="516" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">硬體重置</text>
+<text x="516" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">hardware reset</text>
 <rect x="240" y="269" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">CS</text>
 <line x1="304" y1="280" x2="420" y2="280" style="stroke:var(--turn);stroke-width:2"/>
 <rect x="420" y="269" width="84" height="22" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="462" y="284" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 5</text>
-<text x="516" y="284" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">片選：LOW 才聽</text>
+<text x="516" y="284" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">chip select: listens on LOW</text>
 <rect x="240" y="305" width="64" height="22" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="272" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">BL</text>
 <line x1="304" y1="316" x2="420" y2="316" style="stroke:var(--mid);stroke-width:2"/>
 <rect x="420" y="305" width="84" height="22" rx="4" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="462" y="320" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">3V3</text>
-<text x="516" y="320" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">背光常亮（改接 GPIO 可調光）</text>
-<text x="272" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">TFT 腳</text>
+<text x="516" y="320" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">backlight always on</text>
+<text x="272" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">TFT pin</text>
 <text x="462" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">ESP32</text>
 <path d="M190 190 H228 M228 64 V316 M228 64 H240 M228 100 H240 M228 136 H240 M228 172 H240 M228 208 H240 M228 244 H240 M228 280 H240 M228 316 H240" style="fill:none;stroke:var(--ink3);stroke-width:1.2;stroke-dasharray:4 3"/>
-<text x="20" y="372" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">18 / 23 是硬體 SPI（VSPI）固定腳：接別的腳就變軟體模擬，fillScreen 會慢到看得見一行一行刷。</text>
+<text x="20" y="372" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">18/23 are the hardware SPI (VSPI) pins; other pins fall back to slow software SPI.</text>
 </svg>
 </div>
-<p>紅色小板、128×160、ST7735 驅動、3.3V 邏輯，跟 ESP32 直接接不用轉電平。資料只從 ESP32 送往螢幕，所以不需要 MISO。我用它做了仿 Windows 95 開機畫面和復古 Mac 風格的看盤機。</p>
+<p>Screens move far more data than a text LCD, so they usually speak SPI: clock and data are shared, and each device gets its own CS line — pull a device's CS low to talk to it. Data only flows toward the screen, so MISO can be skipped.</p>
 <ul>
-<li><b>為什麼 CS 選 GPIO 5</b>：它是 VSPI 預設 CS；雖然是 strapping 腳，但預設 HIGH，跟 CS 閒置時的 HIGH 一致，不衝突。</li>
-<li><b>DC、RST 選 16／17</b>：普通腳、不是開機腳，最保險。（若板子是有 PSRAM 的 WROVER，16／17 會被占用。）</li>
-<li><b>畫面偏移或紅藍對調</b>：這類板子有 black／green／red tab 版本，初始化參數要換。我的是 black tab。</li>
+<li><b>Use the hardware pins (18/23) for SCK/MOSI</b>: they're the library default, and other pins fall back to software SPI — slow enough to watch the screen fill line by line.</li>
+<li><b>DC (sometimes printed RS or A0)</b>: tells the screen whether the bytes are commands or pixels — a line unique to SPI displays.</li>
+<li><b>Offset image or red and blue swapped</b>: these boards come in black/green/red-tab variants with different init settings — try another, it's not a wiring fault.</li>
+<li><b>The BL pin</b>: tie it to 3V3 for always-on, or drive it from a GPIO with PWM to dim or truly blank the screen.</li>
 </ul>
 </div>
 
-<h2>測過的模組 ⑤：4 腳按鈕</h2>
+<h2>Pattern ⑤: GPIO input — the 4-leg button</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="按鈕一腳接 GPIO、對角那腳接 GND，配內建上拉：沒按讀到 HIGH，按下讀到 LOW">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Button: one leg to GPIO, the diagonal leg to GND, internal pull-up; released reads HIGH, pressed reads LOW">
 <defs><marker id="m3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
-<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">按鈕 + 內建上拉（INPUT_PULLUP）</text>
+<text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Button + internal pull-up</text>
 <rect x="20" y="40" width="200" height="170" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
-<text x="30" y="58" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">ESP32 晶片內部</text>
+<text x="30" y="58" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">inside the ESP32</text>
 <text x="120" y="84" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3.3V</text>
 <line x1="120" y1="90" x2="120" y2="104" style="stroke:var(--accent);stroke-width:1.5"/>
 <rect x="110" y="104" width="20" height="44" rx="3" style="fill:var(--midbg);stroke:var(--midbd)"/>
-<text x="150" y="130" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">上拉電阻</text>
+<text x="150" y="130" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">pull-up</text>
 <line x1="120" y1="148" x2="120" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
 <line x1="120" y1="176" x2="220" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
 <circle cx="120" cy="176" r="3" style="fill:var(--ink)"/>
-<text x="70" y="180" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">讀取</text>
+<text x="70" y="180" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">read</text>
 <rect x="220" y="164" width="64" height="24" rx="4" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="252" y="181" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPIO 4</text>
 <line x1="284" y1="176" x2="330" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
 <circle cx="334" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
 <line x1="338" y1="176" x2="370" y2="160" style="stroke:var(--accent);stroke-width:2"/>
 <circle cx="376" cy="176" r="4" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
-<text x="356" y="150" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">按鈕</text>
+<text x="356" y="150" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">button</text>
 <line x1="380" y1="176" x2="410" y2="176" style="stroke:var(--ink);stroke-width:1.5"/>
 <line x1="410" y1="176" x2="410" y2="206" style="stroke:var(--ink);stroke-width:1.5"/>
 <line x1="396" y1="206" x2="424" y2="206" style="stroke:var(--ink);stroke-width:2"/>
 <line x1="401" y1="212" x2="419" y2="212" style="stroke:var(--ink);stroke-width:2"/>
 <text x="410" y="232" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">GND</text>
 <rect x="20" y="250" width="196" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="118" y="272" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">沒按：被拉到 3.3V</text>
+<text x="118" y="272" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">released: pulled to 3.3V</text>
 <text x="118" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">HIGH = 1</text>
 <rect x="230" y="250" width="196" height="56" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
-<text x="328" y="272" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">按下：直通 GND</text>
+<text x="328" y="272" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">pressed: shorted to GND</text>
 <text x="328" y="292" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">LOW = 0</text>
-<text x="20" y="336" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">沒有上拉，腳位「浮接」會隨雜訊亂跳；用內建上拉就不必外接電阻。</text>
-<text x="470" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">4 腳按鈕的內部</text>
+<text x="20" y="336" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">Without a pull-up the pin floats and reads noise; the internal one saves a resistor.</text>
+<text x="470" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Inside a 4-leg button</text>
 <rect x="540" y="70" width="110" height="110" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <circle cx="595" cy="125" r="26" style="fill:var(--surface2);stroke:var(--accent);stroke-width:1.5"/>
 <rect x="526" y="76" width="14" height="8" rx="2" style="fill:var(--midbg);stroke:var(--midbd)"/>
@@ -1213,72 +1290,31 @@
 <text x="678" y="174" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">4</text>
 <line x1="540" y1="80" x2="650" y2="80" style="stroke:var(--win);stroke-width:3"/>
 <line x1="540" y1="170" x2="650" y2="170" style="stroke:var(--win);stroke-width:3"/>
-<text x="595" y="60" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">1–2 永遠相通</text>
-<text x="595" y="200" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">3–4 永遠相通</text>
+<text x="595" y="60" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">1–2 always joined</text>
+<text x="595" y="200" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">3–4 always joined</text>
 <line x1="570" y1="94" x2="620" y2="156" style="stroke:var(--accent);stroke-width:2;stroke-dasharray:4 3"/>
-<text x="470" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">按下才把上下兩組接通</text>
-<text x="470" y="252" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">接同組 1–2 = 永遠導通，按了沒反應</text>
-<text x="470" y="270" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">接對角 1–4 最保險</text>
-<text x="470" y="300" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">機械彈跳：按下瞬間會抖幾毫秒</text>
+<text x="470" y="234" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">pressing joins top pair to bottom</text>
+<text x="470" y="252" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">wire 1–2 = always on, press does nothing</text>
+<text x="470" y="270" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">wire diagonal 1–4, never wrong</text>
+<text x="470" y="300" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Bounce: contacts chatter for a few ms</text>
 <path d="M470 332h40v-18h4v18h4v-18h4v18h4v-18h60" style="fill:none;stroke:var(--ink);stroke-width:1.5"/>
-<text x="630" y="330" text-anchor="start" style="fill:var(--accent);font:400 11px sans-serif">忽略 &lt;30ms 的抖動</text>
+<text x="630" y="330" text-anchor="start" style="fill:var(--accent);font:400 11px sans-serif">ignore &lt;30ms chatter</text>
 </svg>
 </div>
-<p>最簡單的輸入裝置，但藏了三個觀念：<b>上拉</b>（沒按時要有確定的電位）、<b>4 腳的內部連法</b>（接對角）、<b>彈跳</b>（按一下其實抖了好幾下）。我第一版用 5 顆按鈕當上下左右＋確認，所有按鈕的 GND 串在一起再拉一條到 ESP32 的 GND——這樣接是對的。</p>
-<p>短按／長按其實只是「按下多久」的判斷：按下不到 30ms 當雜訊、放開時小於 3 秒算短按、按滿 3 秒當下就算長按。</p>
-</div>
-
-<h2>測過的模組 ⑥：ISD1820 錄放音模組</h2>
-<div class="card">
-<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820 的 PLAYE 收到一次上升緣就播完整段，PLAYL 則是維持 HIGH 才播、拉低就停">
-<rect x="20" y="40" width="210" height="170" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
-<circle cx="70" cy="90" r="18" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
-<text x="70" y="126" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">麥克風</text>
-<rect x="116" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<circle cx="130" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<text x="130" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">REC</text>
-<rect x="152" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<circle cx="166" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<text x="166" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYE</text>
-<rect x="188" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<circle cx="202" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<text x="202" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYL</text>
-<rect x="40" y="150" width="80" height="36" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="80" y="173" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ISD1820</text>
-<rect x="150" y="150" width="60" height="36" rx="18" style="fill:var(--midbg);stroke:var(--midbd)"/>
-<text x="180" y="173" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">喇叭</text>
-<text x="125" y="30" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">錄放音模組：聲音存在晶片裡</text>
-<text x="20" y="236" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">VCC → 3V3　GND → GND</text>
-<text x="20" y="256" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE → GPIO 25</text>
-<text x="20" y="276" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">先按住 REC 對麥克風錄（約 10 秒）</text>
-<text x="20" y="294" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">只能播錄進去的聲音，不能用程式寫歌</text>
-<text x="280" y="30" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">PLAYE 邊緣觸發 vs PLAYL 電位觸發</text>
-<text x="280" y="74" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE</text>
-<path d="M370 84h40v-24h14v24h316" style="fill:none;stroke:var(--win);stroke-width:2"/>
-<text x="360" y="114" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">播放</text>
-<rect x="410" y="102" width="250" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="740" y="74" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">一個短脈衝 → 整段播完</text>
-<text x="280" y="174" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">PLAYL</text>
-<path d="M370 184h40v-24h140v24h190" style="fill:none;stroke:var(--turn);stroke-width:2"/>
-<text x="360" y="214" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">播放</text>
-<rect x="410" y="202" width="140" height="18" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
-<text x="740" y="174" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">HIGH 多久播多久，拉低就停</text>
-<text x="280" y="272" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">我的開機畫面用 PLAYE：拉高 50ms，讀取畫面一出現就開始播。</text>
-<text x="280" y="292" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">想在長按關機時切掉聲音，就得改接 PLAYL。</text>
-</svg>
-</div>
-<p>按住 REC 對麥克風錄約 10 秒，聲音存在晶片裡；ESP32 只負責「按播放鍵」——所以它是最純粹的 GPIO 輸出例子：一支腳拉高一下就好。</p>
+<div class="fig" style="margin:2px 0 4px"><img src="../assets/img/tactile-switch.jpg" alt="Close-up of 4-leg tactile switches soldered to a circuit board" style="width:100%;max-width:420px;display:block;margin:0 auto;border-radius:12px;border:1px solid var(--border)"></div>
+<div style="text-align:center;font-size:11.5px;color:var(--ink3);margin:0 0 16px">The 4-leg tactile switch found in every starter kit: a black square body with a leg at each corner. The four legs are really two pairs, and each pair is permanently connected.</div>
+<p>A button is the simplest input, yet it brings three ideas at once: <b>pull-ups</b> (a defined level when released), <b>internal contacts</b> (only the diagonal pair is a switch) and <b>bounce</b> (one press chatters several times).</p>
 <ul>
-<li><b>電源接 3.3V</b>：接 5V 的話，ESP32 送出的 3.3V HIGH 可能不夠被認成 HIGH。</li>
-<li><b>它做不到的事</b>：不能用程式寫歌（要改用無源蜂鳴器），也不能播藍牙音樂（要用 I2S 音訊模組如 MAX98357A，或現成藍牙接收板）。</li>
+<li><b>The classic symptom of miswiring is nothing happening at all</b>: two legs of the same pair are just a wire. Move to the diagonal.</li>
+<li><b>Chain the GND legs of several buttons</b> and run one wire back to the ESP32's GND instead of one per button.</li>
+<li><b>Short vs long press is just timing</b>: under 30 ms is bounce, released before 3 s is a short press, and holding to 3 s counts immediately.</li>
 </ul>
 </div>
 
-<h2>測過的模組 ⑦：4×3 矩陣鍵盤</h2>
+<h2>Pattern ⑥: a GPIO matrix — the 4×3 keypad</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="矩陣鍵盤一次把一欄拉低、讀哪條列線跟著變低，欄乘列就定位出按鍵；實際腳位順序要實測">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Matrix keypad: drive one column LOW, see which row follows, and the pair locates the key; measure the real pin order">
 <line x1="60" y1="60" x2="260" y2="60" style="stroke:var(--turn);stroke-width:2"/>
 <text x="30" y="64" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R1</text>
 <text x="290" y="64" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 26</text>
@@ -1324,154 +1360,88 @@
 <text x="164" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">0</text>
 <rect x="208" y="210" width="40" height="36" rx="6" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="228" y="233" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">#</text>
-<text x="30" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">12 鍵只用 7 條線：4 列 × 3 欄</text>
-<text x="100" y="308" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">欄腳 GPIO</text>
-<text x="420" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">掃描：怎麼知道按了哪顆</text>
+<text x="30" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">12 keys on 7 wires: 4 rows × 3 cols</text>
+<text x="100" y="308" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">column GPIO</text>
+<text x="420" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">Scanning: which key is down?</text>
 <rect x="420" y="36" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="436" y="56" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">① 把欄 C1 拉 LOW</text>
-<text x="436" y="74" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">其他欄設浮接</text>
+<text x="436" y="56" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">① Drive column C1 LOW</text>
+<text x="436" y="74" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">other columns float</text>
 <rect x="420" y="94" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="436" y="114" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">② 讀 4 條列線</text>
-<text x="436" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">列線平常被上拉成 HIGH</text>
+<text x="436" y="114" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">② Read the 4 row lines</text>
+<text x="436" y="132" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">rows idle HIGH via pull-ups</text>
 <rect x="420" y="152" width="320" height="48" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<text x="436" y="172" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">③ R2 變 LOW</text>
-<text x="436" y="190" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">C1 × R2 = 按的是「4」</text>
+<text x="436" y="172" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">③ R2 went LOW</text>
+<text x="436" y="190" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">C1 × R2 = key "4"</text>
 <rect x="420" y="210" width="320" height="48" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
-<text x="436" y="230" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">④ 換下一欄重複</text>
-<text x="436" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">一秒掃上百次</text>
+<text x="436" y="230" text-anchor="start" style="fill:var(--ink);font:600 12px sans-serif">④ Next column, repeat</text>
+<text x="436" y="248" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">hundreds of scans per second</text>
 <rect x="20" y="326" width="720" height="50" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
-<text x="36" y="346" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">踩坑：排線順序 ≠ R1 R2 R3 R4 C1 C2 C3</text>
-<text x="36" y="364" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">實測按 1/2/3 都出現 26 → 26 是 R1；按 1/4/7/* 都出現 32 → 32 是 C1。讓板子自己回報比猜快。</text>
+<text x="36" y="346" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">Gotcha: ribbon order ≠ R1 R2 R3 R4 C1 C2 C3</text>
+<text x="36" y="364" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">Print which two GPIOs connect: the pin shared by 1/2/3 is R1, the pin shared by 1/4/7/* is C1.</text>
 </svg>
 </div>
-<p>5 顆按鈕要 5 支腳加一堆 GND 線；換成矩陣鍵盤，12 顆鍵只要 7 條線，而且不用接 GND、不用電阻。代價是要「掃描」：輪流把某一欄拉低，看哪一列跟著變低。</p>
+<p>One pin per key runs out fast: 12 keys would need 12 pins plus GND wiring. A matrix arranges them as 4 rows × 3 columns on just 7 wires, with no GND and no resistors — at the cost of scanning in software. It trades <b>time for pins</b>, the same idea as multiplexing a 7-segment display.</p>
 <ul>
-<li><b>列線要能上拉</b>，所以不能用 34–39（沒有內建上拉）；也避開 GPIO 12。</li>
-<li><b>沒在掃的欄設成浮接</b>，同時按兩顆鍵才不會短路。</li>
-<li><b>最大教訓</b>：R1–R4／C1–C3 是鍵盤內部的列與欄，<b>不是排線上左到右的順序</b>。我照「左到右 R1…C3」接，結果按鍵全錯；改成讓板子回報「哪兩支 GPIO 接通」，按 6 顆鍵就推出正確對應，線完全不用重接。</li>
+<li><b>Row lines need pull-ups</b>, so 34–39 are out (no internal pull-up).</li>
+<li><b>Float (input) the columns you aren't scanning</b> so two keys pressed at once can't short two outputs together.</li>
+<li><b>R1–R4/C1–C3 are the keypad's internal rows and columns, not necessarily the ribbon's left-to-right order.</b> Rather than guessing, print which two GPIOs connect on a press: six keys are enough to deduce the whole mapping without rewiring.</li>
 </ul>
 </div>
 
-<h2>我目前的 GPIO 分配總表</h2>
-<div class="card">
-<p>復古 Mac 看盤機（TFT + 鍵盤）是目前板子上跑的專案，LCD、七段、ISD 是之前單獨測試時的接法，彼此有重疊腳位——同一時間只接一組。</p>
-<table>
-<tr><th>GPIO</th><th>看盤機（現在）</th><th>之前的測試</th></tr>
-<tr><td>2</td><td>—</td><td>板載 LED</td></tr>
-<tr><td>4</td><td>鍵盤 R2</td><td>按鈕、七段 dp</td></tr>
-<tr><td>5 / 16 / 17</td><td>TFT CS / DC / RST</td><td>TFT</td></tr>
-<tr><td>18 / 23</td><td>TFT SCK / MOSI</td><td>TFT；23 也當過七段位 4</td></tr>
-<tr><td>21 / 22</td><td>—</td><td>LCD SDA / SCL；七段位 2 / 3</td></tr>
-<tr><td>25</td><td>鍵盤 C3</td><td>ISD1820 PLAYE、七段 e</td></tr>
-<tr><td>26 / 27 / 13</td><td>鍵盤 R1 / R3 / R4</td><td>七段 d / c / a</td></tr>
-<tr><td>32 / 33</td><td>鍵盤 C1 / C2</td><td>七段 g / f</td></tr>
-<tr><td>14 / 19</td><td>—</td><td>七段 b / 位 1</td></tr>
-</table>
-</div>
-
-<h2>手邊有、但還沒測的零件</h2>
+<h2>Pattern ⑦: a GPIO trigger — the sound module</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="手邊還沒測的兩個零件：HC-SR04 是超音波測距要 5V 且 Echo 需分壓，蜂鳴器要先分有源或無源">
-<text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">HC-SR04 超音波測距（不是喇叭）</text>
-<rect x="20" y="40" width="220" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
-<circle cx="80" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<circle cx="180" cy="85" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<text x="80" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">T</text>
-<text x="180" y="90" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">R</text>
-<line x1="62" y1="130" x2="62" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
-<text x="62" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">VCC</text>
-<line x1="98" y1="130" x2="98" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
-<text x="98" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Trig</text>
-<line x1="134" y1="130" x2="134" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
-<text x="134" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">Echo</text>
-<line x1="170" y1="130" x2="170" y2="146" style="stroke:var(--ink3);stroke-width:1.5"/>
-<text x="170" y="160" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">GND</text>
-<text x="260" y="60" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">T 發 40kHz 超音波，R 收回聲</text>
-<text x="260" y="80" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">來回時間 → 距離，約 2cm–4m</text>
-<text x="260" y="104" text-anchor="start" style="fill:var(--mid);font:400 11px sans-serif">VCC 要 5V（接 VIN）</text>
-<text x="260" y="122" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">Echo 輸出 5V → 先分壓再進 GPIO</text>
-<text x="260" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">Trig 用 3.3V 就能觸發</text>
-<text x="20" y="200" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">蜂鳴器：先分有源還是無源</text>
-<rect x="20" y="214" width="350" height="96" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
-<circle cx="70" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<circle cx="70" cy="262" r="5" style="fill:var(--ink3)"/>
-<text x="120" y="238" text-anchor="start" style="fill:var(--mid);font:700 12px sans-serif">有源</text>
-<text x="120" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">底部黑膠封死</text>
-<text x="120" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">通電「嗶——」固定一個音</text>
-<text x="120" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">只能開關，寫不了旋律</text>
-<rect x="390" y="214" width="350" height="96" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
-<circle cx="440" cy="262" r="30" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
-<circle cx="440" cy="262" r="5" style="fill:var(--ink3)"/>
-<text x="490" y="238" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">無源</text>
-<text x="490" y="258" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">底部看得到電路板</text>
-<text x="490" y="276" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">通電只「喀」一聲</text>
-<text x="490" y="296" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">用 tone() 可以寫歌</text>
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820: PLAYE plays the whole clip on one rising edge; PLAYL plays only while held HIGH">
+<rect x="20" y="40" width="210" height="170" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
+<circle cx="70" cy="90" r="18" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="70" y="126" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">mic</text>
+<rect x="116" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="130" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="130" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">REC</text>
+<rect x="152" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="166" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="166" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYE</text>
+<rect x="188" y="76" width="28" height="28" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<circle cx="202" cy="90" r="7" style="fill:var(--surface);stroke:var(--ink3);stroke-width:1.5"/>
+<text x="202" y="120" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">PLAYL</text>
+<rect x="40" y="150" width="80" height="36" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="80" y="173" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">ISD1820</text>
+<rect x="150" y="150" width="60" height="36" rx="18" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="180" y="173" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">spkr</text>
+<text x="125" y="30" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Record/playback module</text>
+<text x="20" y="236" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">VCC → 3V3   GND → GND</text>
+<text x="20" y="256" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE → GPIO 25</text>
+<text x="20" y="276" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">hold REC and speak (~10 s)</text>
+<text x="20" y="294" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">plays only what was recorded</text>
+<text x="280" y="30" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">PLAYE edge-trigger vs PLAYL level-trigger</text>
+<text x="280" y="74" text-anchor="start" style="fill:var(--win);font:700 12px sans-serif">PLAYE</text>
+<path d="M370 84h40v-24h14v24h316" style="fill:none;stroke:var(--win);stroke-width:2"/>
+<text x="360" y="114" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">audio</text>
+<rect x="410" y="102" width="250" height="18" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="740" y="74" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">one pulse → plays to the end</text>
+<text x="280" y="174" text-anchor="start" style="fill:var(--turn);font:700 12px sans-serif">PLAYL</text>
+<path d="M370 184h40v-24h140v24h190" style="fill:none;stroke:var(--turn);stroke-width:2"/>
+<text x="360" y="214" text-anchor="end" style="fill:var(--ink3);font:400 10.5px sans-serif">audio</text>
+<rect x="410" y="202" width="140" height="18" rx="3" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="740" y="174" text-anchor="end" style="fill:var(--ink2);font:400 11px sans-serif">plays while HIGH, stops on LOW</text>
+<text x="280" y="272" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">For "one press, whole clip" uses such as a boot sound, pulse PLAYE for 50 ms.</text>
+<text x="280" y="292" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">Only switch to PLAYL when you need to stop it partway.</text>
 </svg>
 </div>
-<p>我原本以為 HC-SR04 是喇叭（兩個銀色圓筒很像），其實是超音波測距。它是下一個要測的，因為剛好會用到「5V 模組 + 分壓」這個還沒實作過的觀念。</p>
+<p>Modules like the ISD1820 store the audio in their own chip (hold REC and speak for up to ~10 s); the ESP32 only "presses play". It's the purest GPIO-output example, and it introduces a distinction that keeps coming back: <b>edge triggering</b> (one transition runs the whole thing) versus <b>level triggering</b> (it continues only while held).</p>
+<ul>
+<li><b>Power it at 3.3V</b>: run the module at 5V and the ESP32's 3.3V may not register as HIGH.</li>
+<li><b>What it can't do</b>: no programmed melodies (that needs a passive buzzer and <code>tone()</code>) and no Bluetooth audio (that needs an I2S module such as the MAX98357A, or a ready-made BT receiver). Decide first whether you want to play a recording or generate sound.</li>
+</ul>
 </div>
 
-<h2>踩坑紀錄：序列埠亂碼（未解）</h2>
+<h2>Back to the roadmap</h2>
 <div class="card">
-<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART 靠雙方約定的 baud 取樣，速度不一致時取樣點逐位偏移，讀出來就是亂碼">
-<text x="20" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">UART 沒有時脈線：接收端靠「約好的速度」取樣</text>
-<path d="M20 50 L60 50 L60 50 L112 50 L112 50 L112 90 L164 90 L164 90 L164 50 L216 50 L216 50 L216 90 L268 90 L268 90 L268 90 L320 90 L320 90 L320 50 L372 50 L372 50 L372 90 L424 90 L424 90 L424 50 L476 50 L476 50 L476 50 L528 50 L528 50 L528 90 L580 90 L580 90 L580 50 L632 50" style="fill:none;stroke:var(--ink);stroke-width:2"/>
-<text x="86.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">閒置</text>
-<text x="138.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">起始</text>
-<text x="190.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d0</text>
-<text x="242.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d1</text>
-<text x="294.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d2</text>
-<text x="346.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d3</text>
-<text x="398.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d4</text>
-<text x="450.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d5</text>
-<text x="502.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d6</text>
-<text x="554.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">d7</text>
-<text x="606.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">停止</text>
-<circle cx="138.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="190.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="242.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="294.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="346.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="398.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="450.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="502.0" cy="136" r="4" style="fill:var(--win)"/>
-<circle cx="554.0" cy="136" r="4" style="fill:var(--win)"/>
-<text x="20" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">對</text>
-<circle cx="138.0" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="208.2" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="278.4" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="348.6" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="418.8" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="489.0" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="559.2" cy="160" r="4" style="fill:var(--lose)"/>
-<circle cx="629.4000000000001" cy="160" r="4" style="fill:var(--lose)"/>
-<text x="20" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">錯</text>
-<text x="660" y="140" text-anchor="start" style="fill:var(--win);font:400 11px sans-serif">115200 ↔ 115200</text>
-<text x="660" y="164" text-anchor="start" style="fill:var(--lose);font:400 11px sans-serif">115200 ↔ 74880</text>
-<text x="20" y="196" text-anchor="start" style="fill:var(--ink2);font:400 11px sans-serif">速度對不上，取樣點越飄越遠，讀到一串垃圾 → Serial Monitor 看到「���」。容忍度只有約 ±2–3%。</text>
-</svg>
-</div>
-<p>Serial Monitor 已經設成跟程式一樣的 115200，讀出來仍是亂碼，這個問題到現在還沒解。目前推測：板子的晶振可能是 26MHz 而非 40MHz，導致實際速度偏成 74880。下一步是把 Serial Monitor 改成 74880 驗證。在解決之前，我都用螢幕顯示狀態來除錯（按鈕、鍵盤測試都是這樣做的）。</p>
+<p>By this point all three stages are in play: the board and its pin limits (stage 1), voltage and common ground (stage 2), and reading pin names to pick the right connection (stage 3). Only with those solid does stage 4 mean anything — data pulled over WiFi still has to land on a screen and be driven by buttons, which is exactly what this guide covered.</p>
 </div>
 
-<h2>接下來要學的基本知識清單</h2>
-<div class="card">
-<div class="kbox">
-<div class="kcard"><div class="kt">三用電表</div><div class="kd">量電壓、通路檔找腳位、二極體檔判斷 LED 極性</div><div class="ke">階段 2</div></div>
-<div class="kcard"><div class="kt">供電與電流預算</div><div class="kd">USB 能給多少電流？3.3V 穩壓器帶得動幾個模組？什麼時候要外接電源</div><div class="ke">階段 2</div></div>
-<div class="kcard"><div class="kt">電平轉換</div><div class="kd">分壓電阻（單向）vs BSS138 模組（雙向，I2C 用）</div><div class="ke">階段 2</div></div>
-<div class="kcard"><div class="kt">ADC 與 PWM</div><div class="kd">讀可變電阻、光敏電阻；調 LED 亮度、控制伺服馬達</div><div class="ke">階段 2–3</div></div>
-<div class="kcard"><div class="kt">I2C 進階</div><div class="kd">掃描位址、同一匯流排掛多台、上拉電阻大小</div><div class="ke">階段 3</div></div>
-<div class="kcard"><div class="kt">感測器</div><div class="kd">HC-SR04 測距、溫濕度（DHT／BME280）、人體紅外線 PIR</div><div class="ke">階段 3</div></div>
-<div class="kcard"><div class="kt">WiFi 與網路</div><div class="kd">HTTP/HTTPS、NTP 對時、MQTT；ESP32 自己當網頁伺服器</div><div class="ke">階段 4</div></div>
-<div class="kcard"><div class="kt">帳密不進程式碼</div><div class="kd">WiFi 密碼別寫死在會公開的檔案；改用獨立設定檔或配網模式</div><div class="ke">階段 4</div></div>
-<div class="kcard"><div class="kt">BLE 與藍牙</div><div class="kd">BLE 省電、iPhone 可連；傳統藍牙適合音訊串流</div><div class="ke">階段 4</div></div>
-<div class="kcard"><div class="kt">低功耗與成品化</div><div class="kd">deep sleep、電池供電、焊洞洞板、做外殼</div><div class="ke">階段 5</div></div>
-</div>
-</div>
-
-<div class="foot"><b>資料來源</b>:本人 2026-09-14 至 09-16 的 ESP32 實作與測試紀錄；腳位資訊以樂鑫 ESP32 官方文件與 DOIT DevKit V1 常見腳位圖為準，各廠牌板子請以實物絲印為準。<br><b>免責聲明</b>:本頁為個人學習筆記，接線前請自行確認模組規格，錯誤接線可能損壞硬體。</div>
+<div class="foot"><b>Sources</b>:Pin and chip facts follow Espressif's ESP32 documentation and the common DOIT DevKit V1 pinout; module behaviour follows the usual datasheets (ST7735, PCF8574, ISD1820 and so on). Boards and modules vary by maker — check the silkscreen and datasheet of the part in your hand.<br>
+<b>Photos</b>:Board: <a href="https://commons.wikimedia.org/wiki/File:ESP32_Dev_Board.jpg" target="_blank" rel="noopener">ESP32 Dev Board</a> © Edwiyanto (<a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a>); breadboard: <a href="https://commons.wikimedia.org/wiki/File:400_points_breadboard.jpg" target="_blank" rel="noopener">400 points breadboard</a> © oomlout (<a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a>); breadboard internals: <a href="https://commons.wikimedia.org/wiki/File:Metal_contacts_within_a_breadboard.jpg" target="_blank" rel="noopener">Metal contacts within a breadboard</a> © Zeroping (<a href="https://creativecommons.org/licenses/by/4.0" target="_blank" rel="noopener">CC BY 4.0</a>); switches: <a href="https://commons.wikimedia.org/wiki/File:Tactile_Switches_(3101960804).jpg" target="_blank" rel="noopener">Tactile Switches</a> © walknboston (<a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a>); LCD: <a href="https://commons.wikimedia.org/wiki/File:LCD_display_16x2_alphanumeric.jpg" target="_blank" rel="noopener">LCD display 16x2 alphanumeric</a> (public domain, Mike1024). All from Wikimedia Commons.<br>
+<b>Disclaimer</b>:Personal study notes. Verify your module's specs before wiring; wrong wiring can damage hardware.</div>
 
 </div></body></html>
