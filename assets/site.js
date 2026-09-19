@@ -11,6 +11,7 @@
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'esp32-iot-intro',            d:'2026-09-16', cat:'物聯網',         zh:'ESP32．物聯網入門：從一塊板子到第一個模組', en:'ESP32．Getting Into IoT: From One Board to Your First Module'},
+  {slug:'vietnam-phu-quoc-hcmc-10d9n', d:'2026-09-20', cat:'旅遊',        zh:'富國島 × 胡志明 10天9夜 海島跨年之旅', en:'Phu Quoc × Ho Chi Minh City — 10 Days, 9 Nights over New Year', draft:1},
   {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry'},
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
   {slug:'cloudflare-2026q2-earnings', d:'2026-08-07', cat:'財報分析',       sub:'Cloudflare',zh:'Cloudflare．2026 Q2 財報拆解', en:'Cloudflare．Q2 2026 Earnings, Unpacked'},
