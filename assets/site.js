@@ -11,7 +11,7 @@
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'esp32-iot-intro',            d:'2026-09-16', cat:'物聯網',         zh:'ESP32．物聯網入門：從一塊板子到第一個模組', en:'ESP32．Getting Into IoT: From One Board to Your First Module'},
-  {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry', draft:1},
+  {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry'},
   {slug:'busan-fukuoka-9d8n',        d:'2025-09-20', cat:'旅遊',           zh:'釜山 × 福岡 9天8夜 郵輪串聯之旅', en:'Busan × Fukuoka — 9 Days, 8 Nights'},
   {slug:'cloudflare-2026q2-earnings', d:'2026-08-07', cat:'財報分析',       sub:'Cloudflare',zh:'Cloudflare．2026 Q2 財報拆解', en:'Cloudflare．Q2 2026 Earnings, Unpacked'},
   {slug:'palantir-2026q2-earnings',   d:'2026-08-05', cat:'財報分析',       sub:'Palantir',  zh:'Palantir．2026 Q2 財報拆解', en:'Palantir．Q2 2026 Earnings, Unpacked'},
@@ -30,6 +30,7 @@ var POSTS=[
   {slug:'cuda-learn-guide',           d:'2026-08-03', cat:'AI 技術分享',     zh:'CUDA．從零開始的 GPU 程式學習路線', en:'CUDA．A GPU Programming Path from Zero', draft:1},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep698-stocks',        d:'2026-09-19', cat:'股癌podcast分析', zh:'股癌 EP698 · 個股觀點整理',          en:'Gooaye EP698 · Stock Notes'},
   {slug:'gooaye-ep697-stocks',        d:'2026-09-16', cat:'股癌podcast分析', zh:'股癌 EP697 · 個股觀點整理',          en:'Gooaye EP697 · Stock Notes'},
   {slug:'gooaye-ep696-stocks',        d:'2026-09-12', cat:'股癌podcast分析', zh:'股癌 EP696 · 個股觀點整理',          en:'Gooaye EP696 · Stock Notes'},
   {slug:'gooaye-ep695-stocks',        d:'2026-09-09', cat:'股癌podcast分析', zh:'股癌 EP695 · 個股觀點整理',          en:'Gooaye EP695 · Stock Notes'},

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooaye EP698．CCL “Downgrade” Scare, Tokyo Game Show Diary and a No-Continuity Tape</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep698-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to index</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Gooaye EP698 · Stock Notes <span style="font-size:16px;color:var(--ink3)">｜🎮</span></h1>
+<div class="sub">This episode is mostly a <b>Tokyo Game Show travel diary</b> (game publishing, writing posts, Q&amp;A chatter) with one market segment: the host treats the rumor that CPO cuts CCL specs from M8/M9 to M4 as a <b>short-term shock</b>. The rumor and the selloff check out; the three CCL names still post +97% to +132% YoY monthly revenue, but trade near 70x trailing PE and sit 13%–28% below 52-week highs.<br>NotebookLM transcript analysis + WebSearch/FinMind/Futu checks</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: Gooaye EP698 transcript analysis</span>
+<span class="badge">Compiled: 2026-09-19</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">📉 <span class="mid">The CCL “downgrade” rumor is real, and so was the 9/17 selloff</span>: ITEQ limit-down, Elite Material −7.67%, TUC −6.71%. Supply chain says the rumor is overread.</p>
+<p class="big">🟢 <span class="win">Fundamentals have not cracked</span>: August revenue YoY is +129.4% (EMC), +96.9% (ITEQ), +121.5% (TUC). EMC bounced +4.2% the next day — the “no continuity” tape in action.</p>
+<p class="big">⚠️ <span class="lose">Valuation is the unaddressed part</span>: all three trade near 70x trailing PE (no forward consensus available), and EMC/TUC sit below their 60MA.</p>
+<p class="big">🎯 <span class="mid">Host's call = view, not fact</span>: “CPO won't downgrade everything; specs keep rising (PCIe Gen6 needs M6→M7)” is plausible, but monthly revenue lags — it cannot disprove a future spec change.</p>
+<p class="note">★ Lesson: when a spec-downgrade rumor hits, check whether revenue is loosening first; until it is, treat it as sentiment — but the rumor never gets automatically cleared.</p>
+</div>
+
+<h2>I. What this episode covers</h2>
+<div class="card"><p>Roughly one third is market commentary (CCL rumor, memory stacking, Rubin power, CPO, TSMC/AMD price hikes, a choppy tape). The rest is Tokyo Game Show travel, indie-publisher positioning, and Q&amp;A chatter (euthanasia, long-distance relationships, GTA). There is no stock list, so this note is a fact-check of the market segment.</p></div>
+
+<h2>II. The CCL downgrade scare: rumor vs. hard data</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="CCL downgrade rumor: CPO moves high-speed signals next to the chip so M4 suffices; host says PCIe Gen6, C2C and CXL still need high-grade material, so the rumor is a short-term shock">
+<defs><marker id="ah698" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="50" width="220" height="100" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="34" y="78" style="fill:var(--lose);font:700 12px sans-serif">Rumor: CPO arrives</text>
+<text x="34" y="102" style="fill:var(--ink2);font:400 11px sans-serif">Signals go optical at chip</text>
+<text x="34" y="120" style="fill:var(--ink2);font:400 11px sans-serif">Board low-speed only → M4</text>
+<line x1="242" y1="100" x2="268" y2="100" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah698)"/>
+<rect x="270" y="50" width="220" height="100" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="284" y="78" style="fill:var(--turn);font:700 12px sans-serif">Host's rebuttal</text>
+<text x="284" y="102" style="fill:var(--ink2);font:400 11px sans-serif">C2C, PCIe Gen6, CXL</text>
+<text x="284" y="120" style="fill:var(--ink2);font:400 11px sans-serif">still need M6→M7</text>
+<line x1="492" y1="100" x2="518" y2="100" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah698)"/>
+<rect x="520" y="50" width="220" height="100" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="534" y="78" style="fill:var(--win);font:700 12px sans-serif">Hard data</text>
+<text x="534" y="102" style="fill:var(--ink2);font:400 11px sans-serif">9/17: −7% to limit-down</text>
+<text x="534" y="120" style="fill:var(--ink2);font:400 11px sans-serif">Aug revenue YoY +97–132%</text>
+</svg></div>
+<p>Rumor: CPO moves high-speed signals next to the chip, so the board only needs M4. Host: not everywhere — C2C, CPU-to-GPU PCIe Gen6 and CXL storage still need high-grade material.</p>
+<p>The host compares it to the earlier SemiAnalysis bearish call on CPO: related stocks got hammered, then mostly ripped back to new highs. Memory works the same way in his view — offloading capacity to external DRAM/storage may cut stack layers, but capacity is still needed, so shortage just moves from one item to another.</p>
+</div>
+
+<h2>III. Market tone and price hikes</h2>
+<div class="card"><p>The index is near highs while many turn bearish; momentum traders chase strength and get washed out the next day. He says a choppy, no-continuity tape is normal and depends on your holding period. On pricing: a ~10% TSMC hike next year is plausible (memory has risen most; TSMC is “the last cut”), and GPU street prices are already rising. He recapped holdings only — Take-Two profitable, a Polish game stock a loser — with no new recommendations.</p></div>
+
+<h2>IV. Same-sector scan: AI high-speed CCL / PCB materials</h2>
+<div class="card">
+<p><b>Sector:</b> AI high-speed PCB/CCL materials (M8/M9 ultra-low-loss laminates) — the group whose demand logic the CPO rumor challenged. Also hit: 2368 Gce Electronics (−31.8% from high) and 3037 Unimicron (−16.9%); forward PE unavailable for all.</p>
+<div style='overflow-x:auto'><table><tr><th>Ticker</th><th>Role</th><th>Relative strength</th><th>Aug revenue YoY</th><th>trailing PER</th></tr><tr><td>2383 Elite Material</td><td>Top-tier CCL leader</td><td>Lagging (-23% from high, below 60MA)</td><td>+129.4%</td><td>76.5x</td></tr><tr><td>6213 ITEQ</td><td>No.2 CCL, seen as least exposed</td><td>Relatively strong (-13.4%, above 60MA)</td><td>+96.9%</td><td>78.3x</td></tr><tr><td>6274 TUC</td><td>One of the CCL big three</td><td>Lagging (-27.9%)</td><td>+121.5%</td><td>69.6x</td></tr></table></div>
+<p class="note">Valuation: only trailing PER exists for TW names; Futu has no forward figure, so none is forced.</p>
+</div>
+
+<h2>V. Fact-check table</h2>
+<div class="card">
+<div style='overflow-x:auto'><table><tr><th>Claim</th><th>Result</th><th>Note</th></tr><tr><td>CCL-downgrade rumor triggered the 9/17 selloff</td><td>✅</td><td>ITEQ limit-down, EMC -7.67%, TUC -6.71% (CTEE, cnyes)</td></tr><tr><td>Rumor: M8/M9 cut to M4</td><td>✅</td><td>Confirmed as a rumor; supply chain calls it overread — CPO is mainly in scale-out switches today</td></tr><tr><td>Timing “last week”</td><td>⚠️</td><td>Event was 9/17, same week as recording; unclear whether host meant this one</td></tr><tr><td>TSMC ~10% price hike next year</td><td>⚠️</td><td>Rumor, not officially confirmed (cnyes)</td></tr><tr><td>AMD Q4 price hike</td><td>⚠️</td><td>Reported ~10% quote increase; Ryzen unconfirmed (TechNews)</td></tr><tr><td>Index near all-time high</td><td>✅</td><td>TAIEX total-return index -0.2% from 52-wk high (dividend-inclusive)</td></tr><tr><td>Many turned bearish near highs</td><td>❓</td><td>No verifiable data</td></tr><tr><td>Memory stack cut (4H/8H); Rubin power lower than max</td><td>❓</td><td>Host relay only; no primary source</td></tr></table></div>
+<p class="note">✅ Confirmed · ⚠️ Discrepancy/rumor · ❓ Unverifiable</p>
+</div>
+
+<h2>VI. Objective take</h2>
+<div class="card">
+<h3>Holds up</h3><p><span class="win">The event and the price damage are real, and revenue is not loosening.</span> The “short-term panic, mid-term rebound” analogy matches earlier CPO episodes.</p>
+<h3>Discount</h3><p><span class="lose">The host is heavily exposed to the AI supply chain</span>, so downplaying this risk favors his own book. Monthly revenue is a lagging indicator; if the rumor proves true it shows up a quarter or two later. Memory/Rubin claims are relayed with no primary source, and valuation (~70x) went undiscussed.</p>
+<h3>Risk</h3><p>If CPO penetrates beyond scale-out into scale-up, board specs really erode — a long-term risk invisible in current data. Also: rumor whipsaw, high PE plus sub-60MA charts (EMC, TUC), and TSMC/AMD hikes still being rumors.</p>
+<p class="note">Credibility: medium-high as a <b>view</b>, not as a <b>fact</b>. Not investment advice.</p>
+</div>
+
+<div class="foot">
+<b>Sources</b>: EP698 transcript (NotebookLM), CTEE, cnyes, Yahoo/DJ Online, TechNews, SinoTrade; prices via Futu/FinMind on 2026-09-18.<br><b>Disclaimer</b>: personal research notes, not investment advice.
+</div>
+</div></body></html>
