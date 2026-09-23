@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>股癌 EP699．CPU 第二波、DSP 漲價與新高不該轉空</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep699-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>股癌 EP699 · 個股觀點整理 <span style="font-size:16px;color:var(--ink3)">｜🪻</span></h1>
+<div class="sub">這集投資乾貨集中在前 1/3:台股、那斯達克雙創新高,主持人<b>反對在新高附近轉空</b>;Meta AI Agent app「Muse」登頂 App Store,帶出 <b>Agentic AI 的 CPU 第二波</b>;另有 <b>DSP 晶片傳漲價 15–20%</b>。主持人沒有點名任何台股代號,族群表為依題材反推。<br>NotebookLM 逐字稿分析 ＋ WebSearch/FinMind/Futu 查證</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:股癌 EP699 逐字稿分析</span>
+<span class="badge">整理日:2026-09-23</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">📈 <span class="win">指數新高不是轉空理由</span>:TAIEX 9/23 收 48,157 創新高、QQQ 9/22 突破 8 月高點;過去弱勢的功率元件、光相關開始補漲,主持人看成輪動而非摸頭。</p>
+<p class="big">🖥️ <span class="mid">CPU 在 Agentic AI 是第二波催化</span>:Meta Muse 9/18 登頂美區免費榜屬實;CPU 占工作負載 ~15%→50%(Bernstein 原文 14%→50%)、CPU:GPU 往 1:1 收斂(AMD 官方說法)皆查證屬實。但這是上半年炒過的舊敘事,二波力道通常較弱。</p>
+<p class="big">🔌 <span class="mid">DSP 傳漲價 15–20%</span>:800G 標配、1.6T 必備支撐需求;漲幅數字查無新聞證實。CPO/LPO 取代 DSP 是數年後的事,主持人不急著假設舊技術被淘汰。</p>
+<p class="big">🧐 <span class="win">主持人自己打臉「40:1 CPU:GPU」</span>:查無機構背書,合理共識 1:2~1:4、1:1 已是最樂觀。</p>
+<p class="big">⚠️ <span class="lose">估值是主要風險</span>:MRVL forward 77x、MXL 96x;台股光通訊族群 trailing PE 多在 45x–243x,近一月漲跌從 -12% 到 +44% 高度分化。</p>
+<p class="note">★ 本集教訓:主持人沒點名個股時,題材反推的族群表可信度低一級,要逐檔看動能與估值,不能當成「全族群受惠」。</p>
+</div>
+
+<h2>一、這集在講什麼</h2>
+<div class="card"><p>約 45 分鐘:開場業配與生活/運動閒聊約 1/4 → 大盤觀點、CPU 題材、DSP 漲價約 1/3(唯一投資段)→ 聽眾信箱 Q&amp;A 約 4 成(財務自由、心態、遊戲產業,幾乎與投資無關)。另點評宏碁董事長陳俊聖「記憶體不缺貨」的逆風發言。</p></div>
+
+<h2>二、Agentic AI 把需求從 GPU 導回 CPU</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent 把任務拆成規劃、工具呼叫與多代理協調,這些調度工作落在 CPU,使 CPU 工作負載占比從約 15% 升到 50%、CPU:GPU 比例往 1:1 收斂">
+<defs><marker id="ah699" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="80" width="140" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="90" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">使用者丟任務</text>
+<text x="90" y="122" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">例:Meta Muse</text>
+<line x1="162" y1="108" x2="196" y2="108" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="198" y="80" width="170" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="283" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Agent 拆子任務</text>
+<text x="283" y="122" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">規劃/工具呼叫/多代理</text>
+<line x1="370" y1="98" x2="406" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<line x1="370" y1="118" x2="406" y2="158" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="408" y="30" width="160" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="488" y="54" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">CPU:調度</text>
+<text x="488" y="72" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">占比 ~15% → 50%</text>
+<rect x="408" y="132" width="160" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="488" y="156" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPU:數學運算</text>
+<text x="488" y="174" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">仍是主力</text>
+<line x1="570" y1="58" x2="604" y2="100" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<line x1="570" y1="160" x2="604" y2="118" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="606" y="80" width="134" height="56" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="673" y="104" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">CPU:GPU</text>
+<text x="673" y="122" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1:8 → 1:4 → 1:1</text>
+<text x="380" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">第一波:2026 上半年 ｜ 第二波:Meta Muse 登頂(2026/9/18)</text>
+</svg></div>
+<p>主持人引用的數字多數站得住:CPU 占工作負載從 ~15% 升到 50%(Bernstein 2026/6 研報原文 14%→50%)、CPU:GPU 往 1:1 收斂(AMD 官方部落格,並上修 server CPU CAGR 至 35%)。核心數 3,000 萬→1.2 億顆查無原文,但方向與 server CPU TAM 爆發一致。</p>
+<p>他也主動打臉網路上「40 顆 CPU 配 1 顆 GPU」的說法:查不到機構背書,較合理的共識是 1:2~1:4。部分大型 CSP 因長期用 Intel、庫存充裕,感受不到 CPU 缺貨。</p>
+</div>
+
+<h2>三、DSP 漲價與 CPO/LPO 辯論</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="光模組速度越高越需要 DSP,800G 標配、1.6T 必備,所以 DSP 現在缺貨漲價;CPO/LPO 取代 DSP 是數年後的事">
+<defs><marker id="ah699b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="28" style="fill:var(--ink2);font:600 12px sans-serif">訊號鏈</text>
+<rect x="20" y="40" width="150" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="95" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">類比訊號(光纖)</text>
+<line x1="172" y1="60" x2="206" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="208" y="40" width="130" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="273" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">ADC 取樣</text>
+<line x1="340" y1="60" x2="374" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="376" y="40" width="190" height="40" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="471" y="65" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">DSP:去雜訊/補償</text>
+<line x1="568" y1="60" x2="602" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="604" y="40" width="136" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="672" y="65" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">DAC 輸出</text>
+<text x="20" y="118" style="fill:var(--ink2);font:600 12px sans-serif">規格演進 → DSP 需求</text>
+<rect x="20" y="130" width="160" height="36" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="153" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">10–100G 多半不需要</text>
+<rect x="200" y="130" width="160" height="36" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="280" y="153" text-anchor="middle" style="fill:var(--mid);font:600 11px sans-serif">400G 常見</text>
+<rect x="380" y="130" width="160" height="36" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="460" y="153" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">800G 標配</text>
+<rect x="560" y="130" width="180" height="36" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="650" y="153" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">1.6T 必備</text>
+<rect x="20" y="190" width="350" height="44" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="195" y="217" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">正方:缺貨漲價 15–20% 是現在進行式</text>
+<rect x="390" y="190" width="350" height="44" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="565" y="217" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">反方:CPO/LPO 數年後可能取代 DSP</text>
+</svg></div>
+<p>傳一般客戶漲 15–20%、大客戶較少;具體百分比查無新聞證實,但 800G ASP 約 $35–50、1.6T 約 $80–100+ 的行情與供給緊俏屬實。美系 DSP 他點名 Marvell(高階 PAM4 oDSP 市占約 60–70%,與博通合計九成以上)與 MaxLinear(實際市占僅約 1–2%,不同量級)。Qualcomm Hexagon 被拿來說明 DSP 演進到 NPU 的路線,屬科普。</p>
+</div>
+
+<h2>四、主持人點到的標的</h2>
+<div class="card"><div id="picks"></div></div>
+
+<h2>五、同族群概念股掃描:DSP／AI 光通訊模組</h2>
+<div class="card">
+<p><b>族群定義:</b>AI 資料中心 800G/1.6T 光模組供應鏈——美系 DSP 晶片設計商 ＋ 台灣光收發模組、矽光子/CPO、上游磊晶/雷射。<span class="lose">主持人未點名任何台股</span>,以下台股為依題材反推。</p>
+<div id="peers"></div>
+<p class="note">估值:美股為 Futu forward PE;台股 Futu 無 forward,改列 FinMind trailing PER(2026-09-22),會被落後獲利放大,僅供相對比較。近一月漲跌查詢日 2026-09-23。</p>
+</div>
+
+<h2>六、事實查核表</h2>
+<div class="card">
+<div id="facts"></div>
+<p class="note">✅ 屬實 · ⚠️ 有出入/傳聞 · ❓ 查不到</p>
+</div>
+
+<h2>七、客觀評論</h2>
+<div class="card">
+<h3>站得住腳</h3><p><span class="win">這集的數字查核成績很好。</span>Muse 登頂、Bernstein 14%→50%、AMD 1:1、指數新高都屬實;主持人還主動否定 40:1 的誇大說法,方法論正確。</p>
+<h3>要打折扣</h3><p><span class="lose">CPU 是第二波敘事</span>,主持人自己也說二波力道通常較弱;DSP 漲價幅度沒有公開新聞佐證。宏碁陳俊聖「記憶體不缺」被歸為落隊者說法,但這是與主流相反的一手產業觀察,是否先見之明要看後續財報,不宜一笑置之。</p>
+<h3>風險</h3><p>族群估值已高:MRVL forward 77x、MXL 仍虧損 forward 96x、INTC forward 108x;台股光通訊 trailing 45x–243x,全新一個月 +44% 有過熱跡象,環宇 -12%、波若威 -6% 已先轉弱。CPO/LPO 是 DSP 的長期結構風險。</p>
+<p class="note">可信度:數字面高,題材延續性中等。不構成投資建議。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:EP699 逐字稿(NotebookLM)、Bernstein 研報轉述(Seeking Alpha、Investing.com)、AMD 官方部落格、Tom's Hardware、Bloomberg/9to5Mac(Meta Muse)、ETtoday/udn/經濟日報(宏碁)、abmedia;股價與估值取自 Futu/FinMind(2026-09-22~23)。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。
+</div>
+</div>
+<script>
+function tbl(h,rows){return "<div style='overflow-x:auto'><table><tr>"+h.map(x=>"<th>"+x+"</th>").join("")+"</tr>"+rows.map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("")+"</table></div>";}
+document.getElementById('picks').innerHTML=tbl(['標的','語氣','主持人說法','查證'],[
+['META','<span class="pill p-bull">看多</span>','Muse 登頂 App Store,帶動 CPU 概念股','✅ 9/18 登頂美區免費榜、6 天破 90 萬下載;$736.6,forward 24.1x'],
+['AMD','<span class="pill p-neu">中性</span>','CPU:GPU 從 1:8、1:4 收斂到 1:1','✅ 官方部落格主張;server CPU CAGR 上修 35%'],
+['INTC','<span class="pill p-neu">側寫</span>','部分 CSP 庫存充裕,感受不到缺貨','❓ 個別 CSP 未查證;forward 108.4x,仍虧損'],
+['MRVL','<span class="pill p-bull">看多</span>','美系 DSP 主要大廠','✅ 高階 oDSP 市占 60–70%;$262.4,forward 77.1x'],
+['MXL','<span class="pill p-bull">看多</span>','同為美系 DSP 大廠','⚠️ 市占僅 1–2%,與 MRVL 不同量級;forward 96.2x'],
+['QCOM','<span class="pill p-neu">科普</span>','Hexagon = DSP 演進到 NPU','技術描述準確;forward 34.2x'],
+['2353 宏碁','<span class="pill p-bear">存疑</span>','董事長稱記憶體不缺,是 AI 落隊者說法','✅ 發言屬實;近一年 +7.5%、距高 -27.3%(台積電 +111%)']]);
+document.getElementById('peers').innerHTML=tbl(['代號/名稱','族群定位','相對強弱(近一月)','估值','一句話看法'],[
+['MRVL Marvell','DSP 晶片龍頭','龍頭','fwd 77.1x','純度最高的 DSP 受惠股,估值已計入高成長'],
+['MXL MaxLinear','DSP 小型供應商','跟漲','fwd 96.2x(虧損)','敘事股,市占小、波動大'],
+['4979 華星光','光收發模組,傳綁 Marvell','跟漲 +10.1%','ttm 99.0x','成長預期已大幅計入'],
+['4977 眾達-KY','光收發模組','相對強 +15.2%','ttm 51.2x','動能最強的模組廠,估值相對合理'],
+['6442 光聖','光收發模組,OCS 訂單','跟漲 +6.3%','ttm 44.7x','族群內估值偏低'],
+['3363 上詮','矽光子/CPO,傳與台積電合作 FAU','落後 +0.5%','—(EPS 異常)','前瞻敘事,營收未必跟上'],
+['3163 波若威','矽光子/CPO 生態','落後 -6.1%','ttm 68.1x','近月轉弱,留意題材降溫'],
+['3450 聯鈞','矽光子/CPO 供應鏈','落後 -0.8%','ttm 106.7x','估值高、跟漲弱'],
+['3081 聯亞','上游磊晶/CW 雷射','跟漲 +5.7%','ttm 243.1x','組內最貴,兌現風險高'],
+['2455 全新','上游磊晶','強勢 +43.6%','ttm 134.1x','短期漲幅劇烈,慎防過熱'],
+['4991 環宇-KY','上游磊晶','落後 -12.4%','ttm 147.4x','漲多回檔中']]);
+document.getElementById('facts').innerHTML=tbl(['主張','結果','說明'],[
+['CPU 占工作負載 15%→50%','✅','Bernstein(2026/6/17)原文 ~14%→50%'],
+['CPU 核心 3,000 萬→1.2 億顆','❓','查無原文,方向與 server CPU TAM $37B→$223B 一致'],
+['CPU:GPU 往 1:1 收斂','✅','AMD 官方部落格;Bernstein 8:1(2025)→1:1(2029)'],
+['40:1 CPU:GPU 不可信','✅','查無機構背書,主持人判斷正確'],
+['DSP 漲價 15–20%','❓','查無具體新聞;供給緊俏與 ASP 行情屬實'],
+['TAIEX、那斯達克創新高','✅','TAIEX 9/23 收 48,157.29;QQQ 9/22 $747.46 突破 8 月高'],
+['Meta Muse 登頂 App Store','✅','9/18 美區免費榜第一,超越 ChatGPT/Gemini/Claude'],
+['宏碁董事長稱記憶體不缺','✅','稱 DDR4 供過於求,僅 LPDDR5/DDR5 9600 仍缺,成本 2027 年中見頂']]);
+</script>
+</body></html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooaye EP699．CPU’s Second Wave, DSP Price Hikes and Why New Highs Aren’t a Short Signal</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep699-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to index</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Gooaye EP699 · Stock Notes <span style="font-size:16px;color:var(--ink3)">｜🪻</span></h1>
+<div class="sub">The market content sits in the first third: TAIEX and the Nasdaq both hit new highs and the host <b>argues against turning bearish at highs</b>; Meta’s AI agent app “Muse” topping the App Store revives the <b>agentic-AI CPU trade (wave two)</b>; and <b>DSP chips are rumored up 15–20%</b>. No Taiwan tickers were named — the peer table is inferred from the theme.<br>NotebookLM transcript analysis + WebSearch/FinMind/Futu checks</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: Gooaye EP699 transcript analysis</span>
+<span class="badge">Compiled: 2026-09-23</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">📈 <span class="win">A record index is not a reason to short</span>: TAIEX closed at a record 48,157 on 9/23 and QQQ broke its August high on 9/22; laggards (power semis, optics) are catching up — the host reads it as rotation, not a top.</p>
+<p class="big">🖥️ <span class="mid">CPUs in agentic AI are a second-wave catalyst</span>: Meta Muse hitting #1 on 9/18 is confirmed; CPU share of workload ~15%→50% (Bernstein: 14%→50%) and CPU:GPU converging to 1:1 (AMD) both check out. But the story already ran in H1, and second waves are usually weaker.</p>
+<p class="big">🔌 <span class="mid">DSP rumored up 15–20%</span>: standard at 800G and required at 1.6T; the exact hike isn’t confirmed by any report. CPO/LPO replacing DSP is years away, per the host.</p>
+<p class="big">🧐 <span class="win">The host debunks “40:1 CPU:GPU” himself</span>: no institutional source; a sane consensus is 1:2–1:4, with 1:1 the bull case.</p>
+<p class="big">⚠️ <span class="lose">Valuation is the main risk</span>: MRVL 77x forward, MXL 96x; Taiwan optics names trade at 45x–243x trailing, with one-month moves ranging from -12% to +44%.</p>
+<p class="note">★ Lesson: when no tickers are named, a theme-derived peer list is one notch less reliable — check each name’s momentum and valuation instead of assuming the whole group benefits.</p>
+</div>
+
+<h2>1. What the episode covers</h2>
+<div class="card"><p>About 45 minutes: sponsor read and life/sports chat (~1/4) → market view, CPU theme and DSP pricing (~1/3, the only market segment) → listener Q&amp;A (~40%: financial freedom, mindset, the game industry — mostly not investing). He also comments on Acer chairman Jason Chen’s contrarian “memory isn’t short” remarks.</p></div>
+
+<h2>2. Agentic AI pulls demand back from GPU to CPU</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agents split a task into planning, tool calls and multi-agent coordination; that orchestration runs on CPUs, lifting CPU workload share from about 15% to 50% and pushing CPU:GPU toward 1:1">
+<defs><marker id="ah699" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="80" width="140" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="90" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">User gives a task</text>
+<text x="90" y="122" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">e.g. Meta Muse</text>
+<line x1="162" y1="108" x2="196" y2="108" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="198" y="80" width="170" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="283" y="104" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Agent splits subtasks</text>
+<text x="283" y="122" text-anchor="middle" style="fill:var(--ink3);font:400 10px sans-serif">plan / tools / multi-agent</text>
+<line x1="370" y1="98" x2="406" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<line x1="370" y1="118" x2="406" y2="158" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="408" y="30" width="160" height="56" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="488" y="54" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">CPU: orchestration</text>
+<text x="488" y="72" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">share ~15% → 50%</text>
+<rect x="408" y="132" width="160" height="56" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="488" y="156" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">GPU: the math</text>
+<text x="488" y="174" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">still the workhorse</text>
+<line x1="570" y1="58" x2="604" y2="100" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<line x1="570" y1="160" x2="604" y2="118" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699)"/>
+<rect x="606" y="80" width="134" height="56" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="673" y="104" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">CPU:GPU</text>
+<text x="673" y="122" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">1:8 → 1:4 → 1:1</text>
+<text x="380" y="216" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">Wave 1: H1 2026 | Wave 2: Meta Muse hits #1 (2026-09-18)</text>
+</svg></div>
+<p>Most of his numbers hold up: CPU share of workload ~15%→50% (Bernstein, June 2026: 14%→50%) and CPU:GPU converging to 1:1 (AMD’s own blog, which also raised its server-CPU CAGR to 35%). The 30M→120M core count couldn’t be sourced, but the direction matches the server-CPU TAM surge.</p>
+<p>He also shoots down the viral “40 CPUs per GPU” claim: no institutional backing; 1:2–1:4 is the sensible consensus. Some hyperscalers with long Intel relationships and deep inventory don’t feel a CPU shortage at all.</p>
+</div>
+
+<h2>3. DSP price hikes and the CPO/LPO debate</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Faster optical modules need DSPs more — standard at 800G, required at 1.6T — so DSPs are short and rising in price now; CPO/LPO replacing them is years away">
+<defs><marker id="ah699b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<text x="20" y="28" style="fill:var(--ink2);font:600 12px sans-serif">Signal chain</text>
+<rect x="20" y="40" width="150" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="95" y="65" text-anchor="middle" style="fill:var(--ink);font:600 11px sans-serif">Analog (fiber)</text>
+<line x1="172" y1="60" x2="206" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="208" y="40" width="130" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="273" y="65" text-anchor="middle" style="fill:var(--ink);font:600 11px sans-serif">ADC sampling</text>
+<line x1="340" y1="60" x2="374" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="376" y="40" width="190" height="40" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="471" y="65" text-anchor="middle" style="fill:var(--turn);font:700 11px sans-serif">DSP: denoise / equalize</text>
+<line x1="568" y1="60" x2="602" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah699b)"/>
+<rect x="604" y="40" width="136" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="672" y="65" text-anchor="middle" style="fill:var(--ink);font:600 11px sans-serif">DAC output</text>
+<text x="20" y="118" style="fill:var(--ink2);font:600 12px sans-serif">Speed grade → DSP demand</text>
+<rect x="20" y="130" width="160" height="36" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="100" y="153" text-anchor="middle" style="fill:var(--ink3);font:400 11px sans-serif">10–100G: mostly none</text>
+<rect x="200" y="130" width="160" height="36" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="280" y="153" text-anchor="middle" style="fill:var(--mid);font:600 11px sans-serif">400G: common</text>
+<rect x="380" y="130" width="160" height="36" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="460" y="153" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">800G: standard</text>
+<rect x="560" y="130" width="180" height="36" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="650" y="153" text-anchor="middle" style="fill:var(--win);font:700 11px sans-serif">1.6T: required</text>
+<rect x="20" y="190" width="350" height="44" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="195" y="217" text-anchor="middle" style="fill:var(--win);font:600 11px sans-serif">Bull: shortage and 15–20% hikes are happening now</text>
+<rect x="390" y="190" width="350" height="44" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="565" y="217" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">Bear: CPO/LPO may replace DSP in a few years</text>
+</svg></div>
+<p>The rumor: 15–20% for regular customers, less for the biggest. No report confirms the exact range, but tight supply and ASPs of ~$35–50 (800G) and ~$80–100+ (1.6T) are real. He names Marvell (~60–70% of high-end PAM4 oDSP; 90%+ together with Broadcom) and MaxLinear (only ~1–2% share — a different league). Qualcomm’s Hexagon is used to explain how DSPs evolved into NPUs — background, not a stock call.</p>
+</div>
+
+<h2>4. Names the host touched on</h2>
+<div class="card"><div id="picks"></div></div>
+
+<h2>5. Peer scan: DSP / AI optical modules</h2>
+<div class="card">
+<p><b>Group:</b> the 800G/1.6T optical-module supply chain for AI data centers — US DSP designers plus Taiwan transceiver, silicon-photonics/CPO and upstream epi/laser makers. <span class="lose">The host named no Taiwan stocks</span>; those below are inferred from the theme.</p>
+<div id="peers"></div>
+<p class="note">Valuation: US names use Futu forward PE; Futu has no forward for Taiwan, so FinMind trailing PER (2026-09-22) is shown — inflated by lagging earnings, use only for relative comparison. One-month moves as of 2026-09-23.</p>
+</div>
+
+<h2>6. Fact check</h2>
+<div class="card">
+<div id="facts"></div>
+<p class="note">✅ true · ⚠️ partly off / rumor · ❓ unverifiable</p>
+</div>
+
+<h2>7. Take</h2>
+<div class="card">
+<h3>What holds up</h3><p><span class="win">The numbers score well this time.</span> Muse at #1, Bernstein’s 14%→50%, AMD’s 1:1 and the record indexes all check out, and the host proactively rejects the exaggerated 40:1 claim.</p>
+<h3>What to discount</h3><p><span class="lose">CPU is a second-wave narrative</span>, and the host himself says second waves tend to be weaker; the DSP hike size has no public confirmation. Dismissing Acer’s chairman as a laggard ignores that his is a first-hand contrarian read — watch the next earnings before laughing it off.</p>
+<h3>Risks</h3><p>Rich valuations: MRVL 77x forward, loss-making MXL 96x, INTC 108x; Taiwan optics at 45x–243x trailing. Visual Photonics (+44% in a month) looks overheated, while GCS (-12%) and Browave (-6%) are already rolling over. CPO/LPO is the long-run structural risk to DSP.</p>
+<p class="note">Credibility: high on the numbers, moderate on theme durability. Not investment advice.</p>
+</div>
+
+<div class="foot">
+<b>Sources</b>: EP699 transcript (NotebookLM), Bernstein note via Seeking Alpha/Investing.com, AMD blog, Tom’s Hardware, Bloomberg/9to5Mac (Meta Muse), ETtoday/udn/Economic Daily News (Acer), abmedia; prices and valuations from Futu/FinMind (2026-09-22 to 23).<br><b>Disclaimer</b>: Personal research notes, not investment advice.
+</div>
+</div>
+<script>
+function tbl(h,rows){return "<div style='overflow-x:auto'><table><tr>"+h.map(x=>"<th>"+x+"</th>").join("")+"</tr>"+rows.map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("")+"</table></div>";}
+document.getElementById('picks').innerHTML=tbl(['Name','Tone','Host’s point','Check'],[
+['META','<span class="pill p-bull">Bullish</span>','Muse hit #1 on the App Store, lifting CPU names','✅ #1 US free chart on 9/18, 900k downloads in 6 days; $736.6, 24.1x fwd'],
+['AMD','<span class="pill p-neu">Neutral</span>','CPU:GPU moving from 1:8 and 1:4 to 1:1','✅ Stated on AMD’s blog; server CPU CAGR raised to 35%'],
+['INTC','<span class="pill p-neu">Aside</span>','Some CSPs have ample stock, no shortage felt','❓ Not verified per CSP; 108.4x fwd, still loss-making'],
+['MRVL','<span class="pill p-bull">Bullish</span>','A leading US DSP maker','✅ ~60–70% high-end oDSP share; $262.4, 77.1x fwd'],
+['MXL','<span class="pill p-bull">Bullish</span>','Also a major US DSP maker','⚠️ Only ~1–2% share, not MRVL’s league; 96.2x fwd'],
+['QCOM','<span class="pill p-neu">Background</span>','Hexagon = DSP evolving into NPU','Accurate; 34.2x fwd'],
+['2353 Acer','<span class="pill p-bear">Skeptical</span>','Chairman says memory isn’t short — an AI laggard’s view','✅ Remarks confirmed; +7.5% in 1y, -27.3% off high (TSMC +111%)']]);
+document.getElementById('peers').innerHTML=tbl(['Ticker/Name','Role','Relative strength (1m)','Valuation','One-liner'],[
+['MRVL Marvell','DSP leader','Leader','fwd 77.1x','Purest DSP play; high growth priced in'],
+['MXL MaxLinear','Small DSP supplier','Follower','fwd 96.2x (loss)','Story stock, small share, volatile'],
+['4979 LuxNet','Transceivers, tied to Marvell','Follower +10.1%','ttm 99.0x','Growth largely priced in'],
+['4977 PCL Tech','Transceivers','Strong +15.2%','ttm 51.2x','Best momentum among module makers, fair-ish valuation'],
+['6442 EZconn','Transceivers, OCS orders','Follower +6.3%','ttm 44.7x','Cheapest in the group'],
+['3363 FOCI','SiPh/CPO, FAU work with TSMC','Laggard +0.5%','— (EPS anomaly)','Forward-looking story; revenue may lag'],
+['3163 Browave','SiPh/CPO ecosystem','Laggard -6.1%','ttm 68.1x','Weakening; watch for theme fatigue'],
+['3450 Elite Advanced Laser','SiPh/CPO supply chain','Laggard -0.8%','ttm 106.7x','Pricey, weak follow-through'],
+['3081 LandMark','Upstream epi / CW lasers','Follower +5.7%','ttm 243.1x','Most expensive; delivery risk'],
+['2455 Visual Photonics','Upstream epi','Hot +43.6%','ttm 134.1x','Sharp run, beware overheating'],
+['4991 GCS Holdings','Upstream epi','Laggard -12.4%','ttm 147.4x','Pulling back after a run']]);
+document.getElementById('facts').innerHTML=tbl(['Claim','Result','Notes'],[
+['CPU workload share 15%→50%','✅','Bernstein (2026-06-17): ~14%→50%'],
+['CPU cores 30M→120M','❓','No source found; direction matches server CPU TAM $37B→$223B'],
+['CPU:GPU converging to 1:1','✅','AMD blog; Bernstein 8:1 (2025)→1:1 (2029)'],
+['40:1 CPU:GPU is not credible','✅','No institutional source; host is right'],
+['DSP up 15–20%','❓','No specific report; tight supply and ASPs confirmed'],
+['TAIEX and Nasdaq at highs','✅','TAIEX closed 48,157.29 on 9/23; QQQ $747.46 on 9/22, above August high'],
+['Meta Muse tops App Store','✅','#1 US free chart on 9/18, ahead of ChatGPT/Gemini/Claude'],
+['Acer chairman: memory not short','✅','Says DDR4 is oversupplied, only LPDDR5/DDR5-9600 tight; costs peak mid-2027']]);
+</script>
+</body></html>
