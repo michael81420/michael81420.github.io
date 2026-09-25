@@ -29,6 +29,7 @@ var POSTS=[
   {slug:'react-learn-guide',          d:'2026-07-21', cat:'軟體開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
   {slug:'javascript-learn-guide',     d:'2026-07-20', cat:'軟體開發',       zh:'JavaScript．從零到會用', en:'JavaScript．From Zero'},
   {slug:'cuda-learn-guide',           d:'2026-08-03', cat:'AI 技術分享',     zh:'CUDA．從零開始的 GPU 程式學習路線', en:'CUDA．A GPU Programming Path from Zero', draft:1},
+  {slug:'typesafe-jev',               d:'2026-09-25', cat:'AI 技術分享',     zh:'Jev．只下判斷的 AI 模型', en:"Jev．The AI Model That Only Decides"},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
   {slug:'gooaye-ep699-stocks',        d:'2026-09-23', cat:'股癌podcast分析', zh:'股癌 EP699 · 個股觀點整理',          en:'Gooaye EP699 · Stock Notes'},

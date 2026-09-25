@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jev．The AI Model That Only Decides</title>
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="typesafe-jev"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Jev．The AI Model That Only Decides</h1>
+<div class="sub">Jev doesn't generate text. It returns <b>typed answers plus calibrated probabilities</b>: pick one option, give a score, or answer yes or no. TypeSafe pitches it as software's "System 1": fast, cheap, and intuitive, built for the flood of small decisions. Real reasoning stays with a regular LLM.</div>
+<div style="margin-top:10px">
+<a class="badge new" href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener">Source: TypeSafe AI launch post ↗</a>
+<span class="badge">Type: new AI model / early access</span>
+<span class="badge">Compiled: 2026-09-25</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">Jev turns an LLM from a "chatty assistant" into <span class="win">a function that makes decisions</span>. You pass it some state and a set of closed questions, and it returns answers with confidence scores in one pass.</p>
+<p>It is <b>non-autoregressive</b>. Instead of producing one token after another, it computes every answer in parallel. The output space is the schema you define, so there are <b>no format errors and nothing to parse</b>. TypeSafe claims 70–500 ms latency and 40–200× the speed of frontier LLMs. Input costs $0.042 per million tokens, and <b>output is free</b>.</p>
+<p class="note">★ Every multiplier comes from TypeSafe's own tests. The company admits its own team built the benchmarks and that "some bias could exist." Early access (waitlist) only opened on 2026-09-15, and nothing has been independently verified yet.</p>
+</div>
+
+<h2>Where the name comes from</h2>
+<div class="card">
+<p><b>System One</b> comes from Kahneman's <i>Thinking, Fast and Slow</i>. System 1 is fast, intuitive, and automatic. System 2 is slow, deliberate, and does the reasoning. TypeSafe argues that today's LLMs are all System 2, yet most decisions inside software only need System 1. "Is this email a refund request or a complaint?" "Does this answer break policy?" Neither is worth several seconds of a model that can write essays.</p>
+<p><b>Jev</b> is named after the economist Jevons and his paradox: when efficiency improves, total consumption goes up. TypeSafe's version is that each order-of-magnitude drop in the cost of intelligence opens up an order of magnitude more uses. <span class="note">(This is marketing, not a technical argument.)</span></p>
+</div>
+
+<h2>How it works</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev takes state text plus a schema of questions and, in one parallel pass, returns typed answers with probabilities without ever producing text">
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <g style="font:600 12.5px sans-serif">
+    <rect x="20" y="55" width="170" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+    <text x="105" y="77" text-anchor="middle" style="fill:var(--ink)">state</text>
+    <text x="105" y="94" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">email, logs, screen text</text>
+    <rect x="20" y="145" width="170" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+    <text x="105" y="167" text-anchor="middle" style="fill:var(--ink)">questions</text>
+    <text x="105" y="184" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">a schema you define</text>
+  </g>
+  <path d="M192 80 L230 80 Q240 80 240 90 L240 115 Q240 125 250 125 L266 125" style="fill:none;stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <path d="M192 170 L230 170 Q240 170 240 160 L240 135 Q240 125 250 125" style="fill:none;stroke:var(--ink3)"/>
+  <rect x="268" y="90" width="190" height="70" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="363" y="119" text-anchor="middle" style="fill:var(--win);font:700 14px sans-serif">Jev</text>
+  <text x="363" y="139" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">one parallel pass, no text</text>
+  <line x1="460" y1="125" x2="516" y2="52" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="460" y1="125" x2="516" y2="125" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <line x1="460" y1="125" x2="516" y2="198" style="stroke:var(--ink3)" marker-end="url(#ah)"/>
+  <g style="font:600 12px sans-serif">
+    <rect x="520" y="30" width="220" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+    <text x="532" y="49" style="fill:var(--ink)">Pick one (≤255 options)</text>
+    <text x="532" y="65" style="fill:var(--win);font:400 11px monospace">"refund" · p=0.92</text>
+    <rect x="520" y="103" width="220" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+    <text x="532" y="122" style="fill:var(--ink)">Score (on a scale)</text>
+    <text x="532" y="138" style="fill:var(--win);font:400 11px monospace">7.4 / 10</text>
+    <rect x="520" y="176" width="220" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+    <text x="532" y="195" style="fill:var(--ink)">Yes / No</text>
+    <text x="532" y="211" style="fill:var(--win);font:400 11px monospace">true · p=0.97</text>
+  </g>
+</svg>
+</div>
+<p>The whole API comes down to three kinds of closed question, and one call can ask several at once:</p>
+<table>
+<tr><th class="l">Question type</th><th class="l">Returns</th><th class="l">Pydantic mapping</th></tr>
+<tr><td class="l"><b>Pick one</b></td><td class="l">The chosen option plus a probability for every option (up to 255 options, per TypeSafe)</td><td class="l"><code>Enum</code> / <code>Literal</code></td></tr>
+<tr><td class="l"><b>Score</b></td><td class="l">A score on a scale, which can be fractional because it comes from a continuous probability</td><td class="l"><code>int</code></td></tr>
+<tr><td class="l"><b>Yes / No</b></td><td class="l">A probability from 0 to 1</td><td class="l"><code>bool</code></td></tr>
+<tr><td class="l"><b>Compound</b></td><td class="l">Several questions evaluated in parallel</td><td class="l">Nested <code>BaseModel</code></td></tr>
+</table>
+<p style="margin-top:12px"><b>The confidence score is what matters.</b> TypeSafe says the probabilities are <b>calibrated</b>: when it says 0.9, it should be right about 90% of the time. That lets you use the score as a gate. High-confidence answers pass automatically, and low-confidence ones go to a person or a bigger model. TypeSafe calls its training method RLCD (Reinforcement Learning for Calibrated Decisions). No paper has been published.</p>
+<p>Context limits are 32k tokens per question and 64k per batch, according to the Pydantic and Cloudflare docs.</p>
+</div>
+
+<h2>Minimal examples</h2>
+<div class="card">
+<p><b>Pydantic AI</b> (<code>pip install "pydantic-ai-slim[typesafe]"</code>):</p>
+<pre><code><span class="k">from</span> pydantic_ai <span class="k">import</span> Agent
+<span class="k">from</span> pydantic_ai.models.typesafe <span class="k">import</span> TypeSafeModel
+
+model = TypeSafeModel(<span class="s">'jev-latest'</span>)
+agent = Agent(model, output_type=bool, instructions=<span class="s">'Is this harmful?'</span>)
+print(agent.run_sync(<span class="s">'Some input text'</span>).output)  <span class="c"># True / False</span></code></pre>
+<p>TypeSafe recommends pairing it with <code>FallbackModel</code>, so a regular LLM takes over whenever Jev can't give a good answer.</p>
+<p><b>Cloudflare Workers AI</b>:</p>
+<pre><code><span class="k">const</span> res = <span class="k">await</span> env.AI.run(<span class="s">'typesafe/jev'</span>, {
+  state: <span class="s">'The user email…'</span>,
+  questions: { <span class="c">/* pick-one / score / yes-no definitions */</span> }
+})
+<span class="c">// res.answers: each answer plus its probability</span></code></pre>
+<p class="note">Access is waitlist-only and the model isn't GA yet. The SLA and long-term pricing are still unknown.</p>
+</div>
+
+<h2>Claims and how much to trust them</h2>
+<div class="card">
+<table style="table-layout:fixed;min-width:560px"><colgroup><col style="width:22%"><col style="width:26%"><col style="width:26%"><col style="width:26%"></colgroup>
+<tr><th class="l">Item</th><th class="l">Jev</th><th class="l">GPT-6 Astra</th><th class="l">Claude Fable 5.1</th></tr>
+<tr><td class="l">Time to first token</td><td class="l">70–500 ms <span class="pill p-neu">Self-tested</span></td><td class="l">3.1 s (low) to 368 s (max)</td><td class="l">262 s (max)</td></tr>
+<tr><td class="l">Output speed</td><td class="l">N/A (one-shot output)</td><td class="l">54 tokens/s</td><td class="l">69 tokens/s</td></tr>
+<tr><td class="l">Price per 1M tokens<br><span class="note">input / output</span></td><td class="l"><b class="win">$0.042 / free</b> <span class="pill p-bull">Published</span></td><td class="l">$10 / $50</td><td class="l">$10 / $50</td></tr>
+<tr><td class="l">Estimate: 1,000 decisions<br><span class="note">1k input tokens each</span></td><td class="l"><b class="win">≈ $0.04</b></td><td class="l">≥ $10</td><td class="l">≥ $10</td></tr>
+<tr><td class="l">Context window</td><td class="l">32k per question / 64k per batch</td><td class="l">1.05M</td><td class="l">1M</td></tr>
+<tr><td class="l">Type-error rate</td><td class="l">0% <span class="pill p-bull">Guaranteed by design</span></td><td class="l">Also guaranteed in strict mode</td><td class="l">Same</td></tr>
+<tr><td class="l">What it can do</td><td class="l">Closed questions only</td><td class="l">General purpose</td><td class="l">General purpose</td></tr>
+<tr><td class="l">TypeSafe's multiplier claims</td><td class="l">40–200× faster, up to 444.6× cheaper <span class="pill p-neu">Self-tested</span></td><td class="l">—</td><td class="l">—</td></tr>
+<tr><td class="l">"Can't hallucinate"</td><td class="l"><span class="pill p-warn">Spin</span></td><td class="l">—</td><td class="l">—</td></tr>
+</table>
+<p class="note" style="margin-top:8px">GPT-6 Astra and Fable 5.1 latency and speed come from Artificial Analysis measurements; prices are the official list prices. I picked these two models because they are the baseline TypeSafe used in its own benchmarks. The estimate counts input cost only. For the two LLMs, output and reasoning tokens would come on top, hence "≥".</p>
+<p style="margin-top:12px">Two things to keep in mind when reading this table. First, LLM latency swings widely with the effort setting: GPT-6 Astra takes about 3 s at low and 6 minutes at max, so any "N× faster" claim depends on which setting you compare against. <b>Against low effort, Jev is roughly 6–40× faster, not 200×.</b> Second, <b>the price gap is real</b>. The input price differs by more than 200×, Jev charges nothing for output, and Fable 5.1 at its highest setting spends an extra 47k reasoning tokens per task on average.</p>
+<p>TypeSafe lists these caveats itself. Its <b>own model-capabilities team built</b> the benchmark workflows, so "some bias could exist." The baseline is the average of GPT-6 Astra and Fable 5.1. The LLMs also ran behind a wrapper that asks for probabilities, which makes them slower and more expensive.</p>
+<p>"Can't hallucinate" just restates the design. If the output is locked to a list of options, the model can't invent one that isn't there, but that doesn't mean it <b>picked the right one</b>. A wrong answer at 0.95 confidence is still wrong.</p>
+</div>
+
+<h2>An engineer's take</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">✔ No more parse failures, by design</div><div class="kd">The model doesn't generate output and then check its format. The output space is the schema, so you can drop the retry and JSON-repair layer entirely.</div></div>
+<div class="kcard"><div class="kt">✔ Confidence you can gate on</div><div class="kd">If the calibration holds up, it's a better fit for automated decisions than an LLM that's confident and often wrong.</div></div>
+<div class="kcard"><div class="kt">✘ All numbers are self-tested</div><div class="kd">There's no third-party benchmark yet, so treat the multipliers as upper bounds.</div></div>
+<div class="kcard"><div class="kt">✘ Black box, plus lock-in</div><div class="kd">RLCD has no paper. The three question types are a TypeSafe-only interface, so switching vendors means rewriting your decision layer.</div></div>
+<div class="kcard"><div class="kt">✘ Known weak spots</div><div class="kd">It's poor at counting, dates, and math. It answers the question you wrote, which isn't always the one you meant. Accuracy drops as context grows, and adversarial input can trip it up.</div></div>
+</div>
+<h3 style="margin-top:18px">Alternatives and when to choose them</h3>
+<table>
+<tr><th class="l">Option</th><th class="l">How it differs / when to choose it</th></tr>
+<tr><td class="l"><b>Structured Outputs</b> (OpenAI / Anthropic / Gemini)</td><td class="l">You also get type-safe output, but generation is still autoregressive, so latency and cost are in regular-LLM territory. Choose it if you already use that vendor and don't want to add another service.</td></tr>
+<tr><td class="l"><b>Outlines / Guidance / Instructor</b></td><td class="l">Constrained decoding on top of any LLM. Choose it if you want to avoid lock-in to a new vendor.</td></tr>
+<tr><td class="l"><b>Your own BERT-style classifier</b></td><td class="l">Also fast and cheap, but you collect the data, train it, and run it yourself, and you can't define a new task with a one-line prompt. Choose it for a single high-volume task where you want full control of the data and weights.</td></tr>
+<tr><td class="l"><b>Diffusion LMs</b></td><td class="l">Also non-autoregressive, but aimed at generating text faster, and still a research project.</td></tr>
+</table>
+</div>
+
+<h2>Where it fits</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev sits up front as a router: most requests are decided in milliseconds and handed to plain code, and only those needing text, reasoning, or more confidence escalate to an expensive LLM or a human">
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <rect x="20" y="113" width="110" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="75" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">Request / event</text>
+  <line x1="132" y1="135" x2="176" y2="135" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <rect x="178" y="100" width="170" height="70" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="263" y="129" text-anchor="middle" style="fill:var(--win);font:700 13.5px sans-serif">Jev router</text>
+  <text x="263" y="149" text-anchor="middle" style="fill:var(--win);font:400 11px sans-serif">70–500ms · nearly free</text>
+  <line x1="350" y1="135" x2="436" y2="52" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <line x1="350" y1="135" x2="436" y2="135" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <line x1="350" y1="135" x2="436" y2="218" style="stroke:var(--ink3)" marker-end="url(#ah2)"/>
+  <g style="font:400 10.5px sans-serif">
+    <text x="364" y="78" style="fill:var(--ink3)">clear</text>
+    <text x="370" y="128" style="fill:var(--ink3)">needs text</text>
+    <text x="364" y="200" style="fill:var(--ink3)">low conf.</text>
+  </g>
+  <g style="font:600 12.5px sans-serif">
+    <rect x="440" y="30" width="300" height="44" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+    <text x="456" y="48" style="fill:var(--win)">Plain code handles it</text>
+    <text x="456" y="67" style="fill:var(--ink3);font:400 10.5px sans-serif">most traffic ends here</text>
+    <rect x="440" y="113" width="300" height="44" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+    <text x="456" y="131" style="fill:var(--lose)">Large LLM</text>
+    <text x="456" y="150" style="fill:var(--ink3);font:400 10.5px sans-serif">summaries, replies, reasoning: slow and pricey</text>
+    <rect x="440" y="196" width="300" height="44" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+    <text x="456" y="214" style="fill:var(--mid)">Human / LLM review</text>
+    <text x="456" y="233" style="fill:var(--ink3);font:400 10.5px sans-serif">calibrated confidence as the gate</text>
+  </g>
+</svg>
+</div>
+<p>TypeSafe and third-party writers agree on a <b>hybrid setup</b>. Jev sits up front and routes requests quickly, and the LLM only handles the ones that really need it.</p>
+<table>
+<tr><th class="l">Scenario</th><th class="l">What Jev does</th><th class="l">Fit</th></tr>
+<tr><td class="l">Support / ticket routing</td><td class="l">Detects intent and sends the ticket to the right flow</td><td class="l"><span class="pill p-bull">Great</span></td></tr>
+<tr><td class="l">Moderation, spam detection</td><td class="l">Violation yes/no with a confidence score; low-confidence cases go to a human</td><td class="l"><span class="pill p-bull">Great</span></td></tr>
+<tr><td class="l">Scoring LLM output / guardrails</td><td class="l">Replaces an expensive LLM-as-judge</td><td class="l"><span class="pill p-bull">Great</span></td></tr>
+<tr><td class="l">Bulk labeling (map-reduce)</td><td class="l">Classifies tens of thousands of papers or reviews one by one; a third-party test labeled 1,018 papers for $0.08</td><td class="l"><span class="pill p-bull">Great</span></td></tr>
+<tr><td class="l">"Smart if" inside agents</td><td class="l">Decides at each step whether to call a tool and where to go next</td><td class="l"><span class="pill p-bull">Great</span></td></tr>
+<tr><td class="l">Game NPCs, robots, simulation</td><td class="l">Tactical decisions a few times per second (not the low-level control loop)</td><td class="l"><span class="pill p-turn">Worth trying</span></td></tr>
+<tr><td class="l">Summaries, writing, chat</td><td class="l">Not possible: Jev doesn't generate text</td><td class="l"><span class="pill p-bear">No</span></td></tr>
+<tr><td class="l">Math, dates, counting</td><td class="l">Both TypeSafe and third parties call these weak spots</td><td class="l"><span class="pill p-bear">No</span></td></tr>
+<tr><td class="l">Audited decisions that need reasons</td><td class="l">It returns answers without any reasoning</td><td class="l"><span class="pill p-bear">No</span></td></tr>
+</table>
+<p style="margin-top:12px"><b>Rule of thumb:</b> Is it a clearly defined question with a limited set of answers? Use Jev. Does it need new text, an explanation, or multi-step reasoning? Use a regular LLM.</p>
+</div>
+
+<h2>How it differs from earlier LLMs</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A classic LLM generates text token by token, then parses it and retries on bad format; Jev outputs typed values and probabilities in one parallel pass, skipping both generation and parsing">
+  <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <text x="20" y="28" style="fill:var(--ink);font:700 14px sans-serif">Classic LLM</text>
+  <text x="115" y="28" style="fill:var(--ink3);font:400 11px sans-serif">generate token by token, then parse · cited at 3–329 s</text>
+  <g style="font:600 12px sans-serif">
+    <rect x="20" y="45" width="90" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/><text x="65" y="70" text-anchor="middle" style="fill:var(--ink)">prompt</text>
+    <line x1="112" y1="65" x2="138" y2="65" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="140" y="45" width="150" height="40" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/><text x="215" y="70" text-anchor="middle" style="fill:var(--lose)">token by token × N</text>
+    <line x1="292" y1="65" x2="318" y2="65" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="320" y="45" width="100" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/><text x="370" y="70" text-anchor="middle" style="fill:var(--ink)">text / JSON</text>
+    <line x1="422" y1="65" x2="448" y2="65" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="450" y="45" width="120" height="40" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/><text x="510" y="70" text-anchor="middle" style="fill:var(--mid)">parse + validate</text>
+    <line x1="572" y1="65" x2="598" y2="65" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="600" y="45" width="140" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/><text x="670" y="70" text-anchor="middle" style="fill:var(--ink)">structured result</text>
+  </g>
+  <path d="M510 87 L510 110 L215 110 L215 90" style="fill:none;stroke:var(--losebd)" stroke-dasharray="4 4" marker-end="url(#ah3)"/>
+  <text x="362" y="126" text-anchor="middle" style="fill:var(--lose);font:400 11px sans-serif">bad format → retry and pay again</text>
+
+  <line x1="20" y1="148" x2="740" y2="148" style="stroke:var(--border)" stroke-dasharray="4 5"/>
+
+  <text x="20" y="178" style="fill:var(--ink);font:700 14px sans-serif">Jev</text>
+  <text x="56" y="178" style="fill:var(--ink3);font:400 11px sans-serif">typed values in one shot · claimed 70–500 ms</text>
+  <g style="font:600 12px sans-serif">
+    <rect x="20" y="195" width="150" height="40" rx="8" style="fill:var(--surface2);stroke:var(--border)"/><text x="95" y="220" text-anchor="middle" style="fill:var(--ink)">state + schema</text>
+    <line x1="172" y1="215" x2="208" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="210" y="195" width="180" height="40" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="300" y="220" text-anchor="middle" style="fill:var(--win)">one parallel pass</text>
+    <line x1="392" y1="215" x2="428" y2="215" style="stroke:var(--ink3)" marker-end="url(#ah3)"/>
+    <rect x="430" y="195" width="200" height="40" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/><text x="530" y="220" text-anchor="middle" style="fill:var(--win)">typed value + prob.</text>
+    <text x="646" y="220" style="fill:var(--ink3);font:400 11px sans-serif">ready to use</text>
+  </g>
+</svg>
+</div>
+<table>
+<tr><th class="l">Aspect</th><th class="l">Earlier LLMs (GPT, Claude…)</th><th class="l">Jev</th></tr>
+<tr><td class="l">Generation</td><td class="l">Autoregressive, one token at a time</td><td class="l"><b class="win">Non-autoregressive</b>: every answer computed in one parallel pass</td></tr>
+<tr><td class="l">Output</td><td class="l">Natural language, or text shaped like JSON</td><td class="l"><b class="win">Typed values plus calibrated probabilities</b></td></tr>
+<tr><td class="l">Format reliability</td><td class="l">Must be parsed and validated; failures mean retries</td><td class="l">The output space is the schema, so format errors can't happen</td></tr>
+<tr><td class="l">Uncertainty</td><td class="l">Often overconfident, and trustworthy probabilities are hard to get</td><td class="l">Every answer comes with a confidence score you can gate on</td></tr>
+<tr><td class="l">Latency</td><td class="l">Seconds to minutes</td><td class="l">Claimed 70–500 ms</td></tr>
+<tr><td class="l">Pricing</td><td class="l">Input and output both billed, and output costs the most</td><td class="l">Input only, at $0.042 per million tokens; output is free</td></tr>
+<tr><td class="l">Scope</td><td class="l"><b class="win">General purpose</b>: writing, reasoning, chat, code</td><td class="l"><b class="lose">Closed questions only</b>: no writing, weak at math</td></tr>
+<tr><td class="l">Role in a system</td><td class="l">System 2: slow thinking and deep work</td><td class="l">System 1: fast thinking, many small decisions, routing</td></tr>
+</table>
+<div class="quote" style="margin-top:14px">Don't think of Jev as a cheaper LLM. Think of it as <b>an intelligent function call</b>. It isn't here to replace LLMs. It takes over the flood of small decisions that LLMs shouldn't be spending time on.</div>
+</div>
+
+<h2>How it compares with other ML approaches</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 330" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plotting ML mechanisms by when the task is defined and whether they output actions or decisions: Jev sits in the call-time, language-defined, calibrated-decision corner, and its closest ancestor is the NLI zero-shot classifier">
+  <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <line x1="100" y1="290" x2="735" y2="290" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+  <line x1="100" y1="290" x2="100" y2="28" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
+  <g style="font:600 12px sans-serif;fill:var(--ink2)">
+    <text x="90" y="44" text-anchor="end">Decision</text>
+    <text x="90" y="284" text-anchor="end">Action</text>
+  </g>
+  <g style="font:400 11.5px sans-serif;fill:var(--ink3)">
+    <text x="104" y="312">← task fixed at training time</text>
+    <text x="735" y="312" text-anchor="end">task defined in language at call time →</text>
+  </g>
+  <rect x="585" y="36" width="150" height="96" rx="12" style="fill:var(--winbg);stroke:var(--winbd)" stroke-dasharray="4 4"/>
+  <g style="font:600 12px sans-serif">
+    <circle cx="150" cy="245" r="6" style="fill:var(--ink3)"/><text x="162" y="249" style="fill:var(--ink)">Classic RL (DQN)</text>
+    <circle cx="190" cy="95" r="6" style="fill:var(--ink3)"/><text x="202" y="99" style="fill:var(--ink)">Reranker / reward model</text>
+    <circle cx="330" cy="190" r="6" style="fill:var(--ink3)"/><text x="342" y="194" style="fill:var(--ink)">Gato</text>
+    <circle cx="430" cy="250" r="6" style="fill:var(--turn)"/><text x="442" y="254" style="fill:var(--turn)">VLA (RT-2, π0)</text>
+    <circle cx="400" cy="150" r="6" style="fill:var(--mid)"/><text x="412" y="154" style="fill:var(--mid)">NLI zero-shot classifier</text>
+    <circle cx="612" cy="72" r="8" style="fill:var(--win)"/><text x="626" y="70" style="fill:var(--win);font-size:14px;font-weight:700">Jev</text>
+    <text x="626" y="88" style="fill:var(--win);font:400 11px sans-serif">+ calibrated odds</text>
+  </g>
+</svg>
+</div>
+<p>"Take a state, output options with probabilities" isn't a new idea. Below are the five closest approaches. The first three produce <b>actions</b> (the RL family), and the last two produce <b>decisions</b> (the NLP family). What's actually new about Jev is that it does two things at once: <b>the task is defined in one sentence at call time</b>, and <b>the output is a calibrated decision</b>.</p>
+<table>
+<tr><th class="l">Approach</th><th class="l">Input → output</th><th class="l">When the task is defined</th><th class="l">What the probability means</th><th class="l">Biggest difference from Jev</th></tr>
+<tr><td class="l"><b>Classic RL</b><br><span class="note">DQN on Atari, Doom, 2048</span></td><td class="l">Pixels / board → action</td><td class="l">At training time; a new game means retraining</td><td class="l">Policy preference</td><td class="l">Learns one environment from scratch by trial and error, with no world knowledge. But it runs locally in microseconds, far faster than Jev</td></tr>
+<tr><td class="l"><b>Gato</b><br><span class="note">DeepMind 2022</span></td><td class="l">Everything as tokens → action or text</td><td class="l">A demonstration as the prompt</td><td class="l">Next-token probability</td><td class="l">Autoregressive and trained by imitation. It does everything but nothing especially well, and it was a research result</td></tr>
+<tr><td class="l"><b>VLA</b><br><span class="note">RT-2, OpenVLA, π0</span></td><td class="l">Camera + instruction → arm motion</td><td class="l">One-sentence instruction, but tied to the robot's body</td><td class="l">Not calibrated</td><td class="l">Outputs continuous physical control (~50 Hz). Jev decides what to do, not how to move</td></tr>
+<tr><td class="l"><b>NLI zero-shot classifier</b><br><span class="note">BART-MNLI, HF zero-shot pipeline</span></td><td class="l">Text + candidate labels → score per label</td><td class="l"><b>At call time</b>: pass the labels and go</td><td class="l">Entailment probability, uncalibrated</td><td class="l"><b>Closest ancestor</b>: also a single forward pass with options defined at call time. The difference is a small model with little world knowledge that can only classify</td></tr>
+<tr><td class="l"><b>Reranker / reward model</b><br><span class="note">Cohere Rerank, RLHF reward models</span></td><td class="l">(query, document) → one score</td><td class="l">At training time; the question is always "relevant?" or "would a human prefer this?"</td><td class="l">Relative ranking, not accuracy</td><td class="l">Like Jev's "score" question, but it can answer only one kind of question, and its score isn't a probability</td></tr>
+<tr><td class="l"><b class="win">Jev</b></td><td class="l">Text state + schema → typed value + probability</td><td class="l"><b class="win">At call time</b>: one sentence + schema</td><td class="l"><b class="win">Calibrated, per TypeSafe</b></td><td class="l">—</td></tr>
+</table>
+<p style="margin-top:12px"><b>In one line:</b> think of Jev as an NLI zero-shot classifier given a large model's world knowledge, with RL used to make its probabilities accurate. On a robot, Jev and a VLA stack on top of each other rather than competing:</p>
+<pre><code>Jev (2–5 Hz): <span class="s">"Red cup and blue cup on the table, user wants water → grab the blue one, p=0.91"</span>
+   ↓
+VLA (~50 Hz): <span class="s">"Look at the blue cup, move the arm over, grip it"</span></code></pre>
+<p class="note">The Gato / VLA / NLI / reranker descriptions are a rough comparison based on the public papers; see each original paper for details.</p>
+</div>
+
+<div class="foot"><b>Sources</b>: <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener">TypeSafe AI launch post</a> · <a href="https://docs.typesafe.ai/introduction" target="_blank" rel="noopener">TypeSafe Docs</a> · <a href="https://pydantic.dev/docs/ai/models/typesafe/" target="_blank" rel="noopener">Pydantic AI integration docs</a> · <a href="https://developers.cloudflare.com/ai/models/typesafe/jev/" target="_blank" rel="noopener">Cloudflare Workers AI</a> · <a href="https://en.wikipedia.org/wiki/Jev_(AI_model)" target="_blank" rel="noopener">Wikipedia</a> · <a href="https://flaviocopes.com/jev/" target="_blank" rel="noopener">flaviocopes</a> · <a href="https://dev.to/valyuai/how-to-use-jev-a-practical-guide-to-typesafes-system-one-model-g5e" target="_blank" rel="noopener">dev.to practical guide</a> · <a href="https://artificialanalysis.ai/models/comparisons/gpt-6-astra-vs-claude-fable-5-1" target="_blank" rel="noopener">Artificial Analysis (LLM latency/speed)</a> · <a href="https://openai.com/index/gpt-6-astra/" target="_blank" rel="noopener">OpenAI GPT-6 Astra</a>. All performance figures are TypeSafe's own tests. The third-party cases are small personal experiments.<br>
+Company: TypeSafe AI, founded in San Francisco in 2024 by Diogo Almeida (ex-OpenAI, where he worked on RLHF for InstructGPT, ChatGPT, and GPT-4), Erik Gafni, and Sasha Sheng. It announced a $40M seed round led by DCVC in September 2026 (Wikipedia).<br>
+<b>Disclaimer</b>: Personal research notes. Not investment or technology-selection advice.</div>
+</div></body></html>
