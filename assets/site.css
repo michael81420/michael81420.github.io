@@ -428,24 +428,52 @@ pre .ok{color:var(--win)}                  /* 正解 */
   background:var(--midbg);color:var(--mid);font-variant-numeric:tabular-nums}
 
 .etable-wrap{margin-top:22px;overflow-x:auto}
-.etable{min-width:660px;background:var(--surface);border:1px solid var(--border);
+/* ponytail: 桌機版；欄位多、手機靠 .etable-wrap 橫向捲動，要卡片化再加 media query */
+.echips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.echips .chip span{font-size:11px;opacity:.6;margin-left:2px}
+.etable{min-width:1060px;background:var(--surface);border:1px solid var(--border);
   border-radius:14px;overflow:hidden}
-/* 數字欄用 fr 平均攤開，不然寬螢幕下公司名那欄會把數字擠到最右邊、看不出對照關係 */
-.etable .er{display:grid;grid-template-columns:74px minmax(150px,1.5fr) 1fr .85fr 1.05fr .95fr;
-  align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)}
-.etable .er:last-child{border-bottom:0}
-.etable .eh{padding:11px 20px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
-  color:var(--ink3);font-weight:600}
-.etable a.er{text-decoration:none;color:inherit}
-.etable a.er:hover{background:var(--surface2);text-decoration:none}
-.etable .tkc{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+/* 數字欄用 fr 平均攤開；最右「結論 · Outlook」給最寬，因為它才是「所以呢」 */
+.etable .er{display:grid;grid-template-columns:minmax(190px,1.3fr) .75fr .7fr 1.05fr .8fr .75fr minmax(300px,2.6fr);
+  gap:0 10px;align-items:center;padding:13px 18px}
+.etable details{border-bottom:1px solid var(--border)}
+.etable details:last-child{border-bottom:0}
+.etable summary{list-style:none;cursor:pointer}
+.etable summary::-webkit-details-marker{display:none}
+.etable summary:hover,.etable details[open]>summary{background:var(--surface2)}
+.etable .eh{padding:11px 18px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
+  color:var(--ink3);font-weight:600;border-bottom:1px solid var(--border)}
+.etable .eh .num{font-size:11px;color:var(--ink3);font-weight:600}
+.etable .eh>:last-child{padding-left:15px}
+.etable .eh .sort{cursor:pointer;user-select:none}
+.etable .eh .sort:hover,.etable .eh .on{color:var(--accent)}
+.etable .nmc .tkc{margin:0;font-size:12.5px;font-weight:600;color:var(--ink2)}
 .etable .nmc b{font-size:14.5px;font-weight:700;color:var(--ink)}
-.etable .nmc span{margin-left:9px;font-size:12.5px;color:var(--ink3)}
+.etable .nmc span{margin-left:6px;font-size:12px;color:var(--ink3)}
+.etable .nmc .pill{margin:2px 0 0;font-size:10.5px}
 .etable .num{text-align:right;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .etable .num.k{font-weight:700;color:var(--ink)}
-.etable .num.win{color:var(--win)}   /* 蓋掉上面的 .num.k，語氣色要贏 */
-.etable .num.lose{color:var(--lose)}
+.etable .num.win,.etable .num .win{color:var(--win)}   /* 蓋掉上面的 .num.k，語氣色要贏 */
+.etable .num.lose,.etable .num .lose{color:var(--lose)}
 .etable .num.mid{color:var(--mid)}
-.etable .eh .num{color:var(--ink3);font-weight:600}
-.etable .num em{display:block;font-style:normal;font-size:10.5px;color:var(--ink3);margin-top:2px}
+.etable .num .eg{font-size:10.5px;color:var(--ink3);font-weight:500;margin-left:3px}
+.etable .cn{font-size:12.5px;line-height:1.5;color:var(--ink);padding-left:14px;border-left:1px solid var(--border)}
+.etable .cn .co{color:var(--ink2);margin-top:4px}
+.etable .cn .win{color:var(--win)}.etable .cn .lose{color:var(--lose)}
+.etable .ck{font-size:10.5px;font-weight:700;color:var(--ink3);margin-right:6px;letter-spacing:.04em}
+/* 展開：左邊逐季、右邊待觀察 */
+.etable .ex{background:var(--surface2);padding:14px 18px 18px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;font-size:12.5px}
+.etable .ex h4{margin:0 0 6px;font-size:11px;color:var(--ink3);letter-spacing:.05em}
+.etable .ex h4~h4{margin-top:14px}
+.etable .ex table{font-size:12px;margin:0}
+.etable .ex td,.etable .ex th{white-space:nowrap}
+.etable .ex td:last-child{white-space:normal}
+.etable .ex ul{margin:0;padding-left:16px}.etable .ex li{margin:3px 0;color:var(--ink2)}
+.etable .ex .wl{list-style:none;padding:0}
+.etable .ex .wl i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;border:1.5px solid var(--ink3)}
+.etable .ex .wl i.hit{background:var(--win);border-color:var(--win)}
+.etable .ex .wl i.fail{background:var(--lose);border-color:var(--lose)}
+.etable .ex .spk{display:flex;gap:22px;margin-bottom:10px;color:var(--ink2)}
+.etable .ex .spk svg{display:block;margin-top:2px}
+.etable .ex .more{display:inline-block;margin-top:12px;font-weight:600}
 .etable-note{margin-top:12px;font-size:12.5px;color:var(--ink3);line-height:1.7}

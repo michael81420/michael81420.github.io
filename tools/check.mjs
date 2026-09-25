@@ -14,6 +14,10 @@ const end = siteJs.indexOf('\n];', start);
 if (start < 0 || end < 0) { console.error('site.js: 找不到 POSTS 陣列'); process.exit(1); }
 const POSTS = eval(siteJs.slice(start + 'var POSTS='.length, end + 2));
 
+/* 財報類別清單：.earn.js 的 g 只能填這裡有的 key */
+const gStart = siteJs.indexOf('var EGRP={');
+const EGRP = gStart < 0 ? {} : eval('(' + siteJs.slice(gStart + 'var EGRP='.length, siteJs.indexOf('};', gStart) + 1) + ')');
+
 const idxZh = read('index.html'), idxEn = read('index.en.html');
 const sitemap = read('sitemap.xml');
 const BASE = 'https://michael81420.github.io/';
@@ -45,6 +49,23 @@ for (const p of POSTS) {
     const js = `posts/${p.slug}.earn.js`;
     if (!existsSync(join(ROOT, js))) bad(js, '財報分析缺 earn.js');
     else if (!read(js).includes(`['${p.slug}']`)) bad(js, `key 不等於 slug '${p.slug}'`);
+    else {
+      /* 首頁財報表直接吃這些欄位，漏一個就整列壞掉；跑一次把物件拿出來逐欄查 */
+      const window = {};
+      try { new Function('window', read(js))(window); } catch (e) { bad(js, `語法錯誤：${e.message}`); }
+      const r = window.EARN?.[p.slug];
+      if (r) {
+        for (const k of ['tk', 'q', 'rev', 'opm', 'eps', 'fcf', 'pe']) if (typeof r[k] !== 'string' || !r[k]) bad(js, `缺 ${k}`);
+        for (const k of ['nm', 'v', 'o']) if (!r[k]?.zh || !r[k]?.en) bad(js, `${k} 要有 zh/en`);
+        if (!Array.isArray(r.g) || !r.g.length) bad(js, `g 要是非空陣列（產業類別，可多個）`);
+        else for (const g of r.g) if (!EGRP[g]) bad(js, `類別「${g}」不在 site.js 的 EGRP，要先在那裡補英文標籤`);
+        if (!['GAAP', 'non-GAAP'].includes(r.eg)) bad(js, `eg 只能是 GAAP / non-GAAP`);
+        if (!['bull', 'neu', 'bear', 'turn'].includes(r.tone)) bad(js, `tone 只能是 bull/neu/bear/turn`);
+        if (![1, 0, -1, null].includes(r.gd)) bad(js, `gd 只能是 1/0/-1/null`);
+        if (!Array.isArray(r.watch) || r.watch.some(w => !['hit', 'fail', 'mid'].includes(w.s) || !w.zh || !w.en)) bad(js, `watch 每項要有 s(hit/fail/mid)/zh/en`);
+        if (!r.next?.zh?.length || r.next.zh.length !== r.next.en?.length) bad(js, `next.zh / next.en 要有且條數相同`);
+      }
+    }
   }
 
   /* 草稿不進 sitemap，其餘中英各一行 */

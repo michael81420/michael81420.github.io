@@ -176,21 +176,30 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 
 ```js
 (window.EARN=window.EARN||{})['foo-2026q3-earnings']={
-  tk:'FOO', nm:{zh:'Foo', en:'Foo'}, q:'2026 Q3',
-  rev:'+12.3%', t:'win',
-  opm:'28%',
-  eps:'$1.23', epsN:{zh:'non-GAAP', en:'non-GAAP'},
-  pe:'21.4x'
+  tk:'FOO', g:['雲端','軟體'], nm:{zh:'Foo', en:'Foo'}, q:'2026 Q3',
+  rev:'+12.3%', t:'win', opm:'28%',
+  eps:'$1.23', eg:'non-GAAP', fcf:'−$1.2B', pe:'21.4x',
+  tone:'neu', gd:1,
+  v:{zh:'本季一句話結論', en:'One-line takeaway'},
+  o:{zh:'指引重點', en:'Guidance highlights'},
+  watch:[{s:'hit', zh:'上季待觀察 → 本季結果', en:'…'}],   // 首季留 []
+  next:{zh:['下季要看的事'], en:['What to watch next']}
 };
 ```
 
 - 檔名**必須**是 `<slug>.earn.js`、key **必須**等於 slug，首頁靠這個對回文章；改 slug 記得一起改。
-- 數字**一律照抄本篇自己的核心數字表**，不要另算一套；查不到就填 `—`（如 Tesla 的營收 YoY）。
-- `nm`／`epsN` 是唯一分語言的兩個欄位（中文寫「剔一次性」，英文寫 `Ex one-offs`），其餘中英共用。
-- `eps` 放**剔除一次性後的核心 EPS**（本站主張看核心不看頭條），`epsN` 註明口徑（`GAAP $9.11`／`Adjusted`／`剔一次性`…），會顯示在數字下方那行小字。
+- 數字與文字**一律照抄本篇自己的內容**，不要另算一套；查不到就填 `—`（如 Tesla 的營收 YoY）。
+- `eps` 放**剔除一次性後的核心 EPS**（本站主張看核心不看頭條），`eg` 只能填 `GAAP`／`non-GAAP`，顯示成數字後的括號。
+- `fcf` 放**單季**自由現金流（只有全年數字就填 `—`），負號用 `−`，負值自動標紅。
 - `pe` 一律 forward，不放 trailing —— trailing 會被一次性利得灌壞。
 - `t` 只給營收 YoY 上色（`win`/`lose`/`mid`，空字串不上色）。
-- 排序自動吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；站徽列「財報」旁的家數 `<span class="n">` 也由 JS 自動算。
+- `g` 產業類別（陣列，一家可多類，如 Amazon `['雲端','電商','廣告']`）：填 `site.js` 的 `EGRP` key（中文正規值），表格上方的類別 chip 由此自動長出、依家數排序；新類別先在 `EGRP` 補英文標籤，否則 `check.mjs` 擋。
+- `tone` 評等 pill：`bull` 看多／`neu` 中性／`bear` 偏淡／`turn` 轉機。
+- `gd` 營收/EPS 指引方向：`1` 上修／`0` 維持／`-1` 下修／`null` 沒給或無從比較（不顯示箭頭）。
+- `v` 取自 TL;DR、`o` 取自 Guidance 段、`next` 取自「下季待觀察」、`watch` 取自「回頭追認」（`s`：`hit` 應驗／`fail` 證偽觸發／`mid` 中性）。
+- `nm`／`v`／`o`／`watch`／`next` 分中英，其餘共用。欄位漏填或值不合法 `check.mjs` 會擋。
+- 同一 `tk` 的多篇自動收成一組：列上顯示最新季（營收/營益率帶跟上季比的 ▲▼），點開看逐季表、折線、待觀察。
+- 預設順序吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；點表頭可改排序。站徽列「財報」旁的家數 `<span class="n">` 也由 JS 自動算。
 - 表頭與頁尾說明的中英文字在 `site.js` 的 `ETXT`。
 - 走 `<script src>` 而不是 fetch JSON，是為了跟 `site.js` 送 `POSTS`／`CATL` 同一套模式，`file://` 直開也讀得到。
 

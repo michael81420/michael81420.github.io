@@ -67,24 +67,34 @@ var POSTS=[
 POSTS.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
 
 /* 首頁「財報」資料表沒有陣列：每篇 cat:'財報分析' 的文章旁邊放一支 posts/<slug>.earn.js，
-   內容是 (window.EARN=window.EARN||{})['<slug>']={tk,nm,q,rev,t,opm,eps,epsN,pe}，
+   內容是 (window.EARN=window.EARN||{})['<slug>']={tk,g,nm,q,rev,t,opm,eps,eg,fcf,pe,tone,gd,v,o,watch,next}，
    首頁按下「財報」時才依 POSTS 的 slug 動態插 <script src> 把它們載進來排表（見 drawEarn）。
    → 數字只存在那支檔一份，改它首頁自動跟著改；新增一篇只要 POSTS 加一筆 + 建一支 .earn.js。
    用 script src 而不是 fetch JSON：跟 site.js 送 POSTS/CATL 是同一套模式，file:// 直開也讀得到。
-   顯示順序吃 POSTS 的日期，不看載入完成的先後（用 slug 對回去，所以 script 誰先到都無所謂）。
-   欄位：eps = 剔除一次性後的核心 EPS，epsN 註明口徑；t = win/lose/mid，只給營收 YoY 上色。 */
+   同一 tk 的多季收成一組（列上顯示最新季，點開看歷史）；組的順序吃 POSTS 日期，點表頭可改排序。
+   欄位說明見 CLAUDE.md「財報分析是例外」。 */
+/* 財報表的產業類別：.earn.js 的 g 陣列填這裡的 key（中文正規值），一家可多類；新類別在這裡補英文標籤 */
+var EGRP={
+  '雲端':'Cloud', '廣告':'Advertising', '電商':'E-commerce', '軟體':'Software',
+  '半導體':'Semiconductors', '電動車':'EV'
+};
 var ETXT={
-  zh:{head:['代號','公司 / 季度','營收 YoY','營益率','核心 EPS','forward PE'],
+  zh:{all:'全部',head:['公司 · 季度','營收 YoY','營益率','EPS','FCF','forward PE','結論 · Outlook'],
+      tone:{bull:'看多',neu:'中性',bear:'偏淡',turn:'轉機'},
+      gd:{'1':'↑ 上修','0':'→ 維持','-1':'↓ 下修'},
+      k:['結論','Outlook'],qs:' 季',hist:'季度走勢',watch:'上季待觀察 → 本季結果',next:'下季要看',read:'看完整拆解 →',
       load:'讀取各篇財報數字中…',
       fail:'讀不到財報數字，posts/&lt;slug&gt;.earn.js 可能漏建或有語法錯誤（開 console 看）。',
-      note:'營益率與核心 EPS 口徑各家不同（GAAP / non-GAAP / 剔除一次性），已標在數字下方；'+
-           '估值一律看 forward PE，不看被一次性利得灌壞的 trailing。點任一列進完整拆解。'},
-  en:{head:['Ticker','Company / Quarter','Rev. YoY','Op. margin','Core EPS','Forward P/E'],
+      note:'EPS 為剔除一次性項目後的核心數字，括號標口徑；FCF 為單季自由現金流；估值一律看 forward PE。'+
+           '點表頭排序，點任一列展開歷史與待觀察。'},
+  en:{all:'All',head:['Company · Quarter','Rev. YoY','Op. margin','EPS','FCF','Forward P/E','Takeaway · Outlook'],
+      tone:{bull:'Bullish',neu:'Neutral',bear:'Bearish',turn:'Turnaround'},
+      gd:{'1':'↑ Raised','0':'→ Held','-1':'↓ Cut'},
+      k:['Takeaway','Outlook'],qs:' qtrs',hist:'Quarter by quarter',watch:'Last quarter\'s watch list → result',next:'Watch next',read:'Full breakdown →',
       load:'Loading figures from each post…',
       fail:'Could not load the figures — posts/&lt;slug&gt;.earn.js may be missing or have a syntax error (check the console).',
-      note:'Operating margin and core EPS use different bases per company (GAAP / non-GAAP / ex one-offs), '+
-           'noted under each figure. Valuation always uses forward P/E, never trailing — one-off gains break it. '+
-           'Click any row for the full breakdown.'}
+      note:'EPS is core EPS excluding one-offs, basis in brackets; FCF is single-quarter free cash flow; valuation always uses forward P/E. '+
+           'Click a header to sort, click any row for history and the watch list.'}
 };
 var CATL={
   '全部':            {zh:'全部',            en:'All'},
@@ -266,6 +276,77 @@ function initHome(){
   // POSTS 已排好新→舊，filter 後順序即為顯示順序
   var earnPosts=POSTS.filter(function(p){return p.cat==='財報分析'&&(!p.draft||LOCAL);});
   // 數字在各篇的 posts/<slug>.earn.js 裡，切到財報才把那幾支載進來（只載一次）
+  // "−$5.86B"/"$425.4M"/"~263x" → 數字（B 為單位），排序用；"—" → null 排最後
+  function earnNum(v){
+    var m=String(v).replace(/,/g,'').match(/([−-]?)\$?~?(\d+(?:\.\d+)?)([MB]?)/);
+    if(!m) return null;
+    return (m[1]?-1:1)*parseFloat(m[2])/(m[3]==='M'?1000:1);
+  }
+  var earnKey=null,earnAsc=false,earnGroups=[],earnG='';
+  function earnSpark(vals,c){
+    vals=vals.map(earnNum).filter(function(v){return v!=null;}).reverse(); // 舊→新
+    if(vals.length<2) return '';
+    var mx=Math.max.apply(0,vals),mn=Math.min.apply(0,vals),w=120,h=28;
+    return '<svg viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'" aria-hidden="true"><polyline points="'+
+      vals.map(function(v,i){return (i/(vals.length-1)*w).toFixed(1)+','+(h-3-(mx===mn?.5:(v-mn)/(mx-mn))*(h-6)).toFixed(1);}).join(' ')+
+      '" style="fill:none;stroke:var(--'+c+');stroke-width:2"/></svg>';
+  }
+  function renderEarn(){
+    var T=ETXT[LANG],KEYS=[null,'rev','opm','eps','fcf','pe',null];
+    // 類別 chip 依家數多→少；一家有多類就在每個類別底下都出現
+    var cnt={};earnGroups.forEach(function(g){g.q[0].r.g.forEach(function(k){cnt[k]=(cnt[k]||0)+1;});});
+    var chips='<div class="echips">'+[''].concat(Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];})).map(function(k){
+      return '<button class="chip'+(k===earnG?' active':'')+'" data-g="'+k+'">'+(k?(LANG==='en'?EGRP[k]||k:k)+' <span>'+cnt[k]+'</span>':T.all)+'</button>';
+    }).join('')+'</div>';
+    var gs=earnGroups.filter(function(g){return !earnG||g.q[0].r.g.indexOf(earnG)>=0;});
+    if(earnKey) gs.sort(function(a,b){
+      var x=earnNum(a.q[0].r[earnKey]),y=earnNum(b.q[0].r[earnKey]);
+      if(x==null) return 1; if(y==null) return -1;
+      return earnAsc?x-y:y-x;
+    });
+    var arrow=function(k,r,p){ // 跟上一季比的方向，只有同 tk 有兩季以上才有
+      if(!p) return '';var x=earnNum(r[k]),y=earnNum(p[k]);
+      return x==null||y==null||x===y?'':x>y?' <span class="win">▲</span>':' <span class="lose">▼</span>';
+    };
+    earnWrap.innerHTML=chips+'<div class="etable"><div class="er eh">'+T.head.map(function(h,i){
+        var k=KEYS[i];
+        return '<div class="'+(i>0&&i<6?'num':'')+(k?' sort':'')+(k&&k===earnKey?' on':'')+'"'+(k?' data-k="'+k+'"':'')+'>'+
+          h+(k&&k===earnKey?(earnAsc?' ▲':' ▼'):'')+'</div>';
+      }).join('')+'</div>'+
+      gs.map(function(g){
+        var r=g.q[0].r,p=g.q[1]&&g.q[1].r;
+        return '<details><summary class="er">'+
+          '<div class="nmc"><b>'+r.nm[LANG]+'</b> <span class="tkc">('+r.tk+')</span><span>'+r.q+(g.q.length>1?' · '+g.q.length+T.qs:'')+'</span>'+
+            ' <span class="pill p-'+r.tone+'">'+T.tone[r.tone]+'</span></div>'+
+          '<div class="num k'+(r.t?' '+r.t:'')+'">'+r.rev+arrow('rev',r,p)+'</div>'+
+          '<div class="num">'+r.opm+arrow('opm',r,p)+'</div>'+
+          '<div class="num k">'+r.eps+'<span class="eg">('+r.eg+')</span></div>'+
+          '<div class="num k'+(earnNum(r.fcf)<0?' lose':'')+'">'+r.fcf+'</div>'+
+          '<div class="num">'+r.pe+'</div>'+
+          '<div class="cn"><div><span class="ck">'+T.k[0]+'</span>'+r.v[LANG]+'</div>'+
+            '<div class="co"><span class="ck">'+T.k[1]+'</span>'+(r.gd==null?'':'<span class="'+(r.gd>0?'win':r.gd<0?'lose':'')+'">'+T.gd[r.gd]+'</span> · ')+r.o[LANG]+'</div></div>'+
+          '</summary><div class="ex"><div>'+
+            (g.q.length>1?'<h4>'+T.hist+'</h4><div class="spk"><div>'+T.head[1]+earnSpark(g.q.map(function(x){return x.r.rev;}),'win')+'</div>'+
+              '<div>'+T.head[2]+earnSpark(g.q.map(function(x){return x.r.opm;}),'turn')+'</div></div>':'')+
+            '<table><tr><th>'+T.head[0].split(' · ')[1]+'</th><th>'+T.head.slice(1,6).join('</th><th>')+'</th><th>'+T.k[0]+'</th></tr>'+
+            g.q.map(function(x){var y=x.r;
+              return '<tr><td><a href="posts/'+x.slug+earnExt+'">'+y.q+'</a></td><td>'+y.rev+'</td><td>'+y.opm+'</td><td>'+y.eps+'</td><td>'+y.fcf+'</td><td>'+y.pe+'</td><td>'+y.v[LANG]+'</td></tr>';
+            }).join('')+'</table></div><div>'+
+            (r.watch.length?'<h4>'+T.watch+'</h4><ul class="wl">'+r.watch.map(function(w){
+              return '<li><i class="'+w.s+'"></i>'+w[LANG]+'</li>';}).join('')+'</ul>':'')+
+            '<h4>'+T.next+'</h4><ul>'+r.next[LANG].map(function(n){return '<li>'+n+'</li>';}).join('')+'</ul>'+
+            '<a class="more" href="posts/'+g.q[0].slug+earnExt+'">'+T.read+'</a></div></div></details>';
+      }).join('')+'</div><div class="etable-note">'+T.note+'</div>';
+    earnWrap.querySelectorAll('.echips .chip').forEach(function(c){
+      c.addEventListener('click',function(){earnG=c.dataset.g;renderEarn();});
+    });
+    earnWrap.querySelectorAll('.eh .sort').forEach(function(h){
+      h.addEventListener('click',function(){
+        if(earnKey===h.dataset.k) earnAsc=!earnAsc; else {earnKey=h.dataset.k;earnAsc=false;}
+        renderEarn();
+      });
+    });
+  }
   function drawEarn(){
     if(!earnWrap||earnDone) return;
     earnDone=true;
@@ -279,24 +360,15 @@ function initHome(){
         document.head.appendChild(s);
       });
     })).then(function(){
-      var E=window.EARN||{};
-      var rows=earnPosts.map(function(p){ // 順序吃 POSTS，與載入完成先後無關
-        var r=E[p.slug];
-        return r?{r:r,slug:p.slug}:null;
-      }).filter(Boolean);
-      if(!rows.length){earnWrap.innerHTML='<div class="etable-note">'+T.fail+'</div>';earnDone=false;return;}
-      earnWrap.innerHTML='<div class="etable"><div class="er eh"><div>'+T.head[0]+'</div><div>'+T.head[1]+'</div>'+
-        T.head.slice(2).map(function(h){return '<div class="num">'+h+'</div>';}).join('')+'</div>'+
-        rows.map(function(x){
-          var r=x.r;
-          return '<a class="er" href="posts/'+x.slug+earnExt+'">'+
-            '<div class="tkc">'+r.tk+'</div>'+
-            '<div class="nmc"><b>'+r.nm[LANG]+'</b><span>'+r.q+'</span></div>'+
-            '<div class="num k'+(r.t?' '+r.t:'')+'">'+r.rev+'</div>'+
-            '<div class="num">'+r.opm+'</div>'+
-            '<div class="num k">'+r.eps+'<em>'+r.epsN[LANG]+'</em></div>'+
-            '<div class="num">'+r.pe+'</div></a>';
-        }).join('')+'</div><div class="etable-note">'+T.note+'</div>';
+      var E=window.EARN||{},by={};
+      earnGroups=[];
+      earnPosts.forEach(function(p){ // 順序吃 POSTS（新→舊），與載入完成先後無關
+        var r=E[p.slug];if(!r) return;
+        if(!by[r.tk]){by[r.tk]={q:[]};earnGroups.push(by[r.tk]);}
+        by[r.tk].q.push({r:r,slug:p.slug});
+      });
+      if(!earnGroups.length){earnWrap.innerHTML='<div class="etable-note">'+T.fail+'</div>';earnDone=false;return;}
+      renderEarn();
     });
   }
   function setEarn(on){

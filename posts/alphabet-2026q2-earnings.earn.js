@@ -1,10 +1,21 @@
 /* alphabet-2026q2-earnings 的核心數字 —— 首頁「財報」表的單一事實來源。
-   改這裡首頁自動跟著改；數字一律照抄本篇自己的核心數字表，別在這裡另算一套。
-   走 <script src> 而不是 JSON + fetch，是為了跟 site.js 同一套模式，file:// 直開也讀得到。 */
+   數字與文字一律照抄本篇自己的內容，別在這裡另算一套；欄位說明見 CLAUDE.md「財報分析是例外」。 */
 (window.EARN=window.EARN||{})['alphabet-2026q2-earnings']={
-  tk:'GOOGL', nm:{zh:'Alphabet', en:'Alphabet'}, q:'2026 Q2',
-  rev:'+24.2%', t:'win',                       // t 只給營收 YoY 上色：win / lose / mid / ''
-  opm:'34%',
-  eps:'$2.85', epsN:{zh:'GAAP $9.11', en:'GAAP $9.11'},   // eps = 剔除一次性後的核心 EPS，epsN 是口徑
-  pe:'26.34x'                                  // 一律 forward，不放 trailing
+  tk:"GOOGL",
+  g:["雲端", "廣告"],
+  nm:{"zh": "Alphabet", "en": "Alphabet"},
+  q:"2026 Q2",
+  rev:"+24.2%",
+  t:"win",
+  opm:"34%",
+  eps:"$2.85",
+  eg:"non-GAAP",
+  fcf:"−$5.86B",
+  pe:"26.34x",
+  tone:"neu",
+  gd:null,
+  v:{"zh": "EPS 暴增是 Anthropic 持股利得；剔除後核心 EPS 小 miss，Cloud 加速到 +81.8%", "en": "EPS surge is an Anthropic mark-up; core EPS slightly missed, Cloud accelerated to +81.8%"},
+  o:{"zh": "不給營收指引；capex 連 3 季上修至 $195–205B", "en": "No revenue guide; capex raised a 3rd time to $195–205B"},
+  watch:[],
+  next:{"zh": ["Google Services 營益率能否止跌（本季 41.8%）", "FCF 能否轉正（本季 −$5.86B）", "Cloud YoY 是否明顯放緩（本季 +81.8%）"], "en": ["Can Google Services margin stop falling (41.8%)?", "Can FCF turn positive (−$5.86B)?", "Does Cloud YoY slow sharply (+81.8%)?"]}
 };

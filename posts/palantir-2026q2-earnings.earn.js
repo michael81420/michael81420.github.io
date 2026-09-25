@@ -1,10 +1,21 @@
 /* palantir-2026q2-earnings 的核心數字 —— 首頁「財報」表的單一事實來源。
-   改這裡首頁自動跟著改；數字一律照抄本篇自己的核心數字表，別在這裡另算一套。
-   走 <script src> 而不是 JSON + fetch，是為了跟 site.js 同一套模式，file:// 直開也讀得到。 */
+   數字與文字一律照抄本篇自己的內容，別在這裡另算一套；欄位說明見 CLAUDE.md「財報分析是例外」。 */
 (window.EARN=window.EARN||{})['palantir-2026q2-earnings']={
-  tk:'PLTR', nm:{zh:'Palantir', en:'Palantir'}, q:'2026 Q2',
-  rev:'+93%', t:'win',                       // t 只給營收 YoY 上色：win / lose / mid / ''
-  opm:'47.1%',
-  eps:'$0.41', epsN:{zh:'GAAP=Adj.', en:'GAAP=Adj.'},   // eps = 剔除一次性後的核心 EPS，epsN 是口徑
-  pe:'86x'                                  // 一律 forward，不放 trailing
+  tk:"PLTR",
+  g:["軟體"],
+  nm:{"zh": "Palantir", "en": "Palantir"},
+  q:"2026 Q2",
+  rev:"+93%",
+  t:"win",
+  opm:"47.1%",
+  eps:"$0.41",
+  eg:"GAAP",
+  fcf:"$1,201.6M",
+  pe:"86x",
+  tone:"bull",
+  gd:1,
+  v:{"zh": "高基期上連 7 季加速，超自家財測 7.4%，Rule of 40 達 155", "en": "7th straight acceleration off a high base, beat own guide by 7.4%, Rule of 40 at 155"},
+  o:{"zh": "連 3 季上修，FY26 營收累計 +13.4%；Q3 隱含 QoQ 僅 +11.7%", "en": "Raised 3 quarters running, FY26 revenue +13.4% cumulative; Q3 implies only +11.7% QoQ"},
+  watch:[],
+  next:{"zh": ["「其他淨收入」是否為一次性", "總 TCV YoY 能否止跌（+49%）", "Q3 QoQ 是否只有 +11.7%"], "en": ["Is \"other net income\" one-off?", "Can total TCV YoY stop falling (+49%)?", "Is Q3 QoQ really only +11.7%?"]}
 };
