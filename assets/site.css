@@ -67,8 +67,7 @@ input{font-family:inherit;outline:none}
 .sitebar nav a{font-size:13.5px;font-weight:600;color:var(--ink2);padding:7px 11px;border-radius:8px}
 .sitebar nav a:hover{color:var(--accent);text-decoration:none}
 .site-mark{width:52px;height:52px;border-radius:13px;display:block;flex:none}
-/* 文章頁有左側 rail，第二層 topbar 整塊左移；站徽列跟著對齊 */
-body[data-slug] .sitebar-in{margin-left:max(0px,calc((100vw - 1298px)/2 - 121px))}
+/* 站徽列全站同一位置（不跟文章頁的 rail 左移），切頁時 icon 不跳動 */
 /* 語言切換鈕（中/EN）— 沿用 theme-toggle 視覺，較寬以容文字 */
 .lang-toggle{height:38px;min-width:42px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;
   background:var(--surface);border:1px solid var(--border);border-radius:9px;font-size:13px;font-weight:700;color:var(--ink);flex:none}
