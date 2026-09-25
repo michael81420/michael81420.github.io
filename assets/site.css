@@ -398,15 +398,35 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .code-fold>summary:hover{text-decoration:underline}
 .code-fold pre{background:var(--surface);margin:10px 0 2px}
 
-/* ---------- 首頁「財報」模式（分類列右側，用分隔線與文章分類切開） ----------
+/* ---------- 首頁「財報」模式（站徽列「財報」分頁 → #earnings） ----------
    刻意不用 post-card：財報是拿來「橫向比較」的，密集資料表比敘事卡片好掃。 */
-.toolbar .chip-div{width:1px;height:22px;background:var(--border);margin:0 2px}
-.chip-earn{display:inline-flex;align-items:center;gap:7px;
-  background:var(--midbg);border-color:var(--midbd);color:var(--mid)}
-.chip-earn .n{font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;
-  background:var(--surface);color:var(--mid);font-variant-numeric:tabular-nums}
-.chip-earn.active{background:var(--mid);border-color:transparent;color:#fff}
-.chip-earn.active .n{background:rgba(255,255,255,.22);color:#fff}
+/* 站徽列「文章／財報」主導覽：靠左緊貼站名（分隔線隔開），跟右側的關於我／icon 分成兩區。
+   選中 = accent 淡色底塊 + 站徽列下緣的 accent 底線（站徽列高 72px → 從連結中心往下 36px） */
+.sitebar nav{flex:1}
+.sitebar .modes{display:flex;gap:4px;margin-right:auto;margin-left:28px;padding-left:24px;border-left:1px solid var(--border)}
+.sitebar nav .modes a.nav-mode{position:relative;font-size:15px;font-weight:700;color:var(--ink2);padding:8px 14px;border-radius:8px}
+.sitebar nav .modes a.nav-mode.active{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sitebar nav .modes a.nav-mode.active::after{content:'';position:absolute;left:0;right:0;top:calc(50% + 33px);height:3px;background:var(--accent)}
+/* 手機：站名只留站徽、社群 icon 收起，讓「文章／財報」與語言／主題鈕排得下 */
+@media(max-width:680px){
+  .sitebar-in{padding:0 16px;gap:8px}
+  .sitebar .brand{font-size:0;gap:0}
+  .site-mark{width:40px;height:40px;border-radius:10px}
+  .sitebar nav{gap:2px}
+  .sitebar nav a{white-space:nowrap;padding:7px 8px}
+  .sitebar nav .icon-link{display:none}
+  .sitebar .modes{margin-left:4px;padding-left:10px;gap:2px}
+  .sitebar nav .modes a.nav-mode{padding:7px 10px}
+}
+/* 英文 Earnings 較長，iPhone 寬度（~375px）再收家數與間距 */
+@media(max-width:420px){
+  .sitebar nav a.nav-mode .n{display:none}
+  .sitebar .modes{margin-left:2px;padding-left:6px}
+  .sitebar nav .modes a.nav-mode{padding:7px 8px}
+  .sitebar .tb-actions{gap:6px}
+}
+.sitebar nav a.nav-mode .n{font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:3px;
+  background:var(--midbg);color:var(--mid);font-variant-numeric:tabular-nums}
 
 .etable-wrap{margin-top:22px;overflow-x:auto}
 .etable{min-width:660px;background:var(--surface);border:1px solid var(--border);
@@ -430,5 +450,3 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable .eh .num{color:var(--ink3);font-weight:600}
 .etable .num em{display:block;font-style:normal;font-size:10.5px;color:var(--ink3);margin-top:2px}
 .etable-note{margin-top:12px;font-size:12.5px;color:var(--ink3);line-height:1.7}
-/* 窄螢幕 chip 會換行，分隔線落在行首反而像雜訊 */
-@media(max-width:640px){.toolbar .chip-div{display:none}}

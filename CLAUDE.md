@@ -158,12 +158,13 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 
 ### 財報分析是例外：不掛首頁卡片，改掛資料表
 
-`cat:'財報分析'` 的文章**不進 `#grid`**（第 3 處不用做）。首頁分類列右邊用 `.chip-div` 分隔線切出一顆
-`#earnChip`「財報」鈕，按下去整塊換成資料表 —— 財報是拿來橫向比較的，密集表格比敘事卡片好掃，
+`cat:'財報分析'` 的文章**不進 `#grid`**（第 3 處不用做）。站徽列（`site.js` 的 `initSitebar`
+注入）左側是「文章／財報」兩個主分頁：點「財報」→ `index.html#earnings`，首頁藏掉精選、分類列、搜尋，整塊換成資料表
+（站內任一頁都能直達；財報文章頁會亮「財報」、其他文章頁亮「文章」）—— 財報是拿來橫向比較的，密集表格比敘事卡片好掃，
 也讓兩種內容永遠不會混在同一個清單裡。所以財報文章要同步的是：1、2、4、5 **加上**：
 
 **新建一支 `posts/<slug>.earn.js`**（中英共用一支，不用兩支）—— 首頁那張表的數字只存在這裡一份，
-`site.js` 按下「財報」鈕才依 `POSTS` 的 slug 動態插 `<script src>` 把它們載進來排表。
+`site.js` 切到財報才依 `POSTS` 的 slug 動態插 `<script src>` 把它們載進來排表。
 **`site.js` 沒有財報陣列，不用改；兩份 index 也不用改**：
 
 ```js
@@ -182,7 +183,7 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 - `eps` 放**剔除一次性後的核心 EPS**（本站主張看核心不看頭條），`epsN` 註明口徑（`GAAP $9.11`／`Adjusted`／`剔一次性`…），會顯示在數字下方那行小字。
 - `pe` 一律 forward，不放 trailing —— trailing 會被一次性利得灌壞。
 - `t` 只給營收 YoY 上色（`win`/`lose`/`mid`，空字串不上色）。
-- 排序自動吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；`#earnChip` 的家數 `<span class="n">` 也由 JS 自動填。
+- 排序自動吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；站徽列「財報」旁的家數 `<span class="n">` 也由 JS 自動算。
 - 表頭與頁尾說明的中英文字在 `site.js` 的 `ETXT`。
 - 走 `<script src>` 而不是 fetch JSON，是為了跟 `site.js` 送 `POSTS`／`CATL` 同一套模式，`file://` 直開也讀得到。
 

@@ -257,14 +257,14 @@ function initHome(){
       if(txt)txt.textContent=expanded?(LANG==='en'?'Show less':'收合文章'):(LANG==='en'?'Show all posts':'顯示全部文章');
     }
   }
-  /* 「財報」是模式不是分類：按下去整塊換成資料表，切回任一分類就回到文章卡片。
+  /* 「財報」是模式不是分類：站徽列的「文章／財報」切換（#earnings），財報模式整塊換成資料表。
      財報文章不進 #grid，所以兩種內容永遠不會混在同一個清單裡。 */
-  var earnBtn=document.getElementById('earnChip'),earnWrap=document.getElementById('earnWrap'),earnOn=false,earnDone=false;
+  var earnWrap=document.getElementById('earnWrap'),earnOn=false,earnDone=false;
+  var toolbar=document.querySelector('.toolbar'),modes=document.querySelectorAll('.sitebar .nav-mode');
   var earnExt=LANG==='en'?'.en.html':'.html';
   // POSTS 已排好新→舊，filter 後順序即為顯示順序
   var earnPosts=POSTS.filter(function(p){return p.cat==='財報分析'&&(!p.draft||LOCAL);});
-  if(earnBtn&&earnBtn.querySelector('.n'))earnBtn.querySelector('.n').textContent=earnPosts.length;
-  // 數字在各篇的 posts/<slug>.earn.js 裡，按下財報鈕才把那幾支載進來（只載一次）
+  // 數字在各篇的 posts/<slug>.earn.js 裡，切到財報才把那幾支載進來（只載一次）
   function drawEarn(){
     if(!earnWrap||earnDone) return;
     earnDone=true;
@@ -302,10 +302,12 @@ function initHome(){
     earnOn=on;
     if(on)drawEarn();
     if(earnWrap)earnWrap.style.display=on?'':'none';
-    if(earnBtn)earnBtn.classList.toggle('active',on);
+    modes.forEach(function(a){a.classList.toggle('active',(a.dataset.mode==='earn')===on);});
+    if(toolbar)toolbar.style.display=on?'none':''; // 分類／搜尋只管文章
     grid.style.display=on?'none':'';
+    if(!on){buildSubbar();apply();}
     if(on){
-      if(hero)hero.style.display=''; // 精選常駐，財報模式也留著
+      if(hero)hero.style.display='none'; // 財報是純資料頁，不放精選
       if(subbar)subbar.style.display='none';
       if(empty)empty.style.display='none';
       if(showAll)showAll.style.display='none';
@@ -315,21 +317,23 @@ function initHome(){
     ch.addEventListener('click',function(){
       chips.forEach(function(x){x.classList.remove('active');});
       ch.classList.add('active');
-      cat=ch.dataset.cat;sub='全部';setEarn(false);buildSubbar();apply();
+      cat=ch.dataset.cat;sub='全部';buildSubbar();apply();
     });
   });
-  if(earnBtn)earnBtn.addEventListener('click',function(){
-    chips.forEach(function(x){x.classList.remove('active');});
-    setEarn(true);
-  });
-  // 搜尋只搜文章，所以一打字就退出財報模式（財報有自己的表，不走關鍵字過濾）
   if(search)search.addEventListener('input',function(){
     q=this.value.trim().toLowerCase();
-    if(earnOn){chips[0].classList.add('active');cat='全部';setEarn(false);buildSubbar();}
     apply();
   });
-  buildSubbar();
-  apply();
+  // 首頁上點「文章」不整頁重載，只清掉 hash
+  modes.forEach(function(a){
+    if(a.dataset.mode==='posts')a.addEventListener('click',function(e){
+      if(location.hash){e.preventDefault();history.pushState(null,'',location.pathname);setEarn(false);}
+    });
+  });
+  function syncMode(){setEarn(location.hash==='#earnings');}
+  window.addEventListener('hashchange',syncMode);
+  window.addEventListener('popstate',syncMode);
+  syncMode();
 }
 /* 文章頁：頂部返回鈕與標題（含標誌線）維持整列、置中；
    標誌線「以下」才切成 [左側清單][置中內文][右側對稱留白]。
@@ -449,6 +453,10 @@ function initSitebar(){
   var h='<div class="sitebar-in">'
     +'<a class="brand" href="'+base+'index'+ext+'">'
     +'<img class="site-mark" src="'+base+'favicon.png" alt="">michael</a><nav>'
+    // 首頁兩種內容：文章（卡片）／財報（資料表），用 #earnings 切換，站內任一頁都能直達
+    +'<div class="modes"><a class="nav-mode" data-mode="posts" href="'+base+'index'+ext+'">'+(LANG==='en'?'Posts':'文章')+'</a>'
+    +'<a class="nav-mode" data-mode="earn" href="'+base+'index'+ext+'#earnings">'+(LANG==='en'?'Earnings':'財報')
+    +' <span class="n">'+POSTS.filter(function(p){return p.cat==='財報分析'&&(!p.draft||LOCAL);}).length+'</span></a></div>'
     +'<a href="'+base+'about'+ext+'">'+(LANG==='en'?'About':'關於我')+'</a>';
   SOCIAL.forEach(function(s){
     h+='<a class="icon-link" href="'+s.u+'" target="_blank" rel="noopener" aria-label="'+s.n+'">'
@@ -458,6 +466,13 @@ function initSitebar(){
   bar.className='sitebar';
   bar.innerHTML=h+'</nav></div>';
   document.body.insertBefore(bar, document.body.firstChild);
+  // 文章頁：財報文章亮「財報」、其他亮「文章」（首頁由 initHome 依 #earnings 切換）
+  var slug=document.body.getAttribute('data-slug');
+  if(slug){
+    var cur=POSTS.filter(function(p){return p.slug===slug;})[0];
+    var m=cur&&cur.cat==='財報分析'?'earn':'posts';
+    bar.querySelector('.nav-mode[data-mode="'+m+'"]').classList.add('active');
+  }
   // 語言／主題鈕一律掛站徽列：文章與 about 頁原本寫在第二層 topbar 裡，整組搬上來；首頁本來就沒有，直接生一組
   var nav=bar.querySelector('nav'), acts=document.querySelector('.topbar .tb-actions');
   if(acts) nav.appendChild(acts);
