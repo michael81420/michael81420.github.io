@@ -2,5 +2,3 @@
 .claude/
 tools/node_modules
 _proto-*
-_interview-scheduler.py
-cinema_booking.py

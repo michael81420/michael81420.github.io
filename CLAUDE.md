@@ -37,6 +37,11 @@ JavaScript．From Zero          React．Properly: When to Use What, and How
 <html lang="zh-Hant"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>…完整標題…</title>
+<meta name="description" content="…150 字內摘要，內文不可有半形 &quot;…">
+<link rel="canonical" href="https://michael81420.github.io/posts/<slug>.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://michael81420.github.io/posts/<slug>.html">
+<link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/<slug>.en.html">
+<link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/<slug>.html">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
@@ -154,7 +159,9 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 2. `posts/<slug>.en.html` — 英文頁（`<html lang="en">`、back 鈕指 `../index.en.html`、`lang-toggle` 文字為「中」）。兩檔 `data-slug` 必須一致，lang-toggle 才切得過去。
 3. `index.html` 與 `index.en.html` 各加一張 `post-card`（各自語言的 title/excerpt，`href` 指對應語言檔；`data-cat` 兩邊都用**中文**正規值）。
 4. **`site.js` 最上面的 `POSTS` 陣列加一筆**（`slug`/`d`/`cat`/`zh`/`en`，選填 `sub`）—— 這是左側全文章樹的唯一事實來源，漏了進頁時左欄選不到當前文章。`d` 填首頁卡片同一個日期（`YYYY-MM-DD`）；排序依 `d` 自動新→舊（分類展開順序也跟著走），陣列擺放位置隨意。
-5. **`sitemap.xml` 加兩行**（中英各一 `<url><loc>…</loc></url>`）—— 漏了搜尋引擎收錄不到新頁。`robots.txt` 只指 sitemap、不列個別頁，不用動。
+5. **`sitemap.xml` 加兩行**（中英各一 `<url><loc>…</loc><lastmod>YYYY-MM-DD</lastmod></url>`，`lastmod` 填 `d`，之後大改內容再更新）—— 漏了搜尋引擎收錄不到新頁。`robots.txt` 只指 sitemap、不列個別頁，不用動。
+
+SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英互指，`x-default` 指中文）每頁 `<head>` 都要有，英文頁 canonical 指 `.en.html`，其餘同上範本。缺了 `check.mjs` 會擋。
 
 ### 財報分析是例外：不掛首頁卡片，改掛資料表
 
@@ -197,6 +204,17 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 ```js
 {slug:'foo', d:'2026-07-27', cat:'前端開發', zh:'…', en:'…', draft:1},
 ```
+
+## 每次修改都要看 CI 是否要跟著改
+
+CI（`.github/workflows/ci.yml`）跑 `tools/check.mjs`（檔案一致性）與 `tools/visual.mjs`（headless 瀏覽器量版面），紅燈就不部署。
+**每次改動結束前問一次：這次有沒有新增／改掉「要記得做 X」的規則？** 有就同步改 `check.mjs`，並故意弄壞一次確認它抓得到。常見觸發點：
+
+- 改了本檔的慣例（新增同步處、改檔名／slug 規則、改分類機制、改標題格式…）
+- 改了 `site.js` 的 `POSTS`／`CATL` 結構或 `index.html` 的 chip／卡片格式 —— `check.mjs` 是用字串比對讀這些的，格式一變就可能靜默失效
+- 新增頂層頁面（`check.mjs`／`visual.mjs` 的頁面清單是寫死的）
+
+改完本機跑 `node tools/check.mjs`（視覺檢查：`cd tools && node visual.mjs`）；push 後等 CI 綠才算完成。
 
 ## 不要做的事
 

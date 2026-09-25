@@ -16,6 +16,7 @@ const POSTS = eval(siteJs.slice(start + 'var POSTS='.length, end + 2));
 
 const idxZh = read('index.html'), idxEn = read('index.en.html');
 const sitemap = read('sitemap.xml');
+const BASE = 'https://michael81420.github.io/';
 
 for (const p of POSTS) {
   const zh = `posts/${p.slug}.html`, en = `posts/${p.slug}.en.html`;
@@ -54,6 +55,21 @@ for (const p of POSTS) {
   }
 }
 
+/* 標題一律「主體．本次說明」（全形句點）
+   ponytail: 只管 2026-09-26 之後的新文章，舊的 33 篇沒照規則，要補再把日期往前推 */
+for (const p of POSTS.filter(p => p.d >= '2026-09-26'))
+  for (const f of [`posts/${p.slug}.html`, `posts/${p.slug}.en.html`])
+    if (existsSync(join(ROOT, f)) && !/<title>[^<]*．/.test(read(f))) bad(f, '<title> 缺全形分隔符「．」');
+
+/* 分類要登記：CATL 有中英標籤、兩份首頁有 chip（財報分析走資料表，不用 chip） */
+const catl = siteJs.slice(siteJs.indexOf('var CATL={'), siteJs.indexOf('};', siteJs.indexOf('var CATL={')));
+for (const cat of new Set(POSTS.map(p => p.cat))) {
+  if (!catl.includes(`'${cat}':`)) bad('assets/site.js', `CATL 缺分類「${cat}」的中英標籤`);
+  if (cat === '財報分析') continue;
+  for (const [name, idx] of [['index.html', idxZh], ['index.en.html', idxEn]])
+    if (!idx.includes(`class="chip" data-cat="${cat}"`)) bad(name, `.toolbar 缺分類「${cat}」的 chip`);
+}
+
 /* 反向：posts/ 底下不該有沒登記進 POSTS 的孤兒頁 */
 const slugs = new Set(POSTS.map(p => p.slug));
 for (const f of readdirSync(join(ROOT, 'posts'))) {
@@ -63,11 +79,23 @@ for (const f of readdirSync(join(ROOT, 'posts'))) {
 }
 for (const loc of sitemap.matchAll(/<loc>https:\/\/michael81420\.github\.io\/([^<]+)<\/loc>/g))
   if (!existsSync(join(ROOT, loc[1]))) bad('sitemap.xml', `${loc[1]} 檔案不存在`);
+for (const u of sitemap.match(/<url>.*?<\/url>/g))
+  if (!/<lastmod>\d{4}-\d\d-\d\d<\/lastmod>/.test(u)) bad('sitemap.xml', `缺 <lastmod>: ${u}`);
+if (sitemap.includes(`${BASE}index.html<`)) bad('sitemap.xml', `首頁要寫 ${BASE}，不是 index.html`);
 
 /* 全站頁面：寫死色碼、重複 marker id、連結指到不存在的檔案 */
 const pages = [...readdirSync(join(ROOT, 'posts')).filter(f => f.endsWith('.html')).map(f => `posts/${f}`),
                'index.html', 'index.en.html', 'about.html', 'about.en.html'];
+const abs = f => BASE + (f === 'index.html' ? '' : f);
 for (const f of pages) {
+  /* SEO：description、canonical 指自己、hreflang 中英互指（缺了 Google 會把中英當重複頁） */
+  const head = read(f).split('</head>')[0];
+  const zh = f.replace(/\.en\.html$/, '.html'), en = zh.replace(/\.html$/, '.en.html');
+  if (!/<meta name="description" content="[^"]+">/.test(head)) bad(f, '缺 <meta name="description">');
+  if (!head.includes(`<link rel="canonical" href="${abs(f)}">`)) bad(f, `canonical 要指向 ${abs(f)}`);
+  for (const [lang, t] of [['zh-Hant', zh], ['en', en], ['x-default', zh]])
+    if (!head.includes(`hreflang="${lang}" href="${abs(t)}"`)) bad(f, `缺 hreflang="${lang}" → ${abs(t)}`);
+
   // <pre> 裡是程式碼範例，不是真的樣式或連結，掃之前先拿掉
   const s = read(f).replace(/<pre[\s\S]*?<\/pre>/g, '');
   for (const m of s.matchAll(/(fill|stroke|color|background(?:-color)?|border(?:-[a-z]+)?)\s*[:=]\s*"?\s*(#[0-9a-fA-F]{3,8})\b/g))
