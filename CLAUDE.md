@@ -168,7 +168,7 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 `cat:'財報分析'` 的文章**不進 `#grid`**（第 3 處不用做）。站徽列（`site.js` 的 `initSitebar`
 注入）左側是「文章／財報」兩個主分頁：點「財報」→ `index.html#earnings`，首頁藏掉精選、分類列、搜尋，整塊換成資料表
 （站內任一頁都能直達；財報文章頁會亮「財報」、其他文章頁亮「文章」）—— 財報是拿來橫向比較的，密集表格比敘事卡片好掃，
-也讓兩種內容永遠不會混在同一個清單裡。所以財報文章要同步的是：1、2、4、5 **加上**：
+也讓兩種內容永遠不會混在同一個清單裡。左側文章樹同理：財報頁只列財報、文章頁不列財報（`site.js` 依當前文章 `cat` 過濾）。所以財報文章要同步的是：1、2、4、5 **加上**：
 
 **新建一支 `posts/<slug>.earn.js`**（中英共用一支，不用兩支）—— 首頁那張表的數字只存在這裡一份，
 `site.js` 切到財報才依 `POSTS` 的 slug 動態插 `<script src>` 把它們載進來排表。
@@ -178,7 +178,7 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 (window.EARN=window.EARN||{})['foo-2026q3-earnings']={
   tk:'FOO', g:['雲端','軟體'], nm:{zh:'Foo', en:'Foo'}, q:'2026 Q3',
   rev:'+12.3%', t:'win', opm:'28%',
-  eps:'$1.23', eg:'non-GAAP', fcf:'−$1.2B', pe:'21.4x',
+  eps:'$1.23', eg:'non-GAAP', fcf:'−$1.2B', fcfm:'−4.1%', pe:'21.4x',
   tone:'neu', gd:1,
   v:{zh:'本季一句話結論', en:'One-line takeaway'},
   o:{zh:'指引重點', en:'Guidance highlights'},
@@ -191,6 +191,8 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 - 數字與文字**一律照抄本篇自己的內容**，不要另算一套；查不到就填 `—`（如 Tesla 的營收 YoY）。
 - `eps` 放**剔除一次性後的核心 EPS**（本站主張看核心不看頭條），`eg` 只能填 `GAAP`／`non-GAAP`，顯示成數字後的括號。
 - `fcf` 放**單季**自由現金流（只有全年數字就填 `—`），負號用 `−`，負值自動標紅。
+- `q` 一律寫**日曆季度** `2026 Q2`，表格才能跨公司比同一期。財年跟日曆年不同的公司（標題寫 `FY2027 Q2`）依頁首「財報期」換算：三個月有兩個月以上落在哪一季就填哪一季（如 NVIDIA FY2027 Q2＝5–7 月 → `2026 Q2`、Oracle FY2027 Q1＝6–8 月 → `2026 Q3`）。
+- `fcfm` FCF 利潤率 = 單季 FCF ÷ 單季營收（本篇自己的數字），一位小數加 `%`；`fcf` 是 `—` 就填 `—`。顯示在 FCF 下一行，FCF 欄排序也依它（絕對金額跨規模不可比）。
 - `pe` 一律 forward，不放 trailing —— trailing 會被一次性利得灌壞。
 - `t` 只給營收 YoY 上色（`win`/`lose`/`mid`，空字串不上色）。
 - `g` 產業類別（陣列，一家可多類，如 Amazon `['雲端','電商','廣告']`）：填 `site.js` 的 `EGRP` key（中文正規值），表格上方的類別 chip 由此自動長出、依家數排序；新類別先在 `EGRP` 補英文標籤，否則 `check.mjs` 擋。
@@ -199,7 +201,7 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 - `v` 取自 TL;DR、`o` 取自 Guidance 段、`next` 取自「下季待觀察」、`watch` 取自「回頭追認」（`s`：`hit` 應驗／`fail` 證偽觸發／`mid` 中性）。
 - `nm`／`v`／`o`／`watch`／`next` 分中英，其餘共用。欄位漏填或值不合法 `check.mjs` 會擋。
 - 同一 `tk` 的多篇自動收成一組：列上顯示最新季（營收/營益率帶跟上季比的 ▲▼），點開看逐季表、折線、待觀察。
-- 預設順序吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；點表頭可改排序。站徽列「財報」旁的家數 `<span class="n">` 也由 JS 自動算。
+- 預設順序吃 `POSTS[].d` 新→舊，跟 script 誰先載完無關；點表頭可改排序。表格右上的「最後更新」取財報 `POSTS[].d` 最新一筆，不用手填。
 - 表頭與頁尾說明的中英文字在 `site.js` 的 `ETXT`。
 - 走 `<script src>` 而不是 fetch JSON，是為了跟 `site.js` 送 `POSTS`／`CATL` 同一套模式，`file://` 直開也讀得到。
 

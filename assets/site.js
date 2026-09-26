@@ -24,6 +24,22 @@ var POSTS=[
   {slug:'tesla-2026q2-earnings',      d:'2026-08-03', cat:'財報分析',       sub:'Tesla',     zh:'Tesla．2026 Q2 財報拆解',    en:'Tesla．Q2 2026 Earnings, Unpacked'},
   {slug:'oracle-fy2027q1-earnings',   d:'2026-09-17', cat:'財報分析',       sub:'Oracle',    zh:'Oracle．FY2027 Q1 財報拆解', en:'Oracle．FY2027 Q1 Earnings, Unpacked'},
   {slug:'oracle-fy2026q4-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Oracle',    zh:'Oracle．FY2026 Q4 財報拆解', en:'Oracle．FY2026 Q4 Earnings, Unpacked'},
+  {slug:'snowflake-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Snowflake', zh:'Snowflake．FY2027 Q2 財報拆解', en:'Snowflake．FY2027 Q2 Earnings, Unpacked'},
+  {slug:'shopify-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Shopify', zh:'Shopify．2026 Q2 財報拆解', en:'Shopify．Q2 2026 Earnings, Unpacked'},
+  {slug:'unitedhealth-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'UnitedHealth', zh:'UnitedHealth．2026 Q2 財報拆解', en:'UnitedHealth．Q2 2026 Earnings, Unpacked'},
+  {slug:'spacex-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'SpaceX', zh:'SpaceX．2026 Q2 財報拆解', en:'SpaceX．Q2 2026 Earnings, Unpacked'},
+  {slug:'crowdstrike-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'CrowdStrike', zh:'CrowdStrike．FY2027 Q2 財報拆解', en:'CrowdStrike．FY2027 Q2 Earnings, Unpacked'},
+  {slug:'datadog-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Datadog', zh:'Datadog．2026 Q2 財報拆解', en:'Datadog．Q2 2026 Earnings, Unpacked'},
+  {slug:'micron-fy2026q3-earnings', d:'2026-09-26', cat:'財報分析', sub:'Micron', zh:'Micron．FY2026 Q3 財報拆解', en:'Micron．FY2026 Q3 Earnings, Unpacked'},
+  {slug:'sk-hynix-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'SK hynix', zh:'SK hynix．2026 Q2 財報拆解', en:'SK hynix．Q2 2026 Earnings, Unpacked'},
+  {slug:'arm-fy2027q1-earnings', d:'2026-09-26', cat:'財報分析', sub:'Arm', zh:'Arm．FY2027 Q1 財報拆解', en:'Arm．FY2027 Q1 Earnings, Unpacked'},
+  {slug:'coinbase-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Coinbase', zh:'Coinbase．2026 Q2 財報拆解', en:'Coinbase．Q2 2026 Earnings, Unpacked'},
+  {slug:'tsmc-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'TSMC', zh:'台積電．2026 Q2 財報拆解', en:'TSMC．Q2 2026 Earnings, Unpacked'},
+  {slug:'asml-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'ASML', zh:'ASML．2026 Q2 財報拆解', en:'ASML．Q2 2026 Earnings, Unpacked'},
+  {slug:'salesforce-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Salesforce', zh:'Salesforce．FY2027 Q2 財報拆解', en:'Salesforce．FY2027 Q2 Earnings, Unpacked'},
+  {slug:'servicenow-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'ServiceNow', zh:'ServiceNow．2026 Q2 財報拆解', en:'ServiceNow．Q2 2026 Earnings, Unpacked'},
+  {slug:'nvidia-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'NVIDIA', zh:'NVIDIA．FY2027 Q2 財報拆解', en:'NVIDIA．FY2027 Q2 Earnings, Unpacked'},
+  {slug:'amd-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'AMD', zh:'AMD．2026 Q2 財報拆解', en:'AMD．Q2 2026 Earnings, Unpacked'},
   {slug:'github-actions-ci-cd',      d:'2026-08-22', cat:'軟體開發',       zh:'GitHub Actions．幫零建置靜態站補上 CI/CD', en:'GitHub Actions．CI/CD for a Zero-Build Static Site'},
   {slug:'typescript-learn-guide',     d:'2026-07-24', cat:'軟體開發',       zh:'TypeScript．把型別補進 JavaScript', en:'TypeScript．Types on Top of JavaScript', draft:1},
   {slug:'react-learn-guide',          d:'2026-07-21', cat:'軟體開發',       zh:'React．完全上手 · 何時用、怎麼用', en:'React．Properly · When & How to Use It'},
@@ -67,7 +83,7 @@ var POSTS=[
 POSTS.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
 
 /* 首頁「財報」資料表沒有陣列：每篇 cat:'財報分析' 的文章旁邊放一支 posts/<slug>.earn.js，
-   內容是 (window.EARN=window.EARN||{})['<slug>']={tk,g,nm,q,rev,t,opm,eps,eg,fcf,pe,tone,gd,v,o,watch,next}，
+   內容是 (window.EARN=window.EARN||{})['<slug>']={tk,g,nm,q,rev,t,opm,eps,eg,fcf,fcfm,pe,tone,gd,v,o,watch,next}，
    首頁按下「財報」時才依 POSTS 的 slug 動態插 <script src> 把它們載進來排表（見 drawEarn）。
    → 數字只存在那支檔一份，改它首頁自動跟著改；新增一篇只要 POSTS 加一筆 + 建一支 .earn.js。
    用 script src 而不是 fetch JSON：跟 site.js 送 POSTS/CATL 是同一套模式，file:// 直開也讀得到。
@@ -76,24 +92,25 @@ POSTS.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:0;});
 /* 財報表的產業類別：.earn.js 的 g 陣列填這裡的 key（中文正規值），一家可多類；新類別在這裡補英文標籤 */
 var EGRP={
   '雲端':'Cloud', '廣告':'Advertising', '電商':'E-commerce', '軟體':'Software',
-  '半導體':'Semiconductors', '電動車':'EV'
+  '半導體':'Semiconductors', '電動車':'EV',
+  '醫療保健':'Healthcare', '航太':'Aerospace', '加密貨幣':'Crypto'
 };
 var ETXT={
-  zh:{all:'全部',head:['公司 · 季度','營收 YoY','營益率','EPS','FCF','forward PE','結論 · Outlook'],
+  zh:{all:'全部',q:'代碼或名稱',head:['公司 · 季度','評等','營收 YoY','營益率','EPS','FCF · 利潤率','forward PE','結論 · Outlook'],
       tone:{bull:'看多',neu:'中性',bear:'偏淡',turn:'轉機'},
       gd:{'1':'↑ 上修','0':'→ 維持','-1':'↓ 下修'},
       k:['結論','Outlook'],qs:' 季',hist:'季度走勢',watch:'上季待觀察 → 本季結果',next:'下季要看',read:'看完整拆解 →',
-      load:'讀取各篇財報數字中…',
+      load:'讀取各篇財報數字中…',upd:'最後更新 ',
       fail:'讀不到財報數字，posts/&lt;slug&gt;.earn.js 可能漏建或有語法錯誤（開 console 看）。',
-      note:'EPS 為剔除一次性項目後的核心數字，括號標口徑；FCF 為單季自由現金流；估值一律看 forward PE。'+
+      note:'EPS 為剔除一次性項目後的核心數字，括號標口徑；FCF 為單季自由現金流，括號為 FCF 利潤率（FCF ÷ 營收，可跨規模比、對照營益率看利潤有沒有變現金）；估值一律看 forward PE。'+
            '點表頭排序，點任一列展開歷史與待觀察。'},
-  en:{all:'All',head:['Company · Quarter','Rev. YoY','Op. margin','EPS','FCF','Forward P/E','Takeaway · Outlook'],
+  en:{all:'All',q:'Ticker or name',head:['Company · Quarter','Rating','Rev. YoY','Op. margin','EPS','FCF · margin','Forward P/E','Takeaway · Outlook'],
       tone:{bull:'Bullish',neu:'Neutral',bear:'Bearish',turn:'Turnaround'},
       gd:{'1':'↑ Raised','0':'→ Held','-1':'↓ Cut'},
       k:['Takeaway','Outlook'],qs:' qtrs',hist:'Quarter by quarter',watch:'Last quarter\'s watch list → result',next:'Watch next',read:'Full breakdown →',
-      load:'Loading figures from each post…',
+      load:'Loading figures from each post…',upd:'Last updated ',
       fail:'Could not load the figures — posts/&lt;slug&gt;.earn.js may be missing or have a syntax error (check the console).',
-      note:'EPS is core EPS excluding one-offs, basis in brackets; FCF is single-quarter free cash flow; valuation always uses forward P/E. '+
+      note:'EPS is core EPS excluding one-offs, basis in brackets; FCF is single-quarter free cash flow, with FCF margin (FCF ÷ revenue) in brackets — comparable across sizes, and worth reading against operating margin; valuation always uses forward P/E. '+
            'Click a header to sort, click any row for history and the watch list.'}
 };
 var CATL={
@@ -282,7 +299,7 @@ function initHome(){
     if(!m) return null;
     return (m[1]?-1:1)*parseFloat(m[2])/(m[3]==='M'?1000:1);
   }
-  var earnKey=null,earnAsc=false,earnGroups=[],earnG='';
+  var earnKey=null,earnAsc=false,earnGroups=[],earnG='',earnQ='';
   function earnSpark(vals,c){
     vals=vals.map(earnNum).filter(function(v){return v!=null;}).reverse(); // 舊→新
     if(vals.length<2) return '';
@@ -292,12 +309,12 @@ function initHome(){
       '" style="fill:none;stroke:var(--'+c+');stroke-width:2"/></svg>';
   }
   function renderEarn(){
-    var T=ETXT[LANG],KEYS=[null,'rev','opm','eps','fcf','pe',null];
+    var T=ETXT[LANG],KEYS=[null,null,'rev','opm','eps','fcfm','pe',null];
     // 類別 chip 依家數多→少；一家有多類就在每個類別底下都出現
     var cnt={};earnGroups.forEach(function(g){g.q[0].r.g.forEach(function(k){cnt[k]=(cnt[k]||0)+1;});});
     var chips='<div class="echips">'+[''].concat(Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];})).map(function(k){
-      return '<button class="chip'+(k===earnG?' active':'')+'" data-g="'+k+'">'+(k?(LANG==='en'?EGRP[k]||k:k)+' <span>'+cnt[k]+'</span>':T.all)+'</button>';
-    }).join('')+'</div>';
+      return '<button class="chip'+(k===earnG?' active':'')+'" data-g="'+k+'">'+(k?(LANG==='en'?EGRP[k]||k:k)+' <span>'+cnt[k]+'</span>':T.all+' <span>'+earnGroups.length+'</span>')+'</button>';
+    }).join('')+'<span class="eupd">'+T.upd+earnPosts[0].d+'</span><label class="search"><span class="dot"></span><input type="search" placeholder="'+T.q+'" value="'+earnQ.replace(/"/g,'&quot;')+'"></label></div>';
     var gs=earnGroups.filter(function(g){return !earnG||g.q[0].r.g.indexOf(earnG)>=0;});
     if(earnKey) gs.sort(function(a,b){
       var x=earnNum(a.q[0].r[earnKey]),y=earnNum(b.q[0].r[earnKey]);
@@ -310,27 +327,27 @@ function initHome(){
     };
     earnWrap.innerHTML=chips+'<div class="etable"><div class="er eh">'+T.head.map(function(h,i){
         var k=KEYS[i];
-        return '<div class="'+(i>0&&i<6?'num':'')+(k?' sort':'')+(k&&k===earnKey?' on':'')+'"'+(k?' data-k="'+k+'"':'')+'>'+
+        return '<div class="'+(i>1&&i<7?'num':'')+(k?' sort':'')+(k&&k===earnKey?' on':'')+'"'+(k?' data-k="'+k+'"':'')+'>'+
           h+(k&&k===earnKey?(earnAsc?' ▲':' ▼'):'')+'</div>';
       }).join('')+'</div>'+
       gs.map(function(g){
         var r=g.q[0].r,p=g.q[1]&&g.q[1].r;
-        return '<details><summary class="er">'+
-          '<div class="nmc"><b>'+r.nm[LANG]+'</b> <span class="tkc">('+r.tk+')</span><span>'+r.q+(g.q.length>1?' · '+g.q.length+T.qs:'')+'</span>'+
-            ' <span class="pill p-'+r.tone+'">'+T.tone[r.tone]+'</span></div>'+
+        return '<details data-q="'+(r.tk+' '+r.nm.zh+' '+r.nm.en).toLowerCase().replace(/"/g,'')+'"><summary class="er">'+
+          '<div class="nmc"><b>'+r.nm[LANG]+'</b> <span class="tkc">('+r.tk+')</span><div class="nq">'+r.q+(g.q.length>1?' · '+g.q.length+T.qs:'')+'</div></div>'+
+          '<div class="tn"><span class="pill p-'+r.tone+'">'+T.tone[r.tone]+'</span></div>'+
           '<div class="num k'+(r.t?' '+r.t:'')+'">'+r.rev+arrow('rev',r,p)+'</div>'+
           '<div class="num">'+r.opm+arrow('opm',r,p)+'</div>'+
           '<div class="num k">'+r.eps+'<span class="eg">('+r.eg+')</span></div>'+
-          '<div class="num k'+(earnNum(r.fcf)<0?' lose':'')+'">'+r.fcf+'</div>'+
+          '<div class="num k'+(earnNum(r.fcf)<0?' lose':'')+'">'+r.fcf+(r.fcfm==='—'?'':'<span class="eg">('+r.fcfm+')</span>')+'</div>'+
           '<div class="num">'+r.pe+'</div>'+
           '<div class="cn"><div><span class="ck">'+T.k[0]+'</span>'+r.v[LANG]+'</div>'+
             '<div class="co"><span class="ck">'+T.k[1]+'</span>'+(r.gd==null?'':'<span class="'+(r.gd>0?'win':r.gd<0?'lose':'')+'">'+T.gd[r.gd]+'</span> · ')+r.o[LANG]+'</div></div>'+
           '</summary><div class="ex"><div>'+
-            (g.q.length>1?'<h4>'+T.hist+'</h4><div class="spk"><div>'+T.head[1]+earnSpark(g.q.map(function(x){return x.r.rev;}),'win')+'</div>'+
-              '<div>'+T.head[2]+earnSpark(g.q.map(function(x){return x.r.opm;}),'turn')+'</div></div>':'')+
-            '<table><tr><th>'+T.head[0].split(' · ')[1]+'</th><th>'+T.head.slice(1,6).join('</th><th>')+'</th><th>'+T.k[0]+'</th></tr>'+
+            (g.q.length>1?'<h4>'+T.hist+'</h4><div class="spk"><div>'+T.head[2]+earnSpark(g.q.map(function(x){return x.r.rev;}),'win')+'</div>'+
+              '<div>'+T.head[3]+earnSpark(g.q.map(function(x){return x.r.opm;}),'turn')+'</div></div>':'')+
+            '<table><tr><th>'+T.head[0].split(' · ')[1]+'</th><th>'+T.head.slice(2,7).join('</th><th>')+'</th><th>'+T.k[0]+'</th></tr>'+
             g.q.map(function(x){var y=x.r;
-              return '<tr><td><a href="posts/'+x.slug+earnExt+'">'+y.q+'</a></td><td>'+y.rev+'</td><td>'+y.opm+'</td><td>'+y.eps+'</td><td>'+y.fcf+'</td><td>'+y.pe+'</td><td>'+y.v[LANG]+'</td></tr>';
+              return '<tr><td><a href="posts/'+x.slug+earnExt+'">'+y.q+'</a></td><td>'+y.rev+'</td><td>'+y.opm+'</td><td>'+y.eps+'</td><td>'+y.fcf+(y.fcfm==='—'?'':' ('+y.fcfm+')')+'</td><td>'+y.pe+'</td><td>'+y.v[LANG]+'</td></tr>';
             }).join('')+'</table></div><div>'+
             (r.watch.length?'<h4>'+T.watch+'</h4><ul class="wl">'+r.watch.map(function(w){
               return '<li><i class="'+w.s+'"></i>'+w[LANG]+'</li>';}).join('')+'</ul>':'')+
@@ -340,6 +357,13 @@ function initHome(){
     earnWrap.querySelectorAll('.echips .chip').forEach(function(c){
       c.addEventListener('click',function(){earnG=c.dataset.g;renderEarn();});
     });
+    // 搜尋只藏列不重繪，輸入框才不會失焦
+    var qi=earnWrap.querySelector('.echips input');
+    function earnFilter(){
+      earnQ=qi.value;var q=earnQ.trim().toLowerCase();
+      earnWrap.querySelectorAll('.etable details').forEach(function(d){d.hidden=!!q&&d.dataset.q.indexOf(q)<0;});
+    }
+    qi.addEventListener('input',earnFilter);earnFilter();
     earnWrap.querySelectorAll('.eh .sort').forEach(function(h){
       h.addEventListener('click',function(){
         if(earnKey===h.dataset.k) earnAsc=!earnAsc; else {earnKey=h.dataset.k;earnAsc=false;}
@@ -418,11 +442,13 @@ function initArticle(){
   if(!wrap) return;
   var ext=LANG==='en'?'.en.html':'.html';
 
+  // 文章與財報分開：財報頁側欄只列財報，文章頁不列財報
+  var earn=POSTS.some(function(p){return p.slug===slug&&p.cat==='財報分析';});
   var rail=document.createElement('aside');
   rail.className='rail';
   var title=document.createElement('div');
   title.className='rail-title';
-  title.textContent=LANG==='en'?'All posts':'所有文章';
+  title.textContent=earn?(LANG==='en'?'All earnings':'所有財報'):(LANG==='en'?'All posts':'所有文章');
   rail.appendChild(title);
   var nav=document.createElement('nav');
   rail.appendChild(nav);
@@ -430,6 +456,7 @@ function initArticle(){
   // 依 POSTS 出現順序分組
   var order=[],groups={},activeBox=null;
   POSTS.forEach(function(p){
+    if((p.cat==='財報分析')!==earn) return;
     if(p.draft&&!LOCAL&&p.slug!==slug) return; // 草稿不進別人的側欄，只在自己頁面列出（本機除外）
     if(!groups[p.cat]){groups[p.cat]=[];order.push(p.cat);}
     groups[p.cat].push(p);
@@ -478,6 +505,7 @@ function initArticle(){
       sg.appendChild(sbox);
       box.appendChild(sg);
     });
+    if(earn){while(box.firstChild)nav.appendChild(box.firstChild);return;} // 財報頁只有一個分類，不再包一層，公司直接列
     if(scrollable){
       var scrollWrap=document.createElement('div');
       scrollWrap.className='rail-scrollwrap';
@@ -528,8 +556,7 @@ function initSitebar(){
     +'<img class="site-mark" src="'+base+'favicon.png" alt="">michael</a><nav>'
     // 首頁兩種內容：文章（卡片）／財報（資料表），用 #earnings 切換，站內任一頁都能直達
     +'<div class="modes"><a class="nav-mode" data-mode="posts" href="'+base+'index'+ext+'">'+(LANG==='en'?'Posts':'文章')+'</a>'
-    +'<a class="nav-mode" data-mode="earn" href="'+base+'index'+ext+'#earnings">'+(LANG==='en'?'Earnings':'財報')
-    +' <span class="n">'+POSTS.filter(function(p){return p.cat==='財報分析'&&(!p.draft||LOCAL);}).length+'</span></a></div>'
+    +'<a class="nav-mode" data-mode="earn" href="'+base+'index'+ext+'#earnings">'+(LANG==='en'?'Earnings':'財報')+'</a></div>'
     +'<a href="'+base+'about'+ext+'">'+(LANG==='en'?'About':'關於我')+'</a>';
   SOCIAL.forEach(function(s){
     h+='<a class="icon-link" href="'+s.u+'" target="_blank" rel="noopener" aria-label="'+s.n+'">'
@@ -545,6 +572,8 @@ function initSitebar(){
     var cur=POSTS.filter(function(p){return p.slug===slug;})[0];
     var m=cur&&cur.cat==='財報分析'?'earn':'posts';
     bar.querySelector('.nav-mode[data-mode="'+m+'"]').classList.add('active');
+    var back=document.querySelector('.btn-back');
+    if(m==='earn'&&back) back.href+='#earnings'; // 財報文章「回到列表」回財報表，不回文章列表
   }
   // 語言／主題鈕一律掛站徽列：文章與 about 頁原本寫在第二層 topbar 裡，整組搬上來；首頁本來就沒有，直接生一組
   var nav=bar.querySelector('nav'), acts=document.querySelector('.topbar .tb-actions');

@@ -417,46 +417,47 @@ pre .ok{color:var(--win)}                  /* 正解 */
   .sitebar .modes{margin-left:4px;padding-left:10px;gap:2px}
   .sitebar nav .modes a.nav-mode{padding:7px 10px}
 }
-/* 英文 Earnings 較長，iPhone 寬度（~375px）再收家數與間距 */
+/* 英文 Earnings 較長，iPhone 寬度（~375px）再收間距 */
 @media(max-width:420px){
-  .sitebar nav a.nav-mode .n{display:none}
   .sitebar .modes{margin-left:2px;padding-left:6px}
   .sitebar nav .modes a.nav-mode{padding:7px 8px}
   .sitebar .tb-actions{gap:6px}
 }
-.sitebar nav a.nav-mode .n{font-size:11px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:3px;
-  background:var(--midbg);color:var(--mid);font-variant-numeric:tabular-nums}
 
 .etable-wrap{margin-top:22px;overflow-x:auto}
 /* ponytail: 桌機版；欄位多、手機靠 .etable-wrap 橫向捲動，要卡片化再加 media query */
 .echips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
 .echips .chip span{font-size:11px;opacity:.6;margin-left:2px}
-.etable{min-width:1060px;background:var(--surface);border:1px solid var(--border);
+.echips .eupd{margin-left:auto;align-self:center;font-size:12px;color:var(--ink3)}
+.echips .search{width:220px;padding-top:6px;padding-bottom:6px}
+@media(max-width:640px){.echips .search{width:100%}}
+.etable{min-width:1140px;background:var(--surface);border:1px solid var(--border);
   border-radius:14px;overflow:hidden}
 /* 數字欄用 fr 平均攤開；最右「結論 · Outlook」給最寬，因為它才是「所以呢」 */
-.etable .er{display:grid;grid-template-columns:minmax(190px,1.3fr) .75fr .7fr 1.05fr .8fr .75fr minmax(300px,2.6fr);
+.etable .er{display:grid;grid-template-columns:minmax(190px,1.3fr) 72px .75fr .7fr 1.05fr .8fr .75fr minmax(300px,2.6fr);
   gap:0 10px;align-items:center;padding:13px 18px}
 .etable details{border-bottom:1px solid var(--border)}
 .etable details:last-child{border-bottom:0}
 .etable summary{list-style:none;cursor:pointer}
 .etable summary::-webkit-details-marker{display:none}
-.etable summary:hover,.etable details[open]>summary{background:var(--surface2)}
 .etable .eh{padding:11px 18px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
   color:var(--ink3);font-weight:600;border-bottom:1px solid var(--border)}
 .etable .eh .num{font-size:11px;color:var(--ink3);font-weight:600}
 .etable .eh>:last-child{padding-left:15px}
+.etable .eh>div,.etable .eh .num,.etable .tn{text-align:center}
+.etable .eh>:first-child{text-align:left}
 .etable .eh .sort{cursor:pointer;user-select:none}
 .etable .eh .sort:hover,.etable .eh .on{color:var(--accent)}
 .etable .nmc .tkc{margin:0;font-size:12.5px;font-weight:600;color:var(--ink2)}
 .etable .nmc b{font-size:14.5px;font-weight:700;color:var(--ink)}
-.etable .nmc span{margin-left:6px;font-size:12px;color:var(--ink3)}
-.etable .nmc .pill{margin:2px 0 0;font-size:10.5px}
-.etable .num{text-align:right;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.etable .nmc .nq{margin-top:2px;font-size:12px;color:var(--ink3)}
+.etable .tn .pill{margin:0;font-size:10.5px}
+.etable .num{text-align:center;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .etable .num.k{font-weight:700;color:var(--ink)}
 .etable .num.win,.etable .num .win{color:var(--win)}   /* 蓋掉上面的 .num.k，語氣色要贏 */
 .etable .num.lose,.etable .num .lose{color:var(--lose)}
 .etable .num.mid{color:var(--mid)}
-.etable .num .eg{font-size:10.5px;color:var(--ink3);font-weight:500;margin-left:3px}
+.etable .num .eg{display:block;font-size:10.5px;color:var(--ink3);font-weight:500}
 .etable .cn{font-size:12.5px;line-height:1.5;color:var(--ink);padding-left:14px;border-left:1px solid var(--border)}
 .etable .cn .co{color:var(--ink2);margin-top:4px}
 .etable .cn .win{color:var(--win)}.etable .cn .lose{color:var(--lose)}

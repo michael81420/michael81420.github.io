@@ -55,10 +55,15 @@ for (const p of POSTS) {
       try { new Function('window', read(js))(window); } catch (e) { bad(js, `語法錯誤：${e.message}`); }
       const r = window.EARN?.[p.slug];
       if (r) {
-        for (const k of ['tk', 'q', 'rev', 'opm', 'eps', 'fcf', 'pe']) if (typeof r[k] !== 'string' || !r[k]) bad(js, `缺 ${k}`);
+        for (const k of ['tk', 'q', 'rev', 'opm', 'eps', 'fcf', 'fcfm', 'pe']) if (typeof r[k] !== 'string' || !r[k]) bad(js, `缺 ${k}`);
         for (const k of ['nm', 'v', 'o']) if (!r[k]?.zh || !r[k]?.en) bad(js, `${k} 要有 zh/en`);
         if (!Array.isArray(r.g) || !r.g.length) bad(js, `g 要是非空陣列（產業類別，可多個）`);
         else for (const g of r.g) if (!EGRP[g]) bad(js, `類別「${g}」不在 site.js 的 EGRP，要先在那裡補英文標籤`);
+        /* q 一律日曆季度（跨公司可比）；標題是日曆季的要一致，財年季（FY…）由人依財報期換算 */
+        const tq = p.zh.match(/．(.+) 財報拆解/)?.[1];
+        if (!/^20\d\d Q[1-4]$/.test(r.q)) bad(js, `q「${r.q}」要寫日曆季度，如 2026 Q2`);
+        else if (tq && !tq.startsWith('FY') && r.q !== tq) bad(js, `q「${r.q}」要跟標題季度「${tq}」一致`);
+        if ((r.fcf === '—') !== (r.fcfm === '—')) bad(js, `fcf 與 fcfm 要同時有值或同時為 —`);
         if (!['GAAP', 'non-GAAP'].includes(r.eg)) bad(js, `eg 只能是 GAAP / non-GAAP`);
         if (!['bull', 'neu', 'bear', 'turn'].includes(r.tone)) bad(js, `tone 只能是 bull/neu/bear/turn`);
         if (![1, 0, -1, null].includes(r.gd)) bad(js, `gd 只能是 1/0/-1/null`);

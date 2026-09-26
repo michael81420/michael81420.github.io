@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salesforce．FY2027 Q2 財報拆解 — 頭條 EPS $5.90 有近半靠 Anthropic 股權一次性收益,核心 EPS $3.37 僅小幅超預期,但 cRPO +14% 訂單動能扎實</title>
+<meta name="description" content="營收 $11.35B、YoY +11%,cRPO $33.5B、YoY +14%,訂單動能扎實。但頭條非GAAP EPS $5.90 裡有 $2.53 來自 Anthropic 股權一次性收益,剔除後核心 EPS 僅 $3.37,對比市場預期 $3.27 只是小幅擦邊。IR 原文+法說摘要+Futu 數字查證,非買賣建議。">
+<link rel="canonical" href="https://michael81420.github.io/posts/salesforce-fy2027q2-earnings.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://michael81420.github.io/posts/salesforce-fy2027q2-earnings.html">
+<link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/salesforce-fy2027q2-earnings.en.html">
+<link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/salesforce-fy2027q2-earnings.html">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="salesforce-fy2027q2-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Salesforce．FY2027 Q2 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">營收 $11.35B、YoY +11%,cRPO $33.5B、YoY +14%,訂單動能扎實。但頭條非GAAP EPS $5.90 裡<b>近半($2.53)來自 Anthropic 股權一次性收益</b>,剔除後核心 EPS 只有 $3.37,對比市場預期 $3.27 是小幅擦邊。IR 原文+法說摘要+Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Salesforce IR 財報原文 + 法說會摘要</span>
+<span class="badge">財報期:2026-05-01 ~ 2026-07-31(FY27 Q2)</span>
+<span class="badge">公布日:2026-08-26 盤後</span>
+<span class="badge">整理日:2026-09-26</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">💰 <span class="mid">頭條 EPS 大好看,但一半是投資帳面收益,不是本業</span>。非GAAP EPS $5.90(YoY +103%)裡,有 $2.53 來自對 AI 新創 Anthropic 股權的一次性未實現收益(該筆投資本季認列 $2.613B 收益)。<b>剔除後核心營運 EPS 約 $3.37</b>(本站自行以 $5.90 − $2.53 扣算,公司未公布此數;新聞稿僅揭露該收益影響 GAAP EPS $2.43、非GAAP EPS $2.53),對比市場預期 $3.27,只是約 +3% 的小幅擦邊,遠不如頭條數字看起來的漂亮。</p>
+<p class="big">📈 <span class="win">訂單動能才是本季真正該看的東西,而它是扎實的</span>。cRPO(未來12個月待認列訂單)來到 $33.5B,YoY +14%,是近幾季最快的成長;RPO 總額 $66.3B、YoY +11%。營收 +11% 裡有約 3 個百分點來自 Informatica 併購貢獻($456M),剔除併購後有機成長約 +8%,不算快但穩。</p>
+<p class="big">🏦 <span class="lose">回購暫停、改發債買股,資本配置邏輯變了</span>。本季股票回購金額掛零,轉而用 $25B 舉債資金執行加速股票回購(ASR)。管理層維持 FY27 營運/自由現金流成長guidance 約 +4%~+5% YoY。<b>用債務槓桿換股東回報,是跟過去用內生現金買回股票不同的邏輯</b>。</p>
+<p class="note">★ 估值上,財報後股價單日大漲逾兩成、寫下公司史上第二佳單日表現,把 forward PE 推到 <b>15.95x</b>(PEG 0.95)。這個位置不貴,但要記住:漲多的理由裡,Anthropic 帳面收益佔了不小比重,不是全部來自本業加速。</p>
+</div>
+
+<h2>一、核心數字:頭條與核心兩套 EPS,差了 $2.53</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Salesforce本季頭條非GAAP EPS 5.90美元中,有2.53美元來自Anthropic股權一次性收益,剔除後核心營運EPS為3.37美元,僅小幅超越3.27美元的市場預期">
+  <text x="20" y="24" style="fill:var(--ink2);font:600 13px sans-serif">EPS 拆解(美元)· 虛線 = 市場預期 $3.27</text>
+  <line x1="390" y1="36" x2="390" y2="216" style="stroke:var(--ink3);stroke-dasharray:4 4"/>
+  <text x="390" y="230" text-anchor="middle" style="fill:var(--ink3);font:600 11px sans-serif">預期 $3.27</text>
+
+  <text x="20" y="60" style="fill:var(--ink2);font:600 12px sans-serif">市場預期(consensus)</text>
+  <rect x="20" y="66" width="370" height="26" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="398" y="84" style="fill:var(--ink2);font:600 12px sans-serif">$3.27</text>
+
+  <text x="20" y="128" style="fill:var(--ink2);font:600 12px sans-serif">核心營運 EPS(剔除一次性)</text>
+  <rect x="20" y="134" width="382" height="26" rx="4" style="fill:var(--win)"/>
+  <text x="410" y="152" style="fill:var(--win);font:700 12px sans-serif">$3.37</text>
+
+  <text x="20" y="196" style="fill:var(--ink2);font:600 12px sans-serif">本季頭條非GAAP EPS(含一次性收益)</text>
+  <rect x="20" y="202" width="382" height="26" style="fill:var(--win)"/>
+  <rect x="402" y="202" width="286" height="26" rx="4" style="fill:var(--turn)"/>
+  <text x="696" y="220" style="fill:var(--turn);font:700 12px sans-serif">$5.90</text>
+</svg>
+</div>
+<table>
+<tr><th>指標</th><th>FY27 Q2</th><th>FY27 Q1</th><th>FY26 Q2</th><th>市場預期</th><th>判定</th></tr>
+<tr><td><b>總營收</b></td><td>$11.35B</td><td>$11.1B</td><td>$10.2B</td><td>$11.32B</td><td class="win">小幅 Beat,YoY +11%</td></tr>
+<tr><td>訂閱與支援營收</td><td>$10.82B</td><td>—</td><td>$9.7B</td><td>—</td><td class="win">YoY +12%(含 Informatica $456M)</td></tr>
+<tr><td>GAAP 毛利率</td><td>76.6%</td><td>—</td><td>—</td><td>—</td><td class="mid">—</td></tr>
+<tr><td>GAAP 營益率</td><td>20.5%</td><td>21.1%</td><td>22.8%</td><td>—</td><td class="mid">QoQ/YoY 略降</td></tr>
+<tr><td>非GAAP 營益率</td><td>34.1%</td><td>34.8%</td><td>34.3%</td><td>—</td><td class="mid">三期都在 34% 上下,穩定</td></tr>
+<tr><td>非GAAP EPS(頭條)</td><td>$5.90</td><td>$3.88</td><td>$2.91</td><td>$3.27</td><td class="mid">YoY +103%,但含一次性收益</td></tr>
+<tr><td><b>核心營運 EPS(剔除一次性)</b></td><td><b>≈$3.37</b></td><td>≈$3.37(頭條 $3.88 − 投資收益 $0.51)</td><td>—</td><td>$3.27</td><td class="win">真正的 Beat 約 +3%</td></tr>
+<tr><td>營運現金流</td><td>$1.3B</td><td>—</td><td>—</td><td>—</td><td class="win">YoY +71%</td></tr>
+<tr><td>自由現金流</td><td>$1.1B</td><td>$6.6B</td><td>—</td><td>—</td><td class="mid">YoY +81%,Q1 季節性本就是全年高點</td></tr>
+<tr><td>資本支出</td><td>$171M</td><td>—</td><td>—</td><td>—</td><td class="mid">占營收約 1.5%,不是重資本業務</td></tr>
+<tr><td>cRPO(未來12個月訂單)</td><td>$33.5B</td><td>—</td><td>$29.4B</td><td>—</td><td class="win">YoY +14%,近幾季最快</td></tr>
+</table>
+</div>
+
+<h2>二、Guidance:上修營收、承認現金流成長放緩</h2>
+<div class="card">
+<table>
+<tr><th>項目</th><th>本次(2026-08-26)</th><th>上次(2026-05-27)</th><th>變化</th></tr>
+<tr><td><b>FY27 全年營收</b></td><td>$46.1–46.4B</td><td>$45.9–46.2B</td><td class="win">上修 $200M(CC 上修 $300M)</td></tr>
+<tr><td>FY27 非GAAP 營益率</td><td>34.3%</td><td>34.3%</td><td>持平</td></tr>
+<tr><td>FY27 非GAAP EPS(全年)</td><td>$16.67–16.71</td><td>—</td><td>—</td></tr>
+<tr><td>FY27 營運/自由現金流成長</td><td>約 +4%~5% YoY</td><td>—</td><td>維持</td></tr>
+<tr><td>Q3 FY27 營收</td><td>$11.42–11.5B</td><td>—</td><td>+11%~12% YoY</td></tr>
+<tr><td>Q3 FY27 非GAAP EPS</td><td>$3.42–3.44</td><td>—</td><td>比對本季核心 EPS $3.37 略升</td></tr>
+</table>
+</div>
+
+<h2>三、同族群概念股掃描:企業 SaaS + AI agent 商業化</h2>
+<div class="card">
+<p style="color:var(--ink2);font-size:13.5px;margin-bottom:10px">族群定義:賣座位/訂閱給企業客戶的雲端應用軟體(SaaS),且都在講「AI agent 幫你做事」這個敘事——CRM、ERP、HR/財務、創意工具各佔一塊,ORCL/MSFT 另有自家雲端基建加持。</p>
+<div id="groupTable-wrap" style="overflow-x:auto"><table id="groupTable"></table></div>
+</div>
+<script>
+const GROUP=[
+ ['CRM Salesforce','CRM 龍頭 + Agentforce AI agent · 本文主標的','龍頭 · 財報後大漲','15.95x','訂單動能扎實,但頭條EPS漂亮有一半是投資帳面收益'],
+ ['NOW ServiceNow','企業工作流/ITSM + AI agent 平台','估值最貴 · 成長最快','29.93x','AI ACV 破10億美元,是族群裡AI變現故事最具體的一家'],
+ ['MSFT 微軟','Copilot + Dynamics,自帶 Azure 雲端基建','共識最穩健','26.12x','企業軟體AI變現規模最大,但業務多元不是純SaaS對照組'],
+ ['ORCL Oracle','ERP/資料庫 + 自家 OCI 雲端','估值中性 · capex 壓力大','16.09x','雲端基建大舉擴張,傳統應用軟體業務成長最慢'],
+ ['WDAY Workday','HR/財務 SaaS 專業戶','跟漲 · 成長放緩','15.71x','企業支出審慎下,HR/財務類SaaS首當其衝'],
+ ['ADBE Adobe','創意軟體 + Firefly AI 貨幣化','估值全表最低','8.76x','AI貨幣化速度被市場質疑最深,估值分位跌到低檔'],
+];
+document.getElementById('groupTable').outerHTML=
+ '<table id="groupTable"><tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('')+'</table>';
+</script>
+
+<h2>四、下季待觀察</h2>
+<div class="card">
+<ul style="margin:0;padding-left:20px;line-height:1.8;color:var(--ink2)">
+<li>核心營運 EPS(剔除一次性後)能否延續 Q3 guidance 的 $3.42–3.44,若再靠投資收益撐場,代表本業成長仍未加速。</li>
+<li>cRPO YoY 能否維持在 +14% 附近;若掉回 +11%~12% 區間,代表本季的訂單動能是一次性而非趨勢。</li>
+<li>Informatica 併購貢獻是否隨基期墊高而遞減,觀察剔除併購後的有機營收成長率是否守住 +8% 左右。</li>
+</ul>
+</div>
+
+<h2>五、多空兩面</h2>
+<div class="kbox">
+<div class="kcard"><div class="kt">看多</div><div class="kd">cRPO +14% 是近幾季最快,訂單動能扎實;非GAAP營益率穩定在34%上下;forward PE 15.95x、PEG 0.95 不貴。</div></div>
+<div class="kcard"><div class="kt">看淡</div><div class="kd">頭條EPS漂亮近半靠投資帳面收益,核心Beat僅+3%;回購暫停轉為舉債買股,改變資本結構;有機營收成長僅約+8%。</div></div>
+</div>
+
+<div class="foot"><b>資料來源</b>:Salesforce Q2 FY27 IR 新聞稿/SEC 8-K(2026-08-26)、Q1 FY27 財報(2026-05-27)、Q2 FY26 財報(2025-09-03)、stockanalysis.com(2026-09-25 估值數據)。<br><b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。</div>
+</div></body></html>

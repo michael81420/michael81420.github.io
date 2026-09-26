@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arm．FY2027 Q1 財報拆解 — 營收 $1.29B、YoY +22% 超預期,AI 資料中心版稅倍增,但全年 royalty 成長指引從 ~20% 下修到 high-teens,股價反而跌 8%</title>
+<meta name="description" content="Arm FY27 Q1 營收 $1.29B、YoY +22%,non-GAAP EPS $0.45 大幅 beat 預期 $0.40;資料中心版稅倍增、AGI CPU 需求逾 $20 億。但手機記憶體漲價拖累版稅,全年 royalty 成長指引下修,股價當日反跌 8%。IR 原文 + 法說重點 + Futu 數字查證,非買賣建議。">
+<link rel="canonical" href="https://michael81420.github.io/posts/arm-fy2027q1-earnings.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://michael81420.github.io/posts/arm-fy2027q1-earnings.html">
+<link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/arm-fy2027q1-earnings.en.html">
+<link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/arm-fy2027q1-earnings.html">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="arm-fy2027q1-earnings"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Arm．FY2027 Q1 財報拆解 <span style="font-size:16px;color:var(--turn)">｜🧾</span></h1>
+<div class="sub">營收 <b>$1.29B、YoY +22%</b>,non-GAAP EPS <b>$0.45</b> 大幅超過預期的 $0.40。資料中心版稅單季<b>倍增</b>、AGI CPU 需求已逾 $20 億。<br>但手機記憶體漲價拖累版稅,<b>全年 royalty 成長指引從約 20% 下修到 high-teens</b>,股價當日反而 <b>−8%</b>。IR 原文 + 法說重點 + Futu 數字查證,非買賣建議。</div>
+<div style="margin-top:10px">
+<span class="badge new">來源:Arm IR 財報原文 + 法說重點</span>
+<span class="badge">財報期:2026-04-01 ~ 2026-06-30(FY27 Q1)</span>
+<span class="badge">公布日:2026-07-29 美股收盤後</span>
+<span class="badge">整理日:2026-09-26</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR · 這季真正的重點</h2>
+<p class="big">🚀 <span class="win">數字本身很硬:營收、EPS 雙 beat,資料中心版稅倍增</span>。營收 $1.29B、YoY +22%(對比預期 $1.26B);non-GAAP EPS $0.45,超過預期 $0.40 達 +12.5%。版稅 $715M(YoY +22%)裡,<b>資料中心版稅單季倍增</b>是最大亮點,AGI CPU(2026 年 3 月推出)客戶需求已累計超過 <b>$20 億</b>。</p>
+<p class="big">📉 <span class="lose">但全年 royalty 成長指引被下修,這是股價跌 8% 的真正原因</span>。管理層把全年版稅成長預期從原本約 <b>20%</b> 下修到 <b>high-teens</b>,理由是記憶體漲價正在往中高階手機蔓延,壓抑智慧型手機出貨。<b>AI 資料中心的成長,還沒快到能完全蓋過手機的疲弱</b>。</p>
+<p class="big">💰 <span class="mid">GAAP 與 non-GAAP 的故事完全分岔</span>。non-GAAP 營益率 <b>41.2%</b>,比去年同期 39.1% 還進步;但 GAAP 營益率從 10.8% 掉到 <b>7.1%</b>——差距全部來自研發費用(GAAP $838M、YoY +29%)與股票薪酬(SBC $343M、YoY +42%)的擴大。核心生意在賺錢,帳上淨利被投資期費用蓋住。</p>
+<p class="note">★ 估值上,forward PE 約 <b>229x</b>,一年分位 <b>82.4%</b>——這代表即使用「未來一年」的獲利去攤,Arm 現在的貴,比它自己過去一年大部分時間都貴。20 位分析師 85% 買入,平均目標價 $313.41,對比 2026-09-25 收盤 $310.32,隱含空間有限。</p>
+</div>
+
+<h2>一、核心數字:GAAP 利潤率被費用吃掉,non-GAAP 反而擴張</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Arm 的 GAAP 營益率一年內從 10.8% 降到 7.1%,但 non-GAAP 營益率反而從 39.1% 升到 41.2%,兩者差距從 28.3 個百分點擴大到 34.1 個百分點">
+  <text x="20" y="26" style="fill:var(--ink2);font:600 13px sans-serif">單季營益率(%)· GAAP vs non-GAAP,差距在擴大</text>
+  <line x1="60" y1="250" x2="700" y2="250" style="stroke:var(--border)"/>
+  <text x="50" y="254" text-anchor="end" style="fill:var(--ink3);font:400 11px sans-serif">0</text>
+
+  <rect x="140" y="207" width="50" height="43" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="200" y="94" width="50" height="156" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="165" y="200" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">10.8%</text>
+  <text x="225" y="87" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">39.1%</text>
+  <text x="195" y="270" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">FY26 Q1</text>
+
+  <rect x="410" y="222" width="50" height="28" rx="3" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <rect x="470" y="85" width="50" height="165" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="435" y="215" text-anchor="middle" style="fill:var(--lose);font:600 12px sans-serif">7.1%</text>
+  <text x="495" y="78" text-anchor="middle" style="fill:var(--win);font:600 12px sans-serif">41.2%</text>
+  <text x="465" y="270" text-anchor="middle" style="fill:var(--ink2);font:600 12px sans-serif">FY27 Q1</text>
+
+  <text x="600" y="130" style="fill:var(--ink3);font:400 11px sans-serif">缺口</text>
+  <text x="600" y="146" style="fill:var(--lose);font:600 12px sans-serif">28.3pp → 34.1pp</text>
+  <rect x="80" y="288" width="12" height="12" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="98" y="298" style="fill:var(--ink3);font:400 11px sans-serif">GAAP 營益率</text>
+  <rect x="220" y="288" width="12" height="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
+  <text x="238" y="298" style="fill:var(--ink3);font:400 11px sans-serif">non-GAAP 營益率</text>
+</svg>
+</div>
+<div style="overflow-x:auto"><table id="coreTable"></table></div>
+<p style="margin-top:14px">版稅 $715M(YoY +22%)、授權及其他 $574M(YoY +23%)。GAAP 淨利 $270M(YoY +108%),non-GAAP 淨利 $480M(YoY +28%)——差距主要是 SBC $343M 沒有被排除在 GAAP 口徑外。期末現金加短期投資 $3,888M,QoQ +8.0%;本季<b>沒有</b>股票回購或股利。</p>
+</div>
+
+<h2>二、Guidance:Q2 營收再上一階,但全年版稅目標下修</h2>
+<div class="card">
+<div style="overflow-x:auto"><table id="guideTable"></table></div>
+<p style="margin-top:14px">Q2 FY27 營收指引 $1.38B(±$50M),中位數對比 Q1 實際 $1.29B 是季增;non-GAAP EPS 指引 $0.47(±$0.04)。但全年層級,管理層把<b>版稅成長預期從約 20% 下修到 high-teens</b>,授權成長預期則維持約 <b>30%</b>——用授權的加速去補版稅的減速。</p>
+<p>管理層同時重申一個五年期目標:FY2031 總營收約 <b>$25B</b>(IP/CSS 業務 $10B + AGI CPU 業務 $15B)。這是遠期敘事,<b>跟本季或 FY27 的實際指引是兩件事</b>,不宜混為一談當作近期兌現的依據。</p>
+</div>
+
+<h2>三、估值:forward 229x、分位 82%,貴不是新聞但也沒變便宜</h2>
+<div class="card">
+<p class="big">📊 目前股價 <b>$310.32</b>(2026-09-25 收盤),trailing PE <b>317x</b>、forward PE <b>229x</b>,一年分位 <b>82.4%</b>——即使拉長到「未來一年」的獲利去攤,現在的估值仍比自己過去一年大部分時間更貴,不是「便宜的成長股」。<br><span style="color:var(--ink3);font-size:.9em">註:229x 為 Futu 數字,隱含 EPS 約 $1.35,較接近 GAAP 口徑;若以 FY27 non-GAAP 一致預期 EPS 約 $2.22 粗算,forward PE 約 140x(StockAnalysis 報 130x)。兩種口徑都很貴,但差距不小。</span></p>
+<p>20 位分析師覆蓋,<b>85% 買入、15% 持有、0% 賣出</b>,平均目標價 <b>$313.41</b>(高 $480 / 低 $230),對比收盤價幾乎沒有隱含空間——這代表分析師普遍認同故事,但沒人敢在這個價位喊出更大的上修。<span class="mid">「AI 資料中心版稅倍增」的敘事已經被充分定價</span>,下季能不能延續加速度,比這季的 beat 本身更重要。</p>
+</div>
+
+<h2>四、同族群概念股掃描</h2>
+<div class="card">
+<p><b>族群定義:</b><b>半導體 IP 授權與晶片設計工具</b>——Arm 不生產晶片,靠授權 CPU 架構(IP)收版稅與授權費;族群往兩側延伸:一側是把 ARM IP 用進自家晶片的授權客戶,另一側是晶片設計必備的 EDA 工具雙巨頭。</p>
+<div style="overflow-x:auto"><table id="groupTable"></table></div>
+<p style="margin-top:14px">AVGO 與 CDNS 的估值分位是全表最低(2.4%、10.8%),但原因不同:AVGO 是被自身巨大的 AI 客製晶片營收基期墊高,CDNS 則是市場認為 EDA 成長已見頂。MRVL 分位 91.2% 全表最高,AI 網通敘事撐得比基本面快,估值風險比 Arm 本身更值得留意。</p>
+</div>
+
+<h2>五、下季待觀察(可證偽)</h2>
+<div class="card">
+<div class="kbox">
+<div class="kcard"><div class="kt">① Q2 FY27 營收是否落在 $1.33–1.43B</div><div class="kd">指引中位數 $1.38B</div><div class="ke">低於下緣 $1.33B = 手機疲弱擴散速度比預期快</div></div>
+<div class="kcard"><div class="kt">② 全年 royalty 成長是否止於 high-teens</div><div class="kd">本季從約 20% 下修</div><div class="ke">若再度下修至 low-teens = 記憶體漲價衝擊比這次講的更嚴重</div></div>
+<div class="kcard"><div class="kt">③ non-GAAP 營益率能否守住 40%+</div><div class="kd">本季 41.2%,去年同期 39.1%</div><div class="ke">跌破 40% = SBC/研發投入速度已經蓋過版稅成長</div></div>
+</div>
+<p style="margin-top:14px" class="note">★ 下一份財報是 FY2027 Q2(會計期間 2026/7–9 月),預計 2026 年 10 月底公布。</p>
+</div>
+
+<h2>六、多空兩面</h2>
+<div class="card">
+<p><b>看多的三個理由:</b></p>
+<p>① <b>AI 資料中心版稅是真的在加速</b>。資料中心版稅單季倍增,AGI CPU 需求已逾 $20 億,Neoverse 累計出貨核心數破 15 億顆,NVIDIA、Google、AWS、Microsoft 都在擴大 Arm 架構部署。</p>
+<p>② <b>核心利潤率其實在改善</b>。non-GAAP 營益率 41.2% 優於去年同期,授權成長指引維持約 30%,用授權的量能對沖版稅的減速。</p>
+<p>③ <b>資產負債表乾淨</b>。現金加短期投資 $3,888M、無槓桿壓力,不需要為 AI 投資稀釋股東或加大舉債。</p>
+<p><b>看空的三個理由:</b></p>
+<p>① <b>手機版稅的疲弱是結構性,不是雜訊</b>。記憶體漲價正從高階往中階手機蔓延,管理層自己把全年 royalty 目標砍了一段,而智慧型手機仍是版稅的主要底盤。</p>
+<p>② <b>估值沒有安全邊際</b>。forward PE 229x、一年分位 82.4%,分析師平均目標價幾乎沒有隱含空間,股價對任何不如預期的訊號都可能過度反應——這正是這次 beat 之後股價反跌 8% 的寫照。</p>
+<p>③ <b>GAAP 與 non-GAAP 的缺口還在擴大</b>(28.3pp → 34.1pp)。SBC YoY +42%,若股價回落,SBC 造成的稀釋感受會比現在更明顯。</p>
+<p class="note">★ 分歧點在於:<b>AI 資料中心版稅的成長曲線,能不能在 1–2 個財季內快到蓋過手機的下修</b>。看多方賭 AGI CPU 的量能會加速兌現;看空方認為現在的估值已經把這個加速度提前算進去了,留給下季的容錯空間很小。</p>
+</div>
+
+<div class="foot">
+<b>資料來源</b>:Arm Newsroom「Arm delivers record first-quarter for total revenue」(2026-07-29)及 FYE27 Q1 財報 6-K 附件(SEC EDGAR);法說會摘要與股價反應引自 Yahoo Finance / TradingKey / 24/7 Wall St. / Investing.com;分析師一致預期、估值分位、股價快照為 Futu 數據(查詢日 2026-09-26)。<br>
+<b>免責聲明</b>:本頁為個人研究筆記,不構成投資建議。所有數字以官方財報原文為準;估值數據為查詢當日快照,會隨股價變動。
+</div>
+</div>
+
+<script>
+// 核心數字表
+const CORE=[
+ ['總營收','$1.29B','$1.49B','$1.05B','$1.26B','Beat +2.3% / YoY +22%','win'],
+ ['版稅收入','$715M','$671M','$585M','—','YoY +22%(資料中心版稅倍增)','win'],
+ ['授權及其他收入','$574M','$819M','$468M','—','YoY +23%','win'],
+ ['GAAP 營益率','7.1%','—','10.8%','—','費用擴大,YoY −3.7pp','lose'],
+ ['non-GAAP 營益率','41.2%','—','39.1%','—','YoY +2.1pp','win'],
+ ['GAAP 稀釋 EPS','$0.25','—','$0.12','—','YoY +108%','win'],
+ ['<b>non-GAAP 稀釋 EPS(核心)</b>','<b>$0.45</b>','$0.60','$0.35','$0.40','Beat +12.5% / YoY +29%','win'],
+ ['營運現金流','$902M','—','—','—','—',''],
+ ['資本支出','$197M','—','—','—','—',''],
+ ['non-GAAP 自由現金流','$665M','—','—','—','FCF margin ≈ 52%','win'],
+ ['現金 + 短期投資','$3,888M','$3,601M','—','—','QoQ +8.0%','win'],
+];
+document.getElementById('coreTable').innerHTML=
+ '<tr><th>指標</th><th>Q1 FY27</th><th>Q4 FY26</th><th>Q1 FY26</th><th>市場預期</th><th>判定</th></tr>'+
+ CORE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td class="${r[6]}">${r[5]}</td></tr>`).join('');
+
+// Guidance
+const GUIDE=[
+ ['下季營收','Q2 FY27:$1.38B±$50M','Q1 FY27:$1.26–1.31B(實際 $1.29B)','—',''],
+ ['下季 non-GAAP EPS','<b>$0.47±$0.04</b>','$0.40 一致預期(Q1 實際 $0.45)','—',''],
+ ['全年版稅成長','<b>high-teens</b>','約 20%','下修','lose'],
+ ['全年授權成長','約 <b>30%</b>','—','—',''],
+];
+document.getElementById('guideTable').innerHTML=
+ '<tr><th>項目</th><th>本次(2026-07-29)</th><th>對比</th><th>變化</th></tr>'+
+ GUIDE.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('');
+
+// 同族群概念股掃描
+const GROUP=[
+ ['ARM Arm','CPU 架構 IP 授權龍頭 · 本文主標的','壟斷性 ISA 地位','229.1x','82.4%','AI 資料中心版稅倍增,但手機疲弱與高分位估值同時存在'],
+ ['QCOM 高通','Arm 最大授權客戶,手機 SoC/數據機龍頭','跟隨 Arm 生態,自身晶片龍頭','34.8x','45.6%','同步吃到手機疲弱,估值中性,靠車用/IoT 分散'],
+ ['AVGO 博通','客製 ASIC / 網通龍頭,AI 資料中心受益者','龍頭','23.9x','2.4%','同樣受惠 AI 資料中心,估值分位全表最低,反映高基期'],
+ ['MRVL 邁威爾','AI 網通 / 客製晶片挑戰者','跟漲 · 次級','77.0x','91.2%','分位全表最高,AI 敘事跑得比基本面快,評價風險最大'],
+ ['SNPS Synopsys','EDA 設計工具雙巨頭之一,晶片設計上游','龍頭','75.6x','65.6%','設計「收費站」,不直接吃版稅循環,估值中性偏高'],
+ ['CDNS Cadence','EDA 雙巨頭另一家','龍頭','64.4x','10.8%','同為設計工具龍頭,分位偏低,顯示成長預期已降溫'],
+];
+document.getElementById('groupTable').innerHTML=
+ '<tr><th>代號/名稱</th><th>族群裡的定位</th><th>相對強弱</th><th>Forward PE</th><th>一年估值分位</th><th>一句話看法</th></tr>'+
+ GROUP.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+</script>
+</body></html>

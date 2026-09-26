@@ -11,6 +11,7 @@
   eps:"$1.97",
   eg:"non-GAAP",
   fcf:"−$8.82B",
+  fcfm:"−4.4%",
   pe:"28.46x",
   tone:"neu",
   gd:null,
