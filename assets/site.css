@@ -434,8 +434,8 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable{min-width:1140px;background:var(--surface);border:1px solid var(--border);
   border-radius:14px;overflow:hidden}
 /* 數字欄用 fr 平均攤開；最右「結論 · Outlook」給最寬，因為它才是「所以呢」 */
-.etable .er{display:grid;grid-template-columns:minmax(190px,1.3fr) 72px .75fr .7fr 1.05fr .8fr .75fr minmax(300px,2.6fr);
-  gap:0 10px;align-items:center;padding:13px 18px}
+.etable .er{display:grid;grid-template-columns:minmax(190px,1.3fr) 72px .75fr .7fr 1.05fr .8fr .75fr minmax(300px,2.6fr) auto;
+  gap:0 6px;align-items:center;padding:13px 18px}
 .etable details{border-bottom:1px solid var(--border)}
 .etable details:last-child{border-bottom:0}
 .etable summary{list-style:none;cursor:pointer}
@@ -443,7 +443,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable .eh{padding:11px 18px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
   color:var(--ink3);font-weight:600;border-bottom:1px solid var(--border)}
 .etable .eh .num{font-size:11px;color:var(--ink3);font-weight:600}
-.etable .eh>:last-child{padding-left:15px}
+.etable .eh>:nth-last-child(2){padding-left:15px}
 .etable .eh>div,.etable .eh .num,.etable .tn{text-align:center}
 .etable .eh>:first-child{text-align:left}
 .etable .eh .sort{cursor:pointer;user-select:none}
@@ -477,4 +477,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable .ex .spk{display:flex;gap:22px;margin-bottom:10px;color:var(--ink2)}
 .etable .ex .spk svg{display:block;margin-top:2px}
 .etable .ex .more{display:inline-block;margin-top:12px;font-weight:600}
+/* 列尾直達全文，不必先展開；點列其他地方照樣展開 */
+.etable .go{padding-left:8px;text-align:center;white-space:nowrap;font-size:12.5px;font-weight:600}
+.etable .go:hover{text-decoration:none}
 .etable-note{margin-top:12px;font-size:12.5px;color:var(--ink3);line-height:1.7}

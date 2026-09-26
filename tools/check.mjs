@@ -63,6 +63,7 @@ for (const p of POSTS) {
         const tq = p.zh.match(/．(.+) 財報拆解/)?.[1];
         if (!/^20\d\d Q[1-4]$/.test(r.q)) bad(js, `q「${r.q}」要寫日曆季度，如 2026 Q2`);
         else if (tq && !tq.startsWith('FY') && r.q !== tq) bad(js, `q「${r.q}」要跟標題季度「${tq}」一致`);
+        for (const k of ['eps', 'fcf']) if (r[k] !== '—' && !/^[−-]?\$/.test(r[k])) bad(js, `${k} 金額一律用 USD（$ 開頭），原幣要先換算：${r[k]}`);
         if ((r.fcf === '—') !== (r.fcfm === '—')) bad(js, `fcf 與 fcfm 要同時有值或同時為 —`);
         if (!['GAAP', 'non-GAAP'].includes(r.eg)) bad(js, `eg 只能是 GAAP / non-GAAP`);
         if (!['bull', 'neu', 'bear', 'turn'].includes(r.tone)) bad(js, `tone 只能是 bull/neu/bear/turn`);

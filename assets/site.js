@@ -99,7 +99,7 @@ var ETXT={
   zh:{all:'全部',q:'代碼或名稱',head:['公司 · 季度','評等','營收 YoY','營益率','EPS','FCF · 利潤率','forward PE','結論 · Outlook'],
       tone:{bull:'看多',neu:'中性',bear:'偏淡',turn:'轉機'},
       gd:{'1':'↑ 上修','0':'→ 維持','-1':'↓ 下修'},
-      k:['結論','Outlook'],qs:' 季',hist:'季度走勢',watch:'上季待觀察 → 本季結果',next:'下季要看',read:'看完整拆解 →',
+      k:['結論','Outlook'],qs:' 季',hist:'季度走勢',watch:'上季待觀察 → 本季結果',next:'下季要看',read:'看完整拆解 →',go:'全文 →',
       load:'讀取各篇財報數字中…',upd:'最後更新 ',
       fail:'讀不到財報數字，posts/&lt;slug&gt;.earn.js 可能漏建或有語法錯誤（開 console 看）。',
       note:'EPS 為剔除一次性項目後的核心數字，括號標口徑；FCF 為單季自由現金流，括號為 FCF 利潤率（FCF ÷ 營收，可跨規模比、對照營益率看利潤有沒有變現金）；估值一律看 forward PE。'+
@@ -107,7 +107,7 @@ var ETXT={
   en:{all:'All',q:'Ticker or name',head:['Company · Quarter','Rating','Rev. YoY','Op. margin','EPS','FCF · margin','Forward P/E','Takeaway · Outlook'],
       tone:{bull:'Bullish',neu:'Neutral',bear:'Bearish',turn:'Turnaround'},
       gd:{'1':'↑ Raised','0':'→ Held','-1':'↓ Cut'},
-      k:['Takeaway','Outlook'],qs:' qtrs',hist:'Quarter by quarter',watch:'Last quarter\'s watch list → result',next:'Watch next',read:'Full breakdown →',
+      k:['Takeaway','Outlook'],qs:' qtrs',hist:'Quarter by quarter',watch:'Last quarter\'s watch list → result',next:'Watch next',read:'Full breakdown →',go:'Read →',
       load:'Loading figures from each post…',upd:'Last updated ',
       fail:'Could not load the figures — posts/&lt;slug&gt;.earn.js may be missing or have a syntax error (check the console).',
       note:'EPS is core EPS excluding one-offs, basis in brackets; FCF is single-quarter free cash flow, with FCF margin (FCF ÷ revenue) in brackets — comparable across sizes, and worth reading against operating margin; valuation always uses forward P/E. '+
@@ -329,11 +329,11 @@ function initHome(){
         var k=KEYS[i];
         return '<div class="'+(i>1&&i<7?'num':'')+(k?' sort':'')+(k&&k===earnKey?' on':'')+'"'+(k?' data-k="'+k+'"':'')+'>'+
           h+(k&&k===earnKey?(earnAsc?' ▲':' ▼'):'')+'</div>';
-      }).join('')+'</div>'+
+      }).join('')+'<div></div></div>'+
       gs.map(function(g){
         var r=g.q[0].r,p=g.q[1]&&g.q[1].r;
         return '<details data-q="'+(r.tk+' '+r.nm.zh+' '+r.nm.en).toLowerCase().replace(/"/g,'')+'"><summary class="er">'+
-          '<div class="nmc"><b>'+r.nm[LANG]+'</b> <span class="tkc">('+r.tk+')</span><div class="nq">'+r.q+(g.q.length>1?' · '+g.q.length+T.qs:'')+'</div></div>'+
+          '<div class="nmc"><b>'+r.nm.en+'</b> <span class="tkc">('+r.tk+')</span><div class="nq">'+r.q+(g.q.length>1?' · '+g.q.length+T.qs:'')+'</div></div>'+
           '<div class="tn"><span class="pill p-'+r.tone+'">'+T.tone[r.tone]+'</span></div>'+
           '<div class="num k'+(r.t?' '+r.t:'')+'">'+r.rev+arrow('rev',r,p)+'</div>'+
           '<div class="num">'+r.opm+arrow('opm',r,p)+'</div>'+
@@ -342,6 +342,7 @@ function initHome(){
           '<div class="num">'+r.pe+'</div>'+
           '<div class="cn"><div><span class="ck">'+T.k[0]+'</span>'+r.v[LANG]+'</div>'+
             '<div class="co"><span class="ck">'+T.k[1]+'</span>'+(r.gd==null?'':'<span class="'+(r.gd>0?'win':r.gd<0?'lose':'')+'">'+T.gd[r.gd]+'</span> · ')+r.o[LANG]+'</div></div>'+
+          '<a class="go" href="posts/'+g.q[0].slug+earnExt+'" title="'+T.read+'">'+T.go+'</a>'+
           '</summary><div class="ex"><div>'+
             (g.q.length>1?'<h4>'+T.hist+'</h4><div class="spk"><div>'+T.head[2]+earnSpark(g.q.map(function(x){return x.r.rev;}),'win')+'</div>'+
               '<div>'+T.head[3]+earnSpark(g.q.map(function(x){return x.r.opm;}),'turn')+'</div></div>':'')+
