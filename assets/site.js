@@ -31,6 +31,7 @@ var POSTS=[
   {slug:'crowdstrike-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'CrowdStrike', zh:'CrowdStrike．FY2027 Q2 財報拆解', en:'CrowdStrike．FY2027 Q2 Earnings, Unpacked'},
   {slug:'datadog-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Datadog', zh:'Datadog．2026 Q2 財報拆解', en:'Datadog．Q2 2026 Earnings, Unpacked'},
   {slug:'micron-fy2026q3-earnings', d:'2026-09-26', cat:'財報分析', sub:'Micron', zh:'Micron．FY2026 Q3 財報拆解', en:'Micron．FY2026 Q3 Earnings, Unpacked'},
+  {slug:'micron-fy2026q4-earnings', d:'2026-10-01', cat:'財報分析', sub:'Micron', zh:'Micron．FY2026 Q4 財報拆解', en:'Micron．FY2026 Q4 Earnings, Unpacked'},
   {slug:'sk-hynix-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'SK hynix', zh:'SK hynix．2026 Q2 財報拆解', en:'SK hynix．Q2 2026 Earnings, Unpacked'},
   {slug:'arm-fy2027q1-earnings', d:'2026-09-26', cat:'財報分析', sub:'Arm', zh:'Arm．FY2027 Q1 財報拆解', en:'Arm．FY2027 Q1 Earnings, Unpacked'},
   {slug:'coinbase-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Coinbase', zh:'Coinbase．2026 Q2 財報拆解', en:'Coinbase．Q2 2026 Earnings, Unpacked'},
