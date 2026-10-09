@@ -32,6 +32,8 @@ for (const p of POSTS) {
   for (const [f, s] of [[zh, z], [en, e]]) {
     if (!s.includes(`data-slug="${p.slug}"`)) bad(f, `body 缺 data-slug="${p.slug}"`);
     if (!s.includes('lang-toggle')) bad(f, '缺 lang-toggle 按鈕');
+    // 章節導覽高亮的判定線要量導覽列高度：手機單排、桌機換行高度都不同，寫死會高亮成上一章
+    if (s.includes('id="daynav"') && /var y=\d+\s*,/.test(s)) bad(f, 'daynav 判定線寫死數字，改用 parseFloat(getComputedStyle(nav).top)+nav.offsetHeight+40');
   }
   if (!e.includes('<html lang="en"')) bad(en, '英文頁 <html lang> 不是 en');
   if (!z.includes('href="../index.html"')) bad(zh, '返回鍵沒指向 ../index.html');

@@ -596,4 +596,11 @@ document.addEventListener('DOMContentLoaded',function(){
   initHome();
   initArticle();
   initSkills();
+  // 章節導覽在手機是一排橫滑：高亮換到畫面外的那顆時，把它捲回中間（高亮本身由各頁 inline script 負責）
+  var dn=document.getElementById('daynav'),last=null;
+  if(dn) window.addEventListener('scroll',function(){
+    var a=dn.querySelector('a.active');
+    if(a&&a!==last&&dn.scrollWidth>dn.clientWidth) dn.scrollTo({left:a.offsetLeft-(dn.clientWidth-a.offsetWidth)/2,behavior:'smooth'});
+    last=a;
+  },{passive:true});
 });

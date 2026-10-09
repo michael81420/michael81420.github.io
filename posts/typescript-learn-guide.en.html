@@ -699,7 +699,7 @@ npm install -D <span class="ok">@types/lodash</span>    <span class="c"># type d
   var links=[].slice.call(nav.querySelectorAll('a'));
   var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
   function onScroll(){
-    var y=90, idx=-1;
+    var y=parseFloat(getComputedStyle(nav).top)+nav.offsetHeight+40, idx=-1; // 判定線＝黏住後導覽列底部，手機單排、桌機可能換行，用量的
     for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
     links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
   }
