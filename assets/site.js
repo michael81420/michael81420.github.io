@@ -317,9 +317,9 @@ function initHome(){
     var T=ETXT[LANG],KEYS=[null,null,'rev','opm','eps','fcfm','pe',null];
     // 類別 chip 依家數多→少；一家有多類就在每個類別底下都出現
     var cnt={};earnGroups.forEach(function(g){g.q[0].r.g.forEach(function(k){cnt[k]=(cnt[k]||0)+1;});});
-    var chips='<div class="echips">'+[''].concat(Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];})).map(function(k){
+    var chips='<div class="echips"><div class="chips">'+[''].concat(Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];})).map(function(k){
       return '<button class="chip'+(k===earnG?' active':'')+'" data-g="'+k+'">'+(k?(LANG==='en'?EGRP[k]||k:k)+' <span>'+cnt[k]+'</span>':T.all+' <span>'+earnGroups.length+'</span>')+'</button>';
-    }).join('')+'<span class="eupd">'+T.upd+earnPosts[0].d+'</span><label class="search"><span class="dot"></span><input type="search" placeholder="'+T.q+'" value="'+earnQ.replace(/"/g,'&quot;')+'"></label></div>';
+    }).join('')+'</div><span class="eupd">'+T.upd+earnPosts[0].d+'</span><label class="search"><span class="dot"></span><input type="search" placeholder="'+T.q+'" value="'+earnQ.replace(/"/g,'&quot;')+'"></label></div>';
     var gs=earnGroups.filter(function(g){return !earnG||g.q[0].r.g.indexOf(earnG)>=0;});
     if(earnKey) gs.sort(function(a,b){
       var x=earnNum(a.q[0].r[earnKey]),y=earnNum(b.q[0].r[earnKey]);
