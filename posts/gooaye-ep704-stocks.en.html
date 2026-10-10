@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gooaye EP704．The OpenAI Revenue Scare and Marvell Investor Day: Don't Get Shaken Out by Noise</title>
+<meta name="description" content="OpenAI's annualized revenue was revised from a media estimate of $70B to $50B by the FT, AI names flash-crashed and bounced the next day. The host talks about not getting shaken out by noise, and breaks down Marvell's Investor Day: a $70-90B FY2031 revenue target, the optical interconnect roadmap and the Aspeed BMC worry. We verify the numbers and scan US and Taiwan optical peers.">
+<link rel="canonical" href="https://michael81420.github.io/posts/gooaye-ep704-stocks.en.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://michael81420.github.io/posts/gooaye-ep704-stocks.html">
+<link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/gooaye-ep704-stocks.en.html">
+<link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/gooaye-ep704-stocks.html">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="stylesheet" href="../assets/site.css">
+<script src="../assets/site.js" defer></script>
+</head><body data-slug="gooaye-ep704-stocks"><div class="wrap">
+<div class="topbar"><a class="btn-back" href="../index.en.html">← Back to index</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
+
+<header>
+<h1>Gooaye EP704 · Stock Notes <span style="font-size:16px;color:var(--ink3)">｜🐘</span></h1>
+<div class="sub">About a third of the episode is investing, along two threads: <b>the flash crash after OpenAI's annualized revenue went from $70B to $50B, and the mindset of not getting shaken out by noise</b>; and <b>Marvell's Investor Day</b> — revenue targets, the optical interconnect roadmap and the Aspeed BMC worry. The host cools things down himself: the good news may be priced in, and don't bet big on distant tech roadmaps.<br>NotebookLM transcript analysis + Futu/FinMind/WebSearch verification</div>
+<div style="margin-top:10px">
+<span class="badge new">Source: Gooaye EP704 transcript analysis</span>
+<span class="badge">Compiled: 2026-10-10</span>
+</div>
+</header>
+
+<div class="card tldr">
+<h2>TL;DR</h2>
+<p class="big">🧘 <span class="mid">Mindset, not stock picks</span>: research after the close, don't panic intraday, set risk limits in advance; only exit first when something is truly broken (e.g. prices can't be raised).</p>
+<p class="big">📉 <span class="win">OpenAI's $70B → $50B ARR revision is real</span> (FT). It is an <b>accounting basis</b> difference vs. Anthropic, not vanished revenue. SOXX fell 3.4% on 10/8; LITE and CIEN each bounced ~5% on 10/9.</p>
+<p class="big">🚀 <span class="win">Marvell Investor Day numbers check out</span>: FY2031 revenue target of $70–90B (~10× FY26, vs. consensus ~$47B); FY2028 raised from $18B to ~$20B.</p>
+<p class="big">⚠️ <span class="lose">But the valuation already prices a lot in</span>: MRVL trades at 77.6x forward, +46% in 60 days, and gave back the pop within two days. Long-term gross margin of 56–59% is flat-to-down — growth comes from volume, not margin.</p>
+<p class="big">🔧 <span class="turn">BMC rethink</span>: Marvell talked data-center management and Aspeed fell 6.5% on 10/7. The host admits he lost on Nuvoton's BMC story because he thought the market was too small; now he says "small today doesn't mean small tomorrow."</p>
+</div>
+
+<h2>1. What this episode covers</h2>
+<div class="card"><p>The YouTube title is just "EP704 | 🐘". The first part is personal life, the end is listener Q&amp;A (impostor syndrome, All Weather allocation, leveraging into the index at 25) with no investing data. The investing third: the OpenAI revenue-basis episode and mindset → Marvell Investor Day → the optical interconnect path (copper → optics, NPO/CPO, 3.2T) → the risk of dream themes (TFLN, AAOI halving) → BMC, Aspeed and Nuvoton.</p>
+<p class="note">The transcript is auto-generated with no punctuation and many homophone errors (Aspeed, Nuvoton and UMC were all misspelled). NotebookLM's summary labelled FY2028 as FY2027; this page uses the corrected figures.</p></div>
+
+<h2>2. OpenAI $70B → $50B: accounting basis, not demand</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OpenAI's annualized revenue was revised from a media estimate of $70B to $50B because of a basis difference with Anthropic, not lost revenue; AI stocks flash-crashed and bounced the next day">
+<defs><marker id="ah704a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="30" width="200" height="80" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="120" y="60" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Media estimate ~$70B</text>
+<text x="120" y="82" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Extrapolated from growth</text>
+<text x="120" y="98" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">(basis not aligned)</text>
+<rect x="20" y="140" width="200" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="120" y="170" text-anchor="middle" style="fill:var(--win);font:700 13px sans-serif">FT: ~$50B end-Sept</text>
+<text x="120" y="192" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">What OpenAI told investors</text>
+<text x="120" y="208" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Own bookings only</text>
+<line x1="222" y1="125" x2="286" y2="125" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704a)"/>
+<rect x="290" y="80" width="200" height="90" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="390" y="108" text-anchor="middle" style="fill:var(--mid);font:700 13px sans-serif">$20B gap = basis</text>
+<text x="390" y="130" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Anthropic counts AWS/GCP</text>
+<text x="390" y="148" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">resale; OpenAI does not</text>
+<line x1="492" y1="125" x2="556" y2="125" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704a)"/>
+<rect x="560" y="40" width="180" height="70" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="650" y="68" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">10/8 flash crash</text>
+<text x="650" y="88" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">SOXX −3.4%, COHR −9.6%</text>
+<rect x="560" y="140" width="180" height="70" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="650" y="168" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">10/9 rebound</text>
+<text x="650" y="188" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">LITE +5.2%, CIEN +5.6%</text>
+<line x1="650" y1="112" x2="650" y2="136" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704a)"/>
+</svg></div>
+<p>The host's read: OpenAI and Anthropic recognize revenue differently. The media tried to put them on one basis and applied the company's stated growth rate, getting $70B; the actual figure came in at $50B. He sees ARR as a rough "this month × 12" and not a reason to trade; going from $2B to $50B is already historically fast. He compares it to the GB200 "70,000 racks" figure that was later cut.</p>
+<p>Check: <span class="win">the FT reported OpenAI told investors its ARR was nearing $50B at end-September, ~$20B below the ~$70B floating around, because investors wanted a like-for-like comparison with Anthropic (which counts cloud resale)</span> — consistent with the host. <span class="mid">The "$40B × 77%" math and the CNBC attribution could not be found</span>; only second-hand accounts.</p>
+<h3>Mindset: let the bullet fly a bit</h3>
+<p>He quotes a retired foreign-fund veteran: "those numbers are noise; as long as the direction is right." He used to debate overnight and chase back the next day; now he researches after the close. He still exits — first — when something truly breaks (e.g. prices can't be raised). He says SpaceX is about 8–10% of his book, "if it loses, it blows up" — self-reported and unverifiable.</p>
+</div>
+
+<h2>3. Marvell Investor Day: interconnect is the main course</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 290" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marvell revenue goes from $8.2B in FY2026 to about $20B targeted for FY2028 and $70-90B for FY2031, with the $80B midpoint far above the roughly $47B consensus">
+<line x1="60" y1="250" x2="700" y2="250" style="stroke:var(--border)"/>
+<line x1="60" y1="147" x2="700" y2="147" style="stroke:var(--mid);stroke-dasharray:5 4"/>
+<text x="64" y="140" style="fill:var(--mid);font:600 11px sans-serif">Consensus FY31 ~$47B</text>
+<rect x="110" y="232" width="80" height="18" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="150" y="226" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">$8.2B</text>
+<text x="150" y="270" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">FY2026 actual</text>
+<rect x="250" y="224" width="80" height="26" rx="3" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="290" y="218" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">~$12B</text>
+<text x="290" y="270" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">FY2027 outlook</text>
+<rect x="390" y="206" width="80" height="44" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<text x="430" y="200" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">$18B → ~$20B</text>
+<text x="430" y="270" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">FY2028 (raised)</text>
+<rect x="540" y="74" width="80" height="176" rx="3" style="fill:var(--winbg);stroke:var(--winbd)"/>
+<line x1="530" y1="52" x2="630" y2="52" style="stroke:var(--win)"/>
+<line x1="530" y1="96" x2="630" y2="96" style="stroke:var(--win)"/>
+<line x1="580" y1="52" x2="580" y2="96" style="stroke:var(--win)"/>
+<text x="580" y="40" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">$70–90B (mid $80B)</text>
+<text x="580" y="270" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">FY2031 target</text>
+<text x="580" y="164" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Interconnect</text>
+<text x="580" y="180" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">~47%</text>
+<text x="660" y="200" style="fill:var(--ink3);font:400 11px sans-serif">≈10×</text>
+</svg></div>
+<p>The host called it a "super-long party." Key points: tie chips and HBM/DRAM into one bigger "computer" — from tray to rack to the whole data center — and scale-up/scale-across needs optical links; the company admits scale-up is still 100% copper today. He thinks NPO and CPO run in parallel rather than one being a bridge; 800G is the workhorse, 1.6T is ramping, and a friend says 3.2T could arrive in 2028. He also said "Broadcom has been quiet and its stock has been basing for a long time; switch news should come."</p>
+<p>But he tempered it himself: check how much the stock has already run, the good news may be priced in; and watch whether other XPU and interconnect companies follow with raised targets.</p>
+<p>Check: <span class="win">FY2031 $70–90B, FY2028 $18B → ~$20B and consensus ~$45–47B are all accurate</span>; FY26 revenue was $8.2B, so ~9.8× and a 55–60% CAGR. <span class="mid">The 56–59% long-term gross margin appears only in third-party summaries; FY26 non-GAAP was 59.5%, so it is flat-to-down</span>. <span class="mid">"NPO/CPO in parallel" and "3.2T pulled into 2028" have no public source</span> — industry chatter. Stock: closed $286.95 on 10/6 (+5.8%; Evercore PT $155 → $433), gave it back by 10/8; $275.28 on 10/9.</p>
+</div>
+
+<h2>4. BMC and dream themes: small today ≠ small tomorrow, but roadmaps get cut in half</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marvell's data-center management pitch made the market fear it would take BMC share and Aspeed fell 6.5% in a day; the host argues the market may simply be getting bigger, and nothing is settled until products and customers show up">
+<defs><marker id="ah704b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="20" y="80" width="170" height="70" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="105" y="108" text-anchor="middle" style="fill:var(--ink);font:700 12px sans-serif">Marvell Investor Day</text>
+<text x="105" y="128" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">DC management pitch</text>
+<line x1="192" y1="105" x2="246" y2="60" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704b)"/>
+<line x1="192" y1="125" x2="246" y2="170" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704b)"/>
+<rect x="250" y="20" width="220" height="70" rx="8" style="fill:var(--losebg);stroke:var(--losebd)"/>
+<text x="360" y="48" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Market: it's after BMC</text>
+<text x="360" y="68" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Aspeed −6.5% on 10/7</text>
+<rect x="250" y="140" width="220" height="70" rx="8" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
+<text x="360" y="168" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">Host: maybe TAM grows</text>
+<text x="360" y="188" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">Total solution bundles mgmt</text>
+<line x1="472" y1="55" x2="526" y2="105" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704b)"/>
+<line x1="472" y1="175" x2="526" y2="125" style="stroke:var(--ink3);stroke-width:1.5" marker-end="url(#ah704b)"/>
+<rect x="530" y="80" width="210" height="70" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
+<text x="635" y="108" text-anchor="middle" style="fill:var(--mid);font:700 12px sans-serif">Open: wait for products</text>
+<text x="635" y="128" text-anchor="middle" style="fill:var(--ink2);font:400 11px sans-serif">and customer wins</text>
+</svg></div>
+<p>The host thinks Marvell isn't mainly after BMC; it is building a total solution like NVIDIA — compute, storage, switching and management bundled together. He admits he lost money on Nuvoton's BMC story because he thought the BMC market was too small; now he looks at it as "small today doesn't mean small tomorrow," just as AI was a small revenue line before 2020.</p>
+<p>On the flip side he warns about dream themes: TFLN (thin-film lithium niobate) and 3.2T only fly in a bull market and drop hard in corrections. <b>Pick the wrong path and you blow up; pick the right one and you can still get cut in half along the way</b> — AAOI being the example.</p>
+<p>Check: <span class="win">AAOI is −50.9% from its 5/13 high, matching "down 50–60%"</span>. <span class="win">UMC partnered with HyperLight in March 2026 to mass-produce TFLN chiplets</span>, but small volume is expected in 2027 and meaningful revenue only after 2028 (UBS est. ~2% of revenue, per media), so "still dreaming" holds. Aspeed's September revenue was +100.9% YoY with a 116.6x trailing PER; Nuvoton posted a Q2 EPS of −NT$0.58 and +4.7% September revenue yet rose 31.8% in 20 days — story ahead of fundamentals.</p>
+</div>
+
+<h2>5. Names the host mentioned</h2>
+<div class="card"><div id="picks"></div>
+<p class="note">US: Futu close on 10/9 and forward PE. Taiwan: FinMind close on 10/8 and trailing PER (Futu has no Taiwan forward); "Q2×4" annualizes Q2 EPS and is not consensus.</p></div>
+
+<h2>6. Peer scan: optical / AI data-center interconnect</h2>
+<div class="card">
+<p><b>Group definition:</b> replacing copper with optics (modules, DSPs, lasers, CPO/NPO) and high-speed connectivity chips for AI data-center scale-up/scale-out. Cycle intensity is <b>medium-high</b>: bandwidth generation upgrades are structural, but lasers and modules have a "shortage → price hike → relay" cyclical streak, so peak-cycle PEs understate risk. The group is <b>highly split</b>: LITE and CIEN near highs, AVGO, COHR, CRDO and ALAB 25–29% off, AAOI halved.</p>
+<h3>US</h3>
+<div id="peersUS"></div>
+<h3>Taiwan</h3>
+<div id="peersTW"></div>
+<p class="note">US valuations are Futu forward PE; Taiwan has no forward source, so trailing PER / Q2×4 run-rate is shown. AVGO's 24.4x forward differs from some other sources; treat as indicative.</p>
+</div>
+
+<h2>7. Fact check</h2>
+<div class="card">
+<div id="facts"></div>
+<p class="note">✅ Accurate · ⚠️ Off / needs context · ❓ Not found</p>
+</div>
+
+<h2>8. Assessment</h2>
+<div class="card">
+<h3>What holds up</h3><p><span class="win">Almost no exaggeration on the numbers.</span> The Investor Day targets, the OpenAI ARR revision, Aspeed's −6.5% and AAOI's halving all check out — and the host himself warned "priced in" and "don't bet big on dream themes." This episode is closer to risk education than stock tips.</p>
+<h3>Take with salt</h3><p><span class="lose">He leaned on the revenue target and skipped the flat-to-down long-term margin.</span> FY2031 is a five-year company goal with a $20B-wide range that would shrink fast if AI capex slows. "NPO/CPO in parallel," "3.2T pulled in" and "Broadcom switch news" are unsourced. He holds related positions, so confirmation bias is a risk.</p>
+<h3>Risks</h3><p>MRVL at 77.6x forward and the 97th percentile of its trailing range, up 46% in 60 days, was front-run — giving back the pop in two days is the proof. Optical names react violently to any headline (COHR −9.6% in a day). Aspeed trades near 100x; it is only truly threatened if Marvell ships a BMC product and wins customers, and there is no evidence of that yet.</p>
+<p class="note">Credibility: medium-high. Numbers are accurate, but the transcript is poor and the roadmap claims lack sources. Not investment advice.</p>
+</div>
+
+<div class="foot">
+<b>Sources</b>: EP704 transcript (NotebookLM), FT report as relayed by others (OpenAI ARR near $50B), Marvell Investor Day coverage (Stocktwits, Evercore price target), TrendForce and Business Wire (UMC × HyperLight TFLN); US prices and forward PE from Futu (10/9/2026 close), Taiwan prices, revenue and PER from FinMind (10/8/2026).<br><b>Disclaimer</b>: Personal research notes, not investment advice.
+</div>
+</div>
+<script>
+function tbl(h,rows){return "<div style='overflow-x:auto'><table><tr>"+h.map(x=>"<th>"+x+"</th>").join("")+"</tr>"+rows.map(r=>"<tr>"+r.map(c=>"<td>"+c+"</td>").join("")+"</tr>").join("")+"</table></div>";}
+document.getElementById('picks').innerHTML=tbl(['Name','Tone','What the host said','Check'],[
+['MRVL Marvell','<span class="pill p-bull">Bullish</span>','Investor Day was a super-long party, but check if it is priced in','✅ Numbers accurate; $275.28, 77.6x fwd, −13% from 6/4 high, +46% in 60d'],
+['AVGO Broadcom','<span class="pill p-bull">Leaning bull</span>','Quiet, basing for a long time, switch news should come','⚠️ −24.7% from 6/2 high, 24.4x fwd; "good news" unsourced'],
+['NVDA','<span class="pill p-neu">Context</span>','NVL72/576, Jensen\'s total-solution model','$229.28, 18.7x fwd; conceptual mention only'],
+['AAOI','<span class="pill p-bear">Warning</span>','Right direction can still get cut in half','✅ −50.9% from 5/13 high; 57.9x fwd'],
+['5274 Aspeed','<span class="pill p-neu">Neutral</span>','The drop may reflect a bigger TAM, not lost share','✅ −6.5% on 10/7; Sept rev +100.9%; PER 116.6x'],
+['4919 Nuvoton','<span class="pill p-bear">Rethink</span>','Lost money on the BMC story, thought the market too small','✅ Q2 EPS −0.58; +31.8% in 20d, story-led'],
+['2303 UMC','<span class="pill p-bear">Cautious</span>','TFLN is a dream trade','✅ TFLN revenue after 2028; PER 22.1x'],
+['OpenAI / Anthropic','<span class="pill p-neu">Context</span>','ARR is rough; different bases, don\'t trade on it','✅ FT direction accurate; ⚠️ 77% and $40B unverified'],
+['SpaceX','<span class="pill p-neu">Self-reported</span>','~8–10% of his book, if it loses it blows up','❓ Position is self-reported']]);
+document.getElementById('peersUS').innerHTML=tbl(['Ticker/Name','Role','Relative strength','Fwd PE','Take'],[
+['LITE Lumentum','Lasers / optical parts','<span class="win">Leader</span> (−2.7% from high, +56% 60d)','51.8x','Strongest in group, new high 10/6'],
+['CIEN Ciena','Optical transport','<span class="win">Rotation</span> (+14.9% 5d)','50.5x','+13.8% on 10/6, money flowing in'],
+['MRVL Marvell','DSP / custom XPU / interconnect','Follower (−13%, +46% 60d)','77.6x','Big target, rich valuation, pop faded in 2 days'],
+['AVGO Broadcom','DSP / switch / custom ASIC','<span class="lose">Laggard</span> (−24.7%)','24.4x','Cheapest in group, waiting on switch story'],
+['COHR Coherent','Optics / transceivers','<span class="lose">Laggard</span> (−26.8%)','40.0x','−9.6% on 10/8, volatile'],
+['TSEM Tower','Silicon photonics foundry','<span class="lose">Laggard</span> (−27.8%)','—','SiPh foundry beneficiary'],
+['CRDO Credo','AEC copper / DSP','<span class="lose">Laggard</span> (−28.4%, +33% 20d)','37.6x','Cheaper interconnect name, catching up'],
+['ALAB Astera Labs','PCIe/CXL connectivity','<span class="lose">Laggard</span> (−29.2%)','75.0x','High PE, high volatility'],
+['AAOI Applied Opto','Optical transceivers','<span class="lose">Deep laggard</span> (−50.9%)','57.9x','Poster child of roadmap risk']]);
+document.getElementById('peersTW').innerHTML=tbl(['Ticker/Name','Role','Relative strength','PER (trailing / Q2×4)','Take'],[
+['3105 WIN Semi','Compound semi foundry','<span class="win">Near high</span> (−5.8%)','68.3x / 63.2x','Sept +30%, steady follower'],
+['3081 LandMark','Epi wafers / lasers','Follower (−16.1%)','254.7x / 160.2x','Revenue +190%, extreme valuation'],
+['4908 Ingenu','Transceivers / lasers','Follower (−17.0%)','97.0x / 90.9x','+19% in 5d, theme rotation'],
+['5274 Aspeed','BMC leader','Follower (−16.4%)','116.6x / 98.7x','Most directly hit by Marvell news'],
+['2303 UMC','TFLN foundry','Follower (−17.4%)','22.1x / —','TFLN is a story; priced on core business'],
+['3450 Lian Jun','CPO components','Laggard (−19.2%)','105.9x / 62.4x','Revenue +99.8%'],
+['4979 Luxnet','Modules (Marvell DSP chain)','Laggard (−21.3%)','92.5x / 109.5x','Revenue doubled but Q2 EPS fell'],
+['6442 Gloria','Passive optical parts','Laggard (−24.7%)','52.8x / 39.8x','Revenue +97%, sharp 5d rebound'],
+['4919 Nuvoton','BMC challenger','<span class="lose">Laggard</span> (−29.0%)','Loss','Story ahead of fundamentals'],
+['3363 Usenlight','Fiber connectivity','<span class="lose">Laggard</span> (−32.6%)','Loss','Revenue up, still loss-making'],
+['4977 Ultra Source','Passive optics / modules','<span class="lose">Laggard</span> (−36.2%)','51.8x / 16.2x*','Aug +106%; *Q2 likely one-off'],
+['3163 Browave','CPO / passive optics','<span class="lose">Weakest</span> (−46.8%)','70.3x / 185.2x','Q2 EPS dropped sharply']]);
+document.getElementById('facts').innerHTML=tbl(['Claim','Result','Note'],[
+['OpenAI ARR revised from $70B to $50B','✅','FT: near $50B at end-Sept, ~$20B below the ~$70B estimate'],
+['Gap comes from OpenAI vs. Anthropic basis','✅','Anthropic counts AWS/GCP resale; OpenAI does not'],
+['Media got $70B from $40B × 77%','❓','Math and CNBC source not found'],
+['Stocks bounced the next day','✅','10/8 SOXX −3.4%; 10/9 LITE +5.2%, CIEN +5.6%, COHR +3.4%'],
+['Marvell FY2028 $18B → $20B','✅','$18B given in Aug, raised to ~$20B; NotebookLM mislabelled FY2027'],
+['FY2031 $70–90B, ~10× this year','✅','FY26 $8.2B → $80B mid ≈ 9.8×'],
+['Consensus $45–50B','✅','Visible Alpha $46.85B, Piper Sandler ~$45B'],
+['Long-term gross margin 56–59%','⚠️','Third-party summary only; FY26 non-GAAP 59.5%, flat-to-down'],
+['Interconnect is ~half of revenue','✅','~$37.5B (~47%) in the $80B case'],
+['NPO/CPO parallel, 3.2T maybe 2028','❓','No public source'],
+['Aspeed fell on Marvell news','✅','−6.5% on 10/7, −8.2% over 5 days'],
+['AAOI fell 50–60%+','✅','−50.9% from 5/13 high'],
+['UMC TFLN is still a dream','✅','Small volume 2027, meaningful revenue after 2028']]);
+</script>
+</body></html>
