@@ -455,7 +455,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 @media(max-width:420px){
   .sitebar .modes{margin-left:2px;padding-left:6px}
   .sitebar nav .modes a.nav-mode{padding:7px 8px}
-  .sitebar .tb-actions{gap:6px}
+  .sitebar .tb-actions{gap:4px}
 }
 
 .etable-wrap{margin-top:22px;overflow-x:auto}
