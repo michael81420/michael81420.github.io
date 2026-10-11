@@ -32,7 +32,10 @@ const probe = () => {
   }
   // .fig 有 overflow-x:auto，圖再寬也該自己捲；整頁橫向溢出代表有東西沒包好
   if (document.documentElement.scrollWidth > window.innerWidth + 1)
-    out.push(`整頁橫向溢出: scrollWidth ${document.documentElement.scrollWidth} > ${window.innerWidth}`);
+    out.push(`整頁橫向溢出: scrollWidth ${document.documentElement.scrollWidth} > ${window.innerWidth}` +
+      ' 元兇: ' + [...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > window.innerWidth + 0.5 && e.getBoundingClientRect().width &&
+        ![...(function* (n) { for (; n; n = n.parentElement) yield n; })(e)].some(a => /auto|scroll|hidden|clip/.test(getComputedStyle(a).overflowX)))
+        .slice(0, 5).map(e => `${e.tagName}.${e.className}:${Math.round(e.getBoundingClientRect().right)}`).join(' '));
   return out;
 };
 
