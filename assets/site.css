@@ -63,7 +63,7 @@ input{font-family:inherit;outline:none}
   position:sticky;top:72px;z-index:30;background:var(--bg)}
 .tb-actions{display:flex;align-items:center;gap:10px}
 /* 站徽列：全寬置頂圖層（站徽 + 站名 + 導覽）；文章頁 topbar 疊成第二層 */
-.sitebar{position:fixed;left:0;right:0;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border)}
+.sitebar{position:fixed;left:0;right:0;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);overflow-x:clip}
 .sitebar-in{max-width:1298px;margin:0 auto;padding:0 30px;height:72px;
   display:flex;align-items:center;justify-content:space-between;gap:20px}
 .sitebar .brand{display:inline-flex;align-items:center;gap:10px;font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
