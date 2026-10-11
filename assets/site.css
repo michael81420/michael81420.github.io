@@ -390,7 +390,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 
 .demo{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:16px 18px;margin:16px 0}
 .demo-h{font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--ink3);text-transform:uppercase;
-  margin-bottom:13px;display:flex;align-items:center;gap:7px}
+  margin-bottom:13px;display:flex;align-items:center;gap:7px;min-width:0;overflow-wrap:anywhere}
 .demo-h::before{content:'▶';font-size:9px;color:var(--accent)}
 .demo-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
 .demo button{background:var(--accent);color:var(--onAccent);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;transition:opacity .15s}
