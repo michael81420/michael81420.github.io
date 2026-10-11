@@ -124,6 +124,8 @@ for (const f of pages) {
   if (!head.includes(`<link rel="canonical" href="${abs(f)}">`)) bad(f, `canonical 要指向 ${abs(f)}`);
   for (const [lang, t] of [['zh-Hant', zh], ['en', en], ['x-default', zh]])
     if (!head.includes(`hreflang="${lang}" href="${abs(t)}"`)) bad(f, `缺 hreflang="${lang}" → ${abs(t)}`);
+  // 字型走 <head> 的 <link>，不走 site.css 的 @import（@import 串在 CSS 後面才下載，擋首次渲染）
+  if (!head.includes('fonts.googleapis.com/css2')) bad(f, '缺 Google Fonts <link>（照 CLAUDE.md 範本放在 site.css 前）');
 
   // <pre> 裡是程式碼範例，不是真的樣式或連結，掃之前先拿掉
   const s = read(f).replace(/<pre[\s\S]*?<\/pre>/g, '');

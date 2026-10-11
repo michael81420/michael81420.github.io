@@ -2,12 +2,12 @@
    Michael 投資筆記 — 共用主題 (warm paper, light + dark)
    來源設計：claude.ai/design「個人網誌設計規劃」
    ============================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+/* 字型由各頁 <head> 的 <link> 載入（不用 @import：會串在本檔後面才下載，擋首次渲染） */
 
 :root{
   --bg:#FAF6EF; --surface:#FFFFFF; --surface2:#F4EEE3; --border:#EBE4D8;
-  --ink:#28261F; --ink2:#6E695F; --ink3:#9A917F;
-  --accent:#C2613F; --accentSoft:#E9A088;
+  --ink:#28261F; --ink2:#5F5A52; --ink3:#756E60;
+  --accent:#AF5739; --onAccent:#FFFFFF; --accentSoft:#E9A088;
   --feat-bg:#28261F; --feat-ink:#F5EFE4; --feat-sub:#C9C0B0;
   /* 語氣色（淺底可讀） */
   --win:#2E7D4F; --winbg:#E7F1E8; --winbd:#C3DFC8;
@@ -22,8 +22,8 @@
 }
 [data-theme="dark"]{
   --bg:#1E1C19; --surface:#2A2825; --surface2:#322F2A; --border:#3A3731;
-  --ink:#F2EDE3; --ink2:#B6AFA0; --ink3:#8B8475;
-  --accent:#E08A5E; --accentSoft:#E9A088;
+  --ink:#F2EDE3; --ink2:#B6AFA0; --ink3:#978F80;
+  --accent:#E08A5E; --onAccent:#1E1C19; --accentSoft:#E9A088;
   --feat-bg:#322F2A; --feat-ink:#F5EFE4; --feat-sub:#B6AFA0;
   --win:#6FBF8C; --winbg:#25382B; --winbd:#3A5743;
   --lose:#E58A7F; --losebg:#3A2622; --losebd:#5A3A34;
@@ -40,6 +40,10 @@ a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 button{font-family:inherit;border:none;background:none;cursor:pointer}
 input{font-family:inherit;outline:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.search input:focus-visible{outline:none}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 
 /* ---- 共用：主題切換鈕 + 返回鈕 + 頂部列 ---- */
 .theme-toggle{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;
@@ -99,16 +103,16 @@ input{font-family:inherit;outline:none}
 .chips{display:flex;flex-wrap:wrap;gap:inherit}
 .chip{font-size:13px;font-weight:600;border-radius:18px;padding:7px 15px;white-space:nowrap;
   background:transparent;color:var(--ink2);border:1px solid var(--border)}
-.chip.active{background:var(--accent);color:#fff;border-color:transparent}
+.chip.active{background:var(--accent);color:var(--onAccent);border-color:transparent}
 /* 第二排：子分類 chip。選了有子分類的分類才由 site.js 填入，否則整排隱藏 */
 .subbar{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;padding-left:2px}
 .subbar .chip-sub{font-size:12px;padding:5px 12px;background:var(--surface2)}
-.subbar .chip-sub.active{background:var(--accent);color:#fff}
+.subbar .chip-sub.active{background:var(--accent);color:var(--onAccent)}
 .search{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);
   border-radius:9px;padding:9px 13px;width:200px;margin-left:auto}
 .search .dot{width:13px;height:13px;border:1.8px solid var(--ink3);border-radius:50%;flex:none}
-.search input{flex:1;width:100%;border:none;background:transparent;font-size:14px;color:var(--ink);padding:0}
-.search input::placeholder{color:var(--ink3);opacity:.7}
+.search input{flex:1;width:100%;border:none;background:transparent;font-size:14px;color:var(--ink);padding:0;-webkit-appearance:none;appearance:none}
+.search input::placeholder{color:var(--ink3);opacity:1}
 
 .grid{margin-top:22px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .post-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:14px;
@@ -229,7 +233,7 @@ tr:hover td{background:var(--surface2)}
 .daynav a{font-size:13px;font-weight:600;color:var(--ink2);background:var(--surface);
   border:1px solid var(--border);border-radius:999px;padding:7px 14px;white-space:nowrap}
 .daynav a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
-.daynav a.active{background:var(--accent);color:#fff;border-color:transparent}
+.daynav a.active{background:var(--accent);color:var(--onAccent);border-color:transparent}
 html{scroll-behavior:smooth}
 .day-anchor{scroll-margin-top:144px}
 figure.shot{margin:0 0 16px}
@@ -276,8 +280,8 @@ body[data-slug] .wrap header{padding-left:258px}
 .rail-sub>.rail-toggle .rg-cat{font-size:12px;font-weight:600;color:var(--ink2)}
 .rail-item{font-size:13px;line-height:1.45;border-radius:7px;padding:8px 10px;color:var(--ink2);font-weight:500}
 .rail-item:hover{background:var(--surface);text-decoration:none}
-.rail-item.active{background:var(--accent);color:#fff;font-weight:700}
-.rail-item.active:hover{background:var(--accent);color:#fff}
+.rail-item.active{background:var(--accent);color:var(--onAccent);font-weight:700}
+.rail-item.active:hover{background:var(--accent);color:var(--onAccent)}
 
 @media(max-width:980px){
   .article-cols{grid-template-columns:1fr;gap:0}
@@ -328,7 +332,7 @@ body[data-slug] .wrap header{padding-left:258px}
 .about-hero{position:relative;overflow:hidden;margin-top:26px;background:var(--feat-bg);border-radius:18px;padding:40px}
 .about-hero .blob{position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:var(--accent);opacity:.55}
 .about-hero .inner{position:relative}
-.about-hero .avatar{width:64px;height:64px;border-radius:50%;background:var(--accent);color:#fff;
+.about-hero .avatar{width:64px;height:64px;border-radius:50%;background:var(--accent);color:var(--onAccent);
   display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;
   object-fit:cover;border:2px solid rgba(255,255,255,.18)}
 .about-hero .a-head{display:flex;align-items:center;gap:18px}
@@ -388,7 +392,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
   margin-bottom:13px;display:flex;align-items:center;gap:7px}
 .demo-h::before{content:'▶';font-size:9px;color:var(--accent)}
 .demo-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
-.demo button{background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;transition:opacity .15s}
+.demo button{background:var(--accent);color:var(--onAccent);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;transition:opacity .15s}
 .demo button:hover{opacity:.88}
 .demo button.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--ink3)}
 .demo button.ghost:hover{border-color:var(--accent);opacity:1}
@@ -518,3 +522,15 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable .go{padding-left:8px;text-align:center;white-space:nowrap;font-size:12.5px;font-weight:600}
 .etable .go:hover{text-decoration:none}
 .etable-note{margin-top:12px;font-size:12.5px;color:var(--ink3);line-height:1.7}
+
+/* 觸控裝置：主題／語言鈕、分類 chip 放到 44px 觸控目標（滑鼠裝置維持原本緊湊尺寸） */
+@media (pointer:coarse){
+  .theme-toggle{width:44px;height:44px}
+  .lang-toggle{height:44px;min-width:44px}
+  .chip{min-height:44px}
+}
+/* 減少動態：關掉 hover 位移、展開箭頭旋轉、平滑捲動；狀態本身照常切換 */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important}
+}

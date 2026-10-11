@@ -43,6 +43,8 @@ JavaScript．From Zero          React．Properly: When to Use What, and How
 <link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/<slug>.en.html">
 <link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/<slug>.html">
 <script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
 </head><body><div class="wrap">

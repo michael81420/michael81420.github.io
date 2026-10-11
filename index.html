@@ -9,11 +9,14 @@
 <link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/">
 <script>try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 <link rel="icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <script src="assets/site.js" defer></script>
 </head><body>
 
-<div class="home">
+<main class="home">
+  <h1 class="sr-only">michael · 投資筆記</h1>
 
   <div class="tagline">技術學習 · 產業觀察 · 投資思考，把每天讀到的東西整理成能複用的筆記。</div>
 
@@ -40,7 +43,7 @@
     </div>
     <div class="search">
       <div class="dot"></div>
-      <input id="search" type="text" placeholder="搜尋…">
+      <input id="search" type="search" aria-label="搜尋文章" placeholder="搜尋…">
     </div>
   </div>
 
@@ -541,6 +544,6 @@
     <div class="f-copy">© 2026 michael · 本站內容僅為個人研究筆記，不構成投資建議。</div>
   </footer>
 
-</div>
+</main>
 
 </body></html>

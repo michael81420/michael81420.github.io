@@ -151,7 +151,8 @@ function toggleTheme(){
   updateThemeIcons(next);
 }
 function updateThemeIcons(t){
-  document.querySelectorAll('.theme-toggle').forEach(function(b){b.textContent=t==='dark'?'☀':'☾';});
+  var lbl=LANG==='en'?(t==='dark'?'Switch to light mode':'Switch to dark mode'):(t==='dark'?'切換為淺色模式':'切換為深色模式');
+  document.querySelectorAll('.theme-toggle').forEach(function(b){b.textContent=t==='dark'?'☀':'☾';b.setAttribute('aria-label',lbl);});
 }
 /* 關於我頁「技能」：icon + 文字，資料驅動（兩個語言版共用此處）。
    icon 為 simple-icons 單一 path，viewBox 0 0 24 24，走 currentColor 隨主題變色。 */
@@ -593,7 +594,7 @@ function initSitebar(){
 document.addEventListener('DOMContentLoaded',function(){
   initSitebar();
   updateThemeIcons(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
-  document.querySelectorAll('.lang-toggle').forEach(function(b){b.textContent=LANG==='en'?'中':'EN';});
+  document.querySelectorAll('.lang-toggle').forEach(function(b){b.textContent=LANG==='en'?'中':'EN';b.setAttribute('aria-label',LANG==='en'?'切換到中文':'Switch to English');});
   initHome();
   initArticle();
   initSkills();
