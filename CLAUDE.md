@@ -89,7 +89,7 @@ JavaScript．From Zero          React．Properly: When to Use What, and How
 
 ```html
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto"
+<svg viewBox="0 0 760 320" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="…一句話講完這張圖的結論…">
   <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
     orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
@@ -102,7 +102,7 @@ JavaScript．From Zero          React．Properly: When to Use What, and How
 
 規則：
 - 顏色一律 `var(--…)`，跟文字同一套：`--surface2/--border/--ink/--ink2/--ink3`；語氣用 `--win/--lose/--mid/--turn` + `*bg`/`*bd`（例：貴的步驟用 lose、便宜的用 win）。
-- `viewBox` 固定 `0 0 760 <h>`，配 `width:100%;min-width:600px;height:auto` → 桌機自適應、手機橫向捲動。
+- `viewBox` 固定 `0 0 760 <h>`，配 `width:100%;min-width:760px;height:auto` → 桌機自適應、手機橫向捲動。
 - `role="img"` + `aria-label` 用**一句話寫出這張圖的結論**，不是「流程圖」。
 - **同一頁多張圖，`marker` 的 id 必須不同**（`ah`/`ah2`/`ah3`），否則會互相蓋掉。
 - 中英兩版都要有圖；**英文字串較長，容易撞版或超出 viewBox**，英文版常需要自己的座標，不能照抄中文版。

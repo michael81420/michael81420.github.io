@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="react-learn-guide"><div class="wrap">
+</head><body data-slug="react-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -46,7 +46,7 @@
 <h2 id="c0" class="day-anchor">0 · React 到底解決什麼、何時才該用</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 的單向資料流：改 state 觸發重新 render，React 更新 DOM，使用者互動再呼叫 setState 改 state，形成一個閉環。">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 的單向資料流：改 state 觸發重新 render，React 更新 DOM，使用者互動再呼叫 setState 改 state，形成一個閉環。">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="34" y="40" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="109" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">state</text>
@@ -180,7 +180,7 @@ rows.map((r, i) =&gt; (
 <div class="card">
 <h3>2.3 render &amp; commit：畫面更新的三步驟</h3>
 <div class="fig">
-<svg viewBox="0 0 760 150" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 更新畫面的三步驟：觸發（初次載入或 setState）、渲染（呼叫你的元件函式算出畫面）、提交（把差異寫進真實 DOM）。">
+<svg viewBox="0 0 760 150" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React 更新畫面的三步驟：觸發（初次載入或 setState）、渲染（呼叫你的元件函式算出畫面）、提交（把差異寫進真實 DOM）。">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="24" y="42" width="212" height="64" rx="11" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="130" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">① 觸發 Trigger</text>
@@ -263,7 +263,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <p>這章是 React 的<b>真正難點</b>，也是判斷力的分水嶺。先給你一張總地圖：一個 state 該放在哪裡，照這棵樹走。</p>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="state 放哪裡的決策樹：只有自己用就放本地 useState；兄弟元件共用就提升到共同父層；很多層都要讀就用 Context；更新邏輯複雜就用 useReducer。">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="state 放哪裡的決策樹：只有自己用就放本地 useState；兄弟元件共用就提升到共同父層；很多層都要讀就用 Context；更新邏輯複雜就用 useReducer。">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="230" y="12" width="300" height="42" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13.5px sans-serif">這個 state 誰需要讀 / 改？</text>
@@ -509,7 +509,7 @@ inputRef.current.focus(); <span class="c">// 抓 DOM 節點直接操作</span></
 <h3>4.2 useEffect：跟「外部系統」同步</h3>
 <p>Effect 是 React <b>把畫面提交到 DOM 之後</b>才跑的 side effect，專門用來跟 React 以外的系統同步：訂閱事件、開/關計時器、連 WebSocket、操作非 React 的 DOM 函式庫。</p>
 <div class="fig">
-<svg viewBox="0 0 760 190" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Effect 的生命週期：掛載時執行 setup，依賴改變時先 cleanup 再 setup，卸載時執行 cleanup。">
+<svg viewBox="0 0 760 190" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Effect 的生命週期：掛載時執行 setup，依賴改變時先 cleanup 再 setup，卸載時執行 cleanup。">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <line x1="40" y1="95" x2="720" y2="95" style="stroke:var(--border);stroke-width:2"/>
 <rect x="40" y="74" width="140" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -537,7 +537,7 @@ inputRef.current.focus(); <span class="c">// 抓 DOM 節點直接操作</span></
 <h3>4.3 ★ 你可能不需要 Effect（最重要的一節）</h3>
 <p>新手最大的坑：<b>把什麼都塞進 useEffect</b>。官方專門寫了一頁「You Might Not Need an Effect」。判斷你要做的事本質屬於哪一種：</p>
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="你可能不需要 Effect 的判斷：能從現有 props/state 算出的值就在 render 時算、不要 Effect；回應使用者操作就寫在事件 handler、不要 Effect；只有跟外部系統同步才用 Effect。">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="你可能不需要 Effect 的判斷：能從現有 props/state 算出的值就在 render 時算、不要 Effect；回應使用者操作就寫在事件 handler、不要 Effect；只有跟外部系統同步才用 Effect。">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="180" y="10" width="400" height="40" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="35" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">你想在 Effect 裡做的事，本質是哪一種？</text>

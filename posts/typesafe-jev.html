@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="typesafe-jev"><div class="wrap">
+</head><body data-slug="typesafe-jev"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -42,7 +42,7 @@
 <h2>它怎麼運作</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev 吃進狀態文字與一組 schema 問題，單次並行採樣後直接吐出有型別的答案與機率，不經過文字">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev 吃進狀態文字與一組 schema 問題，單次並行採樣後直接吐出有型別的答案與機率，不經過文字">
   <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
   <g style="font:600 12.5px sans-serif">
     <rect x="20" y="55" width="170" height="50" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -146,7 +146,7 @@ print(agent.run_sync(<span class="s">'Some input text'</span>).output)  <span cl
 <h2>應用場景</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev 擺在最前面當分流器：大多數請求在毫秒內被判斷並交給程式碼處理，只有需要寫字推理或信心不足的才升級給昂貴的 LLM 或人">
+<svg viewBox="0 0 760 270" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jev 擺在最前面當分流器：大多數請求在毫秒內被判斷並交給程式碼處理，只有需要寫字推理或信心不足的才升級給昂貴的 LLM 或人">
   <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
   <rect x="20" y="113" width="100" height="44" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
   <text x="70" y="140" text-anchor="middle" style="fill:var(--ink);font:600 12.5px sans-serif">請求 / 事件</text>
@@ -194,7 +194,7 @@ print(agent.run_sync(<span class="s">'Some input text'</span>).output)  <span cl
 <h2>跟過往 LLM 的差異</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一般 LLM 要逐 token 生成文字再解析、格式錯就重試；Jev 一次並行輸出有型別的值和機率，少了生成與解析兩段">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一般 LLM 要逐 token 生成文字再解析、格式錯就重試；Jev 一次並行輸出有型別的值和機率，少了生成與解析兩段">
   <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
   <text x="20" y="28" style="fill:var(--ink);font:700 14px sans-serif">一般 LLM</text>
   <text x="100" y="28" style="fill:var(--ink3);font:400 11px sans-serif">逐 token 生成文字，再解析成結構 · 官方引述 3–329 秒</text>
@@ -243,7 +243,7 @@ print(agent.run_sync(<span class="s">'Some input text'</span>).output)  <span cl
 <h2>跟其他 ML 機制比</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 330" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="把各種 ML 機制放在「任務何時定義」與「輸出是動作還是判斷」兩軸上：Jev 落在呼叫時用語言定義任務、輸出校準判斷的角落，最近的前身是 NLI zero-shot 分類器">
+<svg viewBox="0 0 760 330" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="把各種 ML 機制放在「任務何時定義」與「輸出是動作還是判斷」兩軸上：Jev 落在呼叫時用語言定義任務、輸出校準判斷的角落，最近的前身是 NLI zero-shot 分類器">
   <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
   <line x1="100" y1="290" x2="735" y2="290" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>
   <line x1="100" y1="290" x2="100" y2="28" style="stroke:var(--ink3)" marker-end="url(#ah4)"/>

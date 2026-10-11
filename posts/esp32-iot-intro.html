@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="esp32-iot-intro"><div class="wrap">
+</head><body data-slug="esp32-iot-intro"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -41,7 +41,7 @@
 <h2>這篇怎麼編排</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 178" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="學習物聯網的五個階段，本篇涵蓋前三階段：認識硬體、電路基礎、通訊介面">
+<svg viewBox="0 0 760 178" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="學習物聯網的五個階段，本篇涵蓋前三階段：認識硬體、電路基礎、通訊介面">
 <defs><marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="40" width="120" height="64" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="80" y="66" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">1 認識硬體</text>
@@ -82,7 +82,7 @@
 <h2>階段 1-1：ESP32 DevKit 是什麼組成的</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit 其實是 USB 轉序列晶片加 ESP32 加 flash，程式經 USB 與 UART 燒進 flash 後重開機執行">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DevKit 其實是 USB 轉序列晶片加 ESP32 加 flash，程式經 USB 與 UART 燒進 flash 後重開機執行">
 <defs><marker id="m2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="168" y="34" width="584" height="84" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
 <text x="176" y="28" text-anchor="start" style="fill:var(--ink3);font:400 10.5px sans-serif">DevKit 板子上</text>
@@ -161,7 +161,7 @@
 <h2>階段 1-2：腳位地圖，哪些腳能用</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 596" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 DevKit 腳位依用途分色：綠色一般 GPIO 可放心用，藍色只能輸入，黃色開機腳要小心，紅色避開">
+<svg viewBox="0 0 760 596" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 DevKit 腳位依用途分色：綠色一般 GPIO 可放心用，藍色只能輸入，黃色開機腳要小心，紅色避開">
 <rect x="290" y="30" width="180" height="440" rx="12" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="320" y="50" width="120" height="150" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <path d="M335 62h14v14h14v-14h14v14h14v-14h14v14h14" style="fill:none;stroke:var(--ink2);stroke-width:1.5"/>
@@ -349,7 +349,7 @@
 <h2>階段 1-3：麵包板，不用焊接的電路板</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 430" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="麵包板直排五孔相通、電源軌橫向相通、中溝把左右隔開，所以按鈕和晶片要跨中溝插">
+<svg viewBox="0 0 760 430" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="麵包板直排五孔相通、電源軌橫向相通、中溝把左右隔開，所以按鈕和晶片要跨中溝插">
 <rect x="20" y="20" width="480" height="390" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <line x1="50" y1="30" x2="482" y2="30" style="stroke:var(--lose);stroke-width:1.5"/>
 <line x1="50" y1="76" x2="482" y2="76" style="stroke:var(--turn);stroke-width:1.5"/>
@@ -665,7 +665,7 @@
 <h2>階段 2：接線前要懂的電學基礎</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 270" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LED 迴路要串電阻限流，所有模組的 GND 必須接在一起，否則訊號沒有共同參考點">
+<svg viewBox="0 0 760 270" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LED 迴路要串電阻限流，所有模組的 GND 必須接在一起，否則訊號沒有共同參考點">
 <text x="20" y="28" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一顆 LED 的迴路</text>
 <rect x="20" y="50" width="64" height="30" rx="8" style="fill:var(--surface2);stroke:var(--accent)"/>
 <text x="52" y="70" text-anchor="middle" style="fill:var(--accent);font:700 12px sans-serif">3V3</text>
@@ -723,7 +723,7 @@
 </div>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 腳位只能吃 3.3V，5V 模組的輸出要先用分壓電阻或電平轉換降壓">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ESP32 腳位只能吃 3.3V，5V 模組的輸出要先用分壓電阻或電平轉換降壓">
 <text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">3.3V 與 5V 邏輯</text>
 <line x1="80" y1="260" x2="80" y2="22.399999999999977" style="stroke:var(--ink3);stroke-width:1.5"/>
 <line x1="76" y1="260" x2="84" y2="260" style="stroke:var(--ink3);stroke-width:1.5"/>
@@ -775,7 +775,7 @@
 <h2>階段 3：模組跟 ESP32 之間只有四種接法</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四種連接方式：GPIO 一腳一事、I2C 兩線靠位址、SPI 共用匯流排加片選、UART 一對一 TX 接 RX">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四種連接方式：GPIO 一腳一事、I2C 兩線靠位址、SPI 共用匯流排加片選、UART 一對一 TX 接 RX">
 <rect x="20" y="20" width="172" height="290" rx="10" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="106" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">GPIO</text>
 <rect x="62" y="60" width="88" height="26" rx="5" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -863,7 +863,7 @@
 <div class="card">
 <h3>UART 為什麼要「講好速度」</h3>
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART 靠雙方約定的 baud 取樣，速度不一致時取樣點逐位偏移，讀出來就是亂碼">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UART 靠雙方約定的 baud 取樣，速度不一致時取樣點逐位偏移，讀出來就是亂碼">
 <text x="20" y="22" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">UART 沒有時脈線：接收端靠「約好的速度」取樣</text>
 <path d="M20 50 L60 50 L60 50 L112 50 L112 50 L112 90 L164 90 L164 90 L164 50 L216 50 L216 50 L216 90 L268 90 L268 90 L268 90 L320 90 L320 90 L320 50 L372 50 L372 50 L372 90 L424 90 L424 90 L424 50 L476 50 L476 50 L476 50 L528 50 L528 50 L528 90 L580 90 L580 90 L580 50 L632 50" style="fill:none;stroke:var(--ink);stroke-width:2"/>
 <text x="86.0" y="112" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">閒置</text>
@@ -906,7 +906,7 @@
 <div class="card">
 <h3>選腳的固定順序</h3>
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 212" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="接任何模組的六步：看電壓、先共地、認介面、固定腳優先、其餘挑安全腳、最後補電阻">
+<svg viewBox="0 0 760 212" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="接任何模組的六步：看電壓、先共地、認介面、固定腳優先、其餘挑安全腳、最後補電阻">
 <defs><marker id="m4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="20" width="224" height="80" rx="8" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="132" y="46" text-anchor="middle" style="fill:var(--win);font:700 12px sans-serif">① 看電壓</text>
@@ -965,7 +965,7 @@
 <h2>型態 ②：多支 GPIO 加掃描 — 4 位數七段顯示器</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 360" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四位七段顯示器用 8 條段線加 4 條位選線，程式快速輪流點亮每一位，人眼看起來像同時亮">
+<svg viewBox="0 0 760 360" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四位七段顯示器用 8 條段線加 4 條位選線，程式快速輪流點亮每一位，人眼看起來像同時亮">
 <defs><marker id="m5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="20" y="24" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">一位數：7 段 + 小數點</text>
 <rect x="72" y="52" width="56" height="10" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -1039,7 +1039,7 @@
 </table>
 <h3>不確定是哪種？用三用電表兩分鐘問出來</h3>
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三用電表二極體檔紅筆接段、黑筆接位，微亮就是共陰極，要對調才亮就是共陽極">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三用電表二極體檔紅筆接段、黑筆接位，微亮就是共陰極，要對調才亮就是共陽極">
 <rect x="20" y="20" width="150" height="210" rx="14" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="40" y="40" width="110" height="44" rx="4" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="95" y="70" text-anchor="middle" style="fill:var(--ink);font:700 16px sans-serif">1.84 V</text>
@@ -1087,7 +1087,7 @@
 <h2>型態 ③：I2C — 1602 LCD 加 I2C 背板</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 316" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="1602 LCD 的 I2C 背板只要 4 條線，SDA 接 21、SCL 接 22，但背板會把訊號上拉到 5V">
+<svg viewBox="0 0 760 316" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="1602 LCD 的 I2C 背板只要 4 條線，SDA 接 21、SCL 接 22，但背板會把訊號上拉到 5V">
 <rect x="20" y="30" width="200" height="90" rx="6" style="fill:var(--turnbg);stroke:var(--turnbd)"/>
 <rect x="36" y="50" width="168" height="50" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
 <rect x="40" y="54" width="8" height="18" rx="1" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -1179,7 +1179,7 @@
 <h2>型態 ④：SPI — 1.8 吋彩色 TFT</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TFT 標 SCL 與 SDA 但其實是 SPI，時脈 18、資料 23 走硬體 SPI，DC、RST、CS 用一般腳">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TFT 標 SCL 與 SDA 但其實是 SPI，時脈 18、資料 23 走硬體 SPI，DC、RST、CS 用一般腳">
 <rect x="20" y="40" width="170" height="300" rx="8" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <rect x="34" y="56" width="110" height="140" rx="3" style="fill:var(--surface);stroke:var(--border)"/>
 <text x="89" y="120" text-anchor="middle" style="fill:var(--ink);font:600 12px sans-serif">128 × 160</text>
@@ -1251,7 +1251,7 @@
 <h2>型態 ⑤：GPIO 輸入 — 4 腳按鈕</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="按鈕一腳接 GPIO、對角那腳接 GND，配內建上拉：沒按讀到 HIGH，按下讀到 LOW">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="按鈕一腳接 GPIO、對角那腳接 GND，配內建上拉：沒按讀到 HIGH，按下讀到 LOW">
 <defs><marker id="m3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="20" y="26" text-anchor="start" style="fill:var(--ink);font:700 13px sans-serif">按鈕 + 內建上拉（INPUT_PULLUP）</text>
 <rect x="20" y="40" width="200" height="170" rx="10" style="fill:none;stroke:var(--ink3);stroke-dasharray:5 4"/>
@@ -1320,7 +1320,7 @@
 <h2>型態 ⑥：GPIO 矩陣 — 4×3 數字鍵盤</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 390" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="矩陣鍵盤一次把一欄拉低、讀哪條列線跟著變低，欄乘列就定位出按鍵；實際腳位順序要實測">
+<svg viewBox="0 0 760 390" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="矩陣鍵盤一次把一欄拉低、讀哪條列線跟著變低，欄乘列就定位出按鍵；實際腳位順序要實測">
 <line x1="60" y1="60" x2="260" y2="60" style="stroke:var(--turn);stroke-width:2"/>
 <text x="30" y="64" text-anchor="middle" style="fill:var(--turn);font:700 12px sans-serif">R1</text>
 <text x="290" y="64" text-anchor="start" style="fill:var(--turn);font:400 11px sans-serif">GPIO 26</text>
@@ -1397,7 +1397,7 @@
 <h2>型態 ⑦：GPIO 觸發 — 錄放音模組</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 310" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820 的 PLAYE 收到一次上升緣就播完整段，PLAYL 則是維持 HIGH 才播、拉低就停">
+<svg viewBox="0 0 760 310" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ISD1820 的 PLAYE 收到一次上升緣就播完整段，PLAYL 則是維持 HIGH 才播、拉低就停">
 <rect x="20" y="40" width="210" height="170" rx="8" style="fill:var(--surface);stroke:var(--border)"/>
 <circle cx="70" cy="90" r="18" style="fill:var(--surface2);stroke:var(--ink3);stroke-width:1.5"/>
 <text x="70" y="126" text-anchor="middle" style="fill:var(--ink3);font:400 10.5px sans-serif">麥克風</text>

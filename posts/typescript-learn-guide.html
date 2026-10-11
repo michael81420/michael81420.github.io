@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="typescript-learn-guide"><div class="wrap">
+</head><body data-slug="typescript-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -50,7 +50,7 @@
 <h2 id="c0" class="day-anchor">0 · 開始之前 — TypeScript 是什麼、為什麼要它</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的學習路線：先學型別標註，再學物件形狀與聯合窄化，接著函式型別，然後才是泛型，最後才碰真實世界的 DOM、API 與設定，每一站都是下一站的地基。">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的學習路線：先學型別標註，再學物件形狀與聯合窄化，接著函式型別，然後才是泛型，最後才碰真實世界的 DOM、API 與設定，每一站都是下一站的地基。">
 <defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">型別的核心概念（先打穩這幾章）</text>
 <rect x="30" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -88,7 +88,7 @@
 <h3>0.1 TypeScript 到底是什麼</h3>
 <p>TypeScript 是 <b>JavaScript 的超集（superset）</b>：任何合法的 JS 都是合法的 TS。它只做一件事——<b>在你寫程式時，多一層「型別檢查」</b>。檢查完，<code>tsc</code> 會把所有型別標註<b>擦掉</b>，產出的就是瀏覽器／Node 能直接跑的普通 JavaScript。</p>
 <div class="fig">
-<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的編譯流程：你寫帶型別的 .ts 檔，tsc 先做型別檢查抓錯，通過後把型別全部擦掉，產出普通的 .js 檔真正在瀏覽器或 Node 執行，型別不會進到執行階段。">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="TypeScript 的編譯流程：你寫帶型別的 .ts 檔，tsc 先做型別檢查抓錯，通過後把型別全部擦掉，產出普通的 .js 檔真正在瀏覽器或 Node 執行，型別不會進到執行階段。">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="24" y="60" width="170" height="78" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="109" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">你寫的 .ts</text>
@@ -261,7 +261,7 @@ a.foo.bar.baz();              <span class="c">// ⚠ TS 完全不擋，跑起來
 <h3>2.2 結構型別（鴨子型別）— TS 最重要的直覺</h3>
 <p>TS 判斷「型別對不對」看的是<b>形狀，不是名字</b>。只要一個物件有 User 需要的所有屬性，它<b>就是</b> User——不用刻意宣告「我是 User」。這叫結構型別（structural typing），俗稱鴨子型別。</p>
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="結構型別：TS 看形狀不看名字，一個物件只要有 name 和 age 兩個屬性就算符合 User，多帶一個屬性也照樣通過；少一個屬性才會被擋下來。">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="結構型別：TS 看形狀不看名字，一個物件只要有 name 和 age 兩個屬性就算符合 User，多帶一個屬性也照樣通過；少一個屬性才會被擋下來。">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="300" y="16" width="160" height="70" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">要求的形狀 User</text>
@@ -344,7 +344,7 @@ id = <span class="s">"A-101"</span>;                  <span class="c">// ✅ 兩
 <h3>3.2 型別窄化 — 聯合型別的正確用法</h3>
 <p>要用聯合型別裡「某一種特有」的東西，得先讓 TS 確定現在是哪一種。方法就是用 <b>JS 本來就有的判斷</b>——TS 看得懂這些判斷，會在對應的分支裡自動把型別「窄化」成更具體的那個。</p>
 <div class="fig">
-<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="型別窄化：一個 string 或 number 的聯合值，經過 typeof 判斷後分成兩條路，走進 string 分支時 TS 就確定它是 string，可以安全用字串方法，走進 number 分支則確定是 number。">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="型別窄化：一個 string 或 number 的聯合值，經過 typeof 判斷後分成兩條路，走進 string 分支時 TS 就確定它是 string，可以安全用字串方法，走進 number 分支則確定是 number。">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="270" y="16" width="220" height="56" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">value: string | number</text>
@@ -467,7 +467,7 @@ greet(<span class="s">"Michael"</span>);            <span class="c">// ✅ greet
 <span class="k">const</span> b = identity(42);       <span class="c">// b 是 number ✅ TS 自動推 T = number</span>
 <span class="k">const</span> c = identity(<span class="s">"hi"</span>);     <span class="c">// c 是 string ✅ 同一份程式，型別各自保留</span></code></pre>
 <div class="fig">
-<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="泛型像一個透明的容器：你放 number 進去，型別 T 就被記成 number，拿出來還是 number；放 string 進去 T 就是 string，拿出來還是 string。同一份程式碼，型別原封不動穿過去。">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="泛型像一個透明的容器：你放 number 進去，型別 T 就被記成 number，拿出來還是 number；放 string 進去 T 就是 string，拿出來還是 string。同一份程式碼，型別原封不動穿過去。">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="290" y="88" width="180" height="54" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="380" y="111" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">identity&lt;T&gt;(x: T): T</text>

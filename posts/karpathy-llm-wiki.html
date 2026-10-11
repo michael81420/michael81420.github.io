@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="karpathy-llm-wiki"><div class="wrap">
+</head><body data-slug="karpathy-llm-wiki"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -44,7 +44,7 @@
 <h2>傳統 RAG vs. LLM Wiki</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 320" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="傳統 RAG 每次查詢都重新檢索與推理、答案問完即丟；LLM Wiki 寫入一次，之後都是便宜的讀取，而且知識會累積">
+<svg viewBox="0 0 760 320" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="傳統 RAG 每次查詢都重新檢索與推理、答案問完即丟；LLM Wiki 寫入一次，之後都是便宜的讀取，而且知識會累積">
   <defs>
     <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
@@ -135,7 +135,7 @@
 <h2>三層架構</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三層架構閉環：Schema 決定規則，LLM 依規則把不可變的 Raw Sources 蒸餾進 Wiki，人在 Wiki 層探索，發現規則不夠用時回頭修 Schema">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三層架構閉環：Schema 決定規則，LLM 依規則把不可變的 Raw Sources 蒸餾進 Wiki，人在 Wiki 層探索，發現規則不夠用時回頭修 Schema">
   <defs>
     <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>
@@ -185,7 +185,7 @@
 <h2>三個核心操作</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 350" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三個核心操作繞著 Wiki 轉：Ingest 把新來源寫進去（貴），Query 讀出來並把好答案歸檔成新頁，Lint 定期檢查矛盾、孤兒頁與過時主張並修正">
+<svg viewBox="0 0 760 350" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三個核心操作繞著 Wiki 轉：Ingest 把新來源寫進去（貴），Query 讀出來並把好答案歸檔成新頁，Lint 定期檢查矛盾、孤兒頁與過時主張並修正">
   <defs>
     <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/>

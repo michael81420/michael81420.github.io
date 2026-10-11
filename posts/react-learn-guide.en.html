@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="react-learn-guide"><div class="wrap">
+</head><body data-slug="react-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -46,7 +46,7 @@
 <h2 id="c0" class="day-anchor">0 · What React actually solves, and when to reach for it</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React's one-way data flow: changing state triggers a re-render, React updates the DOM, a user interaction calls setState which changes state, closing the loop.">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="React's one-way data flow: changing state triggers a re-render, React updates the DOM, a user interaction calls setState which changes state, closing the loop.">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="24" y="40" width="170" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="109" y="63" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">state</text>
@@ -180,7 +180,7 @@ rows.map((r, i) =&gt; (
 <div class="card">
 <h3>2.3 Render &amp; commit: the three steps of a UI update</h3>
 <div class="fig">
-<svg viewBox="0 0 760 150" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The three steps React takes to update the UI: trigger (initial load or setState), render (React calls your component to compute the UI), commit (React writes the changes to the real DOM).">
+<svg viewBox="0 0 760 150" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The three steps React takes to update the UI: trigger (initial load or setState), render (React calls your component to compute the UI), commit (React writes the changes to the real DOM).">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="24" y="42" width="212" height="64" rx="11" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="130" y="68" text-anchor="middle" style="fill:var(--ink);font:700 14px sans-serif">① Trigger</text>
@@ -263,7 +263,7 @@ setList(<span class="ok">[...list, item]</span>);</code></pre>
 <div class="card">
 <p>This chapter is React's <b>real difficulty</b>, and where judgment separates people. Here's the master map first: which layer a piece of state belongs on — just follow the tree.</p>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision tree for where state lives: only this component uses it, keep it local with useState; siblings share it, lift to the common parent; many layers read it, use Context; complex update logic, use useReducer.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Decision tree for where state lives: only this component uses it, keep it local with useState; siblings share it, lift to the common parent; many layers read it, use Context; complex update logic, use useReducer.">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="220" y="12" width="320" height="42" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="38" text-anchor="middle" style="fill:var(--ink);font:700 13.5px sans-serif">Who reads / changes this state?</text>
@@ -509,7 +509,7 @@ inputRef.current.focus(); <span class="c">// grab a DOM node, operate directly</
 <h3>4.2 useEffect: synchronize with an "external system"</h3>
 <p>An Effect is a side effect React runs <b>after it commits to the DOM</b>, specifically to sync with systems outside React: subscribing to events, starting/stopping timers, connecting a WebSocket, driving a non-React DOM library.</p>
 <div class="fig">
-<svg viewBox="0 0 760 190" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An Effect's lifecycle: on mount it runs setup, when dependencies change it cleans up the old one then sets up the new, and on unmount it runs cleanup.">
+<svg viewBox="0 0 760 190" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="An Effect's lifecycle: on mount it runs setup, when dependencies change it cleans up the old one then sets up the new, and on unmount it runs cleanup.">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <line x1="40" y1="95" x2="720" y2="95" style="stroke:var(--border);stroke-width:2"/>
 <rect x="40" y="74" width="150" height="42" rx="9" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -537,7 +537,7 @@ inputRef.current.focus(); <span class="c">// grab a DOM node, operate directly</
 <h3>4.3 ★ You Might Not Need an Effect (the most important section)</h3>
 <p>The biggest beginner trap: <b>stuffing everything into useEffect</b>. The docs devote a whole page to "You Might Not Need an Effect." Figure out which kind of thing you're actually doing:</p>
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Deciding you might not need an Effect: a value derivable from props/state should be computed during render, not an Effect; responding to a user action goes in the event handler, not an Effect; only syncing with an external system is a real Effect.">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Deciding you might not need an Effect: a value derivable from props/state should be computed during render, not an Effect; responding to a user action goes in the event handler, not an Effect; only syncing with an external system is a real Effect.">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="170" y="10" width="420" height="40" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="35" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">What are you trying to do inside the Effect?</text>

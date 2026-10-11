@@ -6,14 +6,14 @@
 
 :root{
   --bg:#FAF6EF; --surface:#FFFFFF; --surface2:#F4EEE3; --border:#EBE4D8;
-  --ink:#28261F; --ink2:#5F5A52; --ink3:#756E60;
-  --accent:#AF5739; --onAccent:#FFFFFF; --accentSoft:#E9A088;
+  --ink:#28261F; --ink2:#5F5A52; --ink3:#6A6355;
+  --accent:#A24F33; --onAccent:#FFFFFF; --accentSoft:#E9A088;
   --feat-bg:#28261F; --feat-ink:#F5EFE4; --feat-sub:#C9C0B0;
   /* 語氣色（淺底可讀） */
-  --win:#2E7D4F; --winbg:#E7F1E8; --winbd:#C3DFC8;
-  --lose:#C0392B; --losebg:#F7E4DF; --losebd:#ECC4BC;
-  --mid:#B07415; --midbg:#F4EBD4; --midbd:#E3CFA0;
-  --turn:#3B6FB0; --turnbg:#E5EDF7; --turnbd:#C2D4EA;
+  --win:#26704A; --winbg:#E7F1E8; --winbd:#C3DFC8;
+  --lose:#B0301F; --losebg:#F7E4DF; --losebd:#ECC4BC;
+  --mid:#8A5A0E; --midbg:#F4EBD4; --midbd:#E3CFA0;
+  --turn:#335F9C; --turnbg:#E5EDF7; --turnbd:#C2D4EA;
   --purple:#8A6CC0;
   /* 舊報告變數別名（沿用文章內 var(--g) 等寫法） */
   --tx:var(--ink); --mut:var(--ink3); --bd:var(--border);
@@ -38,6 +38,7 @@ body{margin:0;padding-top:72px;background:var(--bg);color:var(--ink);overflow-wr
   line-height:1.65;transition:background .25s ease,color .25s ease}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
+p a,li a,td a,.foot a{text-decoration:underline;text-underline-offset:2px}
 button{font-family:inherit;border:none;background:none;cursor:pointer}
 input{font-family:inherit;outline:none}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -173,7 +174,7 @@ th{background:var(--surface2);color:var(--ink3);font-weight:600}
 tr:hover td{background:var(--surface2)}
 @media(max-width:640px){table{display:block;overflow-x:auto}} /* 寬表格自己捲,不推寬整頁 */
 
-.tag{font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600}
+.tag{font-size:12px;padding:2px 7px;border-radius:6px;font-weight:600}
 .t-os{background:var(--midbg);color:var(--mid)}
 .t-idm{background:var(--turnbg);color:var(--turn)}
 .t-mid{background:var(--winbg);color:var(--win)}
@@ -195,20 +196,20 @@ tr:hover td{background:var(--surface2)}
 .scard .why b{color:var(--ink)}
 .scard .cmt{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.5}
 
-.pill{display:inline-block;font-size:11px;padding:1px 9px;border-radius:10px;font-weight:700;margin-top:auto;align-self:flex-start}
+.pill{display:inline-block;font-size:12px;padding:1px 9px;border-radius:10px;font-weight:700;margin-top:auto;align-self:flex-start}
 .p-bull,.p-top{background:var(--winbg);color:var(--win);border:1px solid var(--winbd)}
 .p-turn{background:var(--turnbg);color:var(--turn);border:1px solid var(--turnbd)}
 .p-neu,.p-watch{background:var(--midbg);color:var(--mid);border:1px solid var(--midbd)}
 .p-bear,.p-warn{background:var(--losebg);color:var(--lose);border:1px solid var(--losebd)}
 
-.quote{background:var(--surface2);border-left:3px solid var(--turn);padding:10px 16px;border-radius:6px;margin:8px 0;font-size:13.5px;color:var(--ink2)}
-.quote.ep672{background:var(--winbg);border-left-color:var(--win)}
+.quote{background:var(--surface2);border:1px solid var(--turnbd);padding:10px 16px;border-radius:6px;margin:8px 0;font-size:13.5px;color:var(--ink2)}
+.quote.ep672{background:var(--winbg);border-color:var(--winbd)}
 
 .kbox{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:6px}
 .kcard{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
 .kcard .kt{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px}
 .kcard .kd{font-size:12.5px;color:var(--ink2);line-height:1.55}
-.kcard .ke{font-size:11px;color:var(--win);margin-top:8px}
+.kcard .ke{font-size:12px;color:var(--win);margin-top:8px}
 .kcard.clk{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
 .kcard.clk:hover{border-color:var(--accent);transform:translateY(-1px)}
 .kcard.clk.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -218,7 +219,7 @@ tr:hover td{background:var(--surface2)}
 
 .scoretable td{text-align:center}.scoretable td.l{text-align:left}
 .s5{color:var(--win);font-weight:700}.s3{color:var(--mid);font-weight:700}.s1{color:var(--lose);font-weight:700}
-.delta{font-size:11px;padding:1px 6px;border-radius:8px;margin-left:5px}
+.delta{font-size:12px;padding:1px 6px;border-radius:8px;margin-left:5px}
 .d-up{background:var(--winbg);color:var(--win);border:1px solid var(--winbd)}
 .d-flat{background:var(--surface2);color:var(--ink3);border:1px solid var(--border)}
 
@@ -256,14 +257,14 @@ body[data-slug] .wrap{margin-left:max(0px,calc((100vw - 1298px)/2 - 121px))}
 body[data-slug] .wrap header{padding-left:258px}
 .article-body{min-width:0}
 .rail{position:sticky;top:142px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:18px 16px}
-.rail-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding:0 4px}
+.rail-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding:0 4px}
 .rail nav{display:flex;flex-direction:column;gap:4px}
 .rail-toggle{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border-radius:8px;padding:8px 6px;color:var(--ink)}
 .rail-toggle:hover{background:var(--surface)}
-.rail-toggle .chev{font-size:10px;color:var(--ink3);width:10px;flex:none;transition:transform .15s ease;transform:rotate(90deg)}
+.rail-toggle .chev{font-size:12px;color:var(--ink3);width:10px;flex:none;transition:transform .15s ease;transform:rotate(90deg)}
 .rail-group.collapsed .rail-toggle .chev{transform:rotate(0deg)}
 .rail-toggle .rg-cat{flex:1;font-size:13px;font-weight:700}
-.rail-toggle .rg-count{font-size:11px;font-weight:600;color:var(--ink3)}
+.rail-toggle .rg-count{font-size:12px;font-weight:600;color:var(--ink3)}
 .rail-items{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 9px;padding-left:8px;border-left:1px solid var(--border)}
 /* 只用 ::-webkit-scrollbar（不設標準 scrollbar-width，否則 Chrome 121+ 會改走標準路徑、
    忽略下面規則並跟隨 macOS「捲動時才顯示」設定 → idle 時看不到捲軸）。 */
@@ -308,7 +309,7 @@ body[data-slug] .wrap header{padding-left:258px}
   /* 標題區：靠左、副標縮小，正文早一點出現 */
   .wrap header{text-align:left;padding:14px 0 14px;margin-top:6px}
   .wrap header .sub{font-size:13.5px;line-height:1.6}
-  .wrap header .badge{margin:4px 6px 0 0;padding:2px 10px;font-size:11.5px}
+  .wrap header .badge{margin:4px 6px 0 0;padding:2px 10px;font-size:12px}
   h2{font-size:19px;margin-top:34px}
   /* 字級：正文 16px、卡片內次要文字 14px；內距收窄讓字多一點寬度 */
   .wrap p,.wrap ul,.wrap ol{font-size:16px}
@@ -388,7 +389,7 @@ pre .bad{color:var(--lose)}                /* 反例 */
 pre .ok{color:var(--win)}                  /* 正解 */
 
 .demo{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:16px 18px;margin:16px 0}
-.demo-h{font-size:11.5px;font-weight:700;letter-spacing:.05em;color:var(--ink3);text-transform:uppercase;
+.demo-h{font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--ink3);text-transform:uppercase;
   margin-bottom:13px;display:flex;align-items:center;gap:7px}
 .demo-h::before{content:'▶';font-size:9px;color:var(--accent)}
 .demo-row{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
@@ -405,7 +406,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .demo input[type=text]{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:14px;color:var(--ink);width:150px}
 .demo .child{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 15px;text-align:center;min-width:110px}
 .demo .child .n{font-size:22px;font-weight:800;color:var(--ink)}
-.demo .child .t{font-size:11px;color:var(--ink3);margin-top:2px}
+.demo .child .t{font-size:12px;color:var(--ink3);margin-top:2px}
 .demo .child.hot{background:var(--winbg);border-color:var(--winbd)}
 .demo .child[data-inner]{background:var(--surface2)}
 .demo .child[data-outer],.demo .child[data-inner]{cursor:pointer;transition:box-shadow .15s,border-color .15s}
@@ -413,7 +414,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .demo .bar{height:10px;background:var(--border);border-radius:6px;overflow:hidden;flex:1;min-width:120px}
 .demo .bar>i{display:block;height:100%;background:var(--accent);border-radius:6px;transition:width .1s}
 .demo .msg{margin-top:12px;font-size:12.5px;color:var(--ink2);line-height:1.6;min-height:18px}
-.demo .log{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--ink2);background:var(--surface);
+.demo .log{font-family:ui-monospace,monospace;font-size:12px;color:var(--ink2);background:var(--surface);
   border:1px solid var(--border);border-radius:8px;padding:9px 11px;max-height:104px;overflow-y:auto;margin-top:12px}
 .demo .sw{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);cursor:pointer}
 .demo .sw input{accent-color:var(--accent)}
@@ -435,7 +436,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .sitebar nav{flex:1}
 .sitebar .modes{display:flex;gap:4px;margin-right:auto;margin-left:28px;padding-left:24px;border-left:1px solid var(--border)}
 .sitebar nav .modes a.nav-mode{position:relative;font-size:15px;font-weight:700;color:var(--ink2);padding:8px 14px;border-radius:8px}
-.sitebar nav .modes a.nav-mode.active{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sitebar nav .modes a.nav-mode.active{color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
 .sitebar nav .modes a.nav-mode.active::after{content:'';position:absolute;left:0;right:0;top:calc(50% + 33px);height:3px;background:var(--accent)}
 /* 手機：站名只留站徽、社群 icon 收起，讓「文章／財報」與語言／主題鈕排得下 */
 @media(max-width:680px){
@@ -460,7 +461,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable-wrap{margin-top:22px;overflow-x:auto}
 /* ponytail: 桌機版；欄位多、手機靠 .etable-wrap 橫向捲動，要卡片化再加 media query */
 .echips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.echips .chip span{font-size:11px;opacity:.6;margin-left:2px}
+.echips .chip span{font-size:12px;opacity:.6;margin-left:2px}
 .echips .eupd{margin-left:auto;align-self:center;font-size:12px;color:var(--ink3)}
 .echips .search{width:220px;padding-top:6px;padding-bottom:6px}
 @media(max-width:640px){.echips .search{width:100%}}
@@ -481,9 +482,9 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable details:last-child{border-bottom:0}
 .etable summary{list-style:none;cursor:pointer}
 .etable summary::-webkit-details-marker{display:none}
-.etable .eh{padding:11px 18px;background:var(--surface2);font-size:11px;letter-spacing:.06em;
+.etable .eh{padding:11px 18px;background:var(--surface2);font-size:12px;letter-spacing:.06em;
   color:var(--ink3);font-weight:600;border-bottom:1px solid var(--border)}
-.etable .eh .num{font-size:11px;color:var(--ink3);font-weight:600}
+.etable .eh .num{font-size:12px;color:var(--ink3);font-weight:600}
 .etable .eh>:nth-last-child(2){padding-left:15px}
 .etable .eh>div,.etable .eh .num,.etable .tn{text-align:center}
 .etable .eh>:first-child{text-align:left}
@@ -492,20 +493,20 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .etable .nmc .tkc{margin:0;font-size:12.5px;font-weight:600;color:var(--ink2)}
 .etable .nmc b{font-size:14.5px;font-weight:700;color:var(--ink)}
 .etable .nmc .nq{margin-top:2px;font-size:12px;color:var(--ink3)}
-.etable .tn .pill{margin:0;font-size:10.5px}
+.etable .tn .pill{margin:0;font-size:12px}
 .etable .num{text-align:center;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .etable .num.k{font-weight:700;color:var(--ink)}
 .etable .num.win,.etable .num .win{color:var(--win)}   /* 蓋掉上面的 .num.k，語氣色要贏 */
 .etable .num.lose,.etable .num .lose{color:var(--lose)}
 .etable .num.mid{color:var(--mid)}
-.etable .num .eg{display:block;font-size:10.5px;color:var(--ink3);font-weight:500}
+.etable .num .eg{display:block;font-size:12px;color:var(--ink3);font-weight:500}
 .etable .cn{font-size:12.5px;line-height:1.5;color:var(--ink);padding-left:14px;border-left:1px solid var(--border)}
 .etable .cn .co{color:var(--ink2);margin-top:4px}
 .etable .cn .win{color:var(--win)}.etable .cn .lose{color:var(--lose)}
-.etable .ck{font-size:10.5px;font-weight:700;color:var(--ink3);margin-right:6px;letter-spacing:.04em}
+.etable .ck{font-size:12px;font-weight:700;color:var(--ink3);margin-right:6px;letter-spacing:.04em}
 /* 展開：左邊逐季、右邊待觀察 */
 .etable .ex{background:var(--surface2);padding:14px 18px 18px;display:grid;grid-template-columns:1.3fr 1fr;gap:24px;font-size:12.5px}
-.etable .ex h4{margin:0 0 6px;font-size:11px;color:var(--ink3);letter-spacing:.05em}
+.etable .ex h4{margin:0 0 6px;font-size:12px;color:var(--ink3);letter-spacing:.05em}
 .etable .ex h4~h4{margin-top:14px}
 .etable .ex table{font-size:12px;margin:0}
 .etable .ex td,.etable .ex th{white-space:nowrap}
@@ -534,3 +535,6 @@ pre .ok{color:var(--win)}                  /* 正解 */
   html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important}
 }
+
+/* 觸控目標 ≥44px（手機） */
+@media(max-width:680px){.btn-back,.sitebar nav .modes a.nav-mode,.sitebar .brand{min-height:44px;display:inline-flex;align-items:center}}

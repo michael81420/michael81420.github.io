@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="javascript-learn-guide"><div class="wrap">
+</head><body data-slug="javascript-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -50,7 +50,7 @@
 <h2 id="c0" class="day-anchor">0 · Before You Start — What JavaScript Is and Where It Runs</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The JavaScript learning path: values and types, then control flow and functions, then objects and arrays, and only then DOM events and async, with modules last — each stop is the foundation for the next.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The JavaScript learning path: values and types, then control flow and functions, then objects and arrays, and only then DOM events and async, with modules last — each stop is the foundation for the next.">
 <defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">Language core — identical everywhere JS runs</text>
 <rect x="24" y="38" width="160" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -178,7 +178,7 @@ multiple lines`</span></code></pre>
 <h3>1.3 The single most important diagram: primitives vs objects</h3>
 <p>Here's the first real trap: <b>copying a number</b> and <b>copying an object</b> behave nothing alike.</p>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Copying a primitive copies the value, so changing the copy leaves the original alone; copying an object copies the reference, so changing the copy also changes the original.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Copying a primitive copies the value, so changing the copy leaves the original alone; copying an object copies the reference, so changing the copy also changes the original.">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="16" y="14" width="358" height="270" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="195" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Primitive — copies the VALUE</text>
@@ -347,7 +347,7 @@ sum(1, 2, 3, 4);            <span class="c">// 10</span></code></pre>
 <h3>3.2 Scope and closures — the classic interview question, and genuinely intuitive</h3>
 <p><b>Scope</b> is the region where a variable is visible. Inner code can see outer variables; outer code cannot see inner ones.</p>
 <div class="fig">
-<svg viewBox="0 0 760 268" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scopes nest like rings: an inner function sees outer variables but not the reverse, and when it is returned it keeps remembering them — that is a closure.">
+<svg viewBox="0 0 760 268" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Scopes nest like rings: an inner function sees outer variables but not the reverse, and when it is returned it keeps remembering them — that is a closure.">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="16" y="16" width="352" height="236" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="32" y="40" style="fill:var(--ink3);font:600 11.5px sans-serif">Global scope — const APP = "site"</text>
@@ -546,7 +546,7 @@ c.count;                     <span class="c">// 11</span></code></pre>
 <div class="card">
 <p>Everything so far was the language core, identical in Node.js. This chapter is <b>browser-only</b>: the DOM is the tree the browser builds from your HTML, and JS reads and writes the page through it.</p>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The browser parses HTML into a DOM tree; a click on a button bubbles upward through its parents to document, which is why one listener on a parent can handle every child.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The browser parses HTML into a DOM tree; a click on a button bubbles upward through its parents to document, which is why one listener on a parent can handle every child.">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="175" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">The DOM tree (your HTML's structure)</text>
 <rect x="105" y="38" width="140" height="34" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -690,7 +690,7 @@ list.addEventListener(<span class="s">"click"</span>, (e) =&gt; {
 <p>JavaScript is <b>single-threaded</b>: one thing at a time. So slow work like "wait for the network" can't block the thread — it's handed to the browser, and you get called back when it's done. That's the entire motivation for async.</p>
 <h3>6.1 Understand the event loop and the rest follows</h3>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The event loop: synchronous code runs immediately on the call stack while setTimeout and fetch are handed to the browser; their callbacks queue up and only run once the stack is empty, so async results always print last.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The event loop: synchronous code runs immediately on the call stack while setTimeout and fetch are handed to the browser; their callbacks queue up and only run once the stack is empty, so async results always print last.">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="44" width="196" height="150" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="118" y="68" text-anchor="middle" style="fill:var(--ink);font:700 12.5px sans-serif">Call Stack</text>

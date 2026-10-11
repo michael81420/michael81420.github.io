@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="github-actions-ci-cd"><div class="wrap">
+</head><body data-slug="github-actions-ci-cd"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -34,7 +34,7 @@
 <h2>先搞懂:CI/CD 是什麼?</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 276" style="width:100%;min-width:600px;height:auto"
+<svg viewBox="0 0 760 276" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="沒有 CI/CD 時壞掉的東西直接上線給讀者看到;有 CI/CD 時機器先檢查,綠燈才自動上線,紅燈就擋下來">
   <defs><marker id="ahci1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
     orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
@@ -90,7 +90,7 @@
 <h2>本站為什麼需要?一篇文章要改五個檔案</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto"
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一篇新文章要同時改動五個檔案才會真正上線,任何一處漏掉都是靜默失敗">
   <defs><marker id="ahci2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
     orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
@@ -129,7 +129,7 @@
 <h2>本站怎麼做:檢查 → 綠燈 → 上線</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 232" style="width:100%;min-width:600px;height:auto"
+<svg viewBox="0 0 760 232" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="每次 push 先跑兩層檢查,全部通過才部署上線,任何一層失敗線上就維持前一版">
   <defs><marker id="ahci3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
     orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
@@ -179,7 +179,7 @@
 <h2>拆開來看:本站 CI 的三個檔案</h2>
 <div class="card">
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 240" style="width:100%;min-width:600px;height:auto"
+<svg viewBox="0 0 760 240" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ci.yml 是流程表,串起別人寫好的 action、自己寫的檢查腳本、以及借用 Playwright 的視覺檢查,全部用結束代碼回報綠燈或紅燈">
   <defs><marker id="ahci4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
     orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>

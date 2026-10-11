@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="javascript-learn-guide"><div class="wrap">
+</head><body data-slug="javascript-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.html">← 返回主頁面</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">EN</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -50,7 +50,7 @@
 <h2 id="c0" class="day-anchor">0 · 開始之前 — JavaScript 是什麼、在哪裡跑</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JavaScript 的學習路線：先學值與型別，再學流程控制與函式，接著物件陣列，然後才是 DOM 事件與非同步，最後是模組化，每一站都是下一站的地基。">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="JavaScript 的學習路線：先學值與型別，再學流程控制與函式，接著物件陣列，然後才是 DOM 事件與非同步，最後是模組化，每一站都是下一站的地基。">
 <defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">語言核心（在哪都一樣）</text>
 <rect x="30" y="38" width="150" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -178,7 +178,7 @@ Array.isArray(arr) <span class="c">// true  ← 判斷陣列要用這個</span><
 <h3>1.3 最關鍵的一張圖：原始型別 vs 物件型別</h3>
 <p>這是新手第一個大坑：<b>複製一個數字</b>和<b>複製一個物件</b>，行為完全不同。</p>
 <div class="fig">
-<svg viewBox="0 0 760 290" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="原始型別複製的是值本身，改了副本不影響原本；物件複製的是同一個參考位址，改了副本原本也會跟著變。">
+<svg viewBox="0 0 760 290" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="原始型別複製的是值本身，改了副本不影響原本；物件複製的是同一個參考位址，改了副本原本也會跟著變。">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="14" width="350" height="258" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="195" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13.5px sans-serif">原始型別：複製「值」</text>
@@ -347,7 +347,7 @@ sum(1, 2, 3, 4);            <span class="c">// 10</span></code></pre>
 <h3>3.2 作用域與閉包 — 面試必考，但概念其實很直覺</h3>
 <p><b>作用域（scope）</b>：一個變數「看得到的範圍」。內層看得到外層，外層看不到內層。</p>
 <div class="fig">
-<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="作用域像一層層的同心圓，內層函式看得到外層的變數，外層看不到內層；函式被回傳出去後仍記得外層變數，這就是閉包。">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="作用域像一層層的同心圓，內層函式看得到外層的變數，外層看不到內層；函式被回傳出去後仍記得外層變數，這就是閉包。">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="16" width="380" height="228" rx="12" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="36" y="40" style="fill:var(--ink3);font:600 12px sans-serif">全域作用域　const APP = "site"</text>
@@ -547,7 +547,7 @@ c.count;                     <span class="c">// 11</span></code></pre>
 <div class="card">
 <p>到這裡為止都是「語言核心」，換到 Node.js 也一樣。這一章是<b>瀏覽器專屬</b>：DOM 是瀏覽器把 HTML 解析成的一棵樹，JS 透過它讀寫畫面。</p>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HTML 被瀏覽器解析成一棵 DOM 樹，點擊按鈕時事件會從按鈕往上冒泡經過父層一路到 document，所以可以在父層統一攔截。">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="HTML 被瀏覽器解析成一棵 DOM 樹，點擊按鈕時事件會從按鈕往上冒泡經過父層一路到 document，所以可以在父層統一攔截。">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="180" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">DOM 樹（HTML 的結構）</text>
 <rect x="110" y="38" width="140" height="34" rx="8" style="fill:var(--surface2);stroke:var(--border)"/>
@@ -690,7 +690,7 @@ list.addEventListener(<span class="s">"click"</span>, (e) =&gt; {
 <p>JavaScript 是<b>單執行緒</b>：一次只做一件事。所以「等網路回應」這種慢事情不能卡著等，必須交給瀏覽器去做、等它好了再回頭處理。這就是非同步的全部動機。</p>
 <h3>6.1 先看懂 Event Loop，其他都好說</h3>
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="事件迴圈：同步程式碼在呼叫堆疊上立刻執行，setTimeout 和 fetch 交給瀏覽器計時，完成後排進佇列，等堆疊清空才被搬回來執行，所以非同步的結果一定最後才印出來。">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="事件迴圈：同步程式碼在呼叫堆疊上立刻執行，setTimeout 和 fetch 交給瀏覽器計時，完成後排進佇列，等堆疊清空才被搬回來執行，所以非同步的結果一定最後才印出來。">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="26" y="40" width="200" height="150" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="126" y="64" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">呼叫堆疊 Call Stack</text>

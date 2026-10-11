@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="../assets/site.css">
 <script src="../assets/site.js" defer></script>
-</head><body data-slug="typescript-learn-guide"><div class="wrap">
+</head><body data-slug="typescript-learn-guide"><div class="wrap" role="main">
 <div class="topbar"><a class="btn-back" href="../index.en.html">← Back to home</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()">中</button><button class="theme-toggle" onclick="toggleTheme()">☾</button></div></div>
 
 <header>
@@ -50,7 +50,7 @@
 <h2 id="c0" class="day-anchor">0 · Before You Start — What TypeScript Is and Why You Want It</h2>
 <div class="card">
 <div class="fig">
-<svg viewBox="0 0 760 300" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript learning path: annotations first, then object shapes and union narrowing, then function types, then generics, and only then the real-world DOM, APIs and config — each stop is the foundation for the next.">
+<svg viewBox="0 0 760 300" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript learning path: annotations first, then object shapes and union narrowing, then function types, then generics, and only then the real-world DOM, APIs and config — each stop is the foundation for the next.">
 <defs><marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <text x="380" y="24" text-anchor="middle" style="fill:var(--ink3);font:600 12px sans-serif">Core type ideas — nail these first</text>
 <rect x="24" y="38" width="160" height="52" rx="10" style="fill:var(--winbg);stroke:var(--winbd)"/>
@@ -88,7 +88,7 @@
 <h3>0.1 What TypeScript actually is</h3>
 <p>TypeScript is a <b>superset of JavaScript</b>: any valid JS is valid TS. It does exactly one thing — it adds a <b>type-checking layer while you write</b>. Once it checks out, <code>tsc</code> <b>erases</b> every annotation and emits plain JavaScript that browsers and Node run directly.</p>
 <div class="fig">
-<svg viewBox="0 0 760 200" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript compile pipeline: you write a typed .ts file, tsc first type-checks it to catch errors, then erases every type and emits a plain .js file that actually runs in the browser or Node — types never reach runtime.">
+<svg viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TypeScript compile pipeline: you write a typed .ts file, tsc first type-checks it to catch errors, then erases every type and emits a plain .js file that actually runs in the browser or Node — types never reach runtime.">
 <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="20" y="60" width="188" height="78" rx="12" style="fill:var(--winbg);stroke:var(--winbd)"/>
 <text x="114" y="86" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Your .ts</text>
@@ -261,7 +261,7 @@ a.foo.bar.baz();              <span class="c">// ⚠ TS says nothing; explodes a
 <h3>2.2 Structural typing (duck typing) — TS's most important intuition</h3>
 <p>TS decides whether a type fits by its <b>shape, not its name</b>. If an object has all the properties User needs, it <b>is</b> a User — no need to declare "I am a User". This is structural typing, a.k.a. duck typing.</p>
 <div class="fig">
-<svg viewBox="0 0 760 250" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Structural typing: TS looks at shape, not name — an object with name and age satisfies User, an extra property is still fine, and only a missing property gets rejected.">
+<svg viewBox="0 0 760 250" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Structural typing: TS looks at shape, not name — an object with name and age satisfies User, an extra property is still fine, and only a missing property gets rejected.">
 <defs><marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="300" y="16" width="160" height="70" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
 <text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">Required shape: User</text>
@@ -344,7 +344,7 @@ id = <span class="s">"A-101"</span>;                  <span class="c">// ✅ bot
 <h3>3.2 Narrowing — the right way to use a union</h3>
 <p>To use something specific to one member of a union, first prove to TS which one it is. You do that with <b>the checks JS already has</b> — TS understands them and automatically "narrows" the type inside the matching branch.</p>
 <div class="fig">
-<svg viewBox="0 0 760 260" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Narrowing: a string-or-number union value splits into two paths after a typeof check — inside the string branch TS knows it is a string and string methods are safe, inside the number branch it is a number.">
+<svg viewBox="0 0 760 260" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Narrowing: a string-or-number union value splits into two paths after a typeof check — inside the string branch TS knows it is a string and string methods are safe, inside the number branch it is a number.">
 <defs><marker id="ah4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="270" y="16" width="220" height="56" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="380" y="40" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">value: string | number</text>
@@ -467,7 +467,7 @@ greet(<span class="s">"Michael"</span>);            <span class="c">// ✅ greet
 <span class="k">const</span> b = identity(42);       <span class="c">// b is number ✅ TS infers T = number</span>
 <span class="k">const</span> c = identity(<span class="s">"hi"</span>);     <span class="c">// c is string ✅ same code, each keeps its type</span></code></pre>
 <div class="fig">
-<svg viewBox="0 0 760 230" style="width:100%;min-width:600px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Generics are like a transparent container: put a number in and the type T is remembered as number, so what comes out is number; put a string in and T is string, so out comes a string. Same code, the type passes through untouched.">
+<svg viewBox="0 0 760 230" style="width:100%;min-width:760px;height:auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Generics are like a transparent container: put a number in and the type T is remembered as number, so what comes out is number; put a string in and T is string, so out comes a string. Same code, the type passes through untouched.">
 <defs><marker id="ah5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
 <rect x="285" y="88" width="190" height="54" rx="10" style="fill:var(--midbg);stroke:var(--midbd)"/>
 <text x="380" y="111" text-anchor="middle" style="fill:var(--ink);font:700 13px sans-serif">identity&lt;T&gt;(x: T): T</text>
