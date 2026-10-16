@@ -37,6 +37,7 @@ var POSTS=[
   {slug:'arm-fy2027q1-earnings', d:'2026-09-26', cat:'財報分析', sub:'Arm', zh:'Arm．FY2027 Q1 財報拆解', en:'Arm．FY2027 Q1 Earnings, Unpacked'},
   {slug:'coinbase-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Coinbase', zh:'Coinbase．2026 Q2 財報拆解', en:'Coinbase．Q2 2026 Earnings, Unpacked'},
   {slug:'tsmc-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'TSMC', zh:'台積電．2026 Q2 財報拆解', en:'TSMC．Q2 2026 Earnings, Unpacked'},
+  {slug:'tsmc-2026q3-earnings', d:'2026-10-16', cat:'財報分析', sub:'TSMC', zh:'TSMC．2026 Q3 財報拆解', en:'TSMC．2026 Q3 Earnings, Unpacked'},
   {slug:'asml-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'ASML', zh:'ASML．2026 Q2 財報拆解', en:'ASML．Q2 2026 Earnings, Unpacked'},
   {slug:'asml-2026q3-earnings', d:'2026-10-15', cat:'財報分析', sub:'ASML', zh:'ASML．2026 Q3 財報拆解', en:'ASML．2026 Q3 Earnings, Unpacked'},
   {slug:'salesforce-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Salesforce', zh:'Salesforce．FY2027 Q2 財報拆解', en:'Salesforce．FY2027 Q2 Earnings, Unpacked'},
