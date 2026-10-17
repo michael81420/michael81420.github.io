@@ -141,7 +141,7 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 - **交通**：卡片裡 `<li><b>交通</b>`（英文 `Getting there`／`Transportation`）那條，手機上會搬成「前一段交通」顯示，景點展開後不再重複；卡片加 `data-by` 標交通工具（電車、巴士、自駕、步行…），沒標就顯示「交通」。
 - **選填細節**（寫在 `.card` 上；卡片沒寫到的報到、早餐、退房用 `<div class="itin-x" hidden data-t="HH:MM–HH:MM">名稱</div>`）：`data-mv` 前一段交通時長（純數字＝分鐘）、`data-by` 交通工具（預設 Grab；步行中文填 `步行`、英文填 `Walk`）、`data-at` 出發時間、`data-to` 目的地、`data-ride` 本身就是交通的卡片（火車、渡輪）、`data-name`／`data-t` 覆寫手機上的名稱與時段、`data-alt="1"` 備案。中英兩頁要對齊（見 `malaysia-kl-penang-6d5n`）。
 - **圖**：每日段落裡的圖手機上跟著段落藏掉，不用管；**每日段落之前的圖**（行程總覽圖）要另畫一張手機直排版——桌機那張 `<svg class="fig-d">`、手機那張 `<svg class="fig-m" viewBox="0 0 340 H">` 放同一個 `.fig` 裡，CSS 依寬度二選一。直排圖字級用 `em`（跟著 `--itin-fs`），不寫 px。
-- **字級**：手機行程與直排圖的字全吃 `site.css` 的 `--itin-fs`（現 13px），要調大小只改這一個。
+- **字級**：手機行程與直排圖的字全吃 `site.css` 的 `--itin-fs`（現 15px），要調大小只改這一個。
 - **daynav 高亮**：inline script 的迴圈要處理 `itinBox`（照現有旅遊頁抄），否則手機上 Day 連結不會跟著亮。
 
 以上漏了不會報錯、只會在手機靜默退回桌機版面，`check.mjs` 會擋 `table.itin`／`data-city`／`h2#day1`／`itinBox`／總覽圖缺 `fig-m`。

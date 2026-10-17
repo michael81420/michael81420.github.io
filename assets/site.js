@@ -639,9 +639,11 @@ function initItin(){
   if(tbs.length){
     var heads=[], box=document.createElement('div'), strip=document.createElement('div'), panel=document.createElement('div');
     var h2s=tbs.map(function(tb){for(var h=(tb.closest('.card')||tb).previousElementSibling; h&&h.tagName!=='H2'; h=h.previousElementSibling); return h;}), seen={};
-    box.className='itin-m day-anchor'; strip.className='itin-days';
+    var live=document.createElement('p');  // 換天時給螢幕閱讀器念一句，不念整條時間軸
+    box.className='itin-m day-anchor'; strip.className='itin-days'; live.className='sr-only'; live.setAttribute('aria-live','polite');
+    strip.setAttribute('role','group'); strip.setAttribute('aria-label',EN?'Trip dates':'行程日期');
     box.innerHTML=h2s[0]?'<h2>'+h2s[0].textContent.split(/[：:]/)[0]+'</h2>':'';
-    box.appendChild(strip); box.appendChild(panel);
+    box.appendChild(strip); box.appendChild(live); box.appendChild(panel);
     tbs.forEach(function(tb,k){
       var g=document.createElement('div'), row=document.createElement('div');
       g.className='itin-grp'; row.className='itin-row';
@@ -680,7 +682,11 @@ function initItin(){
     heads.forEach(function(m,i){
       var bt=btns[i], day=document.getElementById('day'+m.n); bt.type='button';
       bt.innerHTML=m.d?'<b>'+m.d+'</b><span>'+(m.w||'')+'</span>':'<span>Day</span><b>'+m.n+'</b>';
-      bt.onclick=function(){show(i);};
+      bt.setAttribute('aria-label','Day '+m.n+(m.d?', '+m.d+(m.w?' '+m.w:''):''));
+      bt.onclick=function(){
+        show(i); live.textContent=bt.getAttribute('aria-label');
+        if(box.getBoundingClientRect().top<0) box.scrollIntoView({behavior:'smooth'});  // 日期列黏著時換天，捲回該天開頭
+      };
       jump[m.n]=function(){show(i); box.scrollIntoView({behavior:'smooth'});};
       if(day) day.itinBox=box;  // 段落藏起來時，#daynav 改看這個時間軸
       // 手機只看時間軸：原本的每日段落（h2#dayN 到下一個 h2）標 .itin-src，CSS 在手機藏掉

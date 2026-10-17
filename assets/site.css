@@ -238,15 +238,19 @@ tr:hover td{background:var(--surface2)}
 /* 旅遊行程總覽：手機把 table.itin 換成「日期列＋可展開時間軸」（site.js initItin 取 h2#dayN 底下的卡片，內容只有一份） */
 .itin-m{display:none}
 /* 手機行程字級旋鈕：.itin-m 內與手機直排圖 svg.fig-m 的字都用 em 跟著它縮放 */
-:root{--itin-fs:13px}
+:root{--itin-fs:15px}
 .itin-m,.fig svg.fig-m{font-size:var(--itin-fs)}
-@media(max-width:680px){table.itin,.itin-src{display:none}.itin-m{display:block}}
+@media(max-width:680px){table.itin,.itin-src{display:none}.itin-m{display:block}
+  /* 日期列取代 #daynav 的 Day 連結：日期列黏在站徽列下、蓋住 #daynav（時間軸捲完才露出候補／美食那幾顆） */
+  body:has(.itin-m) .daynav a[href^="#day"]{display:none}
+  body:has(.itin-m) .daynav:not(:has(a:not([href^="#day"]))){display:none}  /* 只有 Day 連結的（釜山）整條收掉 */}
 .itin-days{display:flex;gap:8px;margin-bottom:14px;position:relative;overflow-x:auto;scrollbar-width:none}
 .itin-days::-webkit-scrollbar{display:none}
+@media(max-width:680px){.itin-days{position:sticky;top:55px;z-index:32;background:var(--bg);padding:6px 0;border-bottom:1px solid var(--border)}}
 .itin-grp{flex:1 0 auto}  /* flex-grow 由 JS 設成該城天數；天數多時按鈕守住最小寬、整列橫捲 */
 .itin-grp small{display:block;margin:0 4px 4px;padding-bottom:3px;border-bottom:1.5px solid var(--border);
   font-size:.85em;font-weight:600;color:var(--ink3);text-align:center}
-.itin-grp small span{position:sticky;left:4px}  /* 日期列橫捲時城市名黏在左緣，不會被切半 */
+.itin-grp small span{position:sticky;left:4px;font-size:inherit}  /* 日期列橫捲時城市名黏在左緣，不會被切半 */
 .itin-row{display:flex;gap:2px}
 .itin-days button{flex:1 0 46px;min-height:44px;padding:6px 2px;border:0;border-radius:12px;background:none;
   font:inherit;line-height:1.3;color:var(--ink3);cursor:pointer}
@@ -255,9 +259,9 @@ tr:hover td{background:var(--surface2)}
 .itin-days button[aria-pressed="true"]{background:var(--accent);color:var(--onAccent)}
 .itin-days button[aria-pressed="true"] b{color:var(--onAccent)}
 .itin-head{background:var(--midbg);border:2px solid var(--midbd);border-radius:16px;padding:12px 16px;margin-bottom:16px}
-.itin-head small{display:block;font-size:.85em;color:var(--ink3)}
+.itin-head small{display:block;font-size:.85em;color:var(--ink2)}
 .itin-head > b{display:block;font-size:1.2em;line-height:1.4;color:var(--ink)}
-.itin-head .note{margin:6px 0 0;font-size:.9em}
+.itin-head .note{margin:6px 0 0;font-size:.9em;color:var(--ink2)}  /* --midbg 上 ink3 在 dark 只有 4.07:1 */
 .itin-tl{list-style:none;margin:0;padding:0}
 .wrap .itin-tl,.wrap .itin-body p,.wrap .itin-body ul{font-size:inherit}  /* 蓋掉手機 .wrap ul/p 16px，字級才吃得到旋鈕 */
 .itin-tl > li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 26px;position:relative;padding-bottom:12px}
@@ -266,12 +270,12 @@ tr:hover td{background:var(--surface2)}
   border:2px solid var(--ink);background:var(--surface)}
 .itin-t{font-size:.85em;font-weight:600;color:var(--ink2);text-align:right;padding-top:10px}
 .itin-tl details,.itin-pt{border:1.5px solid var(--ink3);border-radius:14px;background:var(--surface)}
-.itin-pt{padding:9px 12px;min-height:44px}
+.itin-pt{padding:9px 12px;min-height:44px;border-color:var(--border);background:none}  /* 不能展開的點不給卡片樣子，免得看起來能點 */
 .itin-pt b{color:var(--ink)}
 .itin-pt small{display:block;font-size:.85em;color:var(--ink3)}
 .itin-tl summary{list-style:none;cursor:pointer;padding:9px 34px 9px 12px;position:relative;min-height:44px}
 .itin-tl summary::-webkit-details-marker{display:none}
-.itin-tl summary::after{content:'＋';position:absolute;right:12px;top:9px;color:var(--ink3);font-weight:700}
+.itin-tl summary::after{content:'＋';position:absolute;right:12px;top:9px;color:var(--accent);font-size:1.15em;font-weight:700}
 .itin-tl details[open] summary::after{content:'－'}
 .itin-tl summary b{color:var(--ink);margin-right:6px}
 .itin-tl summary .badge{font-size:.8em;vertical-align:1px}
@@ -282,7 +286,7 @@ tr:hover td{background:var(--surface2)}
 .itin-tl > li.itin-mv{padding-bottom:12px;font-size:.95em;color:var(--ink2)}
 .itin-tl > li.itin-mv::after{top:8px;left:51px;width:8px;height:8px;border:0;background:var(--turn)}
 .itin-tl > li.itin-mv .itin-t{padding-top:2px;color:var(--turn)}
-.itin-mv b{color:var(--ink)}
+.itin-mv b:not([class]){color:var(--ink)}  /* 交通說明裡的 b.win/b.lose 保留語氣色 */
 .itin-dur{display:block;font-size:.9em;color:var(--ink3)}
 .itin-grab{display:inline-block;margin:0 8px 2px 0;padding:1px 10px;border-radius:999px;font-size:.85em;font-weight:700;
   background:var(--turnbg);color:var(--turn);border:1.5px solid var(--turnbd)}
@@ -358,7 +362,7 @@ body[data-slug] .wrap header{padding-left:258px}
   .btn-back{padding:7px 13px;font-size:13px}
   .daynav{top:55px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:9px 0}
   .daynav::-webkit-scrollbar{display:none}
-  .daynav a{flex:none}
+  .daynav a{flex:none;display:inline-flex;align-items:center;min-height:44px}
   .day-anchor{scroll-margin-top:118px}
   /* 標題區：靠左、副標縮小，正文早一點出現 */
   .wrap header{text-align:left;padding:14px 0 14px;margin-top:6px}
