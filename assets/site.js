@@ -599,11 +599,12 @@ function initSitebar(){
 // 旅遊行程總覽表（table.itin）→ 手機版日期列＋時間軸。表頭每格一天：有「Day N」取 N（沒有就照欄位順序），有 MM/DD、週幾就顯示；
 // 時間軸依序取 h2#dayN 底下：① 每張 .card → 可點開的點（內容＝原卡片）；h3 括號裡帶 HH:MM 就當時間（（10:00–12:00）／(after 21:00) 都行）
 // ② <div class="itin-x" hidden data-t="HH:MM–HH:MM">名稱</div> → 不展開的點（卡片沒寫到的報到、早餐、退房…）
-// 兩者都可帶前一段交通：data-mv 時長（純數字＝分鐘）、data-by 交通工具（預設 Grab）、data-at 出發時間（預設前一點結束）、data-to 目的地（預設點名稱）
+// 卡片裡「交通／Getting there／Transportation」條目會搬成前一段交通的說明（景點本身不再重複）；兩者都可帶前一段交通：data-mv 時長（純數字＝分鐘）、data-by 交通工具（預設 Grab）、data-at 出發時間（預設前一點結束）、data-to 目的地（預設點名稱）
 // data-ride 標在本身就是交通的卡片（火車、渡輪）；卡片標題涵蓋多步時用 data-name／data-t 覆寫手機上的名稱與時段；data-alt＝備案（虛線、不接交通）
 function initItin(){
   var jump={};  // dayN → 切到該天並捲過去（手機上 #daynav 的 Day 連結改走這裡）
-  var EN=LANG==='en', T=EN?{to:'to ',min:function(m){return '~'+m+' min';},walk:'Walk',wd:''}:{to:'往 ',min:function(m){return '約 '+m+' 分鐘';},walk:'步行',wd:'週'};
+  var EN=LANG==='en', T=EN?{to:'to ',min:function(m){return '~'+m+' min';},walk:'Walk',wd:'',tr:'Transit'}:{to:'往 ',min:function(m){return '約 '+m+' 分鐘';},walk:'步行',wd:'週',tr:'交通'};
+  var TRL=/^(交通|Getting there|Transportation)$/;  // 卡片裡的交通條目：手機上搬到前一段交通，景點本身不再重複
   function parse(th,k){
     var x=th.textContent, n=x.match(/Day\s*(\d+)/), d=x.match(/\d{1,2}\/\d{1,2}/), w=x.match(EN?/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/:/[（(]([一二三四五六日])[)）]/);
     return {n:n?n[1]:String(k+1), d:d&&d[0], w:w&&T.wd+w[1]};
@@ -617,8 +618,10 @@ function initItin(){
       var h3=el.matches('.card')&&el.querySelector(':scope > h3'), tm=h3&&h3.textContent.match(/[（(]([^（()）]*\d{1,2}:\d{2}[^（()）]*)[)）]/);
       if(el.matches('.card')){  // 沒寫時間的卡片也收（不排時間的點），手機藏掉原段落後內容才不會不見；沒 h3 就靠 data-name
         var t=h3&&h3.cloneNode(true), tags=t?[].map.call(t.querySelectorAll('b'),function(b){b.remove(); return '<span class="badge">'+b.textContent+'</span>';}):[];
-        p={range:tm?tm[1]:'', name:t?t.textContent.replace(tm?tm[0]:'','').trim():'', tags:tags.join(''),
-           body:(fig&&fig.nextElementSibling===el?fig.outerHTML:'')+[].filter.call(el.children,function(c){return c!==h3;}).map(function(c){return c.outerHTML;}).join('')};
+        var c=el.cloneNode(true), mvd='', tli=[].filter.call(c.querySelectorAll('li'),function(li){var b=li.firstElementChild; return b&&b.tagName==='B'&&TRL.test(b.textContent.trim())&&li.textContent.trim().indexOf(b.textContent.trim())===0;})[0];
+        if(tli){var ul=tli.parentNode; tli.firstElementChild.remove(); mvd=tli.innerHTML.replace(/^\s*[：:]\s*/,''); tli.remove(); if(!ul.children.length) ul.remove();}
+        p={range:tm?tm[1]:'', name:t?t.textContent.replace(tm?tm[0]:'','').trim():'', tags:tags.join(''), mvd:mvd,
+           body:(fig&&fig.nextElementSibling===el?fig.outerHTML:'')+[].filter.call(c.children,function(x){return x.tagName!=='H3';}).map(function(x){return x.outerHTML;}).join('')};
       }
       if(p){
         ['mv','by','at','to','ride','name','t','alt'].forEach(function(k){var v=el.getAttribute('data-'+k); if(v!==null) p[k==='t'?'range':k]=v;});
@@ -663,8 +666,9 @@ function initItin(){
         +(h2?'<b>'+h2.textContent.replace(/^\s*(【[^】]*】|\[[^\]]*\])\s*/,'')+'</b>':'')
         +notes+'</div><ul class="itin-tl">';
       (h2?points(h2):[]).forEach(function(p){
-        if(p.mv) html+='<li class="itin-mv"><span class="itin-t">'+(p.at||'')+'</span><span><span class="itin-grab'+(p.by===T.walk?' walk':'')+'">'+(p.by||'Grab')+'</span>'
-          +T.to+'<b>'+(p.to||p.name.split(' (')[0])+'</b><span class="itin-dur">'+(/^[\d–]+$/.test(p.mv)?T.min(p.mv):p.mv)+'</span></span></li>';
+        if(p.mv||p.mvd) html+='<li class="itin-mv"><span class="itin-t">'+(p.at||'')+'</span><span><span class="itin-grab'+(p.by===T.walk?' walk':'')+'">'+(p.by||(p.mv?'Grab':T.tr))+'</span>'
+          +T.to+'<b>'+(p.to||p.name.split(' (')[0])+'</b>'+(p.mv?'<span class="itin-dur">'+(/^[\d–]+$/.test(p.mv)?T.min(p.mv):p.mv)+'</span>':'')
+          +(p.mvd?'<span class="itin-dur">'+p.mvd+'</span>':'')+'</span></li>';
         var head=(p.ride?'<span class="itin-grab">'+p.ride+'</span>':'')+'<b>'+p.name+'</b>'+p.tags+'<small>'+p.range+'</small>';
         html+='<li'+(p.alt?' class="alt"':'')+'><span class="itin-t">'+p.t+'</span>'+(p.body
           ?'<details><summary>'+head+'</summary><div class="itin-body">'+p.body+'</div></details>'
