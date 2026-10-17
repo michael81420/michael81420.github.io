@@ -129,6 +129,22 @@ document.querySelectorAll('.fig svg').forEach(svg => {
 
 估值走 invest-playbook：forward PE 不用 trailing，先判族群循環烈度。範圍只做同族群概念股；上下游／競爭同業／跨市場對標不強制，除非另外指示。
 
+## 旅遊文章：手機走另一套 layout
+
+`cat:'旅遊'` 的頁面，手機（≤680px）不是把桌機版縮小，而是由 `site.js` 的 `initItin()` 換成「日期列＋時間軸」：
+所有 `table.itin` 合成一條日期列（`data-city` 標在上方分組）→ 點日期顯示當天時間軸（卡片可展開，內容就是原卡片，**只寫一份**）；
+原本的總覽表與每日段落（`h2#dayN` 到下一個 `h2`）在手機整段藏掉。頂部 `#daynav` 的 Day 連結在手機改成切換日期列。
+桌機版完全不變。寫新旅遊頁只要照下面的標記寫，版型自動長出來：
+
+- **總覽表**：`<table class="itin">`；分城市多張時每張加 `data-city="吉隆坡"`（英文頁用英文城市名）。表頭每格一天，有 `Day N` 取 N（沒有照欄位順序）、有 `MM/DD`、`(五)`／`Fri` 就顯示在日期鈕上。跨城那天兩張表都列也沒關係，只留第一次。
+- **每日段落**：`<h2 id="dayN" class="day-anchor">`；底下 `p.note` 收進當天標題框；每張 `.card` 成為時間軸一個點，`h3` 括號裡有 `HH:MM` 就當時間（`（10:00–12:00）`、`(after 21:00)` 都吃）。沒 `h3` 的卡片用 `data-name` 給名稱。
+- **選填細節**（寫在 `.card` 上；卡片沒寫到的報到、早餐、退房用 `<div class="itin-x" hidden data-t="HH:MM–HH:MM">名稱</div>`）：`data-mv` 前一段交通時長（純數字＝分鐘）、`data-by` 交通工具（預設 Grab；步行中文填 `步行`、英文填 `Walk`）、`data-at` 出發時間、`data-to` 目的地、`data-ride` 本身就是交通的卡片（火車、渡輪）、`data-name`／`data-t` 覆寫手機上的名稱與時段、`data-alt="1"` 備案。中英兩頁要對齊（見 `malaysia-kl-penang-6d5n`）。
+- **圖**：每日段落裡的圖手機上跟著段落藏掉，不用管；**每日段落之前的圖**（行程總覽圖）要另畫一張手機直排版——桌機那張 `<svg class="fig-d">`、手機那張 `<svg class="fig-m" viewBox="0 0 340 H">` 放同一個 `.fig` 裡，CSS 依寬度二選一。直排圖字級用 `em`（跟著 `--itin-fs`），不寫 px。
+- **字級**：手機行程與直排圖的字全吃 `site.css` 的 `--itin-fs`（現 13px），要調大小只改這一個。
+- **daynav 高亮**：inline script 的迴圈要處理 `itinBox`（照現有旅遊頁抄），否則手機上 Day 連結不會跟著亮。
+
+以上漏了不會報錯、只會在手機靜默退回桌機版面，`check.mjs` 會擋 `table.itin`／`data-city`／`h2#day1`／`itinBox`／總覽圖缺 `fig-m`。
+
 ## 把新文章掛上首頁
 
 改 `index.html`，在 `#grid` 加一張卡片：

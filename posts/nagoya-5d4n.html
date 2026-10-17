@@ -53,7 +53,7 @@
 
 <h2>行程總覽表</h2>
 <div class="card" style="overflow-x:auto">
-<table>
+<table class="itin">
 <thead><tr><th>時段</th><th>第一天</th><th>第二天</th><th>第三天</th><th>第四天</th><th>第五天</th></tr></thead>
 <tbody>
 <tr>
@@ -369,7 +369,10 @@
   var secs=links.map(function(a){return document.getElementById(a.getAttribute('href').slice(1));});
   function onScroll(){
     var y=parseFloat(getComputedStyle(nav).top)+nav.offsetHeight+40, idx=-1; // 判定線＝黏住後導覽列底部，手機單排、桌機可能換行，用量的
-    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y) idx=i; }
+    for(var i=0;i<secs.length;i++){
+      var s=secs[i]; if(s && !s.offsetParent) s=s.itinBox && s.itinBox.dataset.day===s.id.slice(3) ? s.itinBox : null;  // 手機：段落藏起，改看正在顯示該天的時間軸
+      if(s && s.getBoundingClientRect().top<=y) idx=i;
+    }
     links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
   }
   onScroll();

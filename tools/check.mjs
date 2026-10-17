@@ -35,6 +35,18 @@ for (const p of POSTS) {
     // 章節導覽高亮的判定線要量導覽列高度：手機單排、桌機換行高度都不同，寫死會高亮成上一章
     if (s.includes('id="daynav"') && /var y=\d+\s*,/.test(s)) bad(f, 'daynav 判定線寫死數字，改用 parseFloat(getComputedStyle(nav).top)+nav.offsetHeight+40');
   }
+  /* 旅遊頁手機版走另一套版型（site.js initItin）：總覽表合成日期列、每日段落藏起改看時間軸。
+     漏了這些標記不會報錯，只會在手機上靜默退回桌機版面，所以在這裡擋 */
+  if (p.cat === '旅遊') for (const [f, s] of [[zh, z], [en, e]]) {
+    const tbs = s.match(/<table class="itin"[^>]*>/g) || [];
+    if (!tbs.length) bad(f, '旅遊頁缺 <table class="itin">（行程總覽表），手機日期列長不出來');
+    if (tbs.length > 1 && tbs.some(t => !/data-city="[^"]+"/.test(t))) bad(f, '多張 table.itin 每張都要 data-city（手機日期列的城市分組）');
+    if (!s.includes('id="day1"')) bad(f, '旅遊頁每日段落要用 <h2 id="dayN">，時間軸靠它找內容');
+    if (s.includes('id="daynav"') && !s.includes('itinBox')) bad(f, 'daynav 高亮沒處理 itinBox，手機上段落藏起後 Day 連結不會跟著亮');
+    const head = s.slice(0, s.indexOf('id="day1"'));  // 每日段落在手機整段藏掉，只有前面的圖需要手機直排版
+    if ((head.match(/class="fig"/g) || []).length > (head.match(/class="fig-m"/g) || []).length)
+      bad(f, '每日段落之前的 .fig 要附手機直排版 <svg class="fig-m">（桌機那張標 fig-d）');
+  }
   if (!e.includes('<html lang="en"')) bad(en, '英文頁 <html lang> 不是 en');
   if (!z.includes('href="../index.html"')) bad(zh, '返回鍵沒指向 ../index.html');
   if (!e.includes('href="../index.en.html"')) bad(en, '返回鍵沒指向 ../index.en.html');

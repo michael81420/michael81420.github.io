@@ -27,7 +27,7 @@
 <figure class="shot"><img class="hero-img" src="../assets/img/malaysia/hero.jpg" alt="Looking up at the Twin Towers and the Skybridge on level 41" loading="lazy"><figcaption>Looking up at the Twin Towers and the Skybridge on level 41 (Wikimedia Commons)</figcaption></figure>
 
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto"
+<svg class="fig-d" viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img"
      aria-label="Three nights in Kuala Lumpur, then on day four an ETS train plus ferry across the Penang Strait into George Town, with the flight home from Penang on Oct 11.">
   <defs><marker id="eah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
@@ -52,6 +52,27 @@
   <rect x="612" y="76" width="134" height="48" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
   <text x="679" y="96" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">Fly home</text>
   <text x="679" y="113" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">Sun 10/11</text>
+</svg>
+<svg class="fig-m" viewBox="0 0 340 324" style="width:100%;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="Three nights in Kuala Lumpur, then on day four an ETS train plus ferry across the Penang Strait into George Town, with the flight home from Penang on Oct 11.">
+  <defs><marker id="eahm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <rect x="20" y="16" width="300" height="74" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="42" text-anchor="start" style="fill:var(--ink);font:700 1.1em sans-serif">Kuala Lumpur</text>
+  <text x="36" y="62" text-anchor="start" style="fill:var(--ink2);font:600 .9em sans-serif">Day 1–3 · 3 nights</text>
+  <text x="36" y="79" text-anchor="start" style="fill:var(--ink3);font:400 .9em sans-serif">Batu Caves · Twin Towers</text>
+  <line x1="44" y1="92" x2="44" y2="142" style="stroke:var(--ink3)" marker-end="url(#eahm)"/>
+  <text x="60" y="114" text-anchor="start" style="fill:var(--turn);font:700 .9em sans-serif">ETS train 3h35m</text>
+  <text x="60" y="132" text-anchor="start" style="fill:var(--turn);font:700 .9em sans-serif">+ 20-min ferry</text>
+  <rect x="20" y="146" width="300" height="74" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="172" text-anchor="start" style="fill:var(--ink);font:700 1.1em sans-serif">George Town, Penang</text>
+  <text x="36" y="192" text-anchor="start" style="fill:var(--ink2);font:600 .9em sans-serif">Day 4–6 · 2 nights</text>
+  <text x="36" y="209" text-anchor="start" style="fill:var(--ink3);font:400 .9em sans-serif">Penang Hill · murals · jetties</text>
+  <line x1="44" y1="222" x2="44" y2="254" style="stroke:var(--ink3)" marker-end="url(#eahm)"/>
+  <rect x="20" y="258" width="300" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="36" y="288" text-anchor="start" style="fill:var(--lose);font:700 1.05em sans-serif">Fly home</text>
+  <text x="304" y="288" text-anchor="end" style="fill:var(--lose);font:600 .9em sans-serif">Sun 10/11</text>
 </svg>
 </div>
 
@@ -84,7 +105,7 @@
 
 <h2>At a glance: Kuala Lumpur (Day 1–3)</h2>
 <div class="card" style="overflow-x:auto">
-<table>
+<table class="itin" data-city="Kuala Lumpur">
 <thead><tr><th></th><th>Day 1 · Tue 10/06</th><th>Day 2 · Wed 10/07</th><th>Day 3 · Thu 10/08</th></tr></thead>
 <tbody>
 <tr>
@@ -111,7 +132,7 @@
 
 <h2>At a glance: Penang (Day 4–6)</h2>
 <div class="card" style="overflow-x:auto">
-<table>
+<table class="itin" data-city="Penang">
 <thead><tr><th></th><th>Day 4 · Fri 10/09</th><th>Day 5 · Sat 10/10</th><th>Day 6 · Sun 10/11</th></tr></thead>
 <tbody>
 <tr>
@@ -139,7 +160,8 @@
 <h2 id="day1" class="day-anchor">[Day 1 · Tue 10/06] Arrival and a first look at Bukit Bintang</h2>
 <p class="note">Fill in the Malaysia Digital Arrival Card (MDAC) online within 3 days of departure (Oct 3–5) — it is free and mandatory since 2024. Taiwanese passport holders are eligible for Autogate, but a first entry requires a manual counter for biometric enrolment. There is no Uber in Malaysia; use Grab for everything.</p>
 
-<div class="card">
+<div class="itin-x" hidden data-t="06:45–08:45">Check in at Taoyuan T1</div>
+<div class="card" data-mv="4h 40m" data-by="Flight" data-at="08:45" data-to="KLIA" data-name="Land at KLIA: immigration, bags, SIM card" data-t="13:25–14:30">
   <h3>Arrival at KLIA and hotel check-in (13:25–16:00)</h3>
   <ul>
     <li><b>Immigration</b>: land at KLIA T1 at 13:25, clear immigration, collect bags, buy a SIM (CelcomDigi / Maxis / U Mobile).</li>
@@ -150,7 +172,8 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/bukit-bintang.jpg" alt="Bukit Bintang, where air-conditioned skybridges link the malls" loading="lazy"><figcaption>Bukit Bintang, where air-conditioned skybridges link the malls (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="itin-x" hidden data-t="15:30–16:00" data-mv="50–60" data-at="14:30" data-to="the hotel (KL Sentral)">Hotel check-in, drop bags</div>
+<div class="card" data-mv="15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Bukit+Bintang+Shopping+Kuala+Lumpur">Bukit Bintang shopping district</a> (16:00–19:00)</h3>
   <ul>
     <li><b>Getting there</b>: walk to KL Sentral and take the monorail to Bukit Bintang, five stops (about 13 minutes), or a 15-minute Grab (RM12–16). Once you are there, air-conditioned skybridges connect the malls, so rain is not a problem.</li>
@@ -170,7 +193,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/jalan-alor.jpg" alt="Jalan Alor after dark, tables spilling across the street" loading="lazy"><figcaption>Jalan Alor after dark, tables spilling across the street (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10–15" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Jalan+Alor+Kuala+Lumpur">Jalan Alor night food street</a> (19:00–21:00)</h3>
   <ul>
     <li><b>Getting there</b>: 10–15 minutes on foot from the malls.</li>
@@ -186,7 +209,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5–10" data-by="Walk" data-to="Tengkat Tong Shin">
   <h3>Supper (after 21:00)</h3>
   <p>The two streets behind Jalan Alor have a whole row of places open into the early morning, all walkable. <b class="lose">Grab back to the hotel is about 15 minutes, RM12–16 (the last monorail is around midnight — after that it is a car either way).</b></p>
   <b>5–10 minutes on foot</b>
@@ -207,11 +230,13 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-mv="15" data-to="the hotel">Back to the hotel</div>
 <h2 id="day2" class="day-anchor">[Day 2 · Wed 10/07] Batu Caves at sunrise, Twin Towers at dusk, Taman Connaught at night</h2>
 <p class="note">The Taman Connaught night market runs on Wednesdays only — this is the trip's one chance at it. Around town, the LRT, MRT, Monorail and KTM all take a Touch 'n Go card.</p>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/batu-caves.jpg" alt="Batu Caves: the rainbow stairs and the 42-metre Murugan statue" loading="lazy"><figcaption>Batu Caves: the rainbow stairs and the 42-metre Murugan statue (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="itin-x" hidden data-t="07:00–07:45">Hotel breakfast</div>
+<div class="card" data-mv="30–40">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Batu+Caves+Kuala+Lumpur">Batu Caves</a> (08:30–10:30)</h3>
   <ul>
     <li><b>Getting there</b>: leave at 07:45. <b class="win">Walk to KL Sentral and take the KTM Komuter Batu Caves line to the terminus</b> — about 30 minutes, roughly RM2.60 one way, then a 5-minute walk. No changes, and you board it from the doorstep. A Grab (30–40 min, RM35–45) is the fallback.</li>
@@ -229,7 +254,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="35–45" data-name="Lunch at KLCC" data-t="11:30–12:45" data-to="KLCC">
   <h3>Lunch and the ride to KLCC (10:30–12:45)</h3>
   <ul>
     <li><b>Getting there</b>: 10:30–11:30, Grab straight from Batu Caves to KLCC, about 35–45 minutes.</li>
@@ -253,7 +278,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/klcc.jpg" alt="KLCC Park looking up at the towers — best just before they light up" loading="lazy"><figcaption>KLCC Park looking up at the towers — best just before they light up (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-name="KLCC Park: Twin Towers photos">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=KLCC+Park+Kuala+Lumpur">KLCC Park &amp; Lake Symphony</a> (17:00–18:15)</h3>
   <ul>
     <li><b>Getting there</b>: walk straight out of the mall — the park is directly behind Suria KLCC.</li>
@@ -274,7 +299,8 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/pasar-malam.jpg" alt="A Klang Valley pasar malam (night market)" loading="lazy"><figcaption>A Klang Valley pasar malam (night market) (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="itin-x" hidden data-t="19:30–19:45">Lake Symphony fountain show</div>
+<div class="card" data-mv="25–30" data-t="20:15–22:00">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Pasar+Malam+Taman+Connaught+Cheras+Kuala+Lumpur">Taman Connaught night market</a> &amp; dinner (19:45–22:00)</h3>
   <ul>
     <li><b>Getting there</b>: <b class="lose">Grab from KLCC at 19:45, about 25–30 minutes to Cheras.</b> The MRT Kajang line also stops at Taman Connaught, with a link bridge through Cheras Sentral, but from KLCC that means a change and roughly 40 minutes.</li>
@@ -296,7 +322,8 @@
   <p class="note">Grab back to the hotel at 22:00–22:30; no supper tonight.</p>
 </div>
 
-<div class="card">
+<div class="itin-x" hidden data-t="22:30" data-mv="25–30" data-at="22:00" data-to="the hotel">Back to the hotel</div>
+<div class="card" data-alt="1">
   <h3>Fallback: if you skip the market, have dinner at KLCC (19:45–21:00)</h3>
   <ul>
     <li><a href="https://www.google.com/maps/search/?api=1&query=Madam+Kwan+Suria+KLCC">Madam Kwan's KLCC</a>: level 4 of Suria KLCC, reliable nasi lemak and rojak, roughly 11:00–22:00.</li>
@@ -309,7 +336,8 @@
 <p class="note"><b class="lose">Petaling Street is in the evening — the stalls are all up by then, and dinner happens there too.</b></p>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/masjid-putra.jpg" alt="Putra Mosque's rose-tinted granite reflected in the lake" loading="lazy"><figcaption>Putra Mosque's rose-tinted granite reflected in the lake (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="itin-x" hidden data-t="07:30–08:15">Hotel breakfast</div>
+<div class="card" data-mv="40–50">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Masjid+Putra+Putrajaya">Putra Mosque (Masjid Putra)</a> &amp; Dataran Putra (09:30–11:15)</h3>
   <ul>
     <li><b>Getting there</b>: 08:15, <b class="win">a 10-minute walk to KL Sentral</b> &rarr; <b>KLIA Transit</b> to Putrajaya &amp; Cyberjaya station, about 20 minutes, roughly RM14 one way, <b>departures about every 30 minutes</b> &rarr; Grab 10–15 minutes from the station to the mosque. About an hour door to door.</li>
@@ -321,7 +349,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="40–50" data-name="Lunch around Petaling Street" data-t="12:30–13:30" data-to="Petaling Street (Pasar Seni)">
   <h3>Back into town and lunch (11:15–13:30)</h3>
   <ul>
     <li><b>Getting there</b>: Grab back to Putrajaya Sentral &rarr; KLIA Transit to KL Sentral &rarr; LRT to Pasar Seni, arriving around 12:30 in the Chinatown area.</li>
@@ -337,7 +365,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/kwai-chai-hong.jpg" alt="Kwai Chai Hong: murals along a restored back lane" loading="lazy"><figcaption>Kwai Chai Hong: murals along a restored back lane (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="2–5" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Kwai+Chai+Hong+Kuala+Lumpur">Kwai Chai Hong</a> &amp; <a href="https://www.google.com/maps/search/?api=1&query=Lorong+Panggung+Kuala+Lumpur">Lorong Panggung shophouse lane</a> (13:45–15:30)</h3>
   <ul>
     <li><b>Getting there</b>: 2–5 minutes on foot from wherever you ate.</li>
@@ -352,7 +380,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5–8" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=REXKL+Jalan+Sultan+Kuala+Lumpur">REXKL</a> (15:30–17:00)</h3>
   <ul>
     <li><b>Getting there</b>: 5–8 minutes along Jalan Sultan from Kwai Chai Hong.</li>
@@ -364,7 +392,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/petaling.jpg" alt="Petaling Street and its red lanterns at night" loading="lazy"><figcaption>Petaling Street and its red lanterns at night (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="5" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Petaling+Street+Kuala+Lumpur">Petaling Street night market &amp; dinner</a> (17:00–19:00) <b class="win">tonight's dinner</b></h3>
   <ul>
     <li><b>Getting there</b>: 5 minutes on foot from REXKL.</li>
@@ -385,7 +413,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/menara-kl.jpg" alt="KL Tower, rising from the forest reserve hill" loading="lazy"><figcaption>KL Tower, rising from the forest reserve hill (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Menara+Kuala+Lumpur">KL Tower (Menara KL)</a> at night (19:15–21:00)</h3>
   <ul>
     <li><b>Getting there</b>: Grab from Chinatown at 19:00, about 15 minutes; or the Monorail to Bukit Nanas and up the hill (steep — take the shuttle).</li>
@@ -404,6 +432,7 @@
   <p class="note"><b class="lose">Back at the hotel by 21:30 to pack</b> — no early start tomorrow; the train leaves at 11:40.</p>
 </div>
 
+<div class="itin-x" hidden data-t="21:30" data-mv="15" data-to="the hotel">Back to the hotel to pack</div>
 <h2 id="day4" class="day-anchor">[Day 4 · Fri 10/09] Crossing to Penang, Penang Hill at night and Wufoo prawn mee</h2>
 <p class="note">Today runs on the KTM ETS. It terminates at Butterworth on the mainland — it does not reach Penang island, so a sea crossing still follows. Butterworth station, the bus terminal and the ferry jetty are all inside the same Penang Sentral interchange, a few minutes' walk apart.</p>
 
@@ -450,7 +479,9 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/ets.jpg" alt="A KTM train at KL Sentral, bound north for Butterworth" loading="lazy"><figcaption>A KTM train at KL Sentral, bound north for Butterworth (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="itin-x" hidden data-t="08:30–10:30">Breakfast, free time near the hotel</div>
+<div class="itin-x" hidden data-t="10:30–10:45">Check out</div>
+<div class="card" data-mv="10" data-to="KL Sentral" data-ride="Train" data-by="Walk">
   <h3><a href="https://online.ktmb.com.my/">ETS train: KL Sentral → Butterworth</a> (11:40–15:15) <b class="win">booked</b></h3>
   <ul>
     <li><b>Service</b>: <b class="win">EX9108 Express</b>, departing 11:40 on Oct 9 and arriving Butterworth at 15:15 (3h35m). RM185 each.</li>
@@ -462,7 +493,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/ferry.jpg" alt="The Penang ferry — 20 minutes across the channel into George Town" loading="lazy"><figcaption>The Penang ferry — 20 minutes across the channel into George Town (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-ride="Ferry" data-mv="5" data-by="Walk" data-to="the ferry terminal (in the station)" data-t="15:30–16:15">
   <h3>Ferry: <a href="https://www.google.com/maps/search/?api=1&query=Pangkalan+Sultan+Abdul+Halim+Ferry+Terminal+Butterworth">Butterworth</a> → <a href="https://www.google.com/maps/search/?api=1&query=Pangkalan+Raja+Tun+Uda+Ferry+Terminal+Georgetown+Penang">George Town</a> (15:15–16:15)</h3>
   <ul>
     <li><b>The transfer</b>: Butterworth station is Penang Sentral — train, bus and ferry terminals in one building, connected by covered walkways that are easy with luggage. About a 5-minute walk.</li>
@@ -473,7 +504,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10–12" data-to="the George Town hotel">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=218+Jalan+Macalister+George+Town+Penang">George Town hotel (218 Jalan Macalister)</a> check-in &amp; drop bags (16:30–16:45)</h3>
   <ul>
     <li><b>Getting there</b>: Pangkalan Raja Tun Uda ferry terminal to 218 Jalan Macalister, about 10–12 minutes by Grab.</li>
@@ -488,7 +519,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/penang-hill.jpg" alt="The Penang Hill funicular track above George Town" loading="lazy"><figcaption>George Town from the Penang Hill funicular track (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="20" data-t="17:05–20:00">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Penang+Hill+Lower+Station">Penang Hill</a>: sunset and night view (16:45–20:00)</h3>
   <ul>
     <li><b>Getting there</b>: <b class="lose">drop the bags and go straight out</b> — Grab from the hotel to the lower funicular station at 16:45, about 20 minutes, RM15–20. Trains run every 15–30 minutes until around 23:00 (check the <a href="https://www.penanghill.gov.my/">official site</a>).</li>
@@ -499,7 +530,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="25">
   <h3><a href="https://maps.app.goo.gl/kYm426kz6VEUscqJ9">Wufoo Hokkien Prawn Noodle · Lor Mee</a> (20:30–21:30) <b class="win">dinner</b></h3>
   <ul>
     <li><b>Getting there</b>: Grab from the lower station to 13 Lebuh Katz in the old town, about 25 minutes.</li>
@@ -509,7 +540,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=China+House+Penang">ChinaHouse</a> (21:30–23:00)</h3>
   <ul>
     <li><b>Getting there</b>: about 10 minutes' walk from Wufoo to 153B Lebuh Pantai.</li>
@@ -518,6 +549,7 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="23:15" data-mv="10" data-to="the hotel">Back to the hotel</div>
 <h2 id="day5" class="day-anchor">[Day 5 · Sat 10/10] Toh Soon breakfast, street art, the clan jetties and KOMTAR</h2>
 <p class="note"><b class="lose">Out at 08:30, with breakfast, street art and the jetties all done by 12:00</b> — all three are in the heritage core, 10 minutes' walk apart, and mornings are cooler, quieter and better lit. After lunch, hide from the worst heat inside KOMTAR, rest at the hotel, then finish at Red Garden.</p>
 
@@ -558,7 +590,7 @@
 </svg>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-at="08:30">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Toh+Soon+Cafe+Campbell+Street+Penang">Toh Soon Cafe</a> (08:45–09:30) <b class="win">breakfast</b></h3>
   <ul>
     <li><b>Getting there</b>: Grab from the hotel at 08:30, about 10 minutes to 184 Lebuh Campbell (an alley off Penang Road).</li>
@@ -569,7 +601,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/street-art.jpg" alt="Kids on Bicycle" loading="lazy"><figcaption><i>Kids on Bicycle</i> — George Town's most famous mural (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Street+Art+Georgetown+Penang">Street art</a> (09:30–10:45)</h3>
   <ul>
     <li><b>Getting there</b>: about 10 minutes' walk from Toh Soon to Armenian Street.</li>
@@ -580,7 +612,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/chew-jetty.jpg" alt="The stilt houses of Chew Jetty" loading="lazy"><figcaption>The stilt-house settlement of Chew Jetty (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Chew+Jetty+Penang">Chew Jetty</a> &amp; the clan jetties (10:45–11:45)</h3>
   <ul>
     <li><b>Getting there</b>: about 10 minutes' walk from Armenian Street to the Pengkalan Weld waterfront. <b class="win">Morning light is on your side and the shops are open.</b></li>
@@ -590,7 +622,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-to="Joo Hooi Café">
   <h3>Lunch (12:00–13:00)</h3>
   <ul>
     <li><a href="https://www.google.com/maps/search/?api=1&query=Joo+Hooi+Cafe+Penang">Joo Hooi Café</a> · 475 Jalan Penang · <b>about 11:00–17:30</b>: about 10 minutes by Grab from the jetties. Asam laksa, char koay teow, rojak and cendol at one table — the most efficient stop, and KOMTAR is a 10-minute walk away.</li>
@@ -599,7 +631,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/komtar.jpg" alt="KOMTAR, George Town's tallest landmark" loading="lazy"><figcaption>KOMTAR, George Town's tallest landmark (Wikimedia Commons)</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="Walk">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=The+Top+Komtar+Penang">KOMTAR, The Top</a> &amp; air-conditioned malls (13:15–15:30)</h3>
   <ul>
     <li><b>Getting there</b>: about 10 minutes' walk from Joo Hooi, or 5 minutes by Grab.</li>
@@ -609,7 +641,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5" data-to="the hotel">
   <h3>Rest at the hotel (15:30–18:00)</h3>
   <ul>
     <li><b>Getting there</b>: about 15 minutes' walk from KOMTAR back to Jalan Macalister, or 5 minutes by Grab.</li>
@@ -618,7 +650,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-at="18:15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Red+Garden+Food+Paradise+Penang">Red Garden Food Paradise</a> (18:30–21:30) <b class="win">dinner</b></h3>
   <ul>
     <li><b>Getting there</b>: on Lebuh Leith (next to the Blue Mansion), about 10 minutes by Grab from the hotel.</li>
@@ -629,10 +661,12 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="21:45" data-mv="10" data-to="the hotel">Back to the hotel</div>
 <h2 id="day6" class="day-anchor">[Day 6 · Sun 10/11] Departure</h2>
 <p class="note">Penang airport is 16–20 km from George Town, 30–40 minutes by road; Sunday traffic is lighter, so 45 minutes is ample.</p>
 
-<div class="card">
+<div class="itin-x" hidden data-t="08:00–09:00">Hotel breakfast</div>
+<div class="card" data-mv="5" data-to="Hin Bus Depot Sunday market (or the old town)">
   <h3>Last free time in George Town (09:00–11:30)</h3>
   <p>Pick one:</p>
   <ul>
@@ -642,7 +676,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5" data-to="the hotel" data-name="Back to the hotel: check out, collect bags" data-t="11:30–12:00">
   <h3>Check out, airport and home (11:30–15:10)</h3>
   <ul>
     <li><b>11:30–12:00</b>: check out and collect the bags.</li>
@@ -652,6 +686,8 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="12:45–15:10" data-mv="40–45" data-at="12:00" data-to="Penang Airport">Penang Airport check-in and boarding</div>
+<div class="itin-x" hidden data-t="19:55" data-mv="4h 45m" data-by="Flight" data-at="15:10" data-to="Taoyuan">Land at Taoyuan T1</div>
 <h2 id="backup" class="day-anchor">Backup sights (no fixed time — slot them in)</h2>
 <p class="note">If it rains or something finishes early, pick one off this list. All are in central KL, within 15 minutes by Grab.</p>
 <div class="card" style="overflow-x:auto">
@@ -778,7 +814,10 @@
   function onScroll(){
     measure();
     var idx=-1;
-    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y+1) idx=i; }
+    for(var i=0;i<secs.length;i++){
+      var s=secs[i]; if(s && !s.offsetParent) s=s.itinBox && s.itinBox.dataset.day===s.id.slice(3) ? s.itinBox : null;  // 手機：段落藏起，改看正在顯示該天的時間軸
+      if(s && s.getBoundingClientRect().top<=y+1) idx=i;
+    }
     links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
   }
   onScroll();

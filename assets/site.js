@@ -596,6 +596,105 @@ function initSitebar(){
        +'<button class="theme-toggle" onclick="toggleTheme()">☾</button></div>');
 }
 
+// 旅遊行程總覽表（table.itin）→ 手機版日期列＋時間軸。表頭每格一天：有「Day N」取 N（沒有就照欄位順序），有 MM/DD、週幾就顯示；
+// 時間軸依序取 h2#dayN 底下：① 每張 .card → 可點開的點（內容＝原卡片）；h3 括號裡帶 HH:MM 就當時間（（10:00–12:00）／(after 21:00) 都行）
+// ② <div class="itin-x" hidden data-t="HH:MM–HH:MM">名稱</div> → 不展開的點（卡片沒寫到的報到、早餐、退房…）
+// 兩者都可帶前一段交通：data-mv 時長（純數字＝分鐘）、data-by 交通工具（預設 Grab）、data-at 出發時間（預設前一點結束）、data-to 目的地（預設點名稱）
+// data-ride 標在本身就是交通的卡片（火車、渡輪）；卡片標題涵蓋多步時用 data-name／data-t 覆寫手機上的名稱與時段；data-alt＝備案（虛線、不接交通）
+function initItin(){
+  var jump={};  // dayN → 切到該天並捲過去（手機上 #daynav 的 Day 連結改走這裡）
+  var EN=LANG==='en', T=EN?{to:'to ',min:function(m){return '~'+m+' min';},walk:'Walk',wd:''}:{to:'往 ',min:function(m){return '約 '+m+' 分鐘';},walk:'步行',wd:'週'};
+  function parse(th,k){
+    var x=th.textContent, n=x.match(/Day\s*(\d+)/), d=x.match(/\d{1,2}\/\d{1,2}/), w=x.match(EN?/\b(Mon|Tue|Wed|Thu|Fri|Sat|Sun)\b/:/[（(]([一二三四五六日])[)）]/);
+    return {n:n?n[1]:String(k+1), d:d&&d[0], w:w&&T.wd+w[1]};
+  }
+  function points(h2){
+    var out=[], fig=null;
+    for(var el=h2.nextElementSibling; el&&el.tagName!=='H2'; el=el.nextElementSibling){
+      var p=null;
+      if(el.matches('figure.shot')){fig=el; continue;}
+      if(el.matches('.itin-x')) p={range:'', name:el.textContent, tags:'', body:''};
+      var h3=el.matches('.card')&&el.querySelector(':scope > h3'), tm=h3&&h3.textContent.match(/[（(]([^（()）]*\d{1,2}:\d{2}[^（()）]*)[)）]/);
+      if(el.matches('.card')){  // 沒寫時間的卡片也收（不排時間的點），手機藏掉原段落後內容才不會不見；沒 h3 就靠 data-name
+        var t=h3&&h3.cloneNode(true), tags=t?[].map.call(t.querySelectorAll('b'),function(b){b.remove(); return '<span class="badge">'+b.textContent+'</span>';}):[];
+        p={range:tm?tm[1]:'', name:t?t.textContent.replace(tm?tm[0]:'','').trim():'', tags:tags.join(''),
+           body:(fig&&fig.nextElementSibling===el?fig.outerHTML:'')+[].filter.call(el.children,function(c){return c!==h3;}).map(function(c){return c.outerHTML;}).join('')};
+      }
+      if(p){
+        ['mv','by','at','to','ride','name','t','alt'].forEach(function(k){var v=el.getAttribute('data-'+k); if(v!==null) p[k==='t'?'range':k]=v;});
+        p.t=(p.range.match(/\d{1,2}:\d{2}/)||[''])[0];
+        var prev=out.filter(function(o){return !o.alt;}).pop(), end=prev&&prev.range.match(/–(\d{1,2}:\d{2})/);
+        if(!p.at&&end) p.at=end[1];
+        out.push(p);
+      }
+      fig=null;
+    }
+    return out;
+  }
+  // 手機把所有 table.itin（吉隆坡篇、檳城篇…）合成一條日期列；表格的 data-city 標在日期列上方當分組
+  var tbs=[].slice.call(document.querySelectorAll('table.itin'));
+  if(tbs.length){
+    var heads=[], box=document.createElement('div'), strip=document.createElement('div'), panel=document.createElement('div');
+    var h2s=tbs.map(function(tb){for(var h=(tb.closest('.card')||tb).previousElementSibling; h&&h.tagName!=='H2'; h=h.previousElementSibling); return h;}), seen={};
+    box.className='itin-m day-anchor'; strip.className='itin-days';
+    box.innerHTML=h2s[0]?'<h2>'+h2s[0].textContent.split(/[：:]/)[0]+'</h2>':'';
+    box.appendChild(strip); box.appendChild(panel);
+    tbs.forEach(function(tb,k){
+      var g=document.createElement('div'), row=document.createElement('div');
+      g.className='itin-grp'; row.className='itin-row';
+      if(tb.dataset.city) g.innerHTML='<small><span>'+tb.dataset.city+'</span></small>';
+      g.appendChild(row); strip.appendChild(g);
+      [].slice.call(tb.querySelectorAll('thead th'),1).forEach(function(th){
+        var m=parse(th,heads.length); if(seen[m.n]) return;  // 跨城那天兩張表都列（如越南 Day 6），只留第一次
+        seen[m.n]=1; heads.push(m); row.appendChild(document.createElement('button'));
+      });
+      g.style.flexGrow=row.children.length;
+      // 原本的總覽表與它的標題（含中間的說明）手機上藏掉，由上面合併的日期列取代
+      for(var el=h2s[k]||tb.closest('.card')||tb, last=tb.closest('.card')||tb; el; el=el===last?null:el.nextElementSibling) el.classList.add('itin-src');
+    });
+    var btns=strip.querySelectorAll('button');
+    function show(i){
+      [].forEach.call(btns,function(b,j){b.setAttribute('aria-pressed',i===j);});
+      var m=heads[i], h2=document.getElementById('day'+m.n), notes='', bt=btns[i];
+      for(var el=h2&&h2.nextElementSibling; el&&el.tagName!=='H2'&&!el.matches('.foot'); el=el.nextElementSibling)
+        if(el.matches('p.note')) notes+='<p class="note">'+el.innerHTML+'</p>';  // 該天所有說明都收進標題框
+      strip.scrollLeft=bt.offsetLeft-(strip.clientWidth-bt.offsetWidth)/2;  // 天數多時日期列會橫捲，把選中那顆捲到中間
+      var html='<div class="itin-head"><small>Day '+m.n+'</small>'
+        +(h2?'<b>'+h2.textContent.replace(/^\s*(【[^】]*】|\[[^\]]*\])\s*/,'')+'</b>':'')
+        +notes+'</div><ul class="itin-tl">';
+      (h2?points(h2):[]).forEach(function(p){
+        if(p.mv) html+='<li class="itin-mv"><span class="itin-t">'+(p.at||'')+'</span><span><span class="itin-grab'+(p.by===T.walk?' walk':'')+'">'+(p.by||'Grab')+'</span>'
+          +T.to+'<b>'+(p.to||p.name.split(' (')[0])+'</b><span class="itin-dur">'+(/^[\d–]+$/.test(p.mv)?T.min(p.mv):p.mv)+'</span></span></li>';
+        var head=(p.ride?'<span class="itin-grab">'+p.ride+'</span>':'')+'<b>'+p.name+'</b>'+p.tags+'<small>'+p.range+'</small>';
+        html+='<li'+(p.alt?' class="alt"':'')+'><span class="itin-t">'+p.t+'</span>'+(p.body
+          ?'<details><summary>'+head+'</summary><div class="itin-body">'+p.body+'</div></details>'
+          :'<div class="itin-pt">'+head+'</div>')+'</li>';
+      });
+      panel.innerHTML=html+'</ul>';
+      box.dataset.day=m.n; if(box.parentNode) window.dispatchEvent(new Event('scroll'));  // 讓 #daynav 高亮跟著換天
+    }
+    heads.forEach(function(m,i){
+      var bt=btns[i], day=document.getElementById('day'+m.n); bt.type='button';
+      bt.innerHTML=m.d?'<b>'+m.d+'</b><span>'+(m.w||'')+'</span>':'<span>Day</span><b>'+m.n+'</b>';
+      bt.onclick=function(){show(i);};
+      jump[m.n]=function(){show(i); box.scrollIntoView({behavior:'smooth'});};
+      if(day) day.itinBox=box;  // 段落藏起來時，#daynav 改看這個時間軸
+      // 手機只看時間軸：原本的每日段落（h2#dayN 到下一個 h2）標 .itin-src，CSS 在手機藏掉
+      for(var el=day; el&&(el===day||el.tagName!=='H2')&&!el.matches('.foot'); el=el.nextElementSibling) el.classList.add('itin-src');
+    });
+    show(0);
+    var at=h2s[0]||tbs[0].closest('.card')||tbs[0];
+    at.parentNode.insertBefore(box,at);
+  }
+  document.querySelectorAll('a[href^="#day"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var go=jump[a.getAttribute('href').slice(4)];
+      if(go&&matchMedia('(max-width:680px)').matches){e.preventDefault(); go();}
+    });
+  });
+  window.dispatchEvent(new Event('scroll'));  // 時間軸都插進頁面後再算一次 #daynav 高亮
+}
+
 document.addEventListener('DOMContentLoaded',function(){
   initSitebar();
   updateThemeIcons(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
@@ -603,6 +702,7 @@ document.addEventListener('DOMContentLoaded',function(){
   initHome();
   initArticle();
   initSkills();
+  initItin();
   // 章節導覽在手機是一排橫滑：高亮換到畫面外的那顆時，把它捲回中間（高亮本身由各頁 inline script 負責）
   var dn=document.getElementById('daynav'),last=null;
   if(dn) window.addEventListener('scroll',function(){

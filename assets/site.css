@@ -235,6 +235,60 @@ tr:hover td{background:var(--surface2)}
   border:1px solid var(--border);border-radius:999px;padding:7px 14px;white-space:nowrap}
 .daynav a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
 .daynav a.active{background:var(--accent);color:var(--onAccent);border-color:transparent}
+/* 旅遊行程總覽：手機把 table.itin 換成「日期列＋可展開時間軸」（site.js initItin 取 h2#dayN 底下的卡片，內容只有一份） */
+.itin-m{display:none}
+/* 手機行程字級旋鈕：.itin-m 內與手機直排圖 svg.fig-m 的字都用 em 跟著它縮放 */
+:root{--itin-fs:13px}
+.itin-m,.fig svg.fig-m{font-size:var(--itin-fs)}
+@media(max-width:680px){table.itin,.itin-src{display:none}.itin-m{display:block}}
+.itin-days{display:flex;gap:8px;margin-bottom:14px;position:relative;overflow-x:auto;scrollbar-width:none}
+.itin-days::-webkit-scrollbar{display:none}
+.itin-grp{flex:1 0 auto}  /* flex-grow 由 JS 設成該城天數；天數多時按鈕守住最小寬、整列橫捲 */
+.itin-grp small{display:block;margin:0 4px 4px;padding-bottom:3px;border-bottom:1.5px solid var(--border);
+  font-size:.85em;font-weight:600;color:var(--ink3);text-align:center}
+.itin-grp small span{position:sticky;left:4px}  /* 日期列橫捲時城市名黏在左緣，不會被切半 */
+.itin-row{display:flex;gap:2px}
+.itin-days button{flex:1 0 46px;min-height:44px;padding:6px 2px;border:0;border-radius:12px;background:none;
+  font:inherit;line-height:1.3;color:var(--ink3);cursor:pointer}
+.itin-days b{display:block;font-size:1.15em;color:var(--ink)}
+.itin-days span{font-size:.85em}
+.itin-days button[aria-pressed="true"]{background:var(--accent);color:var(--onAccent)}
+.itin-days button[aria-pressed="true"] b{color:var(--onAccent)}
+.itin-head{background:var(--midbg);border:2px solid var(--midbd);border-radius:16px;padding:12px 16px;margin-bottom:16px}
+.itin-head small{display:block;font-size:.85em;color:var(--ink3)}
+.itin-head > b{display:block;font-size:1.2em;line-height:1.4;color:var(--ink)}
+.itin-head .note{margin:6px 0 0;font-size:.9em}
+.itin-tl{list-style:none;margin:0;padding:0}
+.wrap .itin-tl,.wrap .itin-body p,.wrap .itin-body ul{font-size:inherit}  /* 蓋掉手機 .wrap ul/p 16px，字級才吃得到旋鈕 */
+.itin-tl > li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 26px;position:relative;padding-bottom:12px}
+.itin-tl > li::before{content:'';position:absolute;left:54px;top:0;bottom:0;border-left:2px dotted var(--ink3)}
+.itin-tl > li::after{content:'';position:absolute;left:49px;top:14px;width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--ink);background:var(--surface)}
+.itin-t{font-size:.85em;font-weight:600;color:var(--ink2);text-align:right;padding-top:10px}
+.itin-tl details,.itin-pt{border:1.5px solid var(--ink3);border-radius:14px;background:var(--surface)}
+.itin-pt{padding:9px 12px;min-height:44px}
+.itin-pt b{color:var(--ink)}
+.itin-pt small{display:block;font-size:.85em;color:var(--ink3)}
+.itin-tl summary{list-style:none;cursor:pointer;padding:9px 34px 9px 12px;position:relative;min-height:44px}
+.itin-tl summary::-webkit-details-marker{display:none}
+.itin-tl summary::after{content:'＋';position:absolute;right:12px;top:9px;color:var(--ink3);font-weight:700}
+.itin-tl details[open] summary::after{content:'－'}
+.itin-tl summary b{color:var(--ink);margin-right:6px}
+.itin-tl summary .badge{font-size:.8em;vertical-align:1px}
+.itin-tl summary small{display:block;font-size:.85em;color:var(--ink3)}
+.itin-body{padding:0 12px 10px;overflow-x:auto;border-top:1px solid var(--border);font-size:.95em}
+.itin-body figure.shot{margin:10px 0 0}
+.itin-body ul{padding-left:18px;margin:8px 0}
+.itin-tl > li.itin-mv{padding-bottom:12px;font-size:.95em;color:var(--ink2)}
+.itin-tl > li.itin-mv::after{top:8px;left:51px;width:8px;height:8px;border:0;background:var(--turn)}
+.itin-tl > li.itin-mv .itin-t{padding-top:2px;color:var(--turn)}
+.itin-mv b{color:var(--ink)}
+.itin-dur{display:block;font-size:.9em;color:var(--ink3)}
+.itin-grab{display:inline-block;margin:0 8px 2px 0;padding:1px 10px;border-radius:999px;font-size:.85em;font-weight:700;
+  background:var(--turnbg);color:var(--turn);border:1.5px solid var(--turnbd)}
+.itin-grab.walk{background:var(--winbg);color:var(--win);border-color:var(--winbd)}
+.itin-tl > li.alt details{border-style:dashed}
+.itin-tl > li.alt::after{display:none}
 html{scroll-behavior:smooth}
 .day-anchor{scroll-margin-top:144px}
 figure.shot{margin:0 0 16px}
@@ -419,6 +473,9 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .demo .sw{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);cursor:pointer}
 .demo .sw input{accent-color:var(--accent)}
 .fig{overflow-x:auto;margin:2px 0 18px}
+/* 圖可另附手機直排版：桌機 svg.fig-d、手機 svg.fig-m，同一個 .fig 裡二選一顯示 */
+.fig svg.fig-m{display:none}
+@media(max-width:680px){.fig svg.fig-d{display:none}.fig svg.fig-m{display:block}}
 /* 可展開程式碼：互動 demo 底部「看 React 完整寫法」 */
 .code-fold{margin-top:14px;border-top:1px dashed var(--border);padding-top:12px}
 .code-fold>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;

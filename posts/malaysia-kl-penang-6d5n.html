@@ -27,7 +27,7 @@
 <figure class="shot"><img class="hero-img" src="../assets/img/malaysia/hero.jpg" alt="從塔下仰望雙子星塔與 41 樓的空中橋 (Skybridge)" loading="lazy"><figcaption>從塔下仰望雙子星塔與 41 樓的空中橋 (Skybridge)（Wikimedia Commons）</figcaption></figure>
 
 <div class="fig" style="overflow-x:auto;margin:2px 0 18px">
-<svg viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto"
+<svg class="fig-d" viewBox="0 0 760 200" style="width:100%;min-width:760px;height:auto"
      xmlns="http://www.w3.org/2000/svg" role="img"
      aria-label="吉隆坡住三晚後，第四天以 ETS 火車加渡輪橫越檳威海峽進喬治市，最後 10/11 從檳城機場返台。">
   <defs><marker id="mah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
@@ -52,6 +52,27 @@
   <rect x="610" y="76" width="136" height="48" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
   <text x="678" y="96" text-anchor="middle" style="fill:var(--lose);font:700 12px sans-serif">賦歸</text>
   <text x="678" y="113" text-anchor="middle" style="fill:var(--lose);font:600 11px sans-serif">10/11 (日) 返台</text>
+</svg>
+<svg class="fig-m" viewBox="0 0 340 324" style="width:100%;height:auto"
+     xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="吉隆坡住三晚後，第四天以 ETS 火車加渡輪橫越檳威海峽進喬治市，最後 10/11 從檳城機場返台。">
+  <defs><marker id="mahm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"
+    orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+  <rect x="20" y="16" width="300" height="74" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="42" text-anchor="start" style="fill:var(--ink);font:700 1.1em sans-serif">吉隆坡 Kuala Lumpur</text>
+  <text x="36" y="62" text-anchor="start" style="fill:var(--ink2);font:600 .9em sans-serif">Day 1–3 · 住 3 晚</text>
+  <text x="36" y="79" text-anchor="start" style="fill:var(--ink3);font:400 .9em sans-serif">黑風洞 · 雙子星 · 茨廠街</text>
+  <line x1="44" y1="92" x2="44" y2="142" style="stroke:var(--ink3)" marker-end="url(#mahm)"/>
+  <text x="60" y="114" text-anchor="start" style="fill:var(--turn);font:700 .9em sans-serif">ETS 火車 3h35m</text>
+  <text x="60" y="132" text-anchor="start" style="fill:var(--turn);font:700 .9em sans-serif">＋渡輪 20 分</text>
+  <rect x="20" y="146" width="300" height="74" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+  <text x="36" y="172" text-anchor="start" style="fill:var(--ink);font:700 1.1em sans-serif">喬治市 George Town</text>
+  <text x="36" y="192" text-anchor="start" style="fill:var(--ink2);font:600 .9em sans-serif">Day 4–6 · 住 2 晚</text>
+  <text x="36" y="209" text-anchor="start" style="fill:var(--ink3);font:400 .9em sans-serif">升旗山 · 壁畫街 · 姓氏橋</text>
+  <line x1="44" y1="222" x2="44" y2="254" style="stroke:var(--ink3)" marker-end="url(#mahm)"/>
+  <rect x="20" y="258" width="300" height="50" rx="10" style="fill:var(--losebg);stroke:var(--losebd)"/>
+  <text x="36" y="288" text-anchor="start" style="fill:var(--lose);font:700 1.05em sans-serif">賦歸</text>
+  <text x="304" y="288" text-anchor="end" style="fill:var(--lose);font:600 .9em sans-serif">10/11 (日) 返台</text>
 </svg>
 </div>
 
@@ -84,7 +105,7 @@
 
 <h2>行程總覽表：吉隆坡篇（Day 1–3）</h2>
 <div class="card" style="overflow-x:auto">
-<table>
+<table class="itin" data-city="吉隆坡">
 <thead><tr><th>時段</th><th>Day 1｜10/06 (二)</th><th>Day 2｜10/07 (三)</th><th>Day 3｜10/08 (四)</th></tr></thead>
 <tbody>
 <tr>
@@ -111,7 +132,7 @@
 
 <h2>行程總覽表：檳城篇（Day 4–6）</h2>
 <div class="card" style="overflow-x:auto">
-<table>
+<table class="itin" data-city="檳城">
 <thead><tr><th>時段</th><th>Day 4｜10/09 (五)</th><th>Day 5｜10/10 (六)</th><th>Day 6｜10/11 (日)</th></tr></thead>
 <tbody>
 <tr>
@@ -139,7 +160,8 @@
 <h2 id="day1" class="day-anchor">【Day 1｜10/06 (二)】抵達吉隆坡與武吉免登初探</h2>
 <p class="note">出發前 3 天內（10/03–10/05）務必線上填好「馬來西亞數位入境卡 (MDAC)」，免費、2024 年起強制。台灣旅客已納入 Autogate，首次入境需先走人工櫃檯完成生物辨識註冊。馬來西亞已無 Uber，叫車一律用 Grab。</p>
 
-<div class="card">
+<div class="itin-x" hidden data-t="06:45–08:45">桃園機場 T1 報到</div>
+<div class="card" data-mv="4 小時 40 分" data-by="飛機" data-at="08:45" data-to="吉隆坡 KLIA" data-name="抵達 KLIA：入境、領行李、買網卡" data-t="13:25–14:30">
   <h3>抵達 KLIA 與飯店 Check-in（13:25–16:00）</h3>
   <ul>
     <li><b>入境</b>：13:25 降落 KLIA T1，入境查驗、領行李、買電話卡（CelcomDigi／Maxis／U Mobile）。</li>
@@ -149,8 +171,9 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="15:30–16:00" data-mv="50–60" data-at="14:30" data-to="飯店（KL Sentral）">飯店 Check-in、放行李</div>
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/bukit-bintang.jpg" alt="武吉免登街頭，商場之間有空調天橋串連" loading="lazy"><figcaption>武吉免登街頭，商場之間有空調天橋串連（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Bukit+Bintang+Shopping+Kuala+Lumpur">武吉免登商圈 (Bukit Bintang)</a>（16:00–19:00）</h3>
   <ul>
     <li><b>交通</b>：走到 KL Sentral 搭單軌到 Bukit Bintang（5 站、約 13 分），或 Grab 約 15 分（RM12–16）。到了商圈之後，商場之間有空調人行天橋串連，下雨也不必撐傘。</li>
@@ -170,7 +193,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/jalan-alor.jpg" alt="亞羅街入夜後整條街擺開桌椅" loading="lazy"><figcaption>亞羅街入夜後整條街擺開桌椅（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10–15" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Jalan+Alor+Kuala+Lumpur">亞羅街 (Jalan Alor) 夜間小食街</a>（19:00–21:00）</h3>
   <ul>
     <li><b>交通</b>：武吉免登商圈步行 10–15 分。</li>
@@ -186,7 +209,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5–10" data-by="步行" data-to="Tengkat Tong Shin 宵夜街">
   <h3>宵夜（21:00 之後）</h3>
   <p>亞羅街後面兩條街有一整排開到凌晨的店，走路就到。<b class="lose">回飯店叫 Grab 約 15 分、RM12–16（單軌末班約 00:00，錯過就只能叫車）。</b></p>
   <b>步行 5–10 分鐘</b>
@@ -207,11 +230,13 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-mv="15" data-to="飯店">回飯店</div>
 <h2 id="day2" class="day-anchor">【Day 2｜10/07 (三)】黑風洞晨訪、雙子星夜景與康樂夜市</h2>
 <p class="note">晚上的蕉賴康樂夜市只開週三，是本行程唯一的機會。市內交通（LRT／MRT／單軌／KTM）建議買一張 Touch 'n Go 卡通刷。</p>
 
+<div class="itin-x" hidden data-t="07:00–07:45">飯店早餐</div>
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/batu-caves.jpg" alt="黑風洞的彩虹階梯與 42 公尺高的穆魯干神像" loading="lazy"><figcaption>黑風洞的彩虹階梯與 42 公尺高的穆魯干神像（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="30–40">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Batu+Caves+Kuala+Lumpur">黑風洞 (Batu Caves)</a>（08:30–10:30）</h3>
   <ul>
     <li><b>交通</b>：07:45 出發。<b class="win">走到 KL Sentral 搭 KTM Komuter「Batu Caves 線」坐到終點站</b>，約 30 分、單程約 RM2.60，出站步行 5 分 —— 飯店走過去就上車，這條線不用轉乘。Grab 約 30–40 分、RM35–45 是備案。</li>
@@ -229,7 +254,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="35–45" data-name="KLCC 午餐" data-t="11:30–12:45" data-to="KLCC">
   <h3>午餐與移動至 KLCC（10:30–12:45）</h3>
   <ul>
     <li><b>交通</b>：10:30–11:30 Grab 直接從黑風洞到 KLCC，約 35–45 分。</li>
@@ -253,7 +278,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/klcc.jpg" alt="KLCC 公園望向雙子星，傍晚點燈前最好拍" loading="lazy"><figcaption>KLCC 公園望向雙子星，傍晚點燈前最好拍（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-name="KLCC 公園拍雙子星">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=KLCC+Park+Kuala+Lumpur">KLCC 公園 &amp; 音樂噴泉</a>（17:00–18:15）</h3>
   <ul>
     <li><b>交通</b>：逛完商場直接走出去，Suria KLCC 後方就是公園。</li>
@@ -273,8 +298,9 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="19:30–19:45">Lake Symphony 音樂噴泉燈光秀</div>
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/pasar-malam.jpg" alt="雪隆一帶的 pasar malam（夜市）攤位" loading="lazy"><figcaption>雪隆一帶的 pasar malam（夜市）攤位（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="25–30" data-t="20:15–22:00">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Pasar+Malam+Taman+Connaught+Cheras+Kuala+Lumpur">蕉賴康樂夜市 (Pasar Malam Taman Connaught)</a> &amp; 晚餐（19:45–22:00）</h3>
   <ul>
     <li><b>交通</b>：<b class="lose">19:45 從 KLCC 叫 Grab，約 25–30 分鐘到蕉賴。</b>亦可搭 MRT 加影線至「Taman Connaught 站」（出站有天橋連通 Cheras Sentral），但從 KLCC 要轉乘、約 40 分鐘。</li>
@@ -296,7 +322,8 @@
   <p class="note">22:00–22:30 叫 Grab 回飯店，今晚不排宵夜。</p>
 </div>
 
-<div class="card">
+<div class="itin-x" hidden data-t="22:30" data-mv="25–30" data-at="22:00" data-to="飯店">回飯店</div>
+<div class="card" data-alt="1">
   <h3>備案：不去夜市的話，晚餐留在 KLCC（19:45–21:00）</h3>
   <ul>
     <li><a href="https://www.google.com/maps/search/?api=1&query=Madam+Kwan+Suria+KLCC">Madam Kwan's KLCC</a>：Suria KLCC 四樓，椰漿飯與囉喏口味穩定，約 11:00–22:00。</li>
@@ -308,8 +335,9 @@
 <h2 id="day3" class="day-anchor">【Day 3｜10/08 (四)】布城粉紅清真寺與華人老街</h2>
 <p class="note"><b class="lose">茨廠街排晚上 —— 入夜後攤販全開，晚餐一併在那裡解決</b>。</p>
 
+<div class="itin-x" hidden data-t="07:30–08:15">飯店早餐</div>
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/masjid-putra.jpg" alt="布特拉清真寺的玫瑰色花崗岩倒映在人工湖上" loading="lazy"><figcaption>布特拉清真寺的玫瑰色花崗岩倒映在人工湖上（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="40–50">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Masjid+Putra+Putrajaya">布特拉清真寺 (Masjid Putra)</a> &amp; 布城廣場（09:30–11:15）</h3>
   <ul>
     <li><b>交通</b>：08:15 從飯店<b class="win">步行 10 分到 KL Sentral</b> → 搭 <b>KLIA Transit</b> 至「Putrajaya &amp; Cyberjaya 站」約 20 分、單程約 RM14，<b>約每 30 分一班</b> → 出站 Grab 約 10–15 分到清真寺。全程約 1 小時。</li>
@@ -321,7 +349,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="40–50" data-name="茨廠街一帶午餐" data-t="12:30–13:30" data-to="茨廠街（Pasar Seni）">
   <h3>回市區與午餐（11:15–13:30）</h3>
   <ul>
     <li><b>交通</b>：原路 Grab 回 Putrajaya Sentral → KLIA Transit 回 KL Sentral → 轉 LRT 至「Pasar Seni 站」，約 12:30 抵達茨廠街一帶。</li>
@@ -337,7 +365,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/kwai-chai-hong.jpg" alt="鬼仔巷的壁畫與老店屋後巷" loading="lazy"><figcaption>鬼仔巷的壁畫與老店屋後巷（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="2–5" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Kwai+Chai+Hong+Kuala+Lumpur">鬼仔巷 (Kwai Chai Hong)</a> &amp; <a href="https://www.google.com/maps/search/?api=1&query=Lorong+Panggung+Kuala+Lumpur">Lorong Panggung 老店屋巷</a>（13:45–15:30）</h3>
   <ul>
     <li><b>交通</b>：午餐店家走過去就是，步行 2–5 分。</li>
@@ -352,7 +380,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5–8" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=REXKL+Jalan+Sultan+Kuala+Lumpur">REXKL 老戲院文創空間</a>（15:30–17:00）</h3>
   <ul>
     <li><b>交通</b>：從鬼仔巷沿 Jalan Sultan 步行約 5–8 分。</li>
@@ -364,7 +392,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/petaling.jpg" alt="茨廠街入夜的紅燈籠與攤位" loading="lazy"><figcaption>茨廠街入夜的紅燈籠與攤位（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="5" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Petaling+Street+Kuala+Lumpur">茨廠街 (Petaling Street) 夜市 &amp; 晚餐</a>（17:00–19:00）<b class="win">今日晚餐</b></h3>
   <ul>
     <li><b>交通</b>：REXKL 步行 5 分。</li>
@@ -385,7 +413,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/menara-kl.jpg" alt="吉隆坡塔 (Menara KL) 立在森林保護區的小丘上" loading="lazy"><figcaption>吉隆坡塔 (Menara KL) 立在森林保護區的小丘上（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Menara+Kuala+Lumpur">吉隆坡塔 (Menara KL)</a> 夜景（19:15–21:00）</h3>
   <ul>
     <li><b>交通</b>：19:00 從茨廠街搭 Grab，約 15 分；或搭單軌至「Bukit Nanas 站」步行上山（山路陡，建議搭園區接駁車）。</li>
@@ -404,6 +432,7 @@
   <p class="note"><b class="lose">最晚 21:30 回飯店收行李</b>，明天不用早起，火車 11:40 才開。</p>
 </div>
 
+<div class="itin-x" hidden data-t="21:30" data-mv="15" data-to="飯店">回飯店收行李</div>
 <h2 id="day4" class="day-anchor">【Day 4｜10/09 (五)】搭火車過海到檳城、升旗山夜景與五福蝦滷麵</h2>
 <p class="note">本日搭 KTM ETS 火車。ETS 只到對岸大陸端的 Butterworth（北海），不進檳城島 —— 下車後必須再過海才會到喬治市。Butterworth 車站、巴士站與渡輪站三合一在同一個 Penang Sentral 轉運站裡，出站走幾分鐘就是碼頭。</p>
 
@@ -449,8 +478,10 @@
 </svg>
 </div>
 
+<div class="itin-x" hidden data-t="08:30–10:30">早餐、飯店周邊自由活動</div>
+<div class="itin-x" hidden data-t="10:30–10:45">退房</div>
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/ets.jpg" alt="KL Sentral 月台上，準備北上 Butterworth 的 KTM 列車" loading="lazy"><figcaption>KL Sentral 月台上，準備北上 Butterworth 的 KTM 列車（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-to="KL Sentral" data-ride="火車" data-by="步行">
   <h3><a href="https://online.ktmb.com.my/">ETS 火車：KL Sentral → Butterworth</a>（11:40–15:15）<b class="win">已訂票</b></h3>
   <ul>
     <li><b>班次</b>：<b class="win">EX9108 Express</b>，10/09 11:40 發車、15:15 抵達 Butterworth（3 小時 35 分）。每人 RM185。</li>
@@ -462,7 +493,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/ferry.jpg" alt="檳威海峽渡輪，20 分鐘過海進喬治市" loading="lazy"><figcaption>檳威海峽渡輪，20 分鐘過海進喬治市（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-ride="渡輪" data-mv="5" data-by="步行" data-to="渡輪碼頭（站內）" data-t="15:30–16:15">
   <h3>渡輪過海：<a href="https://www.google.com/maps/search/?api=1&query=Pangkalan+Sultan+Abdul+Halim+Ferry+Terminal+Butterworth">Butterworth</a> → <a href="https://www.google.com/maps/search/?api=1&query=Pangkalan+Raja+Tun+Uda+Ferry+Terminal+Georgetown+Penang">喬治市</a>（15:15–16:15）</h3>
   <ul>
     <li><b>轉乘</b>：Butterworth 車站即 Penang Sentral，火車站／巴士站／渡輪站三合一，有頂棚通道，拖行李也好走，步行約 5 分鐘。</li>
@@ -473,7 +504,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10–12" data-to="喬治市飯店">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=218+Jalan+Macalister+George+Town+Penang">喬治市飯店（218 Jalan Macalister）</a> Check-in &amp; 放行李（16:30–16:45）</h3>
   <ul>
     <li><b>交通</b>：渡輪站 Pangkalan Raja Tun Uda → 218 Jalan Macalister，Grab 約 10–12 分。</li>
@@ -488,7 +519,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/penang-hill.jpg" alt="升旗山纜車軌道與山下的喬治市" loading="lazy"><figcaption>從升旗山纜車軌道俯瞰喬治市（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="20" data-t="17:05–20:00">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Penang+Hill+Lower+Station">升旗山 (Penang Hill)</a> 夕陽＋夜景（16:45–20:00）</h3>
   <ul>
     <li><b>交通</b>：<b class="lose">放完行李直接出門</b>，16:45 從飯店 Grab 到山腳的纜車下站，約 20 分、RM15–20。纜車約每 15–30 分一班，營運到約 23:00（以<a href="https://www.penanghill.gov.my/">官網</a>為準）。</li>
@@ -499,7 +530,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="25">
   <h3><a href="https://maps.app.goo.gl/kYm426kz6VEUscqJ9">五福 炭香福建蝦麵・滷麵 (Wufoo)</a>（20:30–21:30）<b class="win">今日晚餐</b></h3>
   <ul>
     <li><b>交通</b>：纜車下站 Grab 約 25 分到 13 Lebuh Katz（老城區）。</li>
@@ -509,7 +540,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=China+House+Penang">ChinaHouse</a>（21:30–23:00）</h3>
   <ul>
     <li><b>交通</b>：從五福走到 153B Lebuh Pantai 約 10 分。</li>
@@ -518,6 +549,7 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="23:15" data-mv="10" data-to="飯店">回飯店</div>
 <h2 id="day5" class="day-anchor">【Day 5｜10/10 (六)】多春早餐、壁畫街、姓氏橋與光大觀景台</h2>
 <p class="note"><b class="lose">08:30 出門，早餐＋壁畫街＋姓氏橋在 12:00 前走完</b> —— 三站都在世遺區、彼此步行 10 分，早上涼、人少、光線好。中午吃完進光大躲最熱的時段，傍晚回飯店休息，晚上紅園歌台收尾。</p>
 
@@ -558,7 +590,7 @@
 </svg>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-at="08:30">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Toh+Soon+Cafe+Campbell+Street+Penang">多春茶室 (Toh Soon Cafe)</a>（08:45–09:30）<b class="win">早餐</b></h3>
   <ul>
     <li><b>交通</b>：08:30 從飯店 Grab 約 10 分到 184 Lebuh Campbell（巷子裡，Penang Road 旁）。</li>
@@ -569,7 +601,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/street-art.jpg" alt="《姐弟共騎》" loading="lazy"><figcaption>《姐弟共騎》—— 喬治市最有名的一面壁畫（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Street+Art+Georgetown+Penang">壁畫街</a>（09:30–10:45）</h3>
   <ul>
     <li><b>交通</b>：多春步行約 10 分到打銅仔街。</li>
@@ -580,7 +612,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/chew-jetty.jpg" alt="姓周橋的水上高腳屋聚落" loading="lazy"><figcaption>姓周橋的水上高腳屋聚落（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Chew+Jetty+Penang">姓周橋 (Chew Jetty)</a> &amp; 姓氏橋群（10:45–11:45）</h3>
   <ul>
     <li><b>交通</b>：從打銅仔街步行約 10 分到 Pengkalan Weld 海邊。<b class="win">上午順光，商家也都開了</b>。</li>
@@ -590,7 +622,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-to="Joo Hooi Café">
   <h3>午餐（12:00–13:00）</h3>
   <ul>
     <li><a href="https://www.google.com/maps/search/?api=1&query=Joo+Hooi+Cafe+Penang">Joo Hooi Café</a>｜475 Jalan Penang｜<b>約 11:00–17:30</b>：姓氏橋 Grab 約 10 分。一張桌子點齊亞參叻沙、炒粿條、囉喏與煎蕊，效率最高的一站；走到光大只要 10 分。</li>
@@ -599,7 +631,7 @@
 </div>
 
 <figure class="shot"><img class="sec-img" src="../assets/img/malaysia/komtar.jpg" alt="光大大廈是喬治市最高的地標" loading="lazy"><figcaption>光大大廈是喬治市最高的地標（Wikimedia Commons）</figcaption></figure>
-<div class="card">
+<div class="card" data-mv="10" data-by="步行">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=The+Top+Komtar+Penang">光大大廈 (KOMTAR) The Top</a> &amp; 商場避暑（13:15–15:30）</h3>
   <ul>
     <li><b>交通</b>：Joo Hooi 步行約 10 分，或 Grab 5 分。</li>
@@ -609,7 +641,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5" data-to="飯店">
   <h3>回飯店休息（15:30–18:00）</h3>
   <ul>
     <li><b>交通</b>：光大走回 Jalan Macalister 約 15 分，或 Grab 5 分。</li>
@@ -618,7 +650,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="10" data-at="18:15">
   <h3><a href="https://www.google.com/maps/search/?api=1&query=Red+Garden+Food+Paradise+Penang">紅園美食坊 (Red Garden Food Paradise)</a>（18:30–21:30）<b class="win">今日晚餐</b></h3>
   <ul>
     <li><b>交通</b>：Lebuh Leith（藍屋隔壁），從飯店 Grab 約 10 分。</li>
@@ -629,10 +661,12 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="21:45" data-mv="10" data-to="飯店">回飯店</div>
 <h2 id="day6" class="day-anchor">【Day 6｜10/11 (日)】賦歸</h2>
 <p class="note">檳城機場距喬治市約 16–20 公里、車程 30–40 分鐘；週日車流較順，抓 45 分鐘足夠。</p>
 
-<div class="card">
+<div class="itin-x" hidden data-t="08:00–09:00">飯店早餐</div>
+<div class="card" data-mv="5" data-to="Hin Bus Depot 週日市集（或老街）">
   <h3>喬治市最後自由活動（09:00–11:30）</h3>
   <p>三選一：</p>
   <ul>
@@ -642,7 +676,7 @@
   </ul>
 </div>
 
-<div class="card">
+<div class="card" data-mv="5" data-to="飯店" data-name="回飯店退房、取行李" data-t="11:30–12:00">
   <h3>退房、前往機場與返回台灣（11:30–15:10）</h3>
   <ul>
     <li><b>11:30–12:00</b>：回飯店辦理退房、取行李。</li>
@@ -652,6 +686,8 @@
   </ul>
 </div>
 
+<div class="itin-x" hidden data-t="12:45–15:10" data-mv="40–45" data-at="12:00" data-to="檳城機場">檳城機場報到、候機</div>
+<div class="itin-x" hidden data-t="19:55" data-mv="4 小時 45 分" data-by="飛機" data-at="15:10" data-to="桃園">抵達桃園機場 T1</div>
 <h2 id="backup" class="day-anchor">候補景點（不排時間，有空檔再插）</h2>
 <p class="note">遇到下雨或某段提早結束時，從這張表挑一個補上。全部在吉隆坡市區，Grab 15 分鐘內可達。</p>
 <div class="card" style="overflow-x:auto">
@@ -778,7 +814,10 @@
   function onScroll(){
     measure();
     var idx=-1;
-    for(var i=0;i<secs.length;i++){ if(secs[i] && secs[i].getBoundingClientRect().top<=y+1) idx=i; }
+    for(var i=0;i<secs.length;i++){
+      var s=secs[i]; if(s && !s.offsetParent) s=s.itinBox && s.itinBox.dataset.day===s.id.slice(3) ? s.itinBox : null;  // 手機：段落藏起，改看正在顯示該天的時間軸
+      if(s && s.getBoundingClientRect().top<=y+1) idx=i;
+    }
     links.forEach(function(x,i){x.classList.toggle('active', i===idx);});
   }
   onScroll();
