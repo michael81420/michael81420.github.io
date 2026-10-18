@@ -667,3 +667,4 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-line.mob>:first-child{flex:none}
 .msv-line.mob>div{flex:1}
 .msv-cells>.hint{grid-column:1/-1}
+.msv-pick{background:color-mix(in srgb,var(--bg) 82%,transparent)}

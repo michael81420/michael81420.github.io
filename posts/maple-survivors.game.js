@@ -1,7 +1,7 @@
 /* 楓之谷倖存者：遊戲引擎（M1 戰鬥核心）。素材 atlas＝window.MSA（assets/maple/atlas.js），數值＝window.MSD。
    效能：怪物／投射物／特效／傷害數字全走物件池；碰撞用空間網格；只畫鏡頭內。怪物數量不設上限。
    畫面分兩種：選單面板（#msv-panel：角色欄位、建立角色、結算）和遊戲畫布，同一位置輪流顯示。
-   網址加 ?dur=20 → 關卡縮成 20 秒（測結算用）。
+   網址加 ?dur=20 → 關卡縮成 20 秒；?bosst=5 → BOSS 第 5 秒就出場（測試用）。
    網址加 ?bench=500 → 怪物數量固定補滿 500 隻、玩家無敵，右上角顯示 fps，用來量效能。 */
 (function(){
 var A=window.MSA, D=window.MSD, $=function(id){return document.getElementById(id)};
@@ -95,7 +95,8 @@ function dropTable(id){
   return DT[id]={eq:Object.keys(A.itm).filter(function(i){ var m=A.itm[i]; return !m.rare&&m.req>=M.lv+b[0]&&m.req<=M.lv+b[1] }).map(Number),
     rare:(M.rare||[]).filter(function(i){ return A.itm[i] })};
 }
-function stageMobs(g2){ var o=[]; g2.waves.forEach(function(w){ w.mobs.forEach(function(id){ if(o.indexOf(id)<0) o.push(id) }) }); return o }
+function stageMobs(g2){ var o=[]; g2.waves.forEach(function(w){ w.mobs.forEach(function(id){ if(o.indexOf(id)<0) o.push(id) }) }); if(g2.boss) o.push(g2.boss.id); return o }
+function unlocked(s,id){ var ks=Object.keys(D.STAGES), i=ks.indexOf(id); return i<=0||!!(s.st[ks[i-1]]&&s.st[ks[i-1]].clears) }
 // 套服佔上衣＋褲子兩格；換下來的東西回背包
 function equip(s,i){
   var it=s.inv[i], m=A.itm[it.id], out=[];
@@ -139,10 +140,12 @@ var zones=new Pool(function(){return {}}), drops=new Pool(function(){return {}})
 function start(i,stageId){
   var s=i==null?newSlot('bench',Q.get('job')||'magician'):SV.slots[i], J=D.JOBS[s.job], S=calc(s);
   slot=i;
-  P={job:s.job, adv:s.adv, J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0},
+  P={job:s.job, adv:s.adv, J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, rage:0, rageN:0, R:{cdr:0,dmg:0,n:0,area:0,crit:0,spd:0,hp:0,leech:0,magnet:0}, boons:[], face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0},
      // 基本攻擊永遠在第一格；其餘是技能欄裡的主動技能
      acts:[{d:J.atk, lv:1, cd:0}].concat(loadout(s).map(function(id){ return {id:+id, d:D.SK[id], lv:s.sk[id], cd:.5} }))};
-  stage=D.STAGES[stageId||'s1']; stage.id=stageId||'s1'; st={t:0, spawnAcc:0, dur:+Q.get('dur')||stage.dur}; keys={}; joy=null;
+  stage=D.STAGES[stageId||'s1']; stage.id=stageId||'s1'; floorE=A.map[stage.floor]; keys={}; joy=null;
+  st={t:0, spawnAcc:0, dur:+Q.get('dur')||stage.dur, bossT:stage.boss&&(Q.has('bosst')?+Q.get('bosst'):stage.boss.t), boss:null, winT:-1};
+  pickEl.style.display='none';
   // 實際掉落只掉本職業＋共用（每種怪先算好）
   P.drops={}; stageMobs(stage).forEach(function(id){ var t=dropTable(id), own=function(i){ return jobOk(s,A.itm[i]) };
     P.drops[id]={eq:t.eq.filter(own), rare:t.rare.filter(own)} });
@@ -156,7 +159,8 @@ function msg(s){ $('msv-msg').textContent=s }
 function spawn(id){
   var M=D.MOBS[id], e=A.mob[id], m=mobs.get(), a=Math.random()*Math.PI*2, R=Math.hypot(W,H)/2+60;
   m.id=id; m.M=M; m.e=e; m.x=P.x+Math.cos(a)*R; m.y=P.y+Math.sin(a)*R; m.hp=M.hp; m.face=false;
-  m.t=Math.random(); m.hitT=-1; m.dieT=-1; m.r=M.r||Math.max(10,e.a.stand[0][2]*.32);
+  m.t=Math.random(); m.hitT=-1; m.dieT=-1; m.r=M.r||Math.max(10,e.a.stand[0][2]*.32); m.slamT=M.slam?M.slam.cd:0; m.slamA=-1;
+  return m;
 }
 function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) if(st.t>=stage.waves[i].t) w=stage.waves[i]; return w }
 
@@ -164,8 +168,30 @@ function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) 
 function hurt(m,dmg,crit){
   if(m.dieT>=0) return; dmg=Math.max(1,Math.round(dmg*(.9+Math.random()*.2)));
   m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0);
-  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp; if(!BENCH) dropFrom(m) }
+  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp; if(BENCH) return; dropFrom(m);
+    if(P.R.leech) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*P.R.leech);
+    if(m.M.boss) st.winT=1.5;   // BOSS 倒下 1.5 秒後結算（讓死亡動畫播完）
+    if(++P.rage>=D.RAGE.need*(P.rageN+1)){ P.rage=0; P.rageN++; openPick() } }
 }
+// 怒氣集滿：暫停，三選一本場增益（鍵盤 1/2/3 或點選）
+var pickEl=$('msv-pick'), picks=[];
+function openPick(){
+  var pool=D.BOONS.filter(function(b){ return !b.heal||P.hp<P.maxHp }); picks=[];
+  while(picks.length<Math.min(D.RAGE.choices,pool.length)){ var b=pool[(Math.random()*pool.length)|0]; if(picks.indexOf(b)<0) picks.push(b) }
+  state='pick'; keys={}; joy=null;
+  pickEl.innerHTML='<h3>怒氣爆發！選一個本場增益</h3><div class="msv-grid">'+picks.map(function(b,i){
+    var n=P.boons.filter(function(x){ return x===b.k }).length;
+    return '<button class="msv-slot" data-pick="'+i+'"><span class="sub">'+(i+1)+'</span><span class="nm">'+b.nm+'</span><span class="sub">'+b.desc+'</span>'+(n?'<span class="sub">已有 '+n+' 層</span>':'')+'</button>' }).join('')+'</div>';
+  pickEl.style.display='';
+}
+function choose(i){
+  var b=picks[i]; if(!b) return;
+  if(b.heal) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*b.heal);
+  for(var k in b.mods) P.R[k]+=b.mods[k];
+  if(b.mods&&b.mods.hp){ P.maxHp=Math.round(P.S.maxHp*(1+P.R.hp)); P.hp=P.maxHp }
+  P.boons.push(b.k); pickEl.style.display='none'; state='run';
+}
+pickEl.addEventListener('click',function(e){ var b=e.target.closest('[data-pick]'); if(b) choose(+b.dataset.pick) });
 function dropFrom(m){
   var R=D.DROP, r=Math.random;
   if(r()<R.meso) addDrop(m,'meso',Math.round(m.M.exp*(1+r())));
@@ -184,7 +210,7 @@ function pick(d){
 }
 // 玩家打怪都走這裡：爆擊、追擊（終極之劍／弓）
 function deal(m,dmg){
-  var c=Math.random()<P.S.crit; hurt(m,dmg*(c?D.CRIT_DMG:1),c);
+  var c=Math.random()<P.S.crit+P.R.crit; hurt(m,dmg*(c?D.CRIT_DMG:1),c);
   if(P.S.final && Math.random()<P.S.final && m.dieT<0){ hurt(m,dmg*.6,false); fx(P.S.finalId,'hit',m.x,m.y-20,false) }
 }
 function num(x,y,v,kind){ var n=nums.get(); n.x=x+(Math.random()-.5)*16; n.y=y; n.v=v; n.t=0; n.kind=kind }  // kind 0 一般 1 玩家受傷 2 爆擊 3 MISS
@@ -195,26 +221,26 @@ function cast(k){
   var d=k.d, V=function(key){ return lerp(d[key],k.lv,d.max) };
   if(d.k==='buff'){ P.buffs.push({mods:d.mods, lv:k.lv, max:d.max, t:V('dur')}); fx(k.id,d.fx,P.x,P.y,P.face,true); return true }
   var rg=d.range*P.S.range, tg=nearest(P.x,P.y,rg); if(!tg) return false;
-  var dmg=P.S.atk*V('dmg')*(P.S.dmg+P.B.dmg);
+  var dmg=P.S.atk*V('dmg')*(P.S.dmg+P.B.dmg+P.R.dmg), area=1+P.R.area;
   P.face=tg.x>P.x; P.atkAnim=0;
   if(d.k==='slash'){
-    var dir=Math.atan2(tg.y-P.y,tg.x-P.x), arc=d.arc;
+    var dir=Math.atan2(tg.y-P.y,tg.x-P.x), arc=d.arc; rg*=area;
     near(P.x,P.y,rg,function(m){ var a=Math.atan2(m.y-P.y,m.x-P.x)-dir; a=Math.atan2(Math.sin(a),Math.cos(a));
       if(Math.abs(a)<arc/2 && Math.hypot(m.x-P.x,m.y-P.y)<rg+m.r) deal(m,dmg) });
     fx(k.id||d.fx,k.id?d.fx:'effect',P.x,P.y-30,P.face);
   } else if(d.k==='shot'){
-    var n=Math.round(V('n')||1);
+    var n=Math.round(V('n')||1)+P.R.n;
     for(var i=0;i<n;i++){
       var s=shots.get(), a2=Math.atan2(tg.y-12-(P.y-30),tg.x-P.x)+(i-(n-1)/2)*.18, v=d.v;
       s.x=P.x; s.y=P.y-30; s.vx=Math.cos(a2)*v; s.vy=Math.sin(a2)*v; s.life=rg/v; s.pierce=Math.round(V('pierce')||1); s.dmg=dmg;
-      s.splash=d.splash||0; s.e=d.ball?A.skl[d.ball]:null; s.hitFx=d.hit||d.ball; s.t=0; s.ang=a2; s.hit=s.hit||new Set(); s.hit.clear();
+      s.splash=(d.splash||0)*area; s.e=d.ball?A.skl[d.ball]:null; s.hitFx=d.hit||d.ball; s.t=0; s.ang=a2; s.hit=s.hit||new Set(); s.hit.clear();
     }
   } else if(d.k==='strike'){   // 魔力爪：直接打最近的 n 隻，每隻 hits 下
     var list=[]; near(P.x,P.y,rg,function(m){ list.push(m) });
     list.sort(function(a,b){ return Math.hypot(a.x-P.x,a.y-P.y)-Math.hypot(b.x-P.x,b.y-P.y) });
     list.slice(0,Math.round(V('n'))).forEach(function(m){ for(var h=0;h<d.hits;h++) deal(m,dmg); fx(k.id,d.fx,m.x,m.y-20,m.x<P.x) });
   } else if(d.k==='mist'){     // 毒霧：在目標腳下放一塊持續傷害區
-    var z=zones.get(); z.x=tg.x; z.y=tg.y; z.r=V('r'); z.t=0; z.dur=d.dur; z.tick=0; z.dmg=dmg; z.id=k.id;
+    var z=zones.get(); z.x=tg.x; z.y=tg.y; z.r=V('r')*area; z.t=0; z.dur=d.dur; z.tick=0; z.dmg=dmg; z.id=k.id;
   }
   return true;
 }
@@ -228,34 +254,41 @@ function update(dt){
   // 移動
   var mx=(keys.right?1:0)-(keys.left?1:0), my=(keys.down?1:0)-(keys.up?1:0);
   if(joy){ mx=joy.dx; my=joy.dy }
-  var ml=Math.hypot(mx,my), spd=P.S.spd*(1+P.B.spd); P.moving=ml>.1;
+  var ml=Math.hypot(mx,my), spd=P.S.spd*(1+P.B.spd+P.R.spd); P.moving=ml>.1;
   if(P.moving){ if(ml>1){mx/=ml; my/=ml} P.x+=mx*spd*dt; P.y+=my*spd*dt; if(Math.abs(mx)>.1) P.face=mx>0 }
   cam.x=P.x-W/2; cam.y=P.y-H/2+30;
   // 生怪
   if(BENCH){ while(mobs.n<BENCH) spawn(curWave().mobs[(Math.random()*curWave().mobs.length)|0]) }
   else { var w=curWave(), k=Math.min(1,st.t/st.dur); st.spawnAcc+=dt*(w.rate+(w.rate2-w.rate)*k);
     while(st.spawnAcc>=1){ st.spawnAcc--; spawn(w.mobs[(Math.random()*w.mobs.length)|0]) } }
+  if(stage.boss&&!st.boss&&st.t>=st.bossT&&!BENCH){ st.boss=spawn(stage.boss.id); num(P.x,P.y-100,D.MOBS[stage.boss.id].nm+'出現了！',2) }
   buildGrid();
   // 怪物：朝玩家走 + 互相推開；碰到玩家 → 迴避判定 → 減傷
   var pr=14, safe=P.inv>0||P.B.inv>0||BENCH;
   mobs.each(function(m){
     m.t+=dt;
     if(m.dieT>=0){ m.dieT+=dt; if(m.dieT>m.e.tot.die1) mobs.free(m); return }
-    if(m.hitT>=0){ m.hitT+=dt; if(m.hitT>.25) m.hitT=-1 }
+    if(m.hitT>=0){ m.hitT+=dt; if(m.hitT>.25||m.M.boss) m.hitT=-1 }
     var dx=P.x-m.x, dy=P.y-m.y, d=Math.hypot(dx,dy)||1, sp=m.hitT>=0?m.M.spd*.3:m.M.spd;
+    if(m.M.slam){ var SL=m.M.slam;
+      if(m.slamA>=0){ m.slamA+=dt; sp=0;
+        if(m.slamA>=SL.warn&&!m.slammed){ m.slammed=1; if(d<SL.r&&!(P.inv>0||P.B.inv>0)){ P.inv=D.HIT_INV;
+          if(Math.random()<P.S.eva) num(P.x,P.y-60,'MISS',3); else { var sh=Math.round(SL.dmg*(1-P.S.def)); P.hp-=sh; num(P.x,P.y-60,sh,1) } } }
+        if(m.slamA>=Math.max(SL.warn,m.e.tot.attack1)) m.slamA=-1 }
+      else if((m.slamT-=dt)<=0){ m.slamT=SL.cd; m.slamA=0; m.slammed=0 } }
     var vx=dx/d*sp, vy=dy/d*sp;
     near(m.x,m.y,m.r*2,function(o){ if(o===m) return; var ox=m.x-o.x, oy=m.y-o.y, od=Math.hypot(ox,oy)||.01, mn=m.r+o.r;
       if(od<mn){ var push=(mn-od)/mn*90; vx+=ox/od*push; vy+=oy/od*push } });
     m.x+=vx*dt; m.y+=vy*dt; m.face=dx>0;
     // 怪物不設上限，離太遠的移到另一側（不刪，避免數量掉）
     if(d>Math.hypot(W,H)*1.2){ m.x=P.x-dx*.9; m.y=P.y-dy*.9 }
-    if(d<m.r+pr && !safe){ P.inv=.7; safe=true;
+    if(d<m.r+pr && !safe){ P.inv=D.HIT_INV; safe=true;
       if(Math.random()<P.S.eva) num(P.x,P.y-60,'MISS',3);
       else { var hit=Math.max(1,Math.round(m.M.atk*(1-P.S.def))); P.hp-=hit; num(P.x,P.y-60,hit,1) } }
   });
   if(P.inv>0) P.inv-=dt;
   // 攻擊：每個技能各自冷卻，好了就放（沒目標就等下一幀）
-  P.acts.forEach(function(k){ k.cd-=dt; if(k.cd<=0 && cast(k)) k.cd=lerp(k.d.cd,k.lv,k.d.max)*(1-P.S.cdr) });
+  P.acts.forEach(function(k){ k.cd-=dt; if(k.cd<=0 && cast(k)) k.cd=lerp(k.d.cd,k.lv,k.d.max)*(1-Math.min(.75,P.S.cdr+P.R.cdr)) });
   if(P.atkAnim>=0){ P.atkAnim+=dt; if(P.atkAnim>.35) P.atkAnim=-1 }
   // 投射物
   shots.each(function(s){
@@ -270,7 +303,7 @@ function update(dt){
     });
   });
   drops.each(function(d){ d.t+=dt; var dx=P.x-d.x, dy=P.y-d.y, dd=Math.hypot(dx,dy);
-    if(dd<D.MAGNET) d.fly=true;
+    if(dd<D.MAGNET*(1+P.R.magnet)) d.fly=true;
     if(d.fly){ var v=Math.min(dd,(260+d.t*60)*dt); d.x+=dx/dd*v; d.y+=dy/dd*v }
     if(dd<D.PICK&&pick(d)) drops.free(d) });
   zones.each(function(z){ z.t+=dt; z.tick-=dt;
@@ -278,7 +311,8 @@ function update(dt){
     if(z.t>=z.dur) zones.free(z) });
   fxs.each(function(f){ f.t+=dt; if(f.follow){ f.x=P.x; f.y=P.y } if(f.t>=f.e.tot[f.act]) fxs.free(f) });
   nums.each(function(n){ n.t+=dt; n.y-=40*dt; if(n.t>.8) nums.free(n) });
-  if(P.hp<=0){ P.hp=0; end(false) } else if(!BENCH && st.t>=st.dur) end(true);
+  if(st.winT>=0&&(st.winT-=dt)<=0) return end(true);
+  if(P.hp<=0){ P.hp=0; end(false) } else if(!BENCH && st.t>=st.dur) end(!stage.boss);
 }
 // 結算：只在這裡把經驗寫進存檔（遊玩中不升級）；每升一級發 AP，轉職後也發 SP
 function end(win){
@@ -289,13 +323,17 @@ function end(win){
     if(win) drops.each(function(d){ if(pick(d)) drops.free(d) });
     s.meso+=P.loot.meso;
     if(win){ s.inv.push.apply(s.inv,P.loot.items); for(var k in P.loot.scr) s.scr[k]=(s.scr[k]||0)+P.loot.scr[k] }
+    var FC=D.FIRST_CLEAR[stage.id]; P.first=null;
+    if(win&&FC&&r.clears===1){ P.first={meso:FC.meso, title:FC.title}; s.meso+=FC.meso; s.title=FC.title;
+      if(FC.rareOwnJob){ var rs=(D.MOBS[stage.boss.id].rare||[]).filter(function(i){ return A.itm[i]&&A.itm[i].job===s.job });
+        if(rs.length){ var ri=mkItem(rs[(Math.random()*rs.length)|0],true); s.inv.push(ri); P.first.item=ri } } }
     persist();
   }
   resultScreen(win,gain,up);
 }
 
 // ---- 繪製 ----
-var floorE=A.map[D.STAGES.s1.floor];
+var floorE=A.map.s1;
 function hash(x,y){ var h=(x*374761393+y*668265263)|0; h=(h^(h>>>13))*1274126177|0; return (h^(h>>>16))>>>0 }
 function drawFloor(){
   var e=floorE, b=e.a.bsc, tw=b[0][2], th=b[0][3], im=img(e.src);
@@ -312,6 +350,9 @@ var drawList=[];
 function draw(){
   g.setTransform(scale,0,0,scale,0,0);
   drawFloor();
+  mobs.each(function(m){ if(m.slamA<0||!m.M.slam||m.slammed) return; var x=m.x-cam.x, y=m.y-cam.y, k=m.slamA/m.M.slam.warn;
+    g.globalAlpha=.15+.25*k; g.fillStyle=C['--lose']; g.beginPath(); g.ellipse(x,y,m.M.slam.r,m.M.slam.r*.6,0,0,7); g.fill();
+    g.globalAlpha=.8; g.strokeStyle=C['--lose']; g.lineWidth=3; g.beginPath(); g.ellipse(x,y,m.M.slam.r*k,m.M.slam.r*.6*k,0,0,7); g.stroke(); g.globalAlpha=1 });
   var IC=A.ico.items;
   drops.each(function(d){ var x=d.x-cam.x, y=d.y-cam.y-Math.abs(Math.sin(d.t*3))*6, f;
     if(d.kind==='meso'){ var k=d.v<50?0:d.v<100?1:d.v<1000?2:3; f=frameAt(IC,'meso'+k,d.t,true) }
@@ -338,7 +379,7 @@ function draw(){
   drawHud();
 }
 function drawMob(m){
-  var act=m.dieT>=0?'die1':m.hitT>=0?'hit1':'move', t=m.dieT>=0?m.dieT:m.t;
+  var act=m.dieT>=0?'die1':m.slamA>=0?'attack1':m.hitT>=0?'hit1':'move', t=m.dieT>=0?m.dieT:m.slamA>=0?m.slamA:m.t;
   if(m.dieT>=0) g.globalAlpha=Math.max(0,1-m.dieT/m.e.tot.die1*.6);
   spr(m.e,frameAt(m.e,act,t,act==='move'),m.x-cam.x,m.y-cam.y,m.face); g.globalAlpha=1;
 }
@@ -351,6 +392,9 @@ function drawHud(){
   var w=220; g.fillStyle=C['--surface']; g.globalAlpha=.8; g.fillRect(12,12,w+8,22); g.globalAlpha=1;
   g.fillStyle=C['--lose']; g.fillRect(16,16,w*P.hp/P.maxHp,14);
   g.fillStyle=C['--ink']; g.font='bold 12px sans-serif'; g.textAlign='left'; g.fillText('HP '+Math.ceil(P.hp)+' / '+P.maxHp,22,27);
+  g.globalAlpha=.8; g.fillStyle=C['--surface']; g.fillRect(12,36,w+8,10); g.globalAlpha=1; g.fillStyle=C['--turn']; g.fillRect(16,38,w*P.rage/(D.RAGE.need*(P.rageN+1)),6);
+  if(st.boss&&st.boss.dieT<0){ var bw=420, bm=st.boss; g.globalAlpha=.85; g.fillStyle=C['--surface']; g.fillRect(W/2-bw/2-4,44,bw+8,24); g.globalAlpha=1;
+    g.fillStyle=C['--lose']; g.fillRect(W/2-bw/2,48,bw*Math.max(0,bm.hp)/bm.M.hp,16); g.fillStyle=C['--ink']; g.textAlign='center'; g.fillText(bm.M.nm+'　'+Math.max(0,Math.ceil(bm.hp))+' / '+bm.M.hp,W/2,61) }
   var left=Math.max(0,st.dur-st.t), s=String(Math.floor(left%60)).padStart(2,'0');
   g.font='bold 22px sans-serif'; g.textAlign='center'; g.strokeStyle=C['--surface']; g.lineWidth=4;
   g.strokeText(Math.floor(left/60)+':'+s,W/2,34); g.fillText(Math.floor(left/60)+':'+s,W/2,34);
@@ -378,7 +422,8 @@ function loop(ts){
 
 // ---- 輸入 ----
 var KM={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
-addEventListener('keydown',function(e){ var k=KM[e.code]; if(k&&state==='run'){ keys[k]=true; e.preventDefault() } });
+addEventListener('keydown',function(e){ var k=KM[e.code]; if(k&&state==='run'){ keys[k]=true; e.preventDefault() }
+  if(state==='pick'&&/^Digit[1-3]$/.test(e.code)){ choose(+e.code.slice(5)-1); e.preventDefault() } });
 addEventListener('keyup',function(e){ var k=KM[e.code]; if(k) keys[k]=false });
 addEventListener('blur',function(){ keys={} });
 function lp(e){ var r=cv.getBoundingClientRect(); return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H] }
@@ -506,7 +551,7 @@ function codexTab(s){
 function hubScreen(){
   var s=SV.slots[ui.sel], tabs=[['go','出發'],['stat','能力值'+(s.ap?' ('+s.ap+')':'')],['skill','技能'+(s.sp?' ('+s.sp+')':'')],['eq','裝備'],['shop','商店'],['codex','圖鑑']];
   if(canAdv(s)) tabs.push(['adv','轉職！']);
-  var h='<div class="msv-hub"><canvas data-spr="chr:'+s.job+'-'+s.adv+'"></canvas><div><div class="nm">'+esc(s.nm)+'</div>'+
+  var h='<div class="msv-hub"><canvas data-spr="chr:'+s.job+'-'+s.adv+'"></canvas><div><div class="nm">'+esc(s.nm)+(s.title?' <span class="hint">「'+esc(s.title)+'」</span>':'')+'</div>'+
     '<div class="hint">Lv.'+s.lv+'　'+advNm(s)+'</div><div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div>'+
     '<div class="hint">EXP '+s.exp+' / '+D.exp(s.lv)+'</div></div></div><div class="msv-tabs" role="tablist">';
   tabs.forEach(function(t){ h+='<button role="tab" aria-selected="'+(ui.tab===t[0])+'" data-tab="'+t[0]+'">'+t[1]+'</button>' });
@@ -515,10 +560,11 @@ function hubScreen(){
   show(h);
 }
 function goTab(s){
-  return Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id];
-    return '<div class="msv-line"><div><b>'+esc(g2.nm)+'</b><div class="hint">撐過 '+fmt(g2.dur)+' 通關・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div>'+
+  return Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id], ok=unlocked(s,id), B=g2.boss&&D.MOBS[g2.boss.id];
+    var goal=B?'打倒'+B.nm+'（'+fmt(g2.boss.t)+' 出場，時限 '+fmt(g2.dur)+'）'+(D.FIRST_CLEAR[id]&&!(r&&r.clears)?'・首通送稀有武器':''):'撐過 '+fmt(g2.dur)+' 通關';
+    return '<div class="msv-line'+(ok?'':' off')+'"><div><b>'+esc(g2.nm)+'</b> <span class="hint">建議 Lv.'+g2.rec+'</span><div class="hint">'+goal+'・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div>'+
       '<div class="msv-mobs">'+stageMobs(g2).map(function(m){ return '<button data-cxmob="'+m+'"><canvas data-spr="mob:'+m+'"></canvas><span>'+D.MOBS[m].nm+'<br>Lv.'+D.MOBS[m].lv+'</span></button>' }).join('')+'</div></div>'+
-      '<button class="game-btn" data-stage="'+id+'">出發</button></div>' }).join('')+
+      '<button class="game-btn" data-stage="'+id+'"'+(ok?'':' disabled')+'>'+(ok?'出發':'先通關上一關')+'</button></div>' }).join('')+
     '<p class="hint">帶進關卡的技能：'+(loadout(s).map(function(id){return D.SK[id].nm}).join('、')||'只有基本攻擊')+'</p>';
 }
 function statTab(s){
@@ -549,13 +595,14 @@ function advTab(s){
     '<button class="game-btn" data-act="adv">轉職成為'+J.adv[s.adv+1]+'</button></div></div>';
 }
 function resultScreen(win,gain,up){
-  var s=SV.slots[slot], h='<h3>'+(win?'通關！':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻</p>'+
+  var s=SV.slots[slot], h='<h3>'+(win?'通關！':P.hp>0?'時間到…':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻</p>'+
     '<p>經驗 +'+gain+(win?'':'<span class="hint">（死亡只結算 '+D.DEATH_EXP*100+'%，原本 '+P.exp+'）</span>')+'</p>';
   if(s) h+=(up?'<p><b>等級提升！Lv.'+(s.lv-up)+' → Lv.'+s.lv+'</b>　獲得 AP '+up*D.AP_LV+(s.adv?'、SP '+up*D.SP_LV:'')+'</p>':'')+
     (canAdv(s)?'<p><b>可以轉職了！</b>回角色畫面找'+D.JOBS[s.job].npcNm+'。</p>':'')+
     '<div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div><p class="hint">Lv.'+s.lv+'　EXP '+s.exp+' / '+D.exp(s.lv)+'</p>';
   if(s){ var L=P.loot, sc=Object.keys(L.scr);
     h+='<p>楓幣 +'+L.meso+'</p>';
+    if(P.first) h+='<p><b>首次通關獎勵！</b>楓幣 +'+P.first.meso+'、稱號「'+esc(P.first.title)+'」'+(P.first.item?'、'+itIco(P.first.item.id)+' '+A.itm[P.first.item.id].nm:'')+'</p>';
     if(L.items.length||sc.length) h+='<p class="hint">'+(win?'獲得':'<b>死亡沒收</b>')+'：</p><div class="msv-drops'+(win?'':' lost')+'">'+L.items.map(function(it){ return itIco(it.id) }).join('')+
       sc.map(function(k){ var d2=D.SCROLLS.filter(function(x){ return x.k===k })[0]; return ico(A.ico.items.a.sc[d2.icon],d2.pct*100+'% 卷軸')+'×'+L.scr[k] }).join('')+'</div>' }
   show(h+'<div class="msv-row"><button class="game-btn" data-act="again">再挑戰一次</button><button class="game-btn ghost" data-act="hub">回到角色畫面</button></div>');
@@ -593,7 +640,7 @@ panel.addEventListener('click',function(e){
       msg({ok:'強化成功！',fail:'強化失敗…（用掉一次強化次數）',boom:'詛咒發動，裝備爆掉了！'}[res]); persist() } hubScreen() }
   else if(d.buysc){ var sc3=D.SCROLLS.filter(function(x){ return x.k===d.buysc })[0]; if(s.meso>=sc3.price){ s.meso-=sc3.price; s.scr[sc3.k]=(s.scr[sc3.k]||0)+1; persist() } hubScreen() }
   else if(d.buyeq){ var bm=A.itm[d.buyeq], bp=D.PRICE(bm.price); if(s.meso>=bp&&s.inv.length<D.INV_MAX){ s.meso-=bp; s.inv.push(mkItem(d.buyeq,false)); persist(); msg('買了「'+bm.nm+'」，到裝備頁穿上') } hubScreen() }
-  else if(d.stage) start(ui.sel,d.stage);
+  else if(d.stage){ if(unlocked(s,d.stage)) start(ui.sel,d.stage) }
   else if(d.stat){ var n=Math.min(+d.n,s.ap); s[d.stat]+=n; s.ap-=n; persist(); hubScreen() }
   else if(d.skill){ var sd=D.SK[d.skill], lv=s.sk[d.skill]||0;
     if(s.sp>0&&lv<sd.max&&sd.adv<=s.adv){ s.sk[d.skill]=lv+1; s.sp--;

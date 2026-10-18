@@ -6,20 +6,21 @@ window.MSD={
   // atk.k：slash 扇形近戰／shot 投射物；fx＝atlas 技能 id（特效圖），ball＝投射物圖（沒有就用 canvas 畫）
   // npc＝轉職教官（atlas npc id）；town／tag／line 只是介紹文字
   JOBS:{
-    warrior: {nm:'劍士',   adv:['見習劍士','劍士','劍客'],     hp:120, hpLv:14, spd:150, main:'str', sub:'dex', base:4,
+    warrior: {nm:'劍士',   adv:['見習劍士','劍士','劍客'],     hp:160, hpLv:14, spd:150, main:'str', sub:'dex', base:4,
               atk:{k:'slash', cd:.85, dmg:1, range:120, arc:2.2, fx:1001005},
               npc:1022000, npcNm:'武術教練', town:'勇士之村', tag:'近戰・高血量', line:'正面迎擊，揮劍掃開身邊的怪物。'},
-    bowman:  {nm:'弓箭手', adv:['見習弓箭手','弓箭手','獵人'], hp:80,  hpLv:9,  spd:160, main:'dex', sub:'str', base:4,
+    bowman:  {nm:'弓箭手', adv:['見習弓箭手','弓箭手','獵人'], hp:105, hpLv:9,  spd:160, main:'dex', sub:'str', base:4,
               atk:{k:'shot',  cd:.6,  dmg:1, range:520, v:640, pierce:2, ball:3001004},
               npc:1012100, npcNm:'赫麗娜',   town:'弓箭手村', tag:'遠程・穿透', line:'拉開距離，一箭射穿整排怪物。'},
-    magician:{nm:'法師',   adv:['見習法師','法師','火毒巫師'], hp:70,  hpLv:7,  spd:145, main:'int', sub:'luk', base:4,
+    magician:{nm:'法師',   adv:['見習法師','法師','火毒巫師'], hp:95,  hpLv:7,  spd:145, main:'int', sub:'luk', base:4,
               atk:{k:'shot',  cd:.75, dmg:1, range:460, v:520, pierce:1, ball:2001004, splash:60},
               npc:1032001, npcNm:'漢斯',     town:'魔法森林', tag:'遠程・範圍', line:'血少但魔法會爆開，一次炸一群。'},
-    thief:   {nm:'盜賊',   adv:['見習盜賊','盜賊','刺客'],     hp:90,  hpLv:10, spd:175, main:'luk', sub:'dex', base:4,
+    thief:   {nm:'盜賊',   adv:['見習盜賊','盜賊','刺客'],     hp:120, hpLv:10, spd:175, main:'luk', sub:'dex', base:4,
               atk:{k:'shot',  cd:.45, dmg:1, range:420, v:720, pierce:1, n:2},
               npc:1052001, npcNm:'達克魯',   town:'墮落城市', tag:'速度・連發', line:'跑得最快，飛鏢一次丟兩顆。'}
   },
-  ATK_K:.5,
+  ATK_K:.6,
+  HIT_INV:1,                           // 被打之後的無敵秒數
   STATS:['str','dex','int','luk'], STAT_NM:{str:'STR 力量',dex:'DEX 敏捷',int:'INT 智力',luk:'LUK 幸運'},
   START_STAT:4, START_MAIN:12,         // 創角：四項 4，主屬性 12
   AP_LV:5, SP_LV:3, SP_ADV:1,          // 每升一級 5 AP；轉職後每級 3 SP；轉職當下送 1 SP
@@ -98,25 +99,76 @@ window.MSD={
     4100001:{job:'thief', adv:2, nm:'致命攻擊', max:10, mods:{crit:[.04,.2]}, desc:'爆擊率提升。'},
     4101003:{job:'thief', adv:2, nm:'快速之爪', max:10, mods:{cdr:[.04,.2]}, desc:'所有攻擊冷卻縮短。'}
   },
-  // 升到下一級要的經驗（暫定，M4 依實際一場拿多少再調）
-  exp:function(lv){ return Math.round(12*Math.pow(lv,1.9)+8) },
+  // 升到下一級要的經驗。節奏目標：2～3 場到 Lv10；在等級相當的關卡每場升 1～3 級
+  exp:function(lv){ return Math.round(16*Math.pow(lv,2.2)+10) },
   DEATH_EXP:.3,
   // 怪物：lv＝原作等級（決定掉落表）；hp/atk 依原作縮放過；spd＝每秒像素；r 不填就依圖寬推
   MOBS:{
-    100100:{nm:'嫩寶',   lv:1, hp:18,  atk:4,  spd:40, exp:3},
+    100100:{nm:'嫩寶',   lv:1, hp:18,  atk:3,  spd:40, exp:3},
     100101:{nm:'藍寶',   lv:2, hp:26,  atk:5,  spd:46, exp:4},
     130101:{nm:'紅寶',   lv:5, hp:48,  atk:7,  spd:50, exp:7},
     120100:{nm:'菇菇仔', lv:3, hp:34,  atk:6,  spd:62, exp:5},
     210100:{nm:'綠水靈', lv:7, hp:70,  atk:9,  spd:58, exp:10},
-    6130101:{nm:'蘑菇王',lv:18, hp:9000,atk:30, spd:55, exp:1500, boss:1, rare:[1302020,1302058,1302080,1382009,1452016,1472030]}
+    130100:{nm:'木妖',     lv:8,  hp:150,  atk:12, spd:35, exp:22},
+    1210100:{nm:'肥肥',    lv:7,  hp:120,  atk:11, spd:60, exp:18},
+    1210102:{nm:'菇菇寶貝',lv:8,  hp:140,  atk:12, spd:55, exp:20},
+    1210101:{nm:'緞帶肥肥',lv:10, hp:190,  atk:14, spd:65, exp:26},
+    2110200:{nm:'刺菇菇',  lv:12, hp:300,  atk:18, spd:60, exp:34},
+    2220100:{nm:'藍菇菇',  lv:15, hp:420,  atk:22, spd:55, exp:42},
+    2230101:{nm:'殭屍菇菇',lv:24, hp:900,  atk:32, spd:50, exp:70},
+    2230102:{nm:'黑肥肥',  lv:26, hp:1100, atk:36, spd:75, exp:85},
+    3210100:{nm:'火肥肥',  lv:32, hp:1600, atk:44, spd:70, exp:110},
+    // BOSS：slam＝每 cd 秒舉起來砸地（atlas 的 attack1），範圍 r 內受 dmg 傷害，砸下前 warn 秒畫出預警圈
+    6130101:{nm:'蘑菇王',  lv:20, hp:30000,atk:40, spd:50, exp:3000, boss:1, slam:{cd:6, r:170, dmg:60, warn:1},
+             rare:[1302020,1302058,1302080,1382009,1452016,1472030]}
   },
-  // 關卡：waves 依時間切換怪物組；rate＝每秒生怪數，隨時間線性加到 rate2
+  // 關卡（依序解鎖：通關前一關才能挑戰下一關）。waves 依時間切換怪物組；rate＝每秒生怪數，隨時間線性加到 rate2
+  // rec＝建議等級；boss＝{id, t 出場秒數}：打倒 BOSS 才算通關，dur 是時限（時間到算失敗）
   STAGES:{
-    s1:{nm:'嫩寶的小路', floor:'s1', dur:300, waves:[
-      {t:0,   mobs:[100100],               rate:1.2, rate2:2.5},
-      {t:45,  mobs:[100100,100101],        rate:2.5, rate2:4},
-      {t:120, mobs:[100101,130101,120100], rate:4,   rate2:6},
-      {t:210, mobs:[130101,120100,210100], rate:6,   rate2:9}
+    s1:{nm:'嫩寶的小路', floor:'s1', rec:1, dur:300, waves:[
+      {t:0,   mobs:[100100],               rate:.8,  rate2:1.5},
+      {t:45,  mobs:[100100,100101],        rate:1.5, rate2:2.5},
+      {t:120, mobs:[100101,130101,120100], rate:2.5, rate2:4},
+      {t:210, mobs:[130101,120100,210100], rate:4,   rate2:6}
+    ]},
+    s2:{nm:'射手村狩獵場', floor:'s2', rec:8, dur:300, waves:[
+      {t:0,   mobs:[1210100,130100],          rate:1.5, rate2:3},
+      {t:60,  mobs:[1210100,1210102,130100],  rate:3,   rate2:5},
+      {t:180, mobs:[1210102,1210101,130100],  rate:5,   rate2:8}
+    ]},
+    s3:{nm:'菇菇山丘', floor:'s3', rec:15, dur:300, waves:[
+      {t:0,   mobs:[1210101,2110200],          rate:1.5, rate2:3},
+      {t:90,  mobs:[2110200,2220100],          rate:3,   rate2:5.5},
+      {t:200, mobs:[2110200,2220100,1210101],  rate:5.5, rate2:8}
+    ]},
+    boss:{nm:'蘑菇王的巢穴', floor:'s1', rec:20, dur:600, boss:{id:6130101, t:180}, waves:[
+      {t:0,   mobs:[1210102,2110200],          rate:2,   rate2:3},
+      {t:120, mobs:[2110200,2220100],          rate:3,   rate2:4}
+    ]},
+    s4:{nm:'殭屍菇菇的洞穴', floor:'s4', rec:24, dur:300, waves:[
+      {t:0,   mobs:[2220100,2230101],          rate:1.5, rate2:3},
+      {t:120, mobs:[2230101],                  rate:3,   rate2:6}
+    ]},
+    s5:{nm:'火焰之地', floor:'s5', rec:30, dur:300, waves:[
+      {t:0,   mobs:[2230102],                  rate:1.5, rate2:3},
+      {t:100, mobs:[2230102,3210100],          rate:3,   rate2:5.5},
+      {t:220, mobs:[3210100],                  rate:5,   rate2:7}
     ]}
-  }
+  },
+  // BOSS 首次通關獎勵：本職業稀有武器（保底）＋楓幣＋稱號
+  FIRST_CLEAR:{boss:{meso:5000, title:'蘑菇王剋星', rareOwnJob:1}},
+  // 怒氣：擊倒怪物累積，集滿時三選一「本場限定增益」，離開關卡就消失。第 n 次要 need×n
+  RAGE:{need:40, choices:3},
+  BOONS:[
+    {k:'cdr',   nm:'攻速提升',   desc:'所有攻擊冷卻 −12%',      mods:{cdr:.12}},
+    {k:'dmg',   nm:'力量湧現',   desc:'傷害 +20%',              mods:{dmg:.2}},
+    {k:'n',     nm:'多重投射',   desc:'投射物 +1 發',           mods:{n:1}},
+    {k:'area',  nm:'範圍擴大',   desc:'近戰範圍、爆炸、毒霧 +25%', mods:{area:.25}},
+    {k:'crit',  nm:'致命一擊',   desc:'爆擊率 +10%',            mods:{crit:.1}},
+    {k:'spd',   nm:'疾風步',     desc:'移動速度 +15%',          mods:{spd:.15}},
+    {k:'hp',    nm:'強健體魄',   desc:'最大 HP +20%，並補滿',   mods:{hp:.2}},
+    {k:'leech', nm:'吸取生命',   desc:'每擊倒一隻怪回復 1% HP', mods:{leech:.01}},
+    {k:'magnet',nm:'楓幣磁鐵',   desc:'撿東西的距離 +60%',      mods:{magnet:.6}},
+    {k:'heal',  nm:'喝下藥水',   desc:'立刻回復 60% HP',        heal:.6}
+  ]
 };
