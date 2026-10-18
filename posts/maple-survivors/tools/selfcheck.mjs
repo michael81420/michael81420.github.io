@@ -20,9 +20,10 @@ const r = await p.evaluate(() => {
   }
   for (const id in D.MOBS) if (!window.__msvDropTable(id).eq.length) out.push(`怪物 ${id} 沒有任何掉落`);
   for (const id in D.MOBS) for (const i of D.MOBS[id].rare || []) if (!window.MSA.itm[i]) out.push(`怪物 ${id} 的稀有掉落 ${i} 不在 atlas`);
+  for (const id in D.SK) if (!window.MSA.ico.skills?.a[id]) out.push(`技能 ${id} 沒有圖示：重跑 tools/build-assets.mjs`);
   return out;
 });
 await b.close();
 const bad = [...r, ...errs];
 if (bad.length) { console.log('✗ ' + bad.join('\n✗ ')); process.exit(1); }
-console.log('✓ 卷軸機率與掉落表自檢通過');
+console.log('✓ 卷軸機率、掉落表、技能圖示自檢通過');

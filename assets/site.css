@@ -610,9 +610,14 @@ pre .ok{color:var(--win)}                  /* 正解 */
 
 /* ---- 楓之谷倖存者（posts/maple-survivors） ---- */
 /* 選單與畫布疊在同一個固定 16:10 的框裡輪流顯示：只有視窗寬度變時框才變，切畫面不會跳 */
-.msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto;border-radius:12px;overflow:hidden;background:var(--surface2) center/cover no-repeat;container-type:inline-size;
-  /* 標題 logo 的原作配色：疊在固定的場景圖上，不跟深淺色模式變 */
-  --msv-gold:#FFD23F;--msv-orange:#F28A1A;--msv-brown:#4E240A;--msv-red:#D8432A;--msv-leaf:#F0641E;--msv-cream:#FFF7DE}
+/* 原作配色（標題 logo、裝備說明框、全螢幕底色）：疊在固定的場景圖上，不跟深淺色模式變 */
+.msv{--msv-gold:#FFD23F;--msv-orange:#F28A1A;--msv-brown:#4E240A;--msv-red:#D8432A;--msv-leaf:#F0641E;--msv-cream:#FFF7DE;
+  --msv-night:#000;--msv-tipbg:rgb(17 27 51/.93);--msv-tipline:#7F8FAD;--msv-white:#FFF;--msv-sky:#66CCFF;--msv-grey:#9A9A9A;--msv-blue:#3A8EE6;--msv-warn:#FF6655;--msv-mine:#FFAA33;
+  --msv-frame:#3A3A40;--msv-frameline:#1E1E22;--msv-body:#D9DADC;--msv-slot:#9B9DA2;--msv-slotline:#7C7E83;--msv-ring:#B4A08A;--msv-slotb:#87AAB8;--msv-good:#7CE07C}
+.msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto;border-radius:12px;overflow:hidden;background:var(--surface2) center/cover no-repeat;container-type:inline-size}
+/* Alt＋Enter 全螢幕：整張卡片進全螢幕，16:10 框依螢幕高寬取小的放大置中（下面留一行訊息） */
+.msv:fullscreen{display:flex;flex-direction:column;justify-content:center;margin:0;border:0;border-radius:0;background:var(--msv-night)}
+.msv:fullscreen .msv-stage{flex:none;max-width:none;width:min(100%,calc((100vh - 80px)*1.6));border-radius:0}
 .msv-stage .game-board{position:absolute;inset:0;max-width:none;width:100%;height:100%;aspect-ratio:auto}
 .msv-panel{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:12px}
 /* 選單視窗疊在背景圖上；內容太長時在視窗裡捲（.fix＝角色主畫面：視窗撐滿、只有 .msv-scroll 捲），不會撐大遊戲框 */
@@ -629,7 +634,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-press{font-size:1.5cqw;font-weight:700;color:var(--msv-cream);text-shadow:0 0 .4cqw var(--msv-brown),0 0 .4cqw var(--msv-brown)}
 .msv-walker{position:absolute;bottom:25%;left:var(--a);width:8cqw;height:7cqw;translate:-50% 0;animation:msv-patrol linear infinite}
 .msv-walker canvas{width:100%;height:100%}
-.msv-legal{position:absolute;bottom:2%;right:2%;font-size:1.2cqw;color:var(--msv-cream);text-shadow:0 0 .3cqw var(--msv-brown),0 0 .3cqw var(--msv-brown)}
+.msv-legal{position:absolute;bottom:2%;left:2%;font-size:1.2cqw;color:var(--msv-cream);text-shadow:0 0 .3cqw var(--msv-brown),0 0 .3cqw var(--msv-brown)}
 @keyframes msv-bob{50%{transform:translateY(-1.2cqw)}}
 @keyframes msv-pulse{50%{transform:scale(1.06)}}
 /* 原作怪物預設面向左：往左走不翻、走回來時翻面 */
@@ -676,7 +681,59 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-line .hint{text-align:left}
 .msv-ico{display:inline-block;vertical-align:middle;image-rendering:pixelated;background-repeat:no-repeat}
 .msv-cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;width:100%}
-.msv-cells.slots{grid-template-columns:repeat(7,minmax(0,1fr))}
+/* 裝備頁：左邊原作式裝備欄（EQUIPMENT INVENTORY，5×6 格，還沒做的部位鎖住），右邊背包 */
+.msv-eqwrap{display:flex;gap:10px;width:100%;align-items:flex-start}
+.msv-eqwin{display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px}
+.msv-eqwin.inv{flex:1;min-width:0}
+.msv-eqwin .msv-cell{background:var(--surface)}
+.msv-wt{font-weight:700;font-size:13px;color:var(--ink2)}
+.msv-eqo{flex:none;padding:0 6px 6px;background:var(--msv-frame);border:1px solid var(--msv-frameline);border-radius:8px;box-shadow:0 2px 8px rgb(0 0 0/.3)}
+.msv-eqhd{padding:5px 0 4px;text-align:center;font:700 11px 'Hanken Grotesk',sans-serif;letter-spacing:.08em;color:var(--msv-white)}
+.msv-eqtabs{display:flex;gap:3px}
+.msv-eqtabs span{padding:2px 10px;font-size:11px;font-weight:700;border-radius:5px 5px 0 0;background:var(--msv-slot);color:var(--msv-white);opacity:.6}
+.msv-eqtabs span.on{background:var(--msv-mine);opacity:1}
+.msv-equip{position:relative;display:grid;grid-template-columns:repeat(5,40px);grid-template-rows:repeat(6,40px);gap:4px;padding:8px;background:var(--msv-body);border-radius:0 6px 6px 6px}
+.msv-eqbg{position:absolute;left:50%;top:50%;width:150px;height:200px;translate:-50% -50%;opacity:.16;pointer-events:none}
+.msv-equip .msv-cell{position:relative;height:auto;padding:0;background:var(--msv-slot);border:1px solid var(--msv-slotline);border-radius:4px;color:var(--msv-white);font-size:11px;font-weight:700;text-shadow:0 1px 0 var(--msv-slotline)}
+.msv-equip .msv-cell.r{background:var(--msv-ring)}
+.msv-equip .msv-cell.b{background:var(--msv-slotb)}
+.msv-equip .msv-cell:disabled{opacity:1}
+.msv-equip .msv-cell.lock{opacity:.45;cursor:not-allowed}
+.msv-lock{position:absolute;right:2px;bottom:2px;width:12px;height:12px;fill:var(--msv-white)}
+.msv-equip .msv-cell.on{border-color:var(--msv-mine);box-shadow:0 0 0 2px var(--msv-mine)}
+.q-up{color:var(--msv-blue)}
+.q-dn{color:var(--ink3)}
+/* 原作式說明框：深藍半透明、白字；名稱藍字＝素質浮動偏好、灰字＝偏差 */
+.msv-tip{position:absolute;z-index:5;display:flex;gap:6px;align-items:flex-start;pointer-events:none}
+.msv-tip[hidden]{display:none}
+.msv-tip .tp-box{width:220px;padding:8px 10px;background:var(--msv-tipbg);border:1px solid var(--msv-tipline);border-radius:6px;
+  color:var(--msv-white);font-size:12px;line-height:1.55;box-shadow:0 4px 14px rgb(0 0 0/.35)}
+.msv-tip .tp-cap{margin:-2px 0 4px;font-size:11px;text-align:center;color:var(--msv-mine)}
+.msv-tip .tp-up{color:var(--msv-good)}
+.msv-tip .tp-dn{color:var(--msv-warn)}
+.msv-tip .tp-nm{font-weight:700;font-size:14px;text-align:center}
+.msv-tip .tp-nm.q-up{color:var(--msv-sky)}
+.msv-tip .tp-nm.q-dn{color:var(--msv-grey)}
+.msv-tip .tp-rare{text-align:center;color:var(--msv-mine)}
+.msv-tip .tp-top{display:flex;gap:10px;align-items:center;margin-top:6px}
+.msv-tip .tp-ico{display:flex;align-items:center;justify-content:center;width:56px;height:56px;flex:none;background:var(--msv-white);border-radius:4px}
+.msv-tip .tp-ico .msv-ico{zoom:1.5}
+.msv-tip .tp-no{color:var(--msv-warn)}
+.msv-tip .tp-jobs{display:flex;gap:8px;margin:6px 0;padding:4px 0;border-top:1px dashed var(--msv-tipline);border-bottom:1px dashed var(--msv-tipline)}
+.msv-tip .tp-jobs .me{color:var(--msv-mine)}
+.msv-tip .tp-jobs .off{color:var(--msv-grey);opacity:.6}
+.msv-line.sk>.msv-ico{flex:none}
+.msv-line.sk>div{flex:1}
+.msv-line .hint.nx{color:var(--ink3)}
+.game-btn.warn{background:var(--lose);color:var(--onAccent);border-color:var(--lose)}
+/* 聲音設定：遊戲框右下角的 ♪，點開才出現開關與音量 */
+.msv-au{position:absolute;right:1%;bottom:1.6%;z-index:4;display:flex;align-items:center;gap:6px}
+.msv-au-btn{width:30px;height:30px;border-radius:50%;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--ink);font-weight:700}
+.msv-au-btn.mute{text-decoration:line-through;color:var(--ink3)}
+.msv-au-pop{align-items:center;font-size:13px;color:var(--ink2);padding:4px 8px;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--border);border-radius:10px}
+.msv-au-pop button{padding:3px 10px;font-size:13px}
+.msv-au-pop button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
+.msv-au-pop input{accent-color:var(--accent);vertical-align:middle;width:90px}
 .msv-cell{position:relative;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface2);
   border:1px solid var(--border);border-radius:8px;font-size:11px;color:var(--ink3)}
 .msv-cell.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
@@ -699,7 +756,4 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-ctl button{padding:.4cqw 1cqw;border-radius:.8cqw;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--ink2);font-weight:700;font-size:1.3cqw}
 .msv-ctl button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
 .msv-ctl button.warn{background:var(--lose);border-color:var(--lose);color:var(--onAccent)}
-.msv-audio{margin-top:10px;align-items:center;font-size:13px;color:var(--ink2)}
-.msv-audio button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
-.msv-audio input{accent-color:var(--accent);vertical-align:middle;width:110px}
 .msv-pick{background:color-mix(in srgb,var(--bg) 82%,transparent)}

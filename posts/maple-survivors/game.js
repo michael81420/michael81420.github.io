@@ -50,7 +50,7 @@ function nearest(x,y,r){ var best=null, bd=r*r; near(x,y,r,function(m){ var d=(m
 
 // ---- 存檔：4 個角色欄位，彼此不共用任何東西 ----
 // 欄位：{nm, job, lv, exp, adv(0 見習/1/2), ap, sp, str/dex/int/luk, sk:{技能id:等級}, load:[帶進關卡的主動技能], st:{關卡id:{best 最久存活秒, clears}},
-//        meso, eqp:{部位:裝備}, inv:[裝備], scr:{卷軸k:數量}}；裝備＝{id, st:{屬性}, tuc 剩餘強化次數, up 成功次數, req?（新手武器 0）}
+//        meso, eqp:{部位:裝備}, inv:[裝備], scr:{卷軸k:數量}}；裝備＝{id, st:{屬性}, tuc 剩餘強化次數, up 成功次數, q 浮動總和, req?（新手武器 0）}
 var KEY='msvSave', SV=load();
 function load(){
   var raw=null; try{ raw=localStorage.getItem(KEY) }catch(e){}
@@ -70,12 +70,14 @@ function fix(s){
   if(s.str==null){ D.STATS.forEach(function(k){ s[k]=D.START_STAT }); s[J.main]=D.START_MAIN; s.ap=(s.lv-1)*D.AP_LV; s.sp=0 }
   s.adv=s.adv||0; s.sk=s.sk||{}; s.load=s.load||[]; s.st=s.st||{}; s.meso=s.meso||0; s.inv=s.inv||[]; s.scr=s.scr||{};
   if(!s.eqp){ s.eqp={}; var w=starter(s.job); if(w){ w.req=0; s.eqp.weapon=w } }   // 創角送本職業最低階武器
+  // 舊存檔的裝備沒有 q：沒強化過的直接跟原始數值比；強化過的分不出卷軸加了多少，當白字
+  s.inv.concat(Object.values(s.eqp)).forEach(function(it){ if(it&&it.q==null){ var m=A.itm[it.id]; it.q=0; if(m&&!it.up) for(var k in m.st) it.q+=(it.st[k]||0)-m.st[k] } });
 }
 // ---- 裝備 ----
 function mkItem(id,roll){
-  var m=A.itm[id], st={};
-  for(var k in m.st){ var r=roll?(k==='pad'||k==='mad'?D.ROLL.atk:D.ROLL.stat):[0,0]; st[k]=Math.max(1,m.st[k]+Math.round(r[0]+Math.random()*(r[1]-r[0]))) }
-  return {id:+id, st:st, tuc:m.tuc, up:0};
+  var m=A.itm[id], st={}, q=0;
+  for(var k in m.st){ var r=roll?(k==='pad'||k==='mad'?D.ROLL.atk:D.ROLL.stat):[0,0]; st[k]=Math.max(1,m.st[k]+Math.round(r[0]+Math.random()*(r[1]-r[0]))); q+=st[k]-m.st[k] }
+  return {id:+id, st:st, tuc:m.tuc, up:0, q:q};   // q＝浮動總和：>0 藍字、<0 灰字、0 白字（卷軸加的不算）
 }
 function starter(job){ var best=null; for(var id in A.itm){ var m=A.itm[id]; if(m.s==='weapon'&&m.job===job&&!m.rare&&(!best||m.req<A.itm[best].req)) best=id } return best&&mkItem(best,false) }
 function reqOf(it){ return it.req!=null?it.req:A.itm[it.id].req }
@@ -463,7 +465,7 @@ function view(v){ cv.style.display=ctl.style.display=v==='game'?'':'none'; panel
 function scroller(){ return panel.querySelector('.msv-scroll')||panel.firstChild }
 function show(h,cls){
   view('panel'); var sc=scroller(), top=ui.top0||!sc?0:sc.scrollTop; ui.top0=false;
-  panel.innerHTML='<div class="msv-win '+(cls||'')+'">'+h+'</div>'; scroller().scrollTop=top; state='menu';
+  panel.innerHTML='<div class="msv-win '+(cls||'')+'">'+h+'</div>'; scroller().scrollTop=top; state='menu'; hideTip();
   // data-spr="npc:1022000" / "chr:warrior-0" 的小畫布在選單迴圈裡播站立動畫
   minis=[].map.call(panel.querySelectorAll('canvas[data-spr]'),function(c){ var p=c.dataset.spr.split(':'), e=A[p[0]][p[1]], r=c.getBoundingClientRect(), d=window.devicePixelRatio||1;
     c.width=Math.round(r.width*d); c.height=Math.round(r.height*d); return {c:c, g:c.getContext('2d'), e:e, act:p[2]||(p[0]==='chr'?'stand1':'stand'), flip:p[0]==='chr'} });
@@ -492,11 +494,11 @@ function titleScreen(){
   bgm('menu');
   // 怪物在右下那片地面上來回巡邏：[怪物, 起點 left%, 終點 left%, 週期秒, 起始偏移秒]
   var walk=[[100100,95,68,14,0],[1210102,88,64,11,-4],[120100,97,76,9,-2],[130101,84,63,12,-7]];
-  show('<button class="msv-title" data-act="home">'+LOGO+'<span class="msv-start">開始遊戲</span><span class="msv-press">點一下或按 Enter</span>'+
+  show('<button class="msv-title" data-act="home">'+LOGO+'<span class="msv-start">開始遊戲</span><span class="msv-press">點一下或按 Enter</span><span class="msv-press">Alt（Mac 是 Option）＋ Enter 全螢幕</span>'+
     walk.map(function(w){ return '<span class="msv-walker" style="--a:'+w[1]+'%;--b:'+w[2]+'%;animation-duration:'+w[3]+'s;animation-delay:'+w[4]+'s"><canvas data-spr="mob:'+w[0]+':move"></canvas></span>' }).join('')+
     '<span class="msv-legal">非官方同人作品・遊戲素材 © NEXON</span></button>','title');
 }
-addEventListener('keydown',function(e){ if(e.key==='Enter'&&panel.querySelector('.msv-title')){ e.preventDefault(); slotsScreen() } });
+addEventListener('keydown',function(e){ if(e.key==='Enter'&&!e.altKey&&panel.querySelector('.msv-title')){ e.preventDefault(); slotsScreen() } });
 function slotsScreen(){
   var h='<h3>選擇角色</h3><div class="msv-grid">';
   SV.slots.forEach(function(s,i){
@@ -512,7 +514,7 @@ function slotsScreen(){
   if(!s) h+='<span class="hint">點選一個角色，或建立新角色</span>';
   else if(ui.del) h+='<span class="hint">確定刪除「'+esc(s.nm)+'」？刪除後無法復原。</span><button class="game-btn" data-act="del-yes">確定刪除</button><button class="game-btn ghost" data-act="del-no">取消</button>';
   else h+='<button class="game-btn" data-act="enter">進入</button><button class="game-btn ghost" data-act="del">刪除角色</button>';
-  show(h+'</div><div class="msv-row"><button class="game-btn ghost" data-act="export">匯出存檔</button><button class="game-btn ghost" data-act="import">匯入存檔</button></div>','bare');
+  show(h+'</div><div class="msv-row"><button class="game-btn ghost" data-act="export">匯出存檔</button><button class="game-btn ghost" data-act="import">匯入存檔</button></div><span class="hint">Alt（Mac 是 Option）＋ Enter 全螢幕</span>','bare');
 }
 function createScreen(i){
   var h='<h3>選擇你的職業</h3><p class="hint">到各村莊找轉職教官，選一條要走的路。</p><div class="msv-grid">';
@@ -525,79 +527,79 @@ function createScreen(i){
 }
 
 // ---- 物品顯示 ----
-function ico(f,title){ var IC=A.ico.items; return '<i class="msv-ico" title="'+esc(title||'')+'" style="width:'+f[2]+'px;height:'+f[3]+'px;background-image:url(maple-survivors/assets/'+IC.src+');background-position:-'+f[0]+'px -'+f[1]+'px"></i>' }
-function itIco(id){ return ico(A.ico.items.a.eq[A.itm[id].i],A.itm[id].nm) }
+// tip＝滑鼠移上去要顯示的說明框（見「滑鼠提示」）；沒有 tip 才用瀏覽器原生 title
+function ico(f,title,tip,set){ set=set||A.ico.items; return '<i class="msv-ico"'+(tip?' data-tip="'+tip+'"':' title="'+esc(title||'')+'"')+' style="width:'+f[2]+'px;height:'+f[3]+'px;background-image:url(maple-survivors/assets/'+set.src+');background-position:-'+f[0]+'px -'+f[1]+'px"></i>' }
+function itIco(id,tip){ return ico(A.ico.items.a.eq[A.itm[id].i],'',tip||'id:'+id) }
+function skIco(id,off){ var f=A.ico.skills.a[id]; return f?ico(f[off?1:0],D.SK[id].nm,'',A.ico.skills):'' }
+function qCls(it){ return it.q>0?'q-up':it.q<0?'q-dn':'' }
 function mesoIco(){ return ico(A.ico.items.a.meso0[0],'楓幣') }
 function scIco(sc){ return ico(A.ico.items.a.sc[sc.icon],(sc.t==='w'?'武器':'防具')+'卷軸 '+sc.pct*100+'%') }
-// 怪物靜態小圖（站立第 0 幀，縮進 40×36）：按下去跳到圖鑑的那隻怪物
-function mobBtn(id){ var e=A.mob[id], f=e.a.stand[0], M=D.MOBS[id], k=Math.min(1,36/f[3],40/f[2]), sw=0, sh=0;
-  for(var a in e.a) e.a[a].forEach(function(q){ sw=Math.max(sw,q[0]+q[2]); sh=Math.max(sh,q[1]+q[3]) });
-  return '<button data-cxmob="'+id+'" title="'+M.nm+'"><i class="msv-ico" style="width:'+Math.round(f[2]*k)+'px;height:'+Math.round(f[3]*k)+'px;background-image:url(maple-survivors/assets/'+e.src+');'+
-    'background-size:'+sw*k+'px '+sh*k+'px;background-position:-'+f[0]*k+'px -'+f[1]*k+'px;image-rendering:auto"></i><span>'+M.nm+'<br>Lv.'+M.lv+'</span></button>' }
 function stTxt(st){ return Object.keys(st).map(function(k){ return D.ST_NM[k]+' +'+st[k] }).join('、')||'無' }
 function rqTxt(m,free){ if(free) return 'Lv.0'; var a=['Lv.'+m.req]; for(var k in m.rq) a.push(k.toUpperCase()+' '+m.rq[k]); return a.join('、') }
 function slotNm(k){ for(var i=0;i<D.EQ_SLOTS.length;i++) if(D.EQ_SLOTS[i][0]===k) return D.EQ_SLOTS[i][1] }
-function jobNm(j){ return j==='all'?'共用':D.JOBS[j].nm }
 function sellP(m){ return Math.floor(D.PRICE(m.price)*D.SELL) }
 function fxTxt(sc){ var f=sc.fx; return sc.t==='w'?'攻擊 +'+f.atk+(f.main?'、主屬性 +'+f.main:''):'主屬性 +'+f.main+'、防禦 +'+f.pdd }
 function selItem(s){ return !ui.it?null:ui.it.from==='eqp'?s.eqp[ui.it.k]:s.inv[ui.it.k] }
-function mobsDropping(id){ return Object.keys(D.MOBS).filter(function(m){ var t=dropTable(m); return t.eq.indexOf(+id)>=0||t.rare.indexOf(+id)>=0 }) }
 
+// 自動清理：灰字＝浮動比原始差；「全部」不含身上穿的與稀有裝備
+function sellList(s,kind){ return s.inv.filter(function(it){ return kind==='all'?!A.itm[it.id].rare:it.q<0 }) }
+function sellBtn(s,kind,nm){ var l=sellList(s,kind), p=l.reduce(function(a,it){ return a+sellP(A.itm[it.id]) },0);
+  return '<button class="game-btn ghost'+(ui.ask===kind?' warn':'')+'" data-sell="'+kind+'"'+(l.length?'':' disabled')+'>'+(ui.ask===kind?'確定賣出 '+l.length+' 件？（+'+p+' 楓幣）':nm+'（'+l.length+'）')+'</button>' }
+// 原作裝備欄（5×6）：[部位 key 或 名稱, 欄, 列, 底色 r 戒指／b 藍]；key 在 D.EQ_SLOTS 裡的才能穿，其餘先鎖住
+var EQ_GRID=[['戒指',1,1,'r'],['戒指',1,2,'r'],['戒指',1,3,'r'],['戒指',1,4,'r'],['口袋',1,5],
+  ['墜飾',2,2,'b'],['墜飾',2,3,'b'],['weapon',2,4],['腰帶',2,5],
+  ['cap',3,1],['臉飾',3,2],['眼飾',3,3],['coat',3,4],['pants',3,5],['shoes',3,6],
+  ['耳飾',4,3],['肩飾',4,4],['glove',4,5],['機器人',4,6],
+  ['能源',5,1,'b'],['胸章',5,2,'b'],['勳章',5,3,'b'],['副手武器',5,4,'b'],['cape',5,5],['心臟',5,6]];
+var LOCK='<svg viewBox="0 0 16 16" class="msv-lock" aria-hidden="true"><path d="M4 7V5a4 4 0 0 1 8 0v2h1v8H3V7zm2 0h4V5a2 2 0 0 0-4 0z"/></svg>';
 function eqTab(s){
-  var S=calc(s), h='<p class="hint">楓幣 <b>'+s.meso+'</b>・背包 '+s.inv.length+' / '+D.INV_MAX+'・攻擊力 '+Math.round(S.atk)+'・最大HP '+S.maxHp+'・減傷 '+pct(S.def)+'</p><div class="msv-cells slots">';
-  D.EQ_SLOTS.forEach(function(e){ var it=s.eqp[e[0]], ov=e[0]==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov, on=ui.it&&ui.it.from==='eqp'&&ui.it.k===e[0];
-    h+='<button class="msv-cell'+(on?' on':'')+'" data-eqp="'+e[0]+'"'+(it?'':' disabled')+'>'+(it?itIco(it.id):'')+'<span>'+(ov?'套服':e[1])+'</span></button>' });
-  h+='</div><div class="msv-cells">';
+  var S=calc(s), h='<p class="hint">'+mesoIco()+' <b>'+s.meso+'</b>・攻擊力 '+Math.round(S.atk)+'・最大HP '+S.maxHp+'・減傷 '+pct(S.def)+'</p><div class="msv-eqwrap">'+
+    '<div class="msv-eqo"><div class="msv-eqhd">EQUIPMENT INVENTORY</div><div class="msv-eqtabs"><span class="on">裝備</span><span>現金</span><span>寵物</span></div><div class="msv-equip"><canvas class="msv-eqbg" data-spr="chr:'+s.job+'-'+s.adv+'"></canvas>';
+  EQ_GRID.forEach(function(e){ var k=e[0], pos='grid-area:'+e[2]+'/'+e[1], c=e[3]?' '+e[3]:'';
+    if(!slotNm(k)){ h+='<span class="msv-cell lock'+c+'" style="'+pos+'" title="尚未開放">'+e[0]+LOCK+'</span>'; return }
+    var it=s.eqp[k], ov=k==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov, on=ui.it&&ui.it.from==='eqp'&&ui.it.k===k;
+    h+='<button class="msv-cell'+c+(on?' on':'')+'" style="'+pos+'" data-eqp="'+k+'"'+(it?'':' disabled')+'>'+(it?itIco(it.id,'eqp:'+k):ov?'套服':slotNm(k))+'</button>' });
+  h+='</div></div><div class="msv-eqwin inv"><div class="msv-wt">背包 '+s.inv.length+' / '+D.INV_MAX+'</div><div class="msv-cells">';
   s.inv.forEach(function(it,i){ var on=ui.it&&ui.it.from==='inv'&&ui.it.k===i, bad=whyNot(s,it);
-    h+='<button class="msv-cell'+(on?' on':'')+(bad?' no':'')+'" data-inv="'+i+'">'+itIco(it.id)+(it.up?'<span>+'+it.up+'</span>':'')+'</button>' });
+    h+='<button class="msv-cell'+(on?' on':'')+(bad?' no':'')+'" data-inv="'+i+'">'+itIco(it.id,'inv:'+i)+(it.up?'<span>+'+it.up+'</span>':'')+'</button>' });
   if(!s.inv.length) h+='<span class="hint">背包是空的，打怪會掉裝備，也可以到商店買。</span>';
-  return h+'</div>'+itemDetail(s);
-}
-function itemDetail(s){
-  var it=selItem(s); if(!it) return '<p class="hint">點一件裝備看詳細資料。紅框＝目前還穿不了。</p>';
-  var m=A.itm[it.id], why=whyNot(s,it);
-  var h='<div class="msv-line"><div>'+itIco(it.id)+' <b>'+m.nm+(it.up?' (+'+it.up+')':'')+'</b>'+(m.rare?' <span class="hint">★ 稀有</span>':'')+
-    '<div class="hint">'+jobNm(m.job)+'・'+slotNm(m.s)+(m.ov?'（套服，佔上衣＋褲子）':'')+'・需求 '+rqTxt(m,it.req===0)+'</div>'+
-    '<div class="hint">目前數值：'+stTxt(it.st)+'</div><div class="hint">原始數值：'+stTxt(m.st)+'・剩餘強化 '+it.tuc+' / '+m.tuc+' 次</div></div></div><div class="msv-row">';
-  if(ui.it.from==='inv') h+='<button class="game-btn" data-act="wear"'+(why?' disabled':'')+'>'+(why||'裝備')+'</button><button class="game-btn ghost" data-act="sell">賣出（'+sellP(m)+' 楓幣）</button>';
-  else h+='<button class="game-btn ghost" data-act="unwear"'+(s.inv.length>=D.INV_MAX?' disabled':'')+'>'+(s.inv.length>=D.INV_MAX?'背包滿了':'卸下')+'</button>';
-  h+='</div>';
-  if(it.tuc>0){ var t=m.s==='weapon'?'w':'a', any=0; h+='<div class="msv-row">';
-    D.SCROLLS.forEach(function(sc){ if(sc.t!==t||!s.scr[sc.k]) return; any=1;
-      h+='<button class="game-btn ghost" data-scroll="'+sc.k+'">'+ico(A.ico.items.a.sc[sc.icon])+' '+sc.pct*100+'%'+(sc.dark?'詛咒':'')+' ×'+s.scr[sc.k]+'</button>' });
-    h+=(any?'':'<span class="hint">沒有'+(t==='w'?'武器':'防具')+'卷軸，可以到商店買。</span>')+'</div>' }
+  h+='</div><div class="msv-row">'+sellBtn(s,'grey','賣出灰字')+sellBtn(s,'all','全部賣出')+'</div>'+itemActs(s)+'</div></div>';
   return h;
 }
+// 選中裝備的操作（數值看滑鼠提示，這裡只放按鈕）；按兩下格子直接穿／脫
+function itemActs(s){
+  var it=selItem(s); if(!it) return '<p class="hint">滑鼠移上去看數值；點一下選取（賣出、強化），按兩下直接穿上／卸下。紅框＝還穿不了。</p>';
+  var m=A.itm[it.id], why=whyNot(s,it), h='<div class="msv-row">';
+  if(ui.it.from==='inv') h+='<button class="game-btn" data-act="wear"'+(why?' disabled':'')+'>'+(why||'裝備')+'</button><button class="game-btn ghost" data-act="sell">賣出（'+sellP(m)+' 楓幣）</button>';
+  else h+='<button class="game-btn ghost" data-act="unwear"'+(s.inv.length>=D.INV_MAX?' disabled':'')+'>'+(s.inv.length>=D.INV_MAX?'背包滿了':'卸下')+'</button>';
+  if(it.tuc>0){ var t=m.s==='weapon'?'w':'a', any=0;
+    D.SCROLLS.forEach(function(sc){ if(sc.t!==t||!s.scr[sc.k]) return; any=1;
+      h+='<button class="game-btn ghost" data-scroll="'+sc.k+'">'+ico(A.ico.items.a.sc[sc.icon])+' '+sc.pct*100+'%'+(sc.dark?'詛咒':'')+' ×'+s.scr[sc.k]+'</button>' });
+    if(!any) h+='<span class="hint">沒有'+(t==='w'?'武器':'防具')+'卷軸</span>' }
+  return h+'</div>';
+}
 function shopTab(s){
-  var full=s.inv.length>=D.INV_MAX, h='<p class="hint">楓幣 <b>'+s.meso+'</b>・背包 '+s.inv.length+' / '+D.INV_MAX+'</p><h4>卷軸</h4>';
-  D.SCROLLS.forEach(function(sc){
+  var full=s.inv.length>=D.INV_MAX, tab=ui.shop||'sc', h='<p class="hint">'+mesoIco()+' <b>'+s.meso+'</b>・背包 '+s.inv.length+' / '+D.INV_MAX+'</p><div class="msv-tabs">'+
+    [['sc','卷軸'],['w','武器'],['a','防具']].map(function(t){ return '<button data-shop="'+t[0]+'" aria-selected="'+(tab===t[0])+'">'+t[1]+'</button>' }).join('')+'</div>';
+  if(tab==='sc') D.SCROLLS.forEach(function(sc){
     h+='<div class="msv-line"><div>'+ico(A.ico.items.a.sc[sc.icon])+' <b>'+(sc.t==='w'?'武器':'防具')+'卷軸 '+sc.pct*100+'%</b>'+(sc.dark?' <span class="hint">詛咒：失敗時 50% 裝備爆掉</span>':'')+
       '<div class="hint">成功：'+fxTxt(sc)+'・持有 '+(s.scr[sc.k]||0)+'</div></div><button class="game-btn" data-buysc="'+sc.k+'"'+(s.meso<sc.price?' disabled':'')+'>'+sc.price+' 楓幣</button></div>' });
-  h+='<h4>裝備（'+D.JOBS[s.job].nm+'與共用，Lv.'+(s.lv+10)+' 以下；稀有裝備只會掉落）</h4>';
-  Object.keys(A.itm).filter(function(id){ var m=A.itm[id]; return !m.rare&&jobOk(s,m)&&m.req<=s.lv+10 })
+  if(tab==='sc') return h;
+  h+='<p class="hint">'+D.JOBS[s.job].nm+'與共用，Lv.'+(s.lv+10)+' 以下；稀有裝備只會掉落</p>';
+  Object.keys(A.itm).filter(function(id){ var m=A.itm[id]; return !m.rare&&jobOk(s,m)&&m.req<=s.lv+10&&(m.s==='weapon')===(tab==='w') })
     .sort(function(a,b){ return A.itm[a].req-A.itm[b].req }).forEach(function(id){ var m=A.itm[id], p=D.PRICE(m.price);
       h+='<div class="msv-line"><div>'+itIco(id)+' <b>'+m.nm+'</b> <span class="hint">'+slotNm(m.s)+'・需求 '+rqTxt(m)+'</span><div class="hint">'+stTxt(m.st)+'・可強化 '+m.tuc+' 次</div></div>'+
         '<button class="game-btn" data-buyeq="'+id+'"'+(s.meso<p||full?' disabled':'')+'>'+(full?'背包滿了':p+' 楓幣')+'</button></div>' });
   return h;
 }
-// 圖鑑：怪物（掉落表）／裝備（需求、原始數值、取得方式）
+// 圖鑑：怪物與掉落表（裝備數值看滑鼠提示）
 function codexTab(s){
-  var h='<div class="msv-tabs"><button data-cx="mob" aria-selected="'+(ui.cx!=='eq')+'">怪物</button><button data-cx="eq" aria-selected="'+(ui.cx==='eq')+'">裝備</button>'+
-    (ui.cx==='eq'?'<button data-cxall="1" aria-selected="'+!!ui.cxAll+'">'+(ui.cxAll?'顯示全部職業':'只看'+D.JOBS[s.job].nm+'＋共用')+'</button>':'')+'</div>';
-  if(ui.cx!=='eq'){
-    Object.keys(D.MOBS).forEach(function(id){ var M=D.MOBS[id], t=dropTable(id), own=t.eq.filter(function(i){ return jobOk(s,A.itm[i]) });
-      var where=Object.keys(D.STAGES).filter(function(k){ return stageMobs(D.STAGES[k]).indexOf(+id)>=0 }).map(function(k){ return D.STAGES[k].nm });
-      h+='<div class="msv-line mob" id="msv-cx-'+id+'"><canvas data-spr="mob:'+id+'"></canvas><div><b>'+M.nm+'</b> <span class="hint">Lv.'+M.lv+'・HP '+M.hp+'・經驗 '+M.exp+(M.boss?'・BOSS':'')+'・出現：'+(where.join('、')||'尚未開放')+'</span>'+
-        '<div class="hint">掉落 '+t.eq.length+' 種裝備（'+D.JOBS[s.job].nm+'能用 '+own.length+' 種）'+(t.rare.length?'，稀有 '+t.rare.length+' 種':'')+'・'+mesoIco()+' 楓幣 '+scIco(D.SCROLLS[0])+' 卷軸</div>'+
-        '<div class="msv-drops">'+t.rare.map(function(i){ return '<span class="rare">'+itIco(i)+'</span>' }).join('')+own.map(itIco).join('')+'</div></div></div>' });
-    return h;
-  }
-  Object.keys(A.itm).filter(function(id){ return ui.cxAll||jobOk(s,A.itm[id]) }).sort(function(a,b){ return A.itm[a].req-A.itm[b].req||(A.itm[a].s<A.itm[b].s?-1:1) }).forEach(function(id){
-    var m=A.itm[id], src=mobsDropping(id);
-    h+='<div class="msv-line"><div>'+itIco(id)+' <b>'+m.nm+'</b>'+(m.rare?' <span class="hint">★ 稀有</span>':'')+' <span class="hint">'+jobNm(m.job)+'・'+slotNm(m.s)+(m.ov?'（套服）':'')+'</span>'+
-      '<div class="hint">需求 '+rqTxt(m)+'・原始數值 '+stTxt(m.st)+'・可強化 '+m.tuc+' 次</div>'+
-      '<div class="hint">'+(m.rare?'商店買不到，只會掉落':'商店 '+mesoIco()+' '+D.PRICE(m.price))+(src.length?'':'・目前沒有怪物掉落')+'</div>'+
-      (src.length?'<div class="hint">掉落（點怪物看詳細）：</div><div class="msv-mobs">'+src.map(mobBtn).join('')+'</div>':'')+'</div></div>' });
+  var h='';
+  Object.keys(D.MOBS).forEach(function(id){ var M=D.MOBS[id], t=dropTable(id), own=t.eq.filter(function(i){ return jobOk(s,A.itm[i]) });
+    var where=Object.keys(D.STAGES).filter(function(k){ return stageMobs(D.STAGES[k]).indexOf(+id)>=0 }).map(function(k){ return D.STAGES[k].nm });
+    h+='<div class="msv-line mob" id="msv-cx-'+id+'"><canvas data-spr="mob:'+id+'"></canvas><div><b>'+M.nm+'</b> <span class="hint">Lv.'+M.lv+'・HP '+M.hp+'・經驗 '+M.exp+(M.boss?'・BOSS':'')+'・出現：'+(where.join('、')||'尚未開放')+'</span>'+
+      '<div class="hint">掉落 '+t.eq.length+' 種裝備（'+D.JOBS[s.job].nm+'能用 '+own.length+' 種）'+(t.rare.length?'，稀有 '+t.rare.length+' 種':'')+'・'+mesoIco()+' 楓幣 '+scIco(D.SCROLLS[0])+' 卷軸</div>'+
+      '<div class="msv-drops">'+t.rare.map(function(i){ return '<span class="rare">'+itIco(i)+'</span>' }).join('')+own.map(function(i){ return itIco(i) }).join('')+'</div></div></div>' });
   return h;
 }
 
@@ -618,7 +620,7 @@ function goTab(s){
     return '<div class="msv-line'+(ok?'':' off')+'"><div><b>'+esc(g2.nm)+'</b> <span class="hint">建議 Lv.'+g2.rec+'</span><div class="hint">'+goal+'・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div>'+
       '<div class="msv-mobs">'+stageMobs(g2).map(function(m){ return '<button data-cxmob="'+m+'"><canvas data-spr="mob:'+m+'"></canvas><span>'+D.MOBS[m].nm+'<br>Lv.'+D.MOBS[m].lv+'</span></button>' }).join('')+'</div></div>'+
       '<button class="game-btn" data-stage="'+id+'"'+(ok?'':' disabled')+'>'+(ok?'出發':'先通關上一關')+'</button></div>' }).join('')+
-    '<p class="hint">帶進關卡的技能：'+(loadout(s).map(function(id){return D.SK[id].nm}).join('、')||'只有基本攻擊')+'</p>';
+    '<p class="hint">帶進關卡的技能：'+(loadout(s).map(function(id){return skIco(id)+' '+D.SK[id].nm}).join('、')||'只有基本攻擊')+'</p>';
 }
 function statTab(s){
   var S=calc(s), J=D.JOBS[s.job], h='<p class="hint">剩餘 AP：<b>'+s.ap+'</b>　主屬性 '+J.main.toUpperCase()+'、副屬性 '+J.sub.toUpperCase()+'</p>';
@@ -632,14 +634,31 @@ function skillTab(s){
   var J=D.JOBS[s.job], slots=D.SLOTS[s.adv], used=loadout(s).length;
   var h='<p class="hint">剩餘 SP：<b>'+s.sp+'</b>　技能欄 '+used+' / '+slots+'（勾選的主動技能會在關卡中自動施放）</p>';
   if(!s.adv) return h+'<p class="hint">'+J.adv[0]+'還沒有技能。Lv.'+D.ADV_LV[1]+' 時回去找'+J.npcNm+'轉職。</p>';
-  Object.keys(D.SK).filter(function(id){ return D.SK[id].job===s.job })
-    .sort(function(a,b){ var x=D.SK[a], y=D.SK[b]; return x.adv-y.adv || (y.act?1:0)-(x.act?1:0) })   // 依轉職階段，主動在前
-    .forEach(function(id){ var d=D.SK[id];
-    var lv=s.sk[id]||0, lock=d.adv>s.adv, on=s.load.indexOf(+id)>=0;
-    h+='<div class="msv-line'+(lock?' off':'')+'"><div><b>'+d.nm+'</b> <span class="hint">'+(d.act?'主動':'被動')+'・Lv.'+lv+' / '+d.max+'</span><div class="hint">'+d.desc+(lock?'（'+d.adv+' 轉後解鎖）':'')+'</div></div><span class="msv-row">'+
-      (d.act&&lv&&!lock?'<button class="game-btn ghost" data-load="'+id+'" aria-pressed="'+on+'">'+(on?'✓ 已帶':'帶進關卡')+'</button>':'')+
-      '<button class="game-btn" data-skill="'+id+'"'+(lock||!s.sp||lv>=d.max?' disabled':'')+'>+1</button></span></div>' });
+  // 原作技能視窗：一轉、二轉…分頁，還沒到的轉職看不到
+  var pg=Math.min(ui.skAdv||s.adv,s.adv), tabs='';
+  for(var a=1;a<=s.adv;a++) tabs+='<button data-skadv="'+a+'" aria-selected="'+(pg===a)+'">'+['','一轉','二轉','三轉','四轉'][a]+'・'+J.adv[a]+'</button>';
+  h+='<div class="msv-tabs">'+tabs+'</div>';
+  Object.keys(D.SK).filter(function(id){ return D.SK[id].job===s.job&&D.SK[id].adv===pg })
+    .sort(function(a,b){ return (D.SK[b].act?1:0)-(D.SK[a].act?1:0) })   // 主動在前
+    .forEach(function(id){ var d=D.SK[id], lv=s.sk[id]||0, on=s.load.indexOf(+id)>=0;
+    h+='<div class="msv-line sk">'+skIco(id,!lv)+'<div><b>'+d.nm+'</b> <span class="hint">'+(d.act?'主動':'被動')+'・Lv.'+lv+' / '+d.max+'</span><div class="hint">'+d.desc+'</div>'+
+      '<div class="hint">'+(lv?'目前：'+skFx(d,lv):'尚未學習')+'</div>'+(lv<d.max?'<div class="hint nx">下一級：'+skFx(d,lv+1)+'</div>':'')+'</div><span class="msv-row">'+
+      (d.act&&lv?'<button class="game-btn ghost" data-load="'+id+'" aria-pressed="'+on+'">'+(on?'✓ 已帶':'帶進關卡')+'</button>':'')+
+      '<button class="game-btn" data-skill="'+id+'"'+(!s.sp||lv>=d.max?' disabled':'')+'>+1</button></span></div>' });
   return h;
+}
+// 技能在某等級的實際數值（跟 cast()／calc() 用同一套 lerp），例：「攻擊力 133% 傷害 2 次，冷卻 1.8 秒」
+var MODTXT={hp:['最大HP +','%'], def:['受到的傷害 −','%'], eva:['迴避 +',''], crit:['爆擊率 +','%'], dmg:['傷害 +','%'], cdr:['冷卻時間 −','%'], spd:['移動速度 +','%'], range:['射程 +','%'], final:['','% 機率追擊一次（60% 傷害）']};
+function skFx(d,lv){
+  var V=function(k){ return lerp(d[k],lv,d.max) }, n1=function(v){ return +v.toFixed(1) }, o=[], dm='攻擊力 '+Math.round(V('dmg')*100)+'% 傷害';
+  if(d.k==='slash') o.push((d.arc>6?'身邊一圈':'前方')+'的怪物受到'+dm);
+  if(d.k==='shot'){ var n=Math.round(V('n')||1), pr=Math.round(V('pierce')||1); o.push(dm+(n>1?' × '+n+' 發':'')+(pr>1?'，每發穿透 '+pr+' 隻':'')+(d.splash?'，命中後爆炸':'')) }
+  if(d.k==='strike') o.push('最近的 '+Math.round(V('n'))+' 隻，各受到'+dm+' '+d.hits+' 次');
+  if(d.k==='mist') o.push('半徑 '+Math.round(V('r'))+' 的毒霧，每 0.5 秒'+dm+'，持續 '+d.dur+' 秒');
+  if(d.k==='buff') o.push('持續 '+n1(V('dur'))+' 秒');
+  for(var k in d.mods){ var v=lerp(d.mods[k],lv,d.max); o.push(k==='inv'?'不會受傷':MODTXT[k][0]+(MODTXT[k][1]?n1(v*100):Math.round(v))+MODTXT[k][1]) }
+  if(d.cd) o.push('冷卻 '+n1(V('cd'))+' 秒');
+  return o.join('，');
 }
 function advTab(s){
   var J=D.JOBS[s.job];
@@ -656,7 +675,7 @@ function resultScreen(win,gain,up){
   if(s){ var L=P.loot, sc=Object.keys(L.scr);
     h+='<p>楓幣 +'+L.meso+'</p>';
     if(P.first) h+='<p><b>首次通關獎勵！</b>楓幣 +'+P.first.meso+'、稱號「'+esc(P.first.title)+'」'+(P.first.item?'、'+itIco(P.first.item.id)+' '+A.itm[P.first.item.id].nm:'')+'</p>';
-    if(L.items.length||sc.length) h+='<p class="hint">'+(win?'獲得':'<b>死亡沒收</b>')+'：</p><div class="msv-drops'+(win?'':' lost')+'">'+L.items.map(function(it){ return itIco(it.id) }).join('')+
+    if(L.items.length||sc.length) h+='<p class="hint">'+(win?'獲得':'<b>死亡沒收</b>')+'：</p><div class="msv-drops'+(win?'':' lost')+'">'+L.items.map(function(it,i){ return itIco(it.id,'loot:'+i) }).join('')+
       sc.map(function(k){ var d2=D.SCROLLS.filter(function(x){ return x.k===k })[0]; return ico(A.ico.items.a.sc[d2.icon],d2.pct*100+'% 卷軸')+'×'+L.scr[k] }).join('')+'</div>' }
   show(h+'<div class="msv-row"><button class="game-btn" data-act="again">再挑戰一次</button><button class="game-btn ghost" data-act="hub">回到角色畫面</button></div>');
 }
@@ -673,17 +692,26 @@ function importScreen(){
   $('msv-ta').value=keep;
 }
 
+panel.addEventListener('dblclick',function(e){
+  var b=e.target.closest('[data-inv],[data-eqp]'), s=SV.slots[ui.sel]; if(!b||!s) return;
+  if(b.dataset.inv!=null){ var i=+b.dataset.inv; if(!s.inv[i]||whyNot(s,s.inv[i])) return; var wm=A.itm[s.inv[i].id]; equip(s,i); ui.it={from:'eqp',k:wm.s} }
+  else { var sl=b.dataset.eqp; if(!s.eqp[sl]||s.inv.length>=D.INV_MAX) return; s.inv.push(s.eqp[sl]); delete s.eqp[sl]; ui.it=null }
+  persist(); sfx('BtMouseClick'); hubScreen();
+});
 panel.addEventListener('click',function(e){
-  var b=e.target.closest('button'); if(!b||b.disabled) return; var d=b.dataset, s=SV.slots[ui.sel]; sfx(d.tab||d.cx?'Tab':'BtMouseClick');
+  var b=e.target.closest('button'); if(!b||b.disabled) return; var d=b.dataset, s=SV.slots[ui.sel], ask=ui.ask; ui.ask=null; sfx(d.tab||d.shop||d.skadv?'Tab':'BtMouseClick');
   if(d.slot!=null){ ui.sel=+d.slot; ui.del=false; slotsScreen() }
   else if(d.new!=null){ ui.job=null; createScreen(+d.new) }
   else if(d.job){ ui.job=d.job; createScreen(+panel.querySelector('[data-act=create]').dataset.i) }
   else if(d.tab){ ui.tab=d.tab; ui.it=null; ui.top0=true; hubScreen() }
-  else if(d.cxmob){ ui.tab='codex'; ui.cx='mob'; ui.top0=true; hubScreen(); var to=$('msv-cx-'+d.cxmob); if(to) scroller().scrollTop=to.offsetTop-8 }
-  else if(d.cx){ ui.cx=d.cx; ui.top0=true; hubScreen() }
-  else if(d.cxall){ ui.cxAll=!ui.cxAll; hubScreen() }
-  else if(d.eqp){ ui.it={from:'eqp',k:d.eqp}; hubScreen() }
-  else if(d.inv!=null){ ui.it={from:'inv',k:+d.inv}; hubScreen() }
+  else if(d.cxmob){ ui.tab='codex'; ui.top0=true; hubScreen(); var to=$('msv-cx-'+d.cxmob); if(to) scroller().scrollTop=to.offsetTop-8 }
+  else if(d.shop){ ui.shop=d.shop; ui.top0=true; hubScreen() }
+  else if(d.skadv){ ui.skAdv=+d.skadv; ui.top0=true; hubScreen() }
+  else if(d.sell){ if(ask!==d.sell){ ui.ask=d.sell; return hubScreen() }   // 按兩下才賣，避免誤觸
+    var l=sellList(s,d.sell), got=0; l.forEach(function(it){ got+=sellP(A.itm[it.id]); s.inv.splice(s.inv.indexOf(it),1) });
+    s.meso+=got; ui.it=null; persist(); sfx('BuyShopItem'); msg('賣掉 '+l.length+' 件，獲得 '+got+' 楓幣'); hubScreen() }
+  else if(d.eqp||d.inv!=null){ var from=d.eqp?'eqp':'inv', k=d.eqp||+d.inv;   // 點已選的那格不重畫，不然按兩下的第二下會落在被換掉的節點上
+    if(!ui.it||ui.it.from!==from||ui.it.k!==k){ ui.it={from:from,k:k}; hubScreen() } }
   else if(d.act==='wear'){ if(!whyNot(s,s.inv[ui.it.k])){ var wm=A.itm[s.inv[ui.it.k].id]; equip(s,ui.it.k); ui.it={from:'eqp',k:wm.s}; persist() } hubScreen() }
   else if(d.act==='unwear'){ var sl=ui.it.k; if(s.eqp[sl]&&s.inv.length<D.INV_MAX){ s.inv.push(s.eqp[sl]); delete s.eqp[sl]; ui.it={from:'inv',k:s.inv.length-1}; persist() } hubScreen() }
   else if(d.act==='sell'){ var si=s.inv[ui.it.k]; s.meso+=sellP(A.itm[si.id]); s.inv.splice(ui.it.k,1); ui.it=null; persist(); msg('賣掉了'); hubScreen() }
@@ -722,11 +750,52 @@ panel.addEventListener('click',function(e){
 // 畫布實際像素＝CSS 尺寸 × dpr，邏輯座標固定 960×600
 function resize(){ var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1; cv.width=Math.round(r.width*d); cv.height=Math.round(r.width*d*H/W); scale=cv.width/W; g.imageSmoothingEnabled=false; if(state!=='run'&&P) draw() }
 addEventListener('resize',resize); resize();
-var auEl=document.createElement('div'); auEl.className='msv-tabs msv-audio'; cv.parentNode.insertAdjacentElement('afterend',auEl);
-function drawAu(){ auEl.innerHTML='<button data-au="bgm" aria-pressed="'+AU.bgm+'">♪ 音樂</button><button data-au="sfx" aria-pressed="'+AU.sfx+'">音效</button>'+
-  '<label>音量 <input type="range" min="0" max="1" step="0.05" value="'+AU.vol+'" aria-label="音量"></label>' }
+var stageEl=cv.parentNode;
+// 聲音設定收在遊戲框右下角的 ♪ 鈕裡（選單、關卡中都在）
+var auEl=document.createElement('div'), auOpen=false; auEl.className='msv-au'; stageEl.appendChild(auEl);
+function drawAu(){ auEl.innerHTML=(auOpen?'<div class="msv-tabs msv-au-pop"><button data-au="bgm" aria-pressed="'+AU.bgm+'">音樂</button><button data-au="sfx" aria-pressed="'+AU.sfx+'">音效</button>'+
+  '<label>音量 <input type="range" min="0" max="1" step="0.05" value="'+AU.vol+'" aria-label="音量"></label></div>':'')+
+  '<button class="msv-au-btn'+(AU.bgm||AU.sfx?'':' mute')+'" data-au="open" aria-expanded="'+auOpen+'" title="音樂與音效">♪</button>' }
 function saveAu(){ try{ localStorage.setItem('msvAudio',JSON.stringify(AU)) }catch(e){} }
-auEl.addEventListener('click',function(e){ var b=e.target.closest('[data-au]'); if(!b) return; AU[b.dataset.au]=!AU[b.dataset.au]; saveAu(); drawAu(); bgm(state==='run'||state==='pick'?stage.id:'menu'); sfx('BtMouseClick') });
+auEl.addEventListener('click',function(e){ var b=e.target.closest('[data-au]'); if(!b) return; var k=b.dataset.au;
+  if(k==='open') auOpen=!auOpen; else { AU[k]=!AU[k]; saveAu(); bgm(state==='run'||state==='pick'?stage.id:'menu') } drawAu(); sfx('BtMouseClick') });
+
+// Alt＋Enter 全螢幕（原作的快捷鍵）；整張卡片進全螢幕，CSS 讓 16:10 框置中放大
+addEventListener('keydown',function(e){ if(e.key!=='Enter'||!e.altKey) return; e.preventDefault(); var c=stageEl.parentNode;
+  if(document.fullscreenElement) document.exitFullscreen(); else if(c.requestFullscreen) c.requestFullscreen().catch(function(){ msg('瀏覽器不允許全螢幕') }) });
+document.addEventListener('fullscreenchange',function(){ requestAnimationFrame(resize) });
+
+// ---- 滑鼠提示：原作式裝備說明框（data-tip="inv:3"／"eqp:weapon"／"loot:0"／"id:1302000"）----
+var tip=document.createElement('div'), tipKey=null; tip.className='msv-tip'; tip.hidden=true; stageEl.appendChild(tip);
+function hideTip(){ tip.hidden=true; tipKey=null }
+var TIP_ST=['str','dex','int','luk','mhp','pad','mad','pdd','eva','spd'];
+function itemTip(s,it,cmp){
+  var m=A.itm[it.id], q=s?calc(s).q:null, free=it.req===0, h='<div class="tp-nm '+qCls(it)+'">'+m.nm+(it.up?' (+'+it.up+')':'')+'</div>'+(m.rare?'<div class="tp-rare">商店買不到的稀有裝備</div>':'');
+  var rq=[['等級',free?0:reqOf(it),s&&s.lv]].concat(D.STATS.map(function(k){ return [D.STAT_NM[k].split(' ')[1],free?0:m.rq[k]||0,q&&q[k]] }));
+  h+='<div class="tp-top"><span class="tp-ico">'+ico(A.ico.items.a.eq[m.i])+'</span><div>'+rq.map(function(r){ return '<div class="'+(s&&r[1]>r[2]?'tp-no':'')+'">需要'+r[0]+'：'+r[1]+'</div>' }).join('')+'</div></div>';
+  h+='<div class="tp-jobs">'+Object.keys(D.JOBS).map(function(j){ var ok=m.job==='all'||m.job===j; return '<span class="'+(ok?(s&&s.job===j?'me':''):'off')+'">'+D.JOBS[j].nm+'</span>' }).join('')+'</div>';
+  h+='<div class="tp-st"><div>類型：'+slotNm(m.s)+(m.ov?'（套服）':'')+'</div>'+TIP_ST.filter(function(k){ return it.st[k] }).map(function(k){ var dv=cmp?it.st[k]-(cmp.st[k]||0):0;
+    return '<div>'+D.ST_NM[k]+'：+'+it.st[k]+(dv?' <span class="'+(dv>0?'tp-up':'tp-dn')+'">('+(dv>0?'▲':'▼')+Math.abs(dv)+')</span>':'')+'</div>' }).join('')+
+    '<div>可使用卷軸次數：'+it.tuc+'</div></div>';
+  return h;
+}
+function tipHtml(key){
+  var s=SV.slots[ui.sel], p=key.split(':'), it=p[0]==='id'?mkItem(p[1],false):!s?null:p[0]==='inv'?s.inv[p[1]]:p[0]==='eqp'?s.eqp[p[1]]:p[0]==='loot'&&P?P.loot.items[p[1]]:null;
+  if(!it||!A.itm[it.id]) return '';
+  // 不是身上那件時，右邊多一框「目前裝備」方便比較（穿套服時，褲子跟套服比）
+  var m=A.itm[it.id], cur=s&&p[0]!=='eqp'&&jobOk(s,m)?s.eqp[m.s]||(m.s==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov?s.eqp.coat:null):null;
+  return '<div class="tp-box">'+itemTip(s,it,cur)+'</div>'+(cur?'<div class="tp-box"><div class="tp-cap">目前裝備</div>'+itemTip(s,cur)+'</div>':'');
+}
+stageEl.addEventListener('mousemove',function(e){
+  var el=e.target.closest&&e.target.closest('[data-tip]'); if(!el){ if(tipKey) hideTip(); return }
+  if(el.dataset.tip!==tipKey){ tipKey=el.dataset.tip; tip.innerHTML=tipHtml(tipKey); tip.hidden=!tip.innerHTML }
+  // 預設在滑鼠右下；超出遊戲框就翻到左邊／往上貼齊
+  var r=stageEl.getBoundingClientRect(), x=e.clientX-r.left+16, y=e.clientY-r.top+16;
+  if(x+tip.offsetWidth>r.width) x=Math.max(0,e.clientX-r.left-16-tip.offsetWidth);
+  if(y+tip.offsetHeight>r.height) y=Math.max(0,r.height-tip.offsetHeight);
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+});
+stageEl.addEventListener('mouseleave',hideTip);
 auEl.addEventListener('input',function(e){ AU.vol=+e.target.value; bgmEl.volume=AU.vol*.6; saveAu() });
 auEl.addEventListener('change',function(){ sfx('BtMouseClick') });
 drawAu();

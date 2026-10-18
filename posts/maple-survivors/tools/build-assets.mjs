@@ -162,11 +162,14 @@ await pool(Object.entries(CHARS).flatMap(([job, c]) => c.t.map((items, tier) => 
   await emit('chr', `${job}-${tier}`, acts);
 });
 // 技能：各職業 skillbook 一次抓，挑有特效的
-const skillNm = {};
+// 技能圖示（v83 skillbook 內含 32×32 icon／iconDisabled）：data.js 用到的技能都抓，一個技能一列 [可用, 未學]
+const skillNm = {}, SK_IDS = [...readFileSync(join(import.meta.dirname, '../data.js'), 'utf8').matchAll(/(\d{7}):\{job:/g)].map(m => +m[1]), skIco = {};
+const icoPng = b64 => b64 && { image: b64, origin: { x: 16, y: 32 } };
 for (const job of SKILL_JOBS) {
   const b = await get(`job/${job}/skillbook`); if (!b) { miss.push(`skillbook ${job}`); continue; }
   for (const s of JSON.parse(b).skills || []) {
     skillNm[s.id] = s.description?.name;
+    if (SK_IDS.includes(s.id) && s.icon) skIco[s.id] = { png: [icoPng(s.icon), icoPng(s.iconDisabled || s.icon)] };
     if (!SKILLS.includes(s.id)) continue;
     const acts = {};
     for (const k of ['effect', 'ball', 'hit', 'affected', 'prepare', 'keydown']) { const f = Array.isArray(s[k]) ? s[k][0]?.frames : s[k]?.frames; if (f?.length) acts[k] = { png: f }; }
@@ -174,6 +177,8 @@ for (const job of SKILL_JOBS) {
   }
 }
 for (const id of SKILLS) if (!(id in skillNm)) miss.push(`skl ${id}（skillbook 裡找不到）`);
+for (const id of SK_IDS) if (!skIco[id]) miss.push(`技能圖示 ${id}`);
+await emit('ico', 'skills', skIco, 1);
 // 關卡地板：bsc 全部變體一列、地圖物件（取第 0 幀）一列
 const objCache = {};
 for (const [k, f] of Object.entries(FLOORS)) {
@@ -211,10 +216,15 @@ for (const [k, f] of Object.entries(FLOORS)) {
       ...(rare.includes(it) ? { rare: 1 } : {}), ...(slotNm === 'coat' && dir === 'Longcoat' ? { ov: 1 } : {}) } });
   });
   eq.sort((a, b) => a.id - b.id);
-  const cons = await msuJson('Item/Consume/0204.json'), spec = await msuJson('Item/Special/0900.json');
+  const cons = await msuJson('Item/Consume/0204.json');
   const sc = [...SCROLLS.w, ...SCROLLS.a].map(id => cons?.[String(id).padStart(8, '0')]?.info?.icon).filter(Boolean);
-  const acts = { eq: { png: await msuFrames(eq.map(e => e.f)) }, sc: { png: await msuFrames(sc) } };
-  for (let i = 0; i < 4; i++) acts['meso' + i] = { png: await msuFrames(frames(spec?.['0900000' + i]?.iconRaw)) };
+  // 圖示走 GMS v83 原版（msu 是新版，部分圖示重繪過；楓幣更是整個換成金塊／N 幣），抓不到才退回 msu
+  const v83 = async id => { const b = await get(`item/${id}/icon`, { regs: ['GMS/83'] }); if (!b) return null;
+    const { w, h } = await page.evaluate(async s => { const bm = await createImageBitmap(new Blob([Uint8Array.from(atob(s), c => c.charCodeAt(0))])); return { w: bm.width, h: bm.height }; }, b.toString('base64'));
+    return { image: b.toString('base64'), origin: { x: w >> 1, y: h } }; };
+  const eqIco = await Promise.all(eq.map(async e => (await v83(e.id)) || (await msuFrames([e.f]))[0]));
+  const acts = { eq: { png: eqIco }, sc: { png: await msuFrames(sc) } };
+  for (let i = 0; i < 4; i++) { const f = await v83(9000000 + i); if (f) acts['meso' + i] = { png: [f] }; else miss.push(`楓幣圖示 ${i}`); }
   await emit('ico', 'items', acts, 1);
   eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; });
   report.push(`itm  ${eq.length} 件裝備（稀有 ${eq.filter(e => e.m.rare).length}）、卷軸圖示 ${sc.length}`);
