@@ -3,4 +3,4 @@
 tools/node_modules
 _proto-*
 .impeccable/
-tools/.maple-cache
+posts/maple-survivors/tools/.cache

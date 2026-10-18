@@ -1,16 +1,18 @@
-/* 楓之谷倖存者素材產生器：抓圖 → headless Chromium 解碼拼圖 → 每個實體一張 WebP + assets/maple/atlas.js。
+/* 楓之谷倖存者素材產生器：抓圖 → headless Chromium 解碼拼圖 → 每個實體一張 WebP + posts/maple-survivors/assets/atlas.js。
    本機跑一次就好，產物進 repo，線上遊戲不打第三方。
-   cd tools && node maple-assets.mjs        （原始下載快取在 tools/.maple-cache，重跑不重抓）
+   node posts/maple-survivors/tools/build-assets.mjs   （原始下載快取在同層 .cache，重跑不重抓）
    來源分兩家：
    - resource-static.msu.io：WZ 解包，逐幀 PNG＋原點。怪物、地板圖塊、地圖物件走這裡。
    - maplestory.io（GMS v83）：msu 是新版資料，舊版技能（強力攻擊等）已不在 → 技能走這裡；角色要整套裝備合成好的圖，也走這裡。
    ponytail: 角色是合成好的 GIF、沒有原點，錨點用「腳底那幾列像素的平均 x」推估；第二期做分層紙娃娃時改吃 msu 的 Character 部件原點。*/
-import { chromium } from 'playwright';
+import { createRequire } from 'node:module';
+const { chromium } = createRequire(new URL('../../../tools/package.json', import.meta.url))('playwright');   // ponytail: playwright 裝在 tools/node_modules
 import { mkdirSync, existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 
-const ROOT = resolve(import.meta.dirname, '..'), OUT = join(ROOT, 'assets/maple'), CACHE = join(import.meta.dirname, '.maple-cache');
+const OUT = resolve(import.meta.dirname, '../assets'), CACHE = join(import.meta.dirname, '.cache');
 const MSU = 'https://resource-static.msu.io/data', API = 'https://maplestory.io/api', REGS = ['GMS/83', 'GMS/255', 'TWMS/256', 'KMS/389'];
 
 // ---- 素材清單（第一期） ----
@@ -46,6 +48,12 @@ const FLOORS = {
   s4:   { tile: 'darkWood',   obj: ['acc1/darkWood/nature'] },
   s5:   { tile: 'dryRock',    obj: ['acc1/dryRock/nature'] },
 };
+
+// 音樂與音效（msu 的 Sound/*）。BGM 照原作地區挑；轉成單聲道低位元率 mp3（要裝 ffmpeg），5 首約 3 MB
+const BGM = { menu: 'BgmUI/Title', s1: 'Bgm00/GoPicnic', s2: 'Bgm00/GoPicnic', s3: 'Bgm00/GoPicnic', s4: 'Bgm00/SleepyWood', s5: 'Bgm00/Nightmare', boss: 'Bgm01/BadGuys' };
+const SFX = { 'atk-warrior': 'Weapon/swordS/Attack', 'atk-bowman': 'Weapon/bow/Attack', 'atk-magician': 'Skill/2001004/Use', 'atk-thief': 'Weapon/tGlove/Attack',
+  ...Object.fromEntries(['Portal', 'PickUpItem', 'DropItem', 'LevelUp', 'JobChanged', 'QuestClear', 'Tombstone', 'EnchantSuccess', 'EnchantFailure', 'gaugeFull'].map(k => [k, `Game/${k}`])),
+  ...Object.fromEntries(['BtMouseClick', 'Tab', 'BuyShopItem', 'EnchantDestroyed'].map(k => [k, `UI/${k}`])) };   // 技能 skl-<id>、怪物 mobd-/mobx-<id> 由清單自動補
 
 // ---- 下載（多版本依序退回、重試、快取） ----
 mkdirSync(CACHE, { recursive: true }); rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true });
@@ -211,10 +219,53 @@ for (const [k, f] of Object.entries(FLOORS)) {
   eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; });
   report.push(`itm  ${eq.length} 件裝備（稀有 ${eq.filter(e => e.m.rare).length}）、卷軸圖示 ${sc.length}`);
 }
+// 音樂與音效：同一個原始檔只轉一次（很多怪物共用受傷音）
+{
+  const mobSnd = await msuJson('Sound/Mob.json'), sklSnd = await msuJson('Sound/Skill.json'), snd = { bgm: {}, fx: {} }, done = {};
+  const fx = { ...SFX };
+  for (const id of MOBS) { const m = mobSnd?.[String(id).padStart(7, '0')]; if (m?.Damage) fx['mobd-' + id] = m.Damage.replace(/^Sound\/|\.mp3$/g, ''); if (m?.Die) fx['mobx-' + id] = m.Die.replace(/^Sound\/|\.mp3$/g, ''); }
+  for (const id of SKILLS) if (sklSnd?.[id]?.Use) fx['skl-' + id] = `Skill/${id}/Use`;
+  const conv = async (path, bgm) => {
+    const file = (bgm ? 'bgm-' : 'sfx-') + path.replace(/\//g, '-') + '.mp3';
+    if (done[file] !== undefined) return done[file];
+    const raw = await msu(`Sound/${path}.mp3`); if (!raw) { miss.push(`snd ${path}`); return done[file] = null; }
+    const tmp = join(CACHE, 'tmp.mp3'); writeFileSync(tmp, raw);
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', tmp, '-ac', '1', '-ar', bgm ? '22050' : '32000', '-b:a', bgm ? '32k' : '48k', join(OUT, file)]);
+    bytes += readFileSync(join(OUT, file)).length; return done[file] = file;
+  };
+  for (const [k, p] of Object.entries(BGM)) { const f = await conv(p, true); if (f) snd.bgm[k] = f; }
+  for (const [k, p] of Object.entries(fx)) { const f = await conv(p, false); if (f) snd.fx[k] = f; }
+  atlas.snd = snd; report.push(`snd  BGM ${new Set(Object.values(snd.bgm)).size} 首、音效 ${new Set(Object.values(snd.fx)).size} 個`);
+}
+// 選單背景：弓箭手村。遠景照 msu 地圖的 back 清單鋪（type 1＝水平重複），前景疊 maplestory.io v83 的地圖渲染（大樹那段）。
+// ponytail: 不算視差，直接把鏡頭擺在原點；換地圖要自己重調 TITLE 的裁切框
+const TITLE = { map: 100000000, crop: [1100, 100, 1600, 1000], W: 1280, H: 800, dy: 40, out: [960, 600] };
+{
+  const mp = await msuJson(`Map/Map/Map${String(TITLE.map)[0]}/${TITLE.map}.json`), backs = Object.keys(mp?.back || {}).sort((a, b) => a - b).map(k => mp.back[k]), bj = {};
+  for (const b of backs) bj[b.bS] ??= await msuJson(`Map/Back/${b.bS}.json`);
+  const layers = (await Promise.all(backs.map(async b => { const n = bj[b.bS]?.back?.[b.no], png = n?._path && await msu(n._path);
+    return png && { image: png.toString('base64'), ox: n.origin.x, oy: n.origin.y, x: b.x, y: b.y, tile: b.type === 1, cx: b.cx }; }))).filter(Boolean);
+  const fg = await get(`map/${TITLE.map}/render`, { regs: ['GMS/83'] });
+  if (!layers.length || !fg) miss.push('title 背景'); else {
+    const b64 = await page.evaluate(async ({ layers, fg, T }) => {
+      const bm = s => createImageBitmap(new Blob([Uint8Array.from(atob(s), c => c.charCodeAt(0))], { type: 'image/png' }));
+      const c = new OffscreenCanvas(T.W, T.H), g = c.getContext('2d');
+      for (const l of layers) { const im = await bm(l.image), x = l.x - l.ox + T.W / 2, y = l.y - l.oy + T.H / 2 + T.dy;
+        if (!l.tile) { g.drawImage(im, x, y); continue; }
+        const step = l.cx || im.width; for (let sx = ((x % step) + step) % step - step; sx < T.W; sx += step) g.drawImage(im, sx, y); }
+      const [cx, cy, cw, ch] = T.crop; g.drawImage(await bm(fg), cx, cy, cw, ch, 0, 0, T.W, T.H);
+      const o = new OffscreenCanvas(...T.out), og = o.getContext('2d'); og.imageSmoothingQuality = 'high'; og.drawImage(c, 0, 0, ...T.out);
+      const u = new Uint8Array(await (await o.convertToBlob({ type: 'image/webp', quality: .82 })).arrayBuffer());
+      let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s);
+    }, { layers, fg: fg.toString('base64'), T: TITLE });
+    writeFileSync(join(OUT, 'title.webp'), Buffer.from(b64, 'base64')); atlas.title = { src: 'title.webp' };
+    report.push(`title ${(b64.length * 3 / 4 / 1024).toFixed(1)}KB ${TITLE.out.join('x')}`);
+  }
+}
 await browser.close();
 
 // 幀格式：[x, y, w, h, 原點x, 原點y, 毫秒]；畫的時候把原點對到實體座標
-writeFileSync(join(OUT, 'atlas.js'), `/* 由 tools/maple-assets.mjs 產生，勿手改。素材版權屬 Nexon，本站為非官方同人作品。\n   幀：[x,y,w,h,原點x,原點y,毫秒] */\nwindow.MSA=${JSON.stringify(atlas)};\n`);
+writeFileSync(join(OUT, 'atlas.js'), `/* 由 maple-survivors/tools/build-assets.mjs 產生，勿手改。素材版權屬 Nexon，本站為非官方同人作品。\n   幀：[x,y,w,h,原點x,原點y,毫秒] */\nwindow.MSA=${JSON.stringify(atlas)};\n`);
 writeFileSync(join(CACHE, 'names.json'), JSON.stringify({ mob: mobInfo, skill: skillNm }, null, 1));
 console.log(report.sort().join('\n'));
 console.log(`\n缺少 ${miss.length}：\n  ${miss.join('\n  ') || '（無）'}`);

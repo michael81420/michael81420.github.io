@@ -610,10 +610,36 @@ pre .ok{color:var(--win)}                  /* 正解 */
 
 /* ---- 楓之谷倖存者（posts/maple-survivors） ---- */
 /* 選單與畫布疊在同一個固定 16:10 的框裡輪流顯示：只有視窗寬度變時框才變，切畫面不會跳 */
-.msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto}
+.msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto;border-radius:12px;overflow:hidden;background:var(--surface2) center/cover no-repeat;container-type:inline-size;
+  /* 標題 logo 的原作配色：疊在固定的場景圖上，不跟深淺色模式變 */
+  --msv-gold:#FFD23F;--msv-orange:#F28A1A;--msv-brown:#4E240A;--msv-red:#D8432A;--msv-leaf:#F0641E;--msv-cream:#FFF7DE}
 .msv-stage .game-board{position:absolute;inset:0;max-width:none;width:100%;height:100%;aspect-ratio:auto}
-.msv-panel{position:absolute;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px 4px}
-.msv-panel>:first-child{margin-top:auto}.msv-panel>:last-child{margin-bottom:auto}
+.msv-panel{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:12px}
+/* 選單視窗疊在背景圖上；內容太長時在視窗裡捲（.fix＝角色主畫面：視窗撐滿、只有 .msv-scroll 捲），不會撐大遊戲框 */
+.msv-win{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(780px,100%);max-height:100%;overflow:auto;padding:14px 16px;box-sizing:border-box;
+  background:color-mix(in srgb,var(--surface) 93%,transparent);border:1px solid var(--border);border-radius:14px;box-shadow:0 6px 24px rgb(0 0 0/.25)}
+.msv-win.fix{height:100%;overflow:hidden}
+.msv-win.title{width:100%;height:100%;max-height:none;padding:0;background:none;border:0;box-shadow:none;overflow:hidden}
+.msv-title{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding-top:4cqw;gap:1.6cqw;background:none;border:0;cursor:pointer;font:inherit}
+.msv-logo{width:58%;filter:drop-shadow(0 .6cqw 0 rgb(0 0 0/.25));animation:msv-bob 3s ease-in-out infinite}
+.msv-start{padding:1cqw 4.4cqw;border-radius:999px;font-weight:700;font-size:2.4cqw;letter-spacing:.3em;color:var(--msv-cream);background:linear-gradient(var(--msv-orange),var(--msv-red));
+  border:.35cqw solid var(--msv-cream);box-shadow:0 0 0 .35cqw var(--msv-brown),0 .7cqw 0 .35cqw var(--msv-brown);text-shadow:0 .2cqw 0 var(--msv-brown);animation:msv-pulse 1.6s ease-in-out infinite}
+.msv-title:hover .msv-start,.msv-title:focus-visible .msv-start{filter:brightness(1.12)}
+.msv-title:focus-visible{outline:none}
+.msv-press{font-size:1.5cqw;font-weight:700;color:var(--msv-cream);text-shadow:0 0 .4cqw var(--msv-brown),0 0 .4cqw var(--msv-brown)}
+.msv-walker{position:absolute;bottom:25%;left:var(--a);width:8cqw;height:7cqw;translate:-50% 0;animation:msv-patrol linear infinite}
+.msv-walker canvas{width:100%;height:100%}
+.msv-legal{position:absolute;bottom:2%;right:2%;font-size:1.2cqw;color:var(--msv-cream);text-shadow:0 0 .3cqw var(--msv-brown),0 0 .3cqw var(--msv-brown)}
+@keyframes msv-bob{50%{transform:translateY(-1.2cqw)}}
+@keyframes msv-pulse{50%{transform:scale(1.06)}}
+/* 原作怪物預設面向左：往左走不翻、走回來時翻面 */
+@keyframes msv-patrol{0%{left:var(--a);scale:1 1}50%{left:var(--b);scale:1 1}50.01%{scale:-1 1}100%{left:var(--a);scale:-1 1}}
+@media(prefers-reduced-motion:reduce){.msv-logo,.msv-start,.msv-walker{animation:none}}
+.msv-win.bare{background:none;border:0;box-shadow:none}   /* 角色選擇／建立：角色直接站在場景上 */
+.msv-win.bare>h3,.msv-win.bare>.hint,.msv-win.bare .msv-row>.hint{background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:4px 14px}
+.msv-scroll{position:relative;flex:1 1 auto;min-height:0;width:100%;overflow:auto;display:flex;flex-direction:column;align-items:center}
+@media(max-width:680px){.msv-win.fix{overflow:auto}.msv-win.fix .msv-scroll{flex:none;overflow:visible}}   /* 框太矮放不下固定標題：退回整個視窗捲（手機版待辦） */
+.msv-win,.msv-scroll{overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface2)}
 .msv-panel h3{margin:0}
 .msv-panel .hint{font-size:13px;color:var(--ink2);text-align:center}
 .msv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;align-items:stretch}
@@ -633,7 +659,8 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-bar{width:min(320px,100%);height:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .msv-bar i{display:block;height:100%;background:var(--accent)}
 .game-btn:disabled{opacity:.45;cursor:default}
-.msv-hub{display:flex;gap:14px;align-items:center;width:min(560px,100%)}
+.msv-hub{display:flex;gap:14px;align-items:center;width:min(680px,100%)}
+.msv-hub>.game-btn{margin-left:auto;align-self:flex-start}
 .msv-hub canvas{width:96px;height:110px;flex:none}
 .msv-hub .nm{font-weight:700;font-size:17px}
 .msv-hub p{margin:6px 0}
@@ -664,7 +691,15 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-mobs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .msv-mobs button{display:flex;flex-direction:column;align-items:center;width:64px;font-size:11px;line-height:1.3;color:var(--ink2);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 2px}
 .msv-mobs canvas{width:56px;height:44px}
+.msv-mobs .msv-ico{margin:2px 0 3px}
 .msv-line.mob>:first-child{flex:none}
 .msv-line.mob>div{flex:1}
 .msv-cells>.hint{grid-column:1/-1}
+.msv-ctl{position:absolute;top:6.5%;right:1.4%;display:flex;gap:.5cqw;z-index:2}
+.msv-ctl button{padding:.4cqw 1cqw;border-radius:.8cqw;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--ink2);font-weight:700;font-size:1.3cqw}
+.msv-ctl button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
+.msv-ctl button.warn{background:var(--lose);border-color:var(--lose);color:var(--onAccent)}
+.msv-audio{margin-top:10px;align-items:center;font-size:13px;color:var(--ink2)}
+.msv-audio button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
+.msv-audio input{accent-color:var(--accent);vertical-align:middle;width:110px}
 .msv-pick{background:color-mix(in srgb,var(--bg) 82%,transparent)}

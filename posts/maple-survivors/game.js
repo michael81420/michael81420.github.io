@@ -1,4 +1,4 @@
-/* 楓之谷倖存者：遊戲引擎（M1 戰鬥核心）。素材 atlas＝window.MSA（assets/maple/atlas.js），數值＝window.MSD。
+/* 楓之谷倖存者：遊戲引擎（M1 戰鬥核心）。素材 atlas＝window.MSA（maple-survivors/assets/atlas.js），數值＝window.MSD。
    效能：怪物／投射物／特效／傷害數字全走物件池；碰撞用空間網格；只畫鏡頭內。怪物數量不設上限。
    畫面分兩種：選單面板（#msv-panel：角色欄位、建立角色、結算）和遊戲畫布，同一位置輪流顯示。
    網址加 ?dur=20 → 關卡縮成 20 秒；?bosst=5 → BOSS 第 5 秒就出場（測試用）。
@@ -10,7 +10,7 @@ var Q=new URLSearchParams(location.search), BENCH=+Q.get('bench')||0;
 
 // ---- 素材 ----
 var IMG={};
-function img(src){ if(!IMG[src]){ IMG[src]=new Image(); IMG[src].src='../assets/maple/'+src } return IMG[src] }
+function img(src){ if(!IMG[src]){ IMG[src]=new Image(); IMG[src].src='maple-survivors/assets/'+src } return IMG[src] }
 // 每個動作預先算總長，取幀不用每次加總
 [A.mob,A.chr,A.skl,A.map,A.npc,A.ico].forEach(function(set){ for(var k in set){ var e=set[k]; e.tot={}; for(var a in e.a) e.tot[a]=e.a[a].reduce(function(s,f){return s+f[6]},0)/1000 } });
 function frameAt(e,act,t,loop){
@@ -113,7 +113,7 @@ function useScroll(s,it,sc,rng){
     it.up++; return 'ok' }
   return sc.dark&&rng()<.5?'boom':'fail';
 }
-window.__msvScroll=useScroll; window.__msvDropTable=dropTable;   // 給 tools/maple-selfcheck.mjs 用
+window.__msvScroll=useScroll; window.__msvDropTable=dropTable;   // 給 maple-survivors/tools/selfcheck.mjs 用
 function newSlot(nm,job){ var s={nm:nm, job:job, lv:1, exp:0}; fix(s); return s }
 function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(SV)) }catch(e){ msg('存檔失敗：瀏覽器可能關閉了儲存空間') } }
 function esc(t){ return String(t).replace(/[&<>"']/g,function(c){return '&#'+c.charCodeAt(0)+';'}) }
@@ -134,6 +134,18 @@ function calc(s){
 // 帶進關卡、而且真的能用的主動技能
 function loadout(s){ return s.load.filter(function(id){ var d=D.SK[id]; return d&&d.act&&d.adv<=s.adv&&s.sk[id] }).slice(0,D.SLOTS[s.adv]) }
 
+// ---- 聲音：BGM 一個 <audio> 循環；音效每次 clone 一個 <audio>（file:// 直開也能播，Web Audio 的 fetch 不行）----
+// ponytail: 同一個音效 70ms 內只響一次、同時最多 10 個，怪物再多也不會炸耳朵；要更準的混音再換 Web Audio
+var AU={bgm:true,sfx:true,vol:.5}, SN=A.snd||{bgm:{},fx:{}}, SND={}, sLast={}, sLive=0, bgmEl=new Audio(), bgmF='';
+try{ Object.assign(AU,JSON.parse(localStorage.getItem('msvAudio'))||{}) }catch(e){}
+bgmEl.loop=true;
+function snd(f){ return SND[f]||(SND[f]=new Audio('maple-survivors/assets/'+f)) }
+function sfx(k,v){ var f=SN.fx[k], t=performance.now(); if(!AU.sfx||!f||t-(sLast[k]||0)<70||sLive>=10) return; sLast[k]=t;
+  var a=snd(f).cloneNode(); a.volume=AU.vol*(v||1); sLive++; a.onended=a.onerror=function(){ sLive-- }; a.play().catch(function(){ sLive-- }) }
+function bgm(k){ var f=SN.bgm[k]||SN.bgm.menu; if(!f) return; if(f!==bgmF){ bgmF=f; bgmEl.src='maple-survivors/assets/'+f } bgmEl.volume=AU.vol*.6; if(AU.bgm) bgmEl.play().catch(function(){}); else bgmEl.pause() }
+// 瀏覽器要等使用者第一次互動才准出聲
+['pointerdown','keydown'].forEach(function(t){ addEventListener(t,function(){ if(AU.bgm&&bgmF&&bgmEl.paused) bgmEl.play().catch(function(){}) },true) });
+
 // ---- 狀態 ----
 var P, slot=null, stage, st, cam={x:0,y:0}, keys={}, joy=null, state='menu', fps=0;
 var zones=new Pool(function(){return {}}), drops=new Pool(function(){return {}});
@@ -151,7 +163,7 @@ function start(i,stageId){
     P.drops[id]={eq:t.eq.filter(own), rare:t.rare.filter(own)} });
   P.loot={meso:0, items:[], scr:{}}; P.room=i==null?0:D.INV_MAX-s.inv.length;
   [mobs,shots,fxs,nums,zones,drops].forEach(function(p){ p.each(function(o){p.free(o)}) });
-  view('game'); state='run'; msg('');
+  view('game'); state='run'; msg(''); bgm(stage.id); sfx('Portal');
 }
 function msg(s){ $('msv-msg').textContent=s }
 
@@ -167,7 +179,7 @@ function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) 
 // ---- 傷害 ----
 function hurt(m,dmg,crit){
   if(m.dieT>=0) return; dmg=Math.max(1,Math.round(dmg*(.9+Math.random()*.2)));
-  m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0);
+  m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0); sfx((m.hp<=0?'mobx-':'mobd-')+m.id,m.hp<=0?.8:.4);
   if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp; if(BENCH) return; dropFrom(m);
     if(P.R.leech) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*P.R.leech);
     if(m.M.boss) st.winT=1.5;   // BOSS 倒下 1.5 秒後結算（讓死亡動畫播完）
@@ -176,6 +188,7 @@ function hurt(m,dmg,crit){
 // 怒氣集滿：暫停，三選一本場增益（鍵盤 1/2/3 或點選）
 var pickEl=$('msv-pick'), picks=[];
 function openPick(){
+  sfx('gaugeFull');
   var pool=D.BOONS.filter(function(b){ return !b.heal||P.hp<P.maxHp }); picks=[];
   while(picks.length<Math.min(D.RAGE.choices,pool.length)){ var b=pool[(Math.random()*pool.length)|0]; if(picks.indexOf(b)<0) picks.push(b) }
   state='pick'; keys={}; joy=null;
@@ -189,20 +202,21 @@ function choose(i){
   if(b.heal) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*b.heal);
   for(var k in b.mods) P.R[k]+=b.mods[k];
   if(b.mods&&b.mods.hp){ P.maxHp=Math.round(P.S.maxHp*(1+P.R.hp)); P.hp=P.maxHp }
-  P.boons.push(b.k); pickEl.style.display='none'; state='run';
+  P.boons.push(b.k); sfx('BtMouseClick'); pickEl.style.display='none'; state='run';
 }
 pickEl.addEventListener('click',function(e){ var b=e.target.closest('[data-pick]'); if(b) choose(+b.dataset.pick) });
 function dropFrom(m){
   var R=D.DROP, r=Math.random;
   if(r()<R.meso) addDrop(m,'meso',Math.round(m.M.exp*(1+r())));
   var t=P.drops[m.id]||dropTable(m.id);
-  if(r()<R.eq&&t.eq.length) addDrop(m,'eq',t.eq[(r()*t.eq.length)|0]);
+  if(r()<R.eq&&t.eq.length){ addDrop(m,'eq',t.eq[(r()*t.eq.length)|0]); sfx('DropItem') }
   if(r()<R.rare&&t.rare.length) addDrop(m,'eq',t.rare[(r()*t.rare.length)|0]);
   if(r()<R.scroll){ var w=D.SCROLL_DROP_W, tot=w.reduce(function(a,b){return a+b}), x=r()*tot, i=0; while((x-=w[i])>0) i++; addDrop(m,'sc',i) }
 }
 function addDrop(m,kind,v){ var d=drops.get(); d.x=m.x+(Math.random()-.5)*30; d.y=m.y+(Math.random()-.5)*20; d.kind=kind; d.v=v; d.t=0; d.fly=false }
 // 撿起：楓幣直接記；裝備背包滿了就不撿（留在地上）
 function pick(d){
+  sfx('PickUpItem',.6);
   if(d.kind==='meso') P.loot.meso+=d.v;
   else if(d.kind==='sc'){ var k=D.SCROLLS[d.v].k; P.loot.scr[k]=(P.loot.scr[k]||0)+1 }
   else { if(P.loot.items.length>=P.room){ if(!P.fullWarn){ P.fullWarn=1; num(P.x,P.y-80,'背包滿了',3) } return false } P.loot.items.push(mkItem(d.v,true)) }
@@ -219,10 +233,10 @@ function fx(id,act,x,y,flip,follow){ var e=A.skl[id]; if(!e||!e.a[act]) return; 
 // ---- 施放：基本攻擊與主動技能共用一套 ----
 function cast(k){
   var d=k.d, V=function(key){ return lerp(d[key],k.lv,d.max) };
-  if(d.k==='buff'){ P.buffs.push({mods:d.mods, lv:k.lv, max:d.max, t:V('dur')}); fx(k.id,d.fx,P.x,P.y,P.face,true); return true }
+  if(d.k==='buff'){ sfx('skl-'+k.id); P.buffs.push({mods:d.mods, lv:k.lv, max:d.max, t:V('dur')}); fx(k.id,d.fx,P.x,P.y,P.face,true); return true }
   var rg=d.range*P.S.range, tg=nearest(P.x,P.y,rg); if(!tg) return false;
   var dmg=P.S.atk*V('dmg')*(P.S.dmg+P.B.dmg+P.R.dmg), area=1+P.R.area;
-  P.face=tg.x>P.x; P.atkAnim=0;
+  P.face=tg.x>P.x; P.atkAnim=0; sfx(k.id?'skl-'+k.id:'atk-'+P.job,.7);
   if(d.k==='slash'){
     var dir=Math.atan2(tg.y-P.y,tg.x-P.x), arc=d.arc; rg*=area;
     near(P.x,P.y,rg,function(m){ var a=Math.atan2(m.y-P.y,m.x-P.x)-dir; a=Math.atan2(Math.sin(a),Math.cos(a));
@@ -329,6 +343,7 @@ function end(win){
         if(rs.length){ var ri=mkItem(rs[(Math.random()*rs.length)|0],true); s.inv.push(ri); P.first.item=ri } } }
     persist();
   }
+  bgm('menu'); sfx(up?'LevelUp':win?'QuestClear':'Tombstone');
   resultScreen(win,gain,up);
 }
 
@@ -413,12 +428,22 @@ var last=0, fpsAcc=0, fpsN=0, msAcc=0;
 function loop(ts){
   var dt=Math.min(.05,(ts-last)/1000||0); last=ts;
   var t0=performance.now();
-  if(state==='run'){ update(dt); draw() } else if(minis.length) drawMinis(ts/1000);
+  // 加速＝每幀多跑幾次 update（不放大 dt，碰撞才不會穿透）；中途結算或跳出三選一就停
+  if(state==='run'){ for(var i=0;i<spd&&state==='run';i++) update(dt); draw() } else if(minis.length) drawMinis(ts/1000);
   // fps 會被螢幕更新率鎖住，另外量「每幀實際花幾毫秒」才看得出餘裕（16.7ms 以內＝60fps 守得住）
   msAcc+=performance.now()-t0; fpsAcc+=dt; fpsN++;
   if(fpsAcc>=.5){ fps=fpsN/fpsAcc; window.__msvFps=fps; window.__msvMs=msAcc/fpsN; fpsAcc=0; fpsN=0; msAcc=0 }
   requestAnimationFrame(loop);
 }
+
+// ---- 遊戲中控制列：倍速、強制結束 ----
+var spd=1, quitT=0, ctl=document.createElement('div'); ctl.className='msv-ctl'; ctl.style.display='none'; cv.parentNode.appendChild(ctl);
+function drawCtl(){ ctl.innerHTML=[1,2,4].map(function(n){ return '<button data-spd="'+n+'" aria-pressed="'+(spd===n)+'">'+n+'x</button>' }).join('')+
+  '<button data-quit="1" class="'+(quitT?'warn':'')+'" title="比照倒下結算：經驗 '+D.DEATH_EXP*100+'%、本場裝備與卷軸沒收">'+(quitT?'確定結束？':'結束')+'</button>' }
+ctl.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b||state!=='run'&&state!=='pick') return;
+  if(b.dataset.spd){ spd=+b.dataset.spd; drawCtl() }
+  else if(!quitT){ quitT=setTimeout(function(){ quitT=0; drawCtl() },3000); drawCtl() }   // 按兩下才結束，避免誤觸
+  else { clearTimeout(quitT); quitT=0; P.quit=true; pickEl.style.display='none'; end(false) } });
 
 // ---- 輸入 ----
 var KM={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
@@ -433,12 +458,15 @@ cv.addEventListener('pointermove',function(e){ if(!joy||e.pointerId!==joy.id) re
 
 // ---- 選單面板 ----
 var panel=$('msv-panel'), minis=[], ui={sel:null, del:false, job:null, tab:'go', imp:false};
-function view(v){ cv.style.display=v==='game'?'':'none'; panel.style.display=v==='game'?'none':''; if(v==='game') resize() }
-function show(h){
-  view('panel'); var top=panel.scrollTop; panel.innerHTML=h; panel.scrollTop=top; state='menu';
+function view(v){ cv.style.display=ctl.style.display=v==='game'?'':'none'; panel.style.display=v==='game'?'none':''; if(v==='game'){ clearTimeout(quitT); quitT=0; drawCtl(); resize() } }
+// 所有選單都包在一個視窗裡；內容太長時在視窗（或角色主畫面的 .msv-scroll）裡面捲，整個遊戲框不變
+function scroller(){ return panel.querySelector('.msv-scroll')||panel.firstChild }
+function show(h,cls){
+  view('panel'); var sc=scroller(), top=ui.top0||!sc?0:sc.scrollTop; ui.top0=false;
+  panel.innerHTML='<div class="msv-win '+(cls||'')+'">'+h+'</div>'; scroller().scrollTop=top; state='menu';
   // data-spr="npc:1022000" / "chr:warrior-0" 的小畫布在選單迴圈裡播站立動畫
   minis=[].map.call(panel.querySelectorAll('canvas[data-spr]'),function(c){ var p=c.dataset.spr.split(':'), e=A[p[0]][p[1]], r=c.getBoundingClientRect(), d=window.devicePixelRatio||1;
-    c.width=Math.round(r.width*d); c.height=Math.round(r.height*d); return {c:c, g:c.getContext('2d'), e:e, act:p[0]==='chr'?'stand1':'stand', flip:p[0]==='chr'} });
+    c.width=Math.round(r.width*d); c.height=Math.round(r.height*d); return {c:c, g:c.getContext('2d'), e:e, act:p[2]||(p[0]==='chr'?'stand1':'stand'), flip:p[0]==='chr'} });
 }
 function drawMinis(t){
   minis.forEach(function(m){ var fr=m.e.a[m.act], f=frameAt(m.e,m.act,t,true), mh=Math.max.apply(null,fr.map(function(q){return q[5]})), mw=Math.max.apply(null,fr.map(function(q){return q[2]})), k=Math.min(2,(m.c.height-8)/mh,(m.c.width-4)/mw);
@@ -451,6 +479,24 @@ function advNm(s){ return D.JOBS[s.job].adv[s.adv] }
 function canAdv(s){ return s.adv<D.ADV_LV.length-1 && s.lv>=D.ADV_LV[s.adv+1] }
 function pct(v){ return Math.round(v*1000)/10+'%' }
 
+// 標題畫面：自製 logo（仿原作描邊金字＋楓葉，不用官方商標），整片是一顆按鈕，點一下或 Enter 進角色選擇
+var LEAF='M50 4L57 20L65 16L62 38L75 25L78 32L92 29L87 44L94 47L72 64L75 72L53 69L54 94L46 94L47 69L25 72L28 64L6 47L13 44L8 29L22 32L25 25L38 38L35 16L43 20Z';
+var LOGO='<svg class="msv-logo" viewBox="0 0 600 270" role="img" aria-label="楓之谷倖存者"><defs><linearGradient id="msv-lg" x1="0" y1="0" x2="0" y2="1">'+
+  '<stop offset="0" style="stop-color:var(--msv-cream)"/><stop offset=".35" style="stop-color:var(--msv-gold)"/><stop offset="1" style="stop-color:var(--msv-orange)"/></linearGradient></defs>'+
+  '<path d="'+LEAF+'" transform="translate(52 0) rotate(-18 50 50) scale(1.15)" style="fill:var(--msv-leaf);stroke:var(--msv-brown);stroke-width:5;stroke-linejoin:round"/>'+
+  '<text x="315" y="150" text-anchor="middle" style="font:700 132px \'Noto Sans TC\',sans-serif;letter-spacing:8px;fill:url(#msv-lg);stroke:var(--msv-brown);stroke-width:16;stroke-linejoin:round;paint-order:stroke">楓之谷</text>'+
+  '<path d="M160 186H440L422 210L440 234H160L178 210Z" style="fill:var(--msv-red);stroke:var(--msv-brown);stroke-width:5;stroke-linejoin:round"/>'+
+  '<text x="300" y="222" text-anchor="middle" style="font:700 34px \'Noto Sans TC\',sans-serif;letter-spacing:22px;fill:var(--msv-cream)">倖存者</text>'+
+  '<text x="300" y="262" text-anchor="middle" style="font:700 18px \'Hanken Grotesk\',sans-serif;letter-spacing:6px;fill:var(--msv-cream);stroke:var(--msv-brown);stroke-width:5;paint-order:stroke">MAPLE SURVIVORS</text></svg>';
+function titleScreen(){
+  bgm('menu');
+  // 怪物在右下那片地面上來回巡邏：[怪物, 起點 left%, 終點 left%, 週期秒, 起始偏移秒]
+  var walk=[[100100,95,68,14,0],[1210102,88,64,11,-4],[120100,97,76,9,-2],[130101,84,63,12,-7]];
+  show('<button class="msv-title" data-act="home">'+LOGO+'<span class="msv-start">開始遊戲</span><span class="msv-press">點一下或按 Enter</span>'+
+    walk.map(function(w){ return '<span class="msv-walker" style="--a:'+w[1]+'%;--b:'+w[2]+'%;animation-duration:'+w[3]+'s;animation-delay:'+w[4]+'s"><canvas data-spr="mob:'+w[0]+':move"></canvas></span>' }).join('')+
+    '<span class="msv-legal">非官方同人作品・遊戲素材 © NEXON</span></button>','title');
+}
+addEventListener('keydown',function(e){ if(e.key==='Enter'&&panel.querySelector('.msv-title')){ e.preventDefault(); slotsScreen() } });
 function slotsScreen(){
   var h='<h3>選擇角色</h3><div class="msv-grid">';
   SV.slots.forEach(function(s,i){
@@ -466,7 +512,7 @@ function slotsScreen(){
   if(!s) h+='<span class="hint">點選一個角色，或建立新角色</span>';
   else if(ui.del) h+='<span class="hint">確定刪除「'+esc(s.nm)+'」？刪除後無法復原。</span><button class="game-btn" data-act="del-yes">確定刪除</button><button class="game-btn ghost" data-act="del-no">取消</button>';
   else h+='<button class="game-btn" data-act="enter">進入</button><button class="game-btn ghost" data-act="del">刪除角色</button>';
-  show(h+'</div><div class="msv-row"><button class="game-btn ghost" data-act="export">匯出存檔</button><button class="game-btn ghost" data-act="import">匯入存檔</button></div>');
+  show(h+'</div><div class="msv-row"><button class="game-btn ghost" data-act="export">匯出存檔</button><button class="game-btn ghost" data-act="import">匯入存檔</button></div>','bare');
 }
 function createScreen(i){
   var h='<h3>選擇你的職業</h3><p class="hint">到各村莊找轉職教官，選一條要走的路。</p><div class="msv-grid">';
@@ -475,12 +521,19 @@ function createScreen(i){
        '<span class="sub">'+J.town+'・'+J.npcNm+'</span><span class="nm">'+J.nm+'</span><span class="sub">'+J.tag+'・主屬性 '+J.main.toUpperCase()+'</span><span class="sub">'+J.line+'</span></button>' });
   h+='</div><div class="msv-row"><input class="msv-in" id="msv-nm" maxlength="12" placeholder="角色名字" aria-label="角色名字">'+
      '<button class="game-btn" data-act="create" data-i="'+i+'"'+(ui.job?'':' disabled')+'>建立角色</button><button class="game-btn ghost" data-act="back">返回</button></div>';
-  var keep=$('msv-nm')&&$('msv-nm').value; show(h); if(keep) $('msv-nm').value=keep;
+  var keep=$('msv-nm')&&$('msv-nm').value; show(h,'bare'); if(keep) $('msv-nm').value=keep;
 }
 
 // ---- 物品顯示 ----
-function ico(f,title){ var IC=A.ico.items; return '<i class="msv-ico" title="'+esc(title||'')+'" style="width:'+f[2]+'px;height:'+f[3]+'px;background-image:url(../assets/maple/'+IC.src+');background-position:-'+f[0]+'px -'+f[1]+'px"></i>' }
+function ico(f,title){ var IC=A.ico.items; return '<i class="msv-ico" title="'+esc(title||'')+'" style="width:'+f[2]+'px;height:'+f[3]+'px;background-image:url(maple-survivors/assets/'+IC.src+');background-position:-'+f[0]+'px -'+f[1]+'px"></i>' }
 function itIco(id){ return ico(A.ico.items.a.eq[A.itm[id].i],A.itm[id].nm) }
+function mesoIco(){ return ico(A.ico.items.a.meso0[0],'楓幣') }
+function scIco(sc){ return ico(A.ico.items.a.sc[sc.icon],(sc.t==='w'?'武器':'防具')+'卷軸 '+sc.pct*100+'%') }
+// 怪物靜態小圖（站立第 0 幀，縮進 40×36）：按下去跳到圖鑑的那隻怪物
+function mobBtn(id){ var e=A.mob[id], f=e.a.stand[0], M=D.MOBS[id], k=Math.min(1,36/f[3],40/f[2]), sw=0, sh=0;
+  for(var a in e.a) e.a[a].forEach(function(q){ sw=Math.max(sw,q[0]+q[2]); sh=Math.max(sh,q[1]+q[3]) });
+  return '<button data-cxmob="'+id+'" title="'+M.nm+'"><i class="msv-ico" style="width:'+Math.round(f[2]*k)+'px;height:'+Math.round(f[3]*k)+'px;background-image:url(maple-survivors/assets/'+e.src+');'+
+    'background-size:'+sw*k+'px '+sh*k+'px;background-position:-'+f[0]*k+'px -'+f[1]*k+'px;image-rendering:auto"></i><span>'+M.nm+'<br>Lv.'+M.lv+'</span></button>' }
 function stTxt(st){ return Object.keys(st).map(function(k){ return D.ST_NM[k]+' +'+st[k] }).join('、')||'無' }
 function rqTxt(m,free){ if(free) return 'Lv.0'; var a=['Lv.'+m.req]; for(var k in m.rq) a.push(k.toUpperCase()+' '+m.rq[k]); return a.join('、') }
 function slotNm(k){ for(var i=0;i<D.EQ_SLOTS.length;i++) if(D.EQ_SLOTS[i][0]===k) return D.EQ_SLOTS[i][1] }
@@ -534,16 +587,17 @@ function codexTab(s){
   if(ui.cx!=='eq'){
     Object.keys(D.MOBS).forEach(function(id){ var M=D.MOBS[id], t=dropTable(id), own=t.eq.filter(function(i){ return jobOk(s,A.itm[i]) });
       var where=Object.keys(D.STAGES).filter(function(k){ return stageMobs(D.STAGES[k]).indexOf(+id)>=0 }).map(function(k){ return D.STAGES[k].nm });
-      h+='<div class="msv-line mob"><canvas data-spr="mob:'+id+'"></canvas><div><b>'+M.nm+'</b> <span class="hint">Lv.'+M.lv+'・HP '+M.hp+'・經驗 '+M.exp+(M.boss?'・BOSS':'')+'・出現：'+(where.join('、')||'尚未開放')+'</span>'+
-        '<div class="hint">掉落 '+t.eq.length+' 種裝備（'+D.JOBS[s.job].nm+'能用 '+own.length+' 種）'+(t.rare.length?'，稀有 '+t.rare.length+' 種':'')+'・楓幣、卷軸</div>'+
+      h+='<div class="msv-line mob" id="msv-cx-'+id+'"><canvas data-spr="mob:'+id+'"></canvas><div><b>'+M.nm+'</b> <span class="hint">Lv.'+M.lv+'・HP '+M.hp+'・經驗 '+M.exp+(M.boss?'・BOSS':'')+'・出現：'+(where.join('、')||'尚未開放')+'</span>'+
+        '<div class="hint">掉落 '+t.eq.length+' 種裝備（'+D.JOBS[s.job].nm+'能用 '+own.length+' 種）'+(t.rare.length?'，稀有 '+t.rare.length+' 種':'')+'・'+mesoIco()+' 楓幣 '+scIco(D.SCROLLS[0])+' 卷軸</div>'+
         '<div class="msv-drops">'+t.rare.map(function(i){ return '<span class="rare">'+itIco(i)+'</span>' }).join('')+own.map(itIco).join('')+'</div></div></div>' });
     return h;
   }
   Object.keys(A.itm).filter(function(id){ return ui.cxAll||jobOk(s,A.itm[id]) }).sort(function(a,b){ return A.itm[a].req-A.itm[b].req||(A.itm[a].s<A.itm[b].s?-1:1) }).forEach(function(id){
-    var m=A.itm[id], src=mobsDropping(id).map(function(k){ return D.MOBS[k].nm });
+    var m=A.itm[id], src=mobsDropping(id);
     h+='<div class="msv-line"><div>'+itIco(id)+' <b>'+m.nm+'</b>'+(m.rare?' <span class="hint">★ 稀有</span>':'')+' <span class="hint">'+jobNm(m.job)+'・'+slotNm(m.s)+(m.ov?'（套服）':'')+'</span>'+
       '<div class="hint">需求 '+rqTxt(m)+'・原始數值 '+stTxt(m.st)+'・可強化 '+m.tuc+' 次</div>'+
-      '<div class="hint">取得：'+(m.rare?'只會掉落':'商店 '+D.PRICE(m.price)+' 楓幣')+(src.length?'・掉落：'+src.join('、'):'・目前沒有怪物掉落')+'</div></div></div>' });
+      '<div class="hint">'+(m.rare?'商店買不到，只會掉落':'商店 '+mesoIco()+' '+D.PRICE(m.price))+(src.length?'':'・目前沒有怪物掉落')+'</div>'+
+      (src.length?'<div class="hint">掉落（點怪物看詳細）：</div><div class="msv-mobs">'+src.map(mobBtn).join('')+'</div>':'')+'</div></div>' });
   return h;
 }
 
@@ -553,11 +607,10 @@ function hubScreen(){
   if(canAdv(s)) tabs.push(['adv','轉職！']);
   var h='<div class="msv-hub"><canvas data-spr="chr:'+s.job+'-'+s.adv+'"></canvas><div><div class="nm">'+esc(s.nm)+(s.title?' <span class="hint">「'+esc(s.title)+'」</span>':'')+'</div>'+
     '<div class="hint">Lv.'+s.lv+'　'+advNm(s)+'</div><div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div>'+
-    '<div class="hint">EXP '+s.exp+' / '+D.exp(s.lv)+'</div></div></div><div class="msv-tabs" role="tablist">';
+    '<div class="hint">EXP '+s.exp+' / '+D.exp(s.lv)+'</div></div><button class="game-btn ghost" data-act="home">回到角色選擇</button></div><div class="msv-tabs" role="tablist">';
   tabs.forEach(function(t){ h+='<button role="tab" aria-selected="'+(ui.tab===t[0])+'" data-tab="'+t[0]+'">'+t[1]+'</button>' });
-  h+='</div><div class="msv-tab">'+({go:goTab,stat:statTab,skill:skillTab,eq:eqTab,shop:shopTab,codex:codexTab,adv:advTab}[ui.tab]||goTab)(s)+'</div>'+
-     '<div class="msv-row"><button class="game-btn ghost" data-act="home">回到角色選擇</button></div>';
-  show(h);
+  h+='</div><div class="msv-scroll"><div class="msv-tab">'+({go:goTab,stat:statTab,skill:skillTab,eq:eqTab,shop:shopTab,codex:codexTab,adv:advTab}[ui.tab]||goTab)(s)+'</div></div>';
+  show(h,'fix');
 }
 function goTab(s){
   return Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id], ok=unlocked(s,id), B=g2.boss&&D.MOBS[g2.boss.id];
@@ -595,8 +648,8 @@ function advTab(s){
     '<button class="game-btn" data-act="adv">轉職成為'+J.adv[s.adv+1]+'</button></div></div>';
 }
 function resultScreen(win,gain,up){
-  var s=SV.slots[slot], h='<h3>'+(win?'通關！':P.hp>0?'時間到…':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻</p>'+
-    '<p>經驗 +'+gain+(win?'':'<span class="hint">（死亡只結算 '+D.DEATH_EXP*100+'%，原本 '+P.exp+'）</span>')+'</p>';
+  var s=SV.slots[slot], h='<h3>'+(win?'通關！':P.quit?'結束挑戰':P.hp>0?'時間到…':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻</p>'+
+    '<p>經驗 +'+gain+(win?'':'<span class="hint">（'+(P.quit?'中途結束':'死亡')+'只結算 '+D.DEATH_EXP*100+'%，原本 '+P.exp+'）</span>')+'</p>';
   if(s) h+=(up?'<p><b>等級提升！Lv.'+(s.lv-up)+' → Lv.'+s.lv+'</b>　獲得 AP '+up*D.AP_LV+(s.adv?'、SP '+up*D.SP_LV:'')+'</p>':'')+
     (canAdv(s)?'<p><b>可以轉職了！</b>回角色畫面找'+D.JOBS[s.job].npcNm+'。</p>':'')+
     '<div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div><p class="hint">Lv.'+s.lv+'　EXP '+s.exp+' / '+D.exp(s.lv)+'</p>';
@@ -621,13 +674,13 @@ function importScreen(){
 }
 
 panel.addEventListener('click',function(e){
-  var b=e.target.closest('button'); if(!b||b.disabled) return; var d=b.dataset, s=SV.slots[ui.sel];
+  var b=e.target.closest('button'); if(!b||b.disabled) return; var d=b.dataset, s=SV.slots[ui.sel]; sfx(d.tab||d.cx?'Tab':'BtMouseClick');
   if(d.slot!=null){ ui.sel=+d.slot; ui.del=false; slotsScreen() }
   else if(d.new!=null){ ui.job=null; createScreen(+d.new) }
   else if(d.job){ ui.job=d.job; createScreen(+panel.querySelector('[data-act=create]').dataset.i) }
-  else if(d.tab){ ui.tab=d.tab; ui.it=null; panel.scrollTop=0; hubScreen() }
-  else if(d.cxmob){ ui.tab='codex'; ui.cx='mob'; panel.scrollTop=0; hubScreen() }
-  else if(d.cx){ ui.cx=d.cx; hubScreen() }
+  else if(d.tab){ ui.tab=d.tab; ui.it=null; ui.top0=true; hubScreen() }
+  else if(d.cxmob){ ui.tab='codex'; ui.cx='mob'; ui.top0=true; hubScreen(); var to=$('msv-cx-'+d.cxmob); if(to) scroller().scrollTop=to.offsetTop-8 }
+  else if(d.cx){ ui.cx=d.cx; ui.top0=true; hubScreen() }
   else if(d.cxall){ ui.cxAll=!ui.cxAll; hubScreen() }
   else if(d.eqp){ ui.it={from:'eqp',k:d.eqp}; hubScreen() }
   else if(d.inv!=null){ ui.it={from:'inv',k:+d.inv}; hubScreen() }
@@ -636,10 +689,11 @@ panel.addEventListener('click',function(e){
   else if(d.act==='sell'){ var si=s.inv[ui.it.k]; s.meso+=sellP(A.itm[si.id]); s.inv.splice(ui.it.k,1); ui.it=null; persist(); msg('賣掉了'); hubScreen() }
   else if(d.scroll){ var it2=selItem(s), sc2=D.SCROLLS.filter(function(x){ return x.k===d.scroll })[0];
     if(it2&&s.scr[sc2.k]>0&&it2.tuc>0){ s.scr[sc2.k]--; var res=useScroll(s,it2,sc2);
+      sfx({ok:'EnchantSuccess',fail:'EnchantFailure',boom:'EnchantDestroyed'}[res]);
       if(res==='boom'){ if(ui.it.from==='eqp') delete s.eqp[ui.it.k]; else s.inv.splice(ui.it.k,1); ui.it=null }
       msg({ok:'強化成功！',fail:'強化失敗…（用掉一次強化次數）',boom:'詛咒發動，裝備爆掉了！'}[res]); persist() } hubScreen() }
-  else if(d.buysc){ var sc3=D.SCROLLS.filter(function(x){ return x.k===d.buysc })[0]; if(s.meso>=sc3.price){ s.meso-=sc3.price; s.scr[sc3.k]=(s.scr[sc3.k]||0)+1; persist() } hubScreen() }
-  else if(d.buyeq){ var bm=A.itm[d.buyeq], bp=D.PRICE(bm.price); if(s.meso>=bp&&s.inv.length<D.INV_MAX){ s.meso-=bp; s.inv.push(mkItem(d.buyeq,false)); persist(); msg('買了「'+bm.nm+'」，到裝備頁穿上') } hubScreen() }
+  else if(d.buysc){ var sc3=D.SCROLLS.filter(function(x){ return x.k===d.buysc })[0]; if(s.meso>=sc3.price){ s.meso-=sc3.price; s.scr[sc3.k]=(s.scr[sc3.k]||0)+1; persist(); sfx('BuyShopItem') } hubScreen() }
+  else if(d.buyeq){ var bm=A.itm[d.buyeq], bp=D.PRICE(bm.price); if(s.meso>=bp&&s.inv.length<D.INV_MAX){ s.meso-=bp; s.inv.push(mkItem(d.buyeq,false)); persist(); sfx('BuyShopItem'); msg('買了「'+bm.nm+'」，到裝備頁穿上') } hubScreen() }
   else if(d.stage){ if(unlocked(s,d.stage)) start(ui.sel,d.stage) }
   else if(d.stat){ var n=Math.min(+d.n,s.ap); s[d.stat]+=n; s.ap-=n; persist(); hubScreen() }
   else if(d.skill){ var sd=D.SK[d.skill], lv=s.sk[d.skill]||0;
@@ -651,7 +705,7 @@ panel.addEventListener('click',function(e){
     persist(); hubScreen() }
   else if(d.act==='create'){ var nm=$('msv-nm').value.trim()||'冒險家'; SV.slots[+d.i]=newSlot(nm,ui.job); persist(); ui.sel=+d.i; slotsScreen() }
   else if(d.act==='enter'||d.act==='hub'){ ui.tab='go'; msg(''); hubScreen() }
-  else if(d.act==='adv'){ s.adv++; s.sp+=D.SP_ADV; persist(); ui.tab='skill'; msg('轉職成功！現在是'+advNm(s)+'了。'); hubScreen() }
+  else if(d.act==='adv'){ sfx('JobChanged'); s.adv++; s.sp+=D.SP_ADV; persist(); ui.tab='skill'; msg('轉職成功！現在是'+advNm(s)+'了。'); hubScreen() }
   else if(d.act==='ap-reset'){ var cost=D.AP_RESET(s.lv), J=D.JOBS[s.job]; if(s.meso<cost) return; s.meso-=cost;
     D.STATS.forEach(function(k){ s[k]=D.START_STAT }); s[J.main]=D.START_MAIN; s.ap=(s.lv-1)*D.AP_LV; persist(); hubScreen() }
   else if(d.act==='back'||d.act==='home'||d.act==='del-no'){ ui.del=false; ui.imp=false; msg(''); slotsScreen() }
@@ -668,6 +722,15 @@ panel.addEventListener('click',function(e){
 // 畫布實際像素＝CSS 尺寸 × dpr，邏輯座標固定 960×600
 function resize(){ var r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1; cv.width=Math.round(r.width*d); cv.height=Math.round(r.width*d*H/W); scale=cv.width/W; g.imageSmoothingEnabled=false; if(state!=='run'&&P) draw() }
 addEventListener('resize',resize); resize();
-if(BENCH) start(null); else slotsScreen();
+var auEl=document.createElement('div'); auEl.className='msv-tabs msv-audio'; cv.parentNode.insertAdjacentElement('afterend',auEl);
+function drawAu(){ auEl.innerHTML='<button data-au="bgm" aria-pressed="'+AU.bgm+'">♪ 音樂</button><button data-au="sfx" aria-pressed="'+AU.sfx+'">音效</button>'+
+  '<label>音量 <input type="range" min="0" max="1" step="0.05" value="'+AU.vol+'" aria-label="音量"></label>' }
+function saveAu(){ try{ localStorage.setItem('msvAudio',JSON.stringify(AU)) }catch(e){} }
+auEl.addEventListener('click',function(e){ var b=e.target.closest('[data-au]'); if(!b) return; AU[b.dataset.au]=!AU[b.dataset.au]; saveAu(); drawAu(); bgm(state==='run'||state==='pick'?stage.id:'menu'); sfx('BtMouseClick') });
+auEl.addEventListener('input',function(e){ AU.vol=+e.target.value; bgmEl.volume=AU.vol*.6; saveAu() });
+auEl.addEventListener('change',function(){ sfx('BtMouseClick') });
+drawAu();
+if(A.title) cv.parentNode.style.backgroundImage='url(maple-survivors/assets/'+A.title.src+')';
+if(BENCH) start(null); else titleScreen();
 requestAnimationFrame(loop);
 })();

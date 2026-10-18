@@ -31,7 +31,7 @@ jobs:
       - name: 視覺檢查
         run: node tools/visual.mjs
       - name: 楓之谷倖存者自檢（卷軸機率、掉落表）
-        run: node tools/maple-selfcheck.mjs
+        run: node posts/maple-survivors/tools/selfcheck.mjs
 
   deploy:
     needs: check

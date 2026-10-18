@@ -1,9 +1,10 @@
 /* 楓之谷倖存者自檢：卷軸機率（每種跑 1 萬次）＋每隻怪物都有掉落表。在 headless 瀏覽器開遊戲頁，直接呼叫頁面裡的函式。
-   cd tools && node maple-selfcheck.mjs */
-import { chromium } from 'playwright';
+   node posts/maple-survivors/tools/selfcheck.mjs */
+import { createRequire } from 'node:module';
+const { chromium } = createRequire(new URL('../../../tools/package.json', import.meta.url))('playwright');   // ponytail: playwright 裝在 tools/node_modules
 import { resolve } from 'node:path';
 
-const page = 'file://' + resolve(import.meta.dirname, '../posts/maple-survivors.html');
+const page = 'file://' + resolve(import.meta.dirname, '../../maple-survivors.html');
 const b = await chromium.launch({ args: ['--allow-file-access-from-files'] }), p = await b.newPage();
 const errs = []; p.on('pageerror', e => errs.push(e.message));
 await p.goto(page);

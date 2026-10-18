@@ -228,8 +228,8 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 ### 遊戲：站徽列第三個主分頁
 
 `cat:'遊戲'` 跟財報一樣是**模式不是分類**：站徽列「文章／財報／遊戲」，點「遊戲」→ `index.html#games`，首頁藏掉精選、分類列、搜尋，`#grid` 只留遊戲卡片；文章模式不列遊戲、精選也不會選到遊戲。遊戲頁的側欄只列遊戲、「回到列表」回 `#games`（`site.js` 的 `modeOf()`）。
-所以五處照做，**唯一差別是不加分類 chip**（`check.mjs` 已排除）。遊戲程式放 `posts/<slug>.game.js`，中英兩頁共用一支，頁尾 `<script src>` 載入；顏色照樣讀 CSS 變數（canvas 用 `getComputedStyle` 現讀）。
-規模大的遊戲在 `posts/<slug>/README.md` 記原始需求、架構、進度與待辦，**改之前先讀、改完更新**（例：`posts/maple-survivors/README.md`）。
+所以五處照做，**唯一差別是不加分類 chip**（`check.mjs` 已排除）。遊戲程式放 `posts/<slug>.game.js`（規模大的整包放 `posts/<slug>/`，如 `posts/maple-survivors/`），中英兩頁共用，頁尾 `<script src>` 載入；顏色照樣讀 CSS 變數（canvas 用 `getComputedStyle` 現讀）。
+規模大的遊戲把程式、素材、工具都收進 `posts/<slug>/`，並在 `posts/<slug>/README.md` 記原始需求、架構、進度與待辦，**改之前先讀、改完更新**（例：`posts/maple-survivors/README.md`）。
 
 ### 草稿（寫好但先不公開）
 
