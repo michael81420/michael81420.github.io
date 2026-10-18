@@ -609,8 +609,11 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .game-msg{text-align:center;color:var(--ink2);font-size:14px;min-height:1.6em;margin-top:10px}
 
 /* ---- 楓之谷倖存者（posts/maple-survivors） ---- */
-.msv .game-board{max-width:960px;aspect-ratio:16/10}
-.msv-panel{max-width:960px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+/* 選單與畫布疊在同一個固定 16:10 的框裡輪流顯示：只有視窗寬度變時框才變，切畫面不會跳 */
+.msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto}
+.msv-stage .game-board{position:absolute;inset:0;max-width:none;width:100%;height:100%;aspect-ratio:auto}
+.msv-panel{position:absolute;inset:0;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:12px 4px}
+.msv-panel>:first-child{margin-top:auto}.msv-panel>:last-child{margin-bottom:auto}
 .msv-panel h3{margin:0}
 .msv-panel .hint{font-size:13px;color:var(--ink2);text-align:center}
 .msv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;align-items:stretch}
@@ -630,3 +633,17 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-bar{width:min(320px,100%);height:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .msv-bar i{display:block;height:100%;background:var(--accent)}
 .game-btn:disabled{opacity:.45;cursor:default}
+.msv-hub{display:flex;gap:14px;align-items:center;width:min(560px,100%)}
+.msv-hub canvas{width:96px;height:110px;flex:none}
+.msv-hub .nm{font-weight:700;font-size:17px}
+.msv-hub p{margin:6px 0}
+.msv-tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.msv-tabs button{padding:6px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--ink2);font-weight:600;font-size:14px}
+.msv-tabs button[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
+.msv-tab{width:min(680px,100%);display:flex;flex-direction:column;gap:8px}
+.msv-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px}
+.msv-line.off{opacity:.55}
+.msv-line .game-btn{padding:6px 12px}
+.msv-ta{width:min(680px,100%);height:150px;background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:9px;padding:8px;font:12px/1.4 ui-monospace,monospace;resize:vertical}
+.msv-line>:first-child{flex:1;text-align:left}
+.msv-line .hint{text-align:left}
