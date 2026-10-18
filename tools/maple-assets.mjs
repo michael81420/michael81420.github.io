@@ -29,6 +29,14 @@ const CHAR_ACTS = ['stand1', 'walk1', 'atk', 'alert'];
 const SKILL_JOBS = [100, 110, 200, 210, 300, 310, 400, 410];
 const SKILLS = [1001004, 1001005, 1101006, 1100002, 2001004, 2001005, 2101004, 2101005, 2101001, 2001002,
                 3001004, 3001005, 3101005, 3100001, 4001344, 4001003, 4101004, 4100001]; // 有特效要畫的技能（被動多半沒圖，抓不到就略過）
+// 裝備：從 GMS v83 物品清單自動挑（非點裝、Lv35 以下、不限女性），每個 職業×部位 依等級段各取一件；
+// 名字有「楓葉」的武器當稀有（只會掉落）。數值與圖示讀 msu 的 WZ info，中文名讀台版清單。
+const EQ_SUB = { 'One-Handed Sword': ['weapon', 'Weapon'], 'Bow': ['weapon', 'Weapon'], 'Wand': ['weapon', 'Weapon'], 'Staff': ['weapon', 'Weapon'], 'Claw': ['weapon', 'Weapon'],
+  'Hat': ['cap', 'Cap'], 'Top': ['coat', 'Coat'], 'Overall': ['coat', 'Longcoat'], 'Bottom': ['pants', 'Pants'], 'Shoes': ['shoes', 'Shoes'], 'Glove': ['glove', 'Glove'], 'Cape': ['cape', 'Cape'] };
+const EQ_JOB = { Warrior: 'warrior', Bowman: 'bowman', Magician: 'magician', Thief: 'thief', Beginner: 'all' };
+const WEAPON_OF = { warrior: ['One-Handed Sword'], bowman: ['Bow'], magician: ['Wand', 'Staff'], thief: ['Claw'] };
+const EQ_TIERS = [0, 8, 15, 20, 25, 30, 35];
+const SCROLLS = { w: [2043000, 2043004, 2043001, 2043005, 2043002], a: [2040000, 2040008, 2040001, 2040009, 2040002] };  // 100/70/60/30/10
 // BOSS 關沿用 s1 地板。
 // 關卡地板：原作沒有俯視地面 → 用該地區的 bsc（原作就設計成無縫重複的泥土填充）鋪底，再撒該地區的地圖物件
 const FLOORS = {
@@ -107,7 +115,7 @@ await page.evaluate(() => {
   };
 });
 
-const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {} }, report = [], miss = [];
+const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {}, itm: {}, ico: {} }, report = [], miss = [];
 let bytes = 0;
 async function emit(kind, id, acts, q = 1) {           // q=1 → Chromium 走無損 WebP，像素圖邊緣不糊
   // 每個動作的幀先在頁面裡解好、存在 window.A，再一次拼圖（幀不跨回 Node）
@@ -169,6 +177,39 @@ for (const [k, f] of Object.entries(FLOORS)) {
   if (!acts.bsc.png.length) { miss.push(`floor ${k} ${f.tile}（沒有 bsc）`); continue; }
   if (!acts.obj.png.length) { miss.push(`floor ${k} 物件`); delete acts.obj; }
   await emit('map', k, acts, .9);
+}
+// 裝備與道具圖示
+{
+  const all = JSON.parse(await get('item', { regs: ['GMS/83'] })), tw = {};
+  for (const it of JSON.parse(await get('item', { regs: ['TWMS/256'] }))) tw[it.id] = it.name;
+  const pick = {}, rare = [];
+  for (const it of all) {
+    const sub = it.typeInfo?.subCategory, job = EQ_JOB[(it.requiredJobs || [])[0]];
+    if (!EQ_SUB[sub] || !job || it.isCash || it.requiredGender === 1 || it.requiredLevel > 35 || (it.requiredJobs || []).length !== 1 || !tw[it.id]) continue;
+    if (/楓葉/.test(tw[it.id])) { if (EQ_SUB[sub][0] === 'weapon') rare.push(it); continue; }   // 楓葉之劍在原作是初心者可用，所以先於職業過濾
+    if (EQ_SUB[sub][0] === 'weapon' && (job === 'all' || !WEAPON_OF[job].includes(sub))) continue;
+    const tier = EQ_TIERS.filter(t => t <= it.requiredLevel).pop(), key = `${job}/${sub}/${tier}`;
+    if (!pick[key] || it.id < pick[key].id) pick[key] = it;
+  }
+  const chosen = [...Object.values(pick), ...rare].sort((a, b) => a.id - b.id), eq = [];
+  await pool(chosen, 6, async it => {
+    const [slotNm, dir] = EQ_SUB[it.typeInfo.subCategory], j = await msuJson(`Character/${dir}/${String(it.id).padStart(8, '0')}.json`), inf = j?.info;
+    if (!inf?.icon?._path) { miss.push(`itm ${it.id} ${tw[it.id]}`); return; }
+    const st = {}; for (const [k, w] of [['incPAD', 'pad'], ['incMAD', 'mad'], ['incSTR', 'str'], ['incDEX', 'dex'], ['incINT', 'int'], ['incLUK', 'luk'], ['incPDD', 'pdd'], ['incMHP', 'mhp'], ['incEVA', 'eva'], ['incSpeed', 'spd']]) if (inf[k]) st[w] = +inf[k];
+    const job = slotNm === 'weapon' ? Object.keys(WEAPON_OF).find(j => WEAPON_OF[j].includes(it.typeInfo.subCategory)) : EQ_JOB[it.requiredJobs[0]];
+    if (!Object.keys(st).length) return;   // 沒有任何屬性的是造型服，當裝備沒意義
+    const rq = {}; for (const k of ['STR', 'DEX', 'INT', 'LUK']) if (+inf['req' + k]) rq[k.toLowerCase()] = +inf['req' + k];   // 原作的屬性需求
+    eq.push({ id: it.id, f: inf.icon, m: { nm: tw[it.id], s: slotNm, job, rq, req: it.requiredLevel, st, tuc: +inf.tuc || 0, price: +inf.price || 1,
+      ...(rare.includes(it) ? { rare: 1 } : {}), ...(slotNm === 'coat' && dir === 'Longcoat' ? { ov: 1 } : {}) } });
+  });
+  eq.sort((a, b) => a.id - b.id);
+  const cons = await msuJson('Item/Consume/0204.json'), spec = await msuJson('Item/Special/0900.json');
+  const sc = [...SCROLLS.w, ...SCROLLS.a].map(id => cons?.[String(id).padStart(8, '0')]?.info?.icon).filter(Boolean);
+  const acts = { eq: { png: await msuFrames(eq.map(e => e.f)) }, sc: { png: await msuFrames(sc) } };
+  for (let i = 0; i < 4; i++) acts['meso' + i] = { png: await msuFrames(frames(spec?.['0900000' + i]?.iconRaw)) };
+  await emit('ico', 'items', acts, 1);
+  eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; });
+  report.push(`itm  ${eq.length} 件裝備（稀有 ${eq.filter(e => e.m.rare).length}）、卷軸圖示 ${sc.length}`);
 }
 await browser.close();
 

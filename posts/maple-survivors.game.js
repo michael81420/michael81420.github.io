@@ -12,7 +12,7 @@ var Q=new URLSearchParams(location.search), BENCH=+Q.get('bench')||0;
 var IMG={};
 function img(src){ if(!IMG[src]){ IMG[src]=new Image(); IMG[src].src='../assets/maple/'+src } return IMG[src] }
 // 每個動作預先算總長，取幀不用每次加總
-[A.mob,A.chr,A.skl,A.map,A.npc].forEach(function(set){ for(var k in set){ var e=set[k]; e.tot={}; for(var a in e.a) e.tot[a]=e.a[a].reduce(function(s,f){return s+f[6]},0)/1000 } });
+[A.mob,A.chr,A.skl,A.map,A.npc,A.ico].forEach(function(set){ for(var k in set){ var e=set[k]; e.tot={}; for(var a in e.a) e.tot[a]=e.a[a].reduce(function(s,f){return s+f[6]},0)/1000 } });
 function frameAt(e,act,t,loop){
   var fr=e.a[act]; if(!fr) return null;
   var tt=loop? t%e.tot[act] : Math.min(t,e.tot[act]-1e-6), i=0;
@@ -49,7 +49,8 @@ function near(x,y,r,fn){ // 半徑 r 內的怪物
 function nearest(x,y,r){ var best=null, bd=r*r; near(x,y,r,function(m){ var d=(m.x-x)*(m.x-x)+(m.y-y)*(m.y-y); if(d<bd){bd=d; best=m} }); return best }
 
 // ---- 存檔：4 個角色欄位，彼此不共用任何東西 ----
-// 欄位：{nm, job, lv, exp, adv(0 見習/1/2), ap, sp, str/dex/int/luk, sk:{技能id:等級}, load:[帶進關卡的主動技能], st:{關卡id:{best 最久存活秒, clears}}}
+// 欄位：{nm, job, lv, exp, adv(0 見習/1/2), ap, sp, str/dex/int/luk, sk:{技能id:等級}, load:[帶進關卡的主動技能], st:{關卡id:{best 最久存活秒, clears}},
+//        meso, eqp:{部位:裝備}, inv:[裝備], scr:{卷軸k:數量}}；裝備＝{id, st:{屬性}, tuc 剩餘強化次數, up 成功次數, req?（新手武器 0）}
 var KEY='msvSave', SV=load();
 function load(){
   var raw=null; try{ raw=localStorage.getItem(KEY) }catch(e){}
@@ -67,8 +68,51 @@ function valid(s){
 function fix(s){
   if(!s) return; var J=D.JOBS[s.job];
   if(s.str==null){ D.STATS.forEach(function(k){ s[k]=D.START_STAT }); s[J.main]=D.START_MAIN; s.ap=(s.lv-1)*D.AP_LV; s.sp=0 }
-  s.adv=s.adv||0; s.sk=s.sk||{}; s.load=s.load||[]; s.st=s.st||{}; s.meso=s.meso||0;
+  s.adv=s.adv||0; s.sk=s.sk||{}; s.load=s.load||[]; s.st=s.st||{}; s.meso=s.meso||0; s.inv=s.inv||[]; s.scr=s.scr||{};
+  if(!s.eqp){ s.eqp={}; var w=starter(s.job); if(w){ w.req=0; s.eqp.weapon=w } }   // 創角送本職業最低階武器
 }
+// ---- 裝備 ----
+function mkItem(id,roll){
+  var m=A.itm[id], st={};
+  for(var k in m.st){ var r=roll?(k==='pad'||k==='mad'?D.ROLL.atk:D.ROLL.stat):[0,0]; st[k]=Math.max(1,m.st[k]+Math.round(r[0]+Math.random()*(r[1]-r[0]))) }
+  return {id:+id, st:st, tuc:m.tuc, up:0};
+}
+function starter(job){ var best=null; for(var id in A.itm){ var m=A.itm[id]; if(m.s==='weapon'&&m.job===job&&!m.rare&&(!best||m.req<A.itm[best].req)) best=id } return best&&mkItem(best,false) }
+function reqOf(it){ return it.req!=null?it.req:A.itm[it.id].req }
+function jobOk(s,m){ return m.job===s.job||m.job==='all' }
+// 原作規則：等級＋屬性需求（屬性算身上裝備加成後的總值）。回傳不符合的原因，空字串＝可以穿
+function whyNot(s,it){
+  var m=A.itm[it.id], q=calc(s).q, out=[];
+  if(!jobOk(s,m)) return D.JOBS[m.job]?D.JOBS[m.job].nm+'專用':'職業不符';
+  if(reqOf(it)>s.lv) out.push('Lv.'+reqOf(it));
+  if(it.req!==0) for(var k in m.rq) if(q[k]<m.rq[k]) out.push(k.toUpperCase()+' '+m.rq[k]);
+  return out.length?'需要 '+out.join('、'):'';
+}
+// 掉落表：怪物 Lv＋band 範圍內的裝備（全部職業，圖鑑用）＋指定的稀有裝備
+var DT={};
+function dropTable(id){
+  if(DT[id]) return DT[id]; var M=D.MOBS[id], b=D.DROP.band;
+  return DT[id]={eq:Object.keys(A.itm).filter(function(i){ var m=A.itm[i]; return !m.rare&&m.req>=M.lv+b[0]&&m.req<=M.lv+b[1] }).map(Number),
+    rare:(M.rare||[]).filter(function(i){ return A.itm[i] })};
+}
+function stageMobs(g2){ var o=[]; g2.waves.forEach(function(w){ w.mobs.forEach(function(id){ if(o.indexOf(id)<0) o.push(id) }) }); return o }
+// 套服佔上衣＋褲子兩格；換下來的東西回背包
+function equip(s,i){
+  var it=s.inv[i], m=A.itm[it.id], out=[];
+  if(s.eqp[m.s]) out.push(s.eqp[m.s]);
+  if(m.ov&&s.eqp.pants){ out.push(s.eqp.pants); delete s.eqp.pants }
+  if(m.s==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov){ out.push(s.eqp.coat); delete s.eqp.coat }
+  s.eqp[m.s]=it; s.inv.splice(i,1); s.inv.push.apply(s.inv,out);
+}
+// 卷軸：成功失敗都扣一次強化次數；詛咒卷軸失敗 50% 爆裝。回傳 ok/fail/boom（rng 可注入，自檢用）
+function useScroll(s,it,sc,rng){
+  rng=rng||Math.random; if(it.tuc<=0) return null; it.tuc--;
+  if(rng()<sc.pct){ var main=D.JOBS[s.job].main, atk=s.job==='magician'?'mad':'pad';
+    if(sc.fx.atk) it.st[atk]=(it.st[atk]||0)+sc.fx.atk; if(sc.fx.main) it.st[main]=(it.st[main]||0)+sc.fx.main; if(sc.fx.pdd) it.st.pdd=(it.st.pdd||0)+sc.fx.pdd;
+    it.up++; return 'ok' }
+  return sc.dark&&rng()<.5?'boom':'fail';
+}
+window.__msvScroll=useScroll; window.__msvDropTable=dropTable;   // 給 tools/maple-selfcheck.mjs 用
 function newSlot(nm,job){ var s={nm:nm, job:job, lv:1, exp:0}; fix(s); return s }
 function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(SV)) }catch(e){ msg('存檔失敗：瀏覽器可能關閉了儲存空間') } }
 function esc(t){ return String(t).replace(/[&<>"']/g,function(c){return '&#'+c.charCodeAt(0)+';'}) }
@@ -79,16 +123,19 @@ function calc(s){
   var J=D.JOBS[s.job], m={hp:0,def:0,eva:0,crit:0,dmg:0,cdr:0,range:0,final:0}, finalId=null;
   for(var id in s.sk){ var d=D.SK[id], lv=s.sk[id]; if(!d||d.act||!lv) continue;
     for(var k in d.mods) m[k]+=lerp(d.mods[k],lv,d.max); if(d.mods.final) finalId=+id }
-  var eva=s.dex*.5+s.luk+m.eva;
-  return {maxHp:Math.round((J.hp+(s.lv-1)*J.hpLv)*(1+m.hp)), atk:J.base*(s[J.main]*4+s[J.sub])/52, def:Math.min(D.DEF_MAX,m.def),
-    evaPts:eva, eva:Math.min(D.EVA_MAX,eva/(eva+D.EVA_K)), crit:D.CRIT+m.crit, dmg:1+m.dmg, cdr:Math.min(.6,m.cdr), range:1+m.range, final:m.final, finalId:finalId};
+  var q={str:s.str,dex:s.dex,int:s.int,luk:s.luk,pdd:0,mhp:0,eva:0,spd:0}, W=0, atkKey=s.job==='magician'?'mad':'pad';
+  for(var sl in s.eqp){ var st2=s.eqp[sl]&&s.eqp[sl].st; if(!st2) continue; W+=st2[atkKey]||0; for(var k2 in q) q[k2]+=st2[k2]||0 }
+  var eva=q.dex*.5+q.luk+m.eva+q.eva;
+  return {maxHp:Math.round((J.hp+(s.lv-1)*J.hpLv)*(1+m.hp))+q.mhp, atk:(J.base+W)*(q[J.main]*4+q[J.sub])/52*D.ATK_K, W:W, q:q,
+    def:Math.min(D.DEF_MAX,m.def+q.pdd/(q.pdd+D.DEF_K)), evaPts:eva, eva:Math.min(D.EVA_MAX,eva/(eva+D.EVA_K)), crit:D.CRIT+m.crit, dmg:1+m.dmg,
+    cdr:Math.min(.6,m.cdr), range:1+m.range, final:m.final, finalId:finalId, spd:J.spd*(1+q.spd/100)};
 }
 // 帶進關卡、而且真的能用的主動技能
 function loadout(s){ return s.load.filter(function(id){ var d=D.SK[id]; return d&&d.act&&d.adv<=s.adv&&s.sk[id] }).slice(0,D.SLOTS[s.adv]) }
 
 // ---- 狀態 ----
 var P, slot=null, stage, st, cam={x:0,y:0}, keys={}, joy=null, state='menu', fps=0;
-var zones=new Pool(function(){return {}});
+var zones=new Pool(function(){return {}}), drops=new Pool(function(){return {}});
 function start(i,stageId){
   var s=i==null?newSlot('bench',Q.get('job')||'magician'):SV.slots[i], J=D.JOBS[s.job], S=calc(s);
   slot=i;
@@ -96,7 +143,11 @@ function start(i,stageId){
      // 基本攻擊永遠在第一格；其餘是技能欄裡的主動技能
      acts:[{d:J.atk, lv:1, cd:0}].concat(loadout(s).map(function(id){ return {id:+id, d:D.SK[id], lv:s.sk[id], cd:.5} }))};
   stage=D.STAGES[stageId||'s1']; stage.id=stageId||'s1'; st={t:0, spawnAcc:0, dur:+Q.get('dur')||stage.dur}; keys={}; joy=null;
-  [mobs,shots,fxs,nums,zones].forEach(function(p){ p.each(function(o){p.free(o)}) });
+  // 實際掉落只掉本職業＋共用（每種怪先算好）
+  P.drops={}; stageMobs(stage).forEach(function(id){ var t=dropTable(id), own=function(i){ return jobOk(s,A.itm[i]) };
+    P.drops[id]={eq:t.eq.filter(own), rare:t.rare.filter(own)} });
+  P.loot={meso:0, items:[], scr:{}}; P.room=i==null?0:D.INV_MAX-s.inv.length;
+  [mobs,shots,fxs,nums,zones,drops].forEach(function(p){ p.each(function(o){p.free(o)}) });
   view('game'); state='run'; msg('');
 }
 function msg(s){ $('msv-msg').textContent=s }
@@ -113,7 +164,23 @@ function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) 
 function hurt(m,dmg,crit){
   if(m.dieT>=0) return; dmg=Math.max(1,Math.round(dmg*(.9+Math.random()*.2)));
   m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0);
-  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp }
+  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp; if(!BENCH) dropFrom(m) }
+}
+function dropFrom(m){
+  var R=D.DROP, r=Math.random;
+  if(r()<R.meso) addDrop(m,'meso',Math.round(m.M.exp*(1+r())));
+  var t=P.drops[m.id]||dropTable(m.id);
+  if(r()<R.eq&&t.eq.length) addDrop(m,'eq',t.eq[(r()*t.eq.length)|0]);
+  if(r()<R.rare&&t.rare.length) addDrop(m,'eq',t.rare[(r()*t.rare.length)|0]);
+  if(r()<R.scroll){ var w=D.SCROLL_DROP_W, tot=w.reduce(function(a,b){return a+b}), x=r()*tot, i=0; while((x-=w[i])>0) i++; addDrop(m,'sc',i) }
+}
+function addDrop(m,kind,v){ var d=drops.get(); d.x=m.x+(Math.random()-.5)*30; d.y=m.y+(Math.random()-.5)*20; d.kind=kind; d.v=v; d.t=0; d.fly=false }
+// 撿起：楓幣直接記；裝備背包滿了就不撿（留在地上）
+function pick(d){
+  if(d.kind==='meso') P.loot.meso+=d.v;
+  else if(d.kind==='sc'){ var k=D.SCROLLS[d.v].k; P.loot.scr[k]=(P.loot.scr[k]||0)+1 }
+  else { if(P.loot.items.length>=P.room){ if(!P.fullWarn){ P.fullWarn=1; num(P.x,P.y-80,'背包滿了',3) } return false } P.loot.items.push(mkItem(d.v,true)) }
+  return true;
 }
 // 玩家打怪都走這裡：爆擊、追擊（終極之劍／弓）
 function deal(m,dmg){
@@ -161,7 +228,7 @@ function update(dt){
   // 移動
   var mx=(keys.right?1:0)-(keys.left?1:0), my=(keys.down?1:0)-(keys.up?1:0);
   if(joy){ mx=joy.dx; my=joy.dy }
-  var ml=Math.hypot(mx,my), spd=P.J.spd*(1+P.B.spd); P.moving=ml>.1;
+  var ml=Math.hypot(mx,my), spd=P.S.spd*(1+P.B.spd); P.moving=ml>.1;
   if(P.moving){ if(ml>1){mx/=ml; my/=ml} P.x+=mx*spd*dt; P.y+=my*spd*dt; if(Math.abs(mx)>.1) P.face=mx>0 }
   cam.x=P.x-W/2; cam.y=P.y-H/2+30;
   // 生怪
@@ -202,6 +269,10 @@ function update(dt){
       if(--s.pierce<=0){ shots.free(s); return false }
     });
   });
+  drops.each(function(d){ d.t+=dt; var dx=P.x-d.x, dy=P.y-d.y, dd=Math.hypot(dx,dy);
+    if(dd<D.MAGNET) d.fly=true;
+    if(d.fly){ var v=Math.min(dd,(260+d.t*60)*dt); d.x+=dx/dd*v; d.y+=dy/dd*v }
+    if(dd<D.PICK&&pick(d)) drops.free(d) });
   zones.each(function(z){ z.t+=dt; z.tick-=dt;
     if(z.tick<=0){ z.tick=.5; near(z.x,z.y,z.r,function(m){ if(Math.hypot(m.x-z.x,m.y-z.y)<z.r) deal(m,z.dmg) }) }
     if(z.t>=z.dur) zones.free(z) });
@@ -215,6 +286,9 @@ function end(win){
   if(s){
     s.exp+=gain; while(s.exp>=D.exp(s.lv)){ s.exp-=D.exp(s.lv); s.lv++; up++; s.ap+=D.AP_LV; if(s.adv>=1) s.sp+=D.SP_LV }
     var r=s.st[stage.id]||(s.st[stage.id]={best:0,clears:0}); r.best=Math.max(r.best,Math.floor(st.t)); if(win) r.clears++;
+    if(win) drops.each(function(d){ if(pick(d)) drops.free(d) });
+    s.meso+=P.loot.meso;
+    if(win){ s.inv.push.apply(s.inv,P.loot.items); for(var k in P.loot.scr) s.scr[k]=(s.scr[k]||0)+P.loot.scr[k] }
     persist();
   }
   resultScreen(win,gain,up);
@@ -238,6 +312,12 @@ var drawList=[];
 function draw(){
   g.setTransform(scale,0,0,scale,0,0);
   drawFloor();
+  var IC=A.ico.items;
+  drops.each(function(d){ var x=d.x-cam.x, y=d.y-cam.y-Math.abs(Math.sin(d.t*3))*6, f;
+    if(d.kind==='meso'){ var k=d.v<50?0:d.v<100?1:d.v<1000?2:3; f=frameAt(IC,'meso'+k,d.t,true) }
+    else if(d.kind==='sc') f=IC.a.sc[D.SCROLLS[d.v].icon];
+    else { f=IC.a.eq[A.itm[d.v].i]; if(A.itm[d.v].rare){ g.globalAlpha=.35; g.fillStyle=C['--turn']; g.beginPath(); g.arc(x,y-12,18,0,7); g.fill(); g.globalAlpha=1 } }
+    if(f) spr(IC,f,x,y,false) });
   zones.each(function(z){ var e=A.skl[z.id], x=z.x-cam.x, y=z.y-cam.y;
     g.globalAlpha=.18*Math.min(1,(z.dur-z.t)*2); g.fillStyle=C['--win']; g.beginPath(); g.ellipse(x,y,z.r,z.r*.6,0,0,7); g.fill(); g.globalAlpha=1;
     if(e&&e.a.hit) spr(e,frameAt(e,'hit',z.t,true),x,y,false,z.r/60) });
@@ -274,7 +354,7 @@ function drawHud(){
   var left=Math.max(0,st.dur-st.t), s=String(Math.floor(left%60)).padStart(2,'0');
   g.font='bold 22px sans-serif'; g.textAlign='center'; g.strokeStyle=C['--surface']; g.lineWidth=4;
   g.strokeText(Math.floor(left/60)+':'+s,W/2,34); g.fillText(Math.floor(left/60)+':'+s,W/2,34);
-  g.font='bold 13px sans-serif'; g.textAlign='right'; var txt='擊倒 '+P.kills+'　怪物 '+mobs.n+(BENCH?'　'+fps.toFixed(0)+' fps　'+(window.__msvMs||0).toFixed(1)+' ms':'');
+  g.font='bold 13px sans-serif'; g.textAlign='right'; var txt='擊倒 '+P.kills+'　楓幣 '+P.loot.meso+'　裝備 '+P.loot.items.length+'　怪物 '+mobs.n+(BENCH?'　'+fps.toFixed(0)+' fps　'+(window.__msvMs||0).toFixed(1)+' ms':'');
   g.strokeText(txt,W-14,28); g.fillText(txt,W-14,28);
   // 技能冷卻列（左下）
   var bx=14; P.acts.forEach(function(k,i){ if(!i) return; var full=lerp(k.d.cd,k.lv,k.d.max)*(1-P.S.cdr), r=Math.max(0,k.cd)/full;
@@ -313,10 +393,10 @@ function show(h){
   view('panel'); var top=panel.scrollTop; panel.innerHTML=h; panel.scrollTop=top; state='menu';
   // data-spr="npc:1022000" / "chr:warrior-0" 的小畫布在選單迴圈裡播站立動畫
   minis=[].map.call(panel.querySelectorAll('canvas[data-spr]'),function(c){ var p=c.dataset.spr.split(':'), e=A[p[0]][p[1]], r=c.getBoundingClientRect(), d=window.devicePixelRatio||1;
-    c.width=Math.round(r.width*d); c.height=Math.round(r.height*d); return {c:c, g:c.getContext('2d'), e:e, act:p[0]==='npc'?'stand':'stand1', flip:p[0]==='chr'} });
+    c.width=Math.round(r.width*d); c.height=Math.round(r.height*d); return {c:c, g:c.getContext('2d'), e:e, act:p[0]==='chr'?'stand1':'stand', flip:p[0]==='chr'} });
 }
 function drawMinis(t){
-  minis.forEach(function(m){ var fr=m.e.a[m.act], f=frameAt(m.e,m.act,t,true), mh=Math.max.apply(null,fr.map(function(q){return q[5]})), k=Math.min(2,(m.c.height-8)/mh);
+  minis.forEach(function(m){ var fr=m.e.a[m.act], f=frameAt(m.e,m.act,t,true), mh=Math.max.apply(null,fr.map(function(q){return q[5]})), mw=Math.max.apply(null,fr.map(function(q){return q[2]})), k=Math.min(2,(m.c.height-8)/mh,(m.c.width-4)/mw);
     m.g.setTransform(1,0,0,1,0,0); m.g.clearRect(0,0,m.c.width,m.c.height); m.g.imageSmoothingEnabled=false;
     var x=m.c.width/2, y=m.c.height-4, im=img(m.e.src);
     m.g.translate(x,y); if(m.flip) m.g.scale(-1,1); m.g.drawImage(im,f[0],f[1],f[2],f[3],-f[4]*k,-f[5]*k,f[2]*k,f[3]*k) });
@@ -353,21 +433,91 @@ function createScreen(i){
   var keep=$('msv-nm')&&$('msv-nm').value; show(h); if(keep) $('msv-nm').value=keep;
 }
 
+// ---- 物品顯示 ----
+function ico(f,title){ var IC=A.ico.items; return '<i class="msv-ico" title="'+esc(title||'')+'" style="width:'+f[2]+'px;height:'+f[3]+'px;background-image:url(../assets/maple/'+IC.src+');background-position:-'+f[0]+'px -'+f[1]+'px"></i>' }
+function itIco(id){ return ico(A.ico.items.a.eq[A.itm[id].i],A.itm[id].nm) }
+function stTxt(st){ return Object.keys(st).map(function(k){ return D.ST_NM[k]+' +'+st[k] }).join('、')||'無' }
+function rqTxt(m,free){ if(free) return 'Lv.0'; var a=['Lv.'+m.req]; for(var k in m.rq) a.push(k.toUpperCase()+' '+m.rq[k]); return a.join('、') }
+function slotNm(k){ for(var i=0;i<D.EQ_SLOTS.length;i++) if(D.EQ_SLOTS[i][0]===k) return D.EQ_SLOTS[i][1] }
+function jobNm(j){ return j==='all'?'共用':D.JOBS[j].nm }
+function sellP(m){ return Math.floor(D.PRICE(m.price)*D.SELL) }
+function fxTxt(sc){ var f=sc.fx; return sc.t==='w'?'攻擊 +'+f.atk+(f.main?'、主屬性 +'+f.main:''):'主屬性 +'+f.main+'、防禦 +'+f.pdd }
+function selItem(s){ return !ui.it?null:ui.it.from==='eqp'?s.eqp[ui.it.k]:s.inv[ui.it.k] }
+function mobsDropping(id){ return Object.keys(D.MOBS).filter(function(m){ var t=dropTable(m); return t.eq.indexOf(+id)>=0||t.rare.indexOf(+id)>=0 }) }
+
+function eqTab(s){
+  var S=calc(s), h='<p class="hint">楓幣 <b>'+s.meso+'</b>・背包 '+s.inv.length+' / '+D.INV_MAX+'・攻擊力 '+Math.round(S.atk)+'・最大HP '+S.maxHp+'・減傷 '+pct(S.def)+'</p><div class="msv-cells slots">';
+  D.EQ_SLOTS.forEach(function(e){ var it=s.eqp[e[0]], ov=e[0]==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov, on=ui.it&&ui.it.from==='eqp'&&ui.it.k===e[0];
+    h+='<button class="msv-cell'+(on?' on':'')+'" data-eqp="'+e[0]+'"'+(it?'':' disabled')+'>'+(it?itIco(it.id):'')+'<span>'+(ov?'套服':e[1])+'</span></button>' });
+  h+='</div><div class="msv-cells">';
+  s.inv.forEach(function(it,i){ var on=ui.it&&ui.it.from==='inv'&&ui.it.k===i, bad=whyNot(s,it);
+    h+='<button class="msv-cell'+(on?' on':'')+(bad?' no':'')+'" data-inv="'+i+'">'+itIco(it.id)+(it.up?'<span>+'+it.up+'</span>':'')+'</button>' });
+  if(!s.inv.length) h+='<span class="hint">背包是空的，打怪會掉裝備，也可以到商店買。</span>';
+  return h+'</div>'+itemDetail(s);
+}
+function itemDetail(s){
+  var it=selItem(s); if(!it) return '<p class="hint">點一件裝備看詳細資料。紅框＝目前還穿不了。</p>';
+  var m=A.itm[it.id], why=whyNot(s,it);
+  var h='<div class="msv-line"><div>'+itIco(it.id)+' <b>'+m.nm+(it.up?' (+'+it.up+')':'')+'</b>'+(m.rare?' <span class="hint">★ 稀有</span>':'')+
+    '<div class="hint">'+jobNm(m.job)+'・'+slotNm(m.s)+(m.ov?'（套服，佔上衣＋褲子）':'')+'・需求 '+rqTxt(m,it.req===0)+'</div>'+
+    '<div class="hint">目前數值：'+stTxt(it.st)+'</div><div class="hint">原始數值：'+stTxt(m.st)+'・剩餘強化 '+it.tuc+' / '+m.tuc+' 次</div></div></div><div class="msv-row">';
+  if(ui.it.from==='inv') h+='<button class="game-btn" data-act="wear"'+(why?' disabled':'')+'>'+(why||'裝備')+'</button><button class="game-btn ghost" data-act="sell">賣出（'+sellP(m)+' 楓幣）</button>';
+  else h+='<button class="game-btn ghost" data-act="unwear"'+(s.inv.length>=D.INV_MAX?' disabled':'')+'>'+(s.inv.length>=D.INV_MAX?'背包滿了':'卸下')+'</button>';
+  h+='</div>';
+  if(it.tuc>0){ var t=m.s==='weapon'?'w':'a', any=0; h+='<div class="msv-row">';
+    D.SCROLLS.forEach(function(sc){ if(sc.t!==t||!s.scr[sc.k]) return; any=1;
+      h+='<button class="game-btn ghost" data-scroll="'+sc.k+'">'+ico(A.ico.items.a.sc[sc.icon])+' '+sc.pct*100+'%'+(sc.dark?'詛咒':'')+' ×'+s.scr[sc.k]+'</button>' });
+    h+=(any?'':'<span class="hint">沒有'+(t==='w'?'武器':'防具')+'卷軸，可以到商店買。</span>')+'</div>' }
+  return h;
+}
+function shopTab(s){
+  var full=s.inv.length>=D.INV_MAX, h='<p class="hint">楓幣 <b>'+s.meso+'</b>・背包 '+s.inv.length+' / '+D.INV_MAX+'</p><h4>卷軸</h4>';
+  D.SCROLLS.forEach(function(sc){
+    h+='<div class="msv-line"><div>'+ico(A.ico.items.a.sc[sc.icon])+' <b>'+(sc.t==='w'?'武器':'防具')+'卷軸 '+sc.pct*100+'%</b>'+(sc.dark?' <span class="hint">詛咒：失敗時 50% 裝備爆掉</span>':'')+
+      '<div class="hint">成功：'+fxTxt(sc)+'・持有 '+(s.scr[sc.k]||0)+'</div></div><button class="game-btn" data-buysc="'+sc.k+'"'+(s.meso<sc.price?' disabled':'')+'>'+sc.price+' 楓幣</button></div>' });
+  h+='<h4>裝備（'+D.JOBS[s.job].nm+'與共用，Lv.'+(s.lv+10)+' 以下；稀有裝備只會掉落）</h4>';
+  Object.keys(A.itm).filter(function(id){ var m=A.itm[id]; return !m.rare&&jobOk(s,m)&&m.req<=s.lv+10 })
+    .sort(function(a,b){ return A.itm[a].req-A.itm[b].req }).forEach(function(id){ var m=A.itm[id], p=D.PRICE(m.price);
+      h+='<div class="msv-line"><div>'+itIco(id)+' <b>'+m.nm+'</b> <span class="hint">'+slotNm(m.s)+'・需求 '+rqTxt(m)+'</span><div class="hint">'+stTxt(m.st)+'・可強化 '+m.tuc+' 次</div></div>'+
+        '<button class="game-btn" data-buyeq="'+id+'"'+(s.meso<p||full?' disabled':'')+'>'+(full?'背包滿了':p+' 楓幣')+'</button></div>' });
+  return h;
+}
+// 圖鑑：怪物（掉落表）／裝備（需求、原始數值、取得方式）
+function codexTab(s){
+  var h='<div class="msv-tabs"><button data-cx="mob" aria-selected="'+(ui.cx!=='eq')+'">怪物</button><button data-cx="eq" aria-selected="'+(ui.cx==='eq')+'">裝備</button>'+
+    (ui.cx==='eq'?'<button data-cxall="1" aria-selected="'+!!ui.cxAll+'">'+(ui.cxAll?'顯示全部職業':'只看'+D.JOBS[s.job].nm+'＋共用')+'</button>':'')+'</div>';
+  if(ui.cx!=='eq'){
+    Object.keys(D.MOBS).forEach(function(id){ var M=D.MOBS[id], t=dropTable(id), own=t.eq.filter(function(i){ return jobOk(s,A.itm[i]) });
+      var where=Object.keys(D.STAGES).filter(function(k){ return stageMobs(D.STAGES[k]).indexOf(+id)>=0 }).map(function(k){ return D.STAGES[k].nm });
+      h+='<div class="msv-line mob"><canvas data-spr="mob:'+id+'"></canvas><div><b>'+M.nm+'</b> <span class="hint">Lv.'+M.lv+'・HP '+M.hp+'・經驗 '+M.exp+(M.boss?'・BOSS':'')+'・出現：'+(where.join('、')||'尚未開放')+'</span>'+
+        '<div class="hint">掉落 '+t.eq.length+' 種裝備（'+D.JOBS[s.job].nm+'能用 '+own.length+' 種）'+(t.rare.length?'，稀有 '+t.rare.length+' 種':'')+'・楓幣、卷軸</div>'+
+        '<div class="msv-drops">'+t.rare.map(function(i){ return '<span class="rare">'+itIco(i)+'</span>' }).join('')+own.map(itIco).join('')+'</div></div></div>' });
+    return h;
+  }
+  Object.keys(A.itm).filter(function(id){ return ui.cxAll||jobOk(s,A.itm[id]) }).sort(function(a,b){ return A.itm[a].req-A.itm[b].req||(A.itm[a].s<A.itm[b].s?-1:1) }).forEach(function(id){
+    var m=A.itm[id], src=mobsDropping(id).map(function(k){ return D.MOBS[k].nm });
+    h+='<div class="msv-line"><div>'+itIco(id)+' <b>'+m.nm+'</b>'+(m.rare?' <span class="hint">★ 稀有</span>':'')+' <span class="hint">'+jobNm(m.job)+'・'+slotNm(m.s)+(m.ov?'（套服）':'')+'</span>'+
+      '<div class="hint">需求 '+rqTxt(m)+'・原始數值 '+stTxt(m.st)+'・可強化 '+m.tuc+' 次</div>'+
+      '<div class="hint">取得：'+(m.rare?'只會掉落':'商店 '+D.PRICE(m.price)+' 楓幣')+(src.length?'・掉落：'+src.join('、'):'・目前沒有怪物掉落')+'</div></div></div>' });
+  return h;
+}
+
 // 角色主畫面：上方角色資訊＋分頁
 function hubScreen(){
-  var s=SV.slots[ui.sel], tabs=[['go','出發'],['stat','能力值'+(s.ap?' ('+s.ap+')':'')],['skill','技能'+(s.sp?' ('+s.sp+')':'')]];
+  var s=SV.slots[ui.sel], tabs=[['go','出發'],['stat','能力值'+(s.ap?' ('+s.ap+')':'')],['skill','技能'+(s.sp?' ('+s.sp+')':'')],['eq','裝備'],['shop','商店'],['codex','圖鑑']];
   if(canAdv(s)) tabs.push(['adv','轉職！']);
   var h='<div class="msv-hub"><canvas data-spr="chr:'+s.job+'-'+s.adv+'"></canvas><div><div class="nm">'+esc(s.nm)+'</div>'+
     '<div class="hint">Lv.'+s.lv+'　'+advNm(s)+'</div><div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div>'+
     '<div class="hint">EXP '+s.exp+' / '+D.exp(s.lv)+'</div></div></div><div class="msv-tabs" role="tablist">';
   tabs.forEach(function(t){ h+='<button role="tab" aria-selected="'+(ui.tab===t[0])+'" data-tab="'+t[0]+'">'+t[1]+'</button>' });
-  h+='</div><div class="msv-tab">'+({go:goTab,stat:statTab,skill:skillTab,adv:advTab}[ui.tab]||goTab)(s)+'</div>'+
+  h+='</div><div class="msv-tab">'+({go:goTab,stat:statTab,skill:skillTab,eq:eqTab,shop:shopTab,codex:codexTab,adv:advTab}[ui.tab]||goTab)(s)+'</div>'+
      '<div class="msv-row"><button class="game-btn ghost" data-act="home">回到角色選擇</button></div>';
   show(h);
 }
 function goTab(s){
   return Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id];
-    return '<div class="msv-line"><div><b>'+esc(g2.nm)+'</b><div class="hint">撐過 '+fmt(g2.dur)+' 通關・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div></div>'+
+    return '<div class="msv-line"><div><b>'+esc(g2.nm)+'</b><div class="hint">撐過 '+fmt(g2.dur)+' 通關・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div>'+
+      '<div class="msv-mobs">'+stageMobs(g2).map(function(m){ return '<button data-cxmob="'+m+'"><canvas data-spr="mob:'+m+'"></canvas><span>'+D.MOBS[m].nm+'<br>Lv.'+D.MOBS[m].lv+'</span></button>' }).join('')+'</div></div>'+
       '<button class="game-btn" data-stage="'+id+'">出發</button></div>' }).join('')+
     '<p class="hint">帶進關卡的技能：'+(loadout(s).map(function(id){return D.SK[id].nm}).join('、')||'只有基本攻擊')+'</p>';
 }
@@ -404,6 +554,10 @@ function resultScreen(win,gain,up){
   if(s) h+=(up?'<p><b>等級提升！Lv.'+(s.lv-up)+' → Lv.'+s.lv+'</b>　獲得 AP '+up*D.AP_LV+(s.adv?'、SP '+up*D.SP_LV:'')+'</p>':'')+
     (canAdv(s)?'<p><b>可以轉職了！</b>回角色畫面找'+D.JOBS[s.job].npcNm+'。</p>':'')+
     '<div class="msv-bar"><i style="width:'+Math.floor(s.exp/D.exp(s.lv)*100)+'%"></i></div><p class="hint">Lv.'+s.lv+'　EXP '+s.exp+' / '+D.exp(s.lv)+'</p>';
+  if(s){ var L=P.loot, sc=Object.keys(L.scr);
+    h+='<p>楓幣 +'+L.meso+'</p>';
+    if(L.items.length||sc.length) h+='<p class="hint">'+(win?'獲得':'<b>死亡沒收</b>')+'：</p><div class="msv-drops'+(win?'':' lost')+'">'+L.items.map(function(it){ return itIco(it.id) }).join('')+
+      sc.map(function(k){ var d2=D.SCROLLS.filter(function(x){ return x.k===k })[0]; return ico(A.ico.items.a.sc[d2.icon],d2.pct*100+'% 卷軸')+'×'+L.scr[k] }).join('')+'</div>' }
   show(h+'<div class="msv-row"><button class="game-btn" data-act="again">再挑戰一次</button><button class="game-btn ghost" data-act="hub">回到角色畫面</button></div>');
 }
 function exportScreen(){
@@ -424,7 +578,21 @@ panel.addEventListener('click',function(e){
   if(d.slot!=null){ ui.sel=+d.slot; ui.del=false; slotsScreen() }
   else if(d.new!=null){ ui.job=null; createScreen(+d.new) }
   else if(d.job){ ui.job=d.job; createScreen(+panel.querySelector('[data-act=create]').dataset.i) }
-  else if(d.tab){ ui.tab=d.tab; panel.scrollTop=0; hubScreen() }
+  else if(d.tab){ ui.tab=d.tab; ui.it=null; panel.scrollTop=0; hubScreen() }
+  else if(d.cxmob){ ui.tab='codex'; ui.cx='mob'; panel.scrollTop=0; hubScreen() }
+  else if(d.cx){ ui.cx=d.cx; hubScreen() }
+  else if(d.cxall){ ui.cxAll=!ui.cxAll; hubScreen() }
+  else if(d.eqp){ ui.it={from:'eqp',k:d.eqp}; hubScreen() }
+  else if(d.inv!=null){ ui.it={from:'inv',k:+d.inv}; hubScreen() }
+  else if(d.act==='wear'){ if(!whyNot(s,s.inv[ui.it.k])){ var wm=A.itm[s.inv[ui.it.k].id]; equip(s,ui.it.k); ui.it={from:'eqp',k:wm.s}; persist() } hubScreen() }
+  else if(d.act==='unwear'){ var sl=ui.it.k; if(s.eqp[sl]&&s.inv.length<D.INV_MAX){ s.inv.push(s.eqp[sl]); delete s.eqp[sl]; ui.it={from:'inv',k:s.inv.length-1}; persist() } hubScreen() }
+  else if(d.act==='sell'){ var si=s.inv[ui.it.k]; s.meso+=sellP(A.itm[si.id]); s.inv.splice(ui.it.k,1); ui.it=null; persist(); msg('賣掉了'); hubScreen() }
+  else if(d.scroll){ var it2=selItem(s), sc2=D.SCROLLS.filter(function(x){ return x.k===d.scroll })[0];
+    if(it2&&s.scr[sc2.k]>0&&it2.tuc>0){ s.scr[sc2.k]--; var res=useScroll(s,it2,sc2);
+      if(res==='boom'){ if(ui.it.from==='eqp') delete s.eqp[ui.it.k]; else s.inv.splice(ui.it.k,1); ui.it=null }
+      msg({ok:'強化成功！',fail:'強化失敗…（用掉一次強化次數）',boom:'詛咒發動，裝備爆掉了！'}[res]); persist() } hubScreen() }
+  else if(d.buysc){ var sc3=D.SCROLLS.filter(function(x){ return x.k===d.buysc })[0]; if(s.meso>=sc3.price){ s.meso-=sc3.price; s.scr[sc3.k]=(s.scr[sc3.k]||0)+1; persist() } hubScreen() }
+  else if(d.buyeq){ var bm=A.itm[d.buyeq], bp=D.PRICE(bm.price); if(s.meso>=bp&&s.inv.length<D.INV_MAX){ s.meso-=bp; s.inv.push(mkItem(d.buyeq,false)); persist(); msg('買了「'+bm.nm+'」，到裝備頁穿上') } hubScreen() }
   else if(d.stage) start(ui.sel,d.stage);
   else if(d.stat){ var n=Math.min(+d.n,s.ap); s[d.stat]+=n; s.ap-=n; persist(); hubScreen() }
   else if(d.skill){ var sd=D.SK[d.skill], lv=s.sk[d.skill]||0;

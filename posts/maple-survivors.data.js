@@ -2,23 +2,24 @@
    距離單位＝像素（素材原尺寸），時間＝秒。 */
 window.MSD={
   // 職業：hp＋每級 hpLv；atk＝一直開著的基本攻擊（dmg 是攻擊力倍率，1＝100%）
-  // main/sub＝主副屬性（攻擊力＝基礎 × (主×4＋副)/52，創角時剛好 1 倍）；adv＝見習/1轉/2轉的稱號
+  // 攻擊力＝(base＋武器攻擊) × (主×4＋副)/52 × ATK_K；法師吃魔攻。main/sub＝主副屬性；adv＝見習/1轉/2轉的稱號
   // atk.k：slash 扇形近戰／shot 投射物；fx＝atlas 技能 id（特效圖），ball＝投射物圖（沒有就用 canvas 畫）
   // npc＝轉職教官（atlas npc id）；town／tag／line 只是介紹文字
   JOBS:{
-    warrior: {nm:'劍士',   adv:['見習劍士','劍士','劍客'],     hp:120, hpLv:14, spd:150, main:'str', sub:'dex', base:14,
+    warrior: {nm:'劍士',   adv:['見習劍士','劍士','劍客'],     hp:120, hpLv:14, spd:150, main:'str', sub:'dex', base:4,
               atk:{k:'slash', cd:.85, dmg:1, range:120, arc:2.2, fx:1001005},
               npc:1022000, npcNm:'武術教練', town:'勇士之村', tag:'近戰・高血量', line:'正面迎擊，揮劍掃開身邊的怪物。'},
-    bowman:  {nm:'弓箭手', adv:['見習弓箭手','弓箭手','獵人'], hp:80,  hpLv:9,  spd:160, main:'dex', sub:'str', base:10,
+    bowman:  {nm:'弓箭手', adv:['見習弓箭手','弓箭手','獵人'], hp:80,  hpLv:9,  spd:160, main:'dex', sub:'str', base:4,
               atk:{k:'shot',  cd:.6,  dmg:1, range:520, v:640, pierce:2, ball:3001004},
               npc:1012100, npcNm:'赫麗娜',   town:'弓箭手村', tag:'遠程・穿透', line:'拉開距離，一箭射穿整排怪物。'},
-    magician:{nm:'法師',   adv:['見習法師','法師','火毒巫師'], hp:70,  hpLv:7,  spd:145, main:'int', sub:'luk', base:15,
+    magician:{nm:'法師',   adv:['見習法師','法師','火毒巫師'], hp:70,  hpLv:7,  spd:145, main:'int', sub:'luk', base:4,
               atk:{k:'shot',  cd:.75, dmg:1, range:460, v:520, pierce:1, ball:2001004, splash:60},
               npc:1032001, npcNm:'漢斯',     town:'魔法森林', tag:'遠程・範圍', line:'血少但魔法會爆開，一次炸一群。'},
-    thief:   {nm:'盜賊',   adv:['見習盜賊','盜賊','刺客'],     hp:90,  hpLv:10, spd:175, main:'luk', sub:'dex', base:7,
+    thief:   {nm:'盜賊',   adv:['見習盜賊','盜賊','刺客'],     hp:90,  hpLv:10, spd:175, main:'luk', sub:'dex', base:4,
               atk:{k:'shot',  cd:.45, dmg:1, range:420, v:720, pierce:1, n:2},
               npc:1052001, npcNm:'達克魯',   town:'墮落城市', tag:'速度・連發', line:'跑得最快，飛鏢一次丟兩顆。'}
   },
+  ATK_K:.5,
   STATS:['str','dex','int','luk'], STAT_NM:{str:'STR 力量',dex:'DEX 敏捷',int:'INT 智力',luk:'LUK 幸運'},
   START_STAT:4, START_MAIN:12,         // 創角：四項 4，主屬性 12
   AP_LV:5, SP_LV:3, SP_ADV:1,          // 每升一級 5 AP；轉職後每級 3 SP；轉職當下送 1 SP
@@ -27,6 +28,36 @@ window.MSD={
   AP_RESET:function(lv){ return lv*300 },  // 重置 AP 的楓幣（楓幣在 M3 才會掉）
   // 迴避：迴避值＝DEX×0.5＋LUK＋技能，閃避率＝迴避/(迴避＋150)，上限 60%；爆擊基礎 5%、爆傷 150%
   EVA_K:150, EVA_MAX:.6, CRIT:.05, CRIT_DMG:1.5, DEF_MAX:.6,
+
+  // ---- 裝備（M3）----
+  // 物品本身（名字、部位、等級、原作數值、可強化次數 tuc、原價）由素材工具從 WZ 寫進 atlas（MSA.itm）
+  EQ_SLOTS:[['weapon','武器'],['cap','帽子'],['coat','上衣'],['pants','褲子'],['shoes','鞋子'],['glove','手套'],['cape','披風']],
+  ST_NM:{pad:'攻擊',mad:'魔攻',str:'STR',dex:'DEX',int:'INT',luk:'LUK',pdd:'防禦',mhp:'HP',eva:'迴避',spd:'移速'},
+  DEF_K:250,                           // 防禦 → 減傷：防禦/(防禦＋250)，跟技能減傷相加，上限 DEF_MAX
+  INV_MAX:40,
+  PRICE:function(p){ return Math.max(100,p) },   // 商店售價（原價太低的拉到 100）
+  SELL:.3,                             // 賣回商店拿原售價的 30%
+  // 掉落：每隻怪各自擲骰。楓幣量＝怪物經驗 × 1～2
+  // 掉落表：每隻怪掉「等級需求在 怪物Lv+band 之間」的裝備（圖鑑列全部職業，實際只掉本職業＋共用）；
+  // 稀有裝備（只會掉落）寫在怪物的 rare 欄位，掉率 rare
+  DROP:{meso:.5, eq:.015, rare:.02, scroll:.008, band:[-10,6]},
+  ROLL:{stat:[-2,3], atk:[-3,3]},      // 掉落裝備的素質浮動（商店賣的是原作固定值）
+  MAGNET:130, PICK:36,                 // 掉落物被吸過來／撿起的距離
+  // 卷軸：w 武器（加攻擊，法師武器加魔攻）／a 防具（加主屬性與防禦）；dark＝詛咒卷軸，失敗 50% 裝備爆掉
+  // 不論成功失敗都會用掉一次可強化次數（原作規則）；icon＝atlas 卷軸圖示的序號
+  SCROLLS:[
+    {k:'w100', t:'w', pct:1,  price:500,  fx:{atk:1},               icon:0},
+    {k:'w70',  t:'w', pct:.7, price:1500, fx:{atk:2,main:1}, dark:1, icon:1},
+    {k:'w60',  t:'w', pct:.6, price:1000, fx:{atk:2,main:1},        icon:2},
+    {k:'w30',  t:'w', pct:.3, price:2500, fx:{atk:5,main:3}, dark:1, icon:3},
+    {k:'w10',  t:'w', pct:.1, price:800,  fx:{atk:5,main:3},        icon:4},
+    {k:'a100', t:'a', pct:1,  price:400,  fx:{main:1,pdd:2},        icon:5},
+    {k:'a70',  t:'a', pct:.7, price:1200, fx:{main:2,pdd:4}, dark:1, icon:6},
+    {k:'a60',  t:'a', pct:.6, price:800,  fx:{main:2,pdd:4},        icon:7},
+    {k:'a30',  t:'a', pct:.3, price:2000, fx:{main:4,pdd:8}, dark:1, icon:8},
+    {k:'a10',  t:'a', pct:.1, price:600,  fx:{main:4,pdd:8},        icon:9}
+  ],
+  SCROLL_DROP_W:[5,1,3,1,4,5,1,3,1,4], // 掉落時各卷軸的權重（便宜的比較常掉）
 
   // 技能：act＝主動（帶進技能欄才會自動施放）；數值寫 [Lv1, 滿級]，中間線性內插
   // 主動 k：slash 扇形／shot 投射物／strike 直接打目標／mist 地面持續傷害／buff 自身增益
@@ -70,14 +101,14 @@ window.MSD={
   // 升到下一級要的經驗（暫定，M4 依實際一場拿多少再調）
   exp:function(lv){ return Math.round(12*Math.pow(lv,1.9)+8) },
   DEATH_EXP:.3,
-  // 怪物：hp/atk 依原作 Lv 縮放過；spd＝每秒像素；r 不填就依圖寬推
+  // 怪物：lv＝原作等級（決定掉落表）；hp/atk 依原作縮放過；spd＝每秒像素；r 不填就依圖寬推
   MOBS:{
-    100100:{nm:'嫩寶',   hp:18,  atk:4,  spd:40, exp:3},
-    100101:{nm:'藍寶',   hp:26,  atk:5,  spd:46, exp:4},
-    130101:{nm:'紅寶',   hp:48,  atk:7,  spd:50, exp:7},
-    120100:{nm:'菇菇仔', hp:34,  atk:6,  spd:62, exp:5},
-    210100:{nm:'綠水靈', hp:70,  atk:9,  spd:58, exp:10},
-    6130101:{nm:'蘑菇王',hp:9000,atk:30, spd:55, exp:1500, boss:1}
+    100100:{nm:'嫩寶',   lv:1, hp:18,  atk:4,  spd:40, exp:3},
+    100101:{nm:'藍寶',   lv:2, hp:26,  atk:5,  spd:46, exp:4},
+    130101:{nm:'紅寶',   lv:5, hp:48,  atk:7,  spd:50, exp:7},
+    120100:{nm:'菇菇仔', lv:3, hp:34,  atk:6,  spd:62, exp:5},
+    210100:{nm:'綠水靈', lv:7, hp:70,  atk:9,  spd:58, exp:10},
+    6130101:{nm:'蘑菇王',lv:18, hp:9000,atk:30, spd:55, exp:1500, boss:1, rare:[1302020,1302058,1302080,1382009,1452016,1472030]}
   },
   // 關卡：waves 依時間切換怪物組；rate＝每秒生怪數，隨時間線性加到 rate2
   STAGES:{
