@@ -10,9 +10,11 @@ const errs = []; p.on('pageerror', e => errs.push(e.message));
 await p.goto(page);
 const r = await p.evaluate(() => {
   const out = [], N = 10000, D = window.MSD;
+  // 固定種子（mulberry32）：結果每次一樣，CI 不會因為抽樣剛好超出容許誤差而偶發紅燈
+  let seed = 20261018; const rng = () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   for (const sc of D.SCROLLS) {
     const c = { ok: 0, fail: 0, boom: 0 };
-    for (let i = 0; i < N; i++) { const it = { id: 0, st: {}, tuc: 1, up: 0 }; c[window.__msvScroll({ job: 'warrior' }, it, sc)]++; }
+    for (let i = 0; i < N; i++) { const it = { id: 0, st: {}, tuc: 1, up: 0 }; c[window.__msvScroll({ job: 'warrior' }, it, sc, rng)]++; }
     const boomWant = sc.dark ? (1 - sc.pct) * .5 : 0;
     // 三個標準差內算過（N=1 萬時約 ±1.5%）
     if (Math.abs(c.ok / N - sc.pct) > .015) out.push(`${sc.k} 成功率 ${c.ok / N}，應為 ${sc.pct}`);
