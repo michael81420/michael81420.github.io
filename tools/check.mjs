@@ -102,11 +102,11 @@ for (const p of POSTS.filter(p => p.d >= '2026-09-26'))
   for (const f of [`posts/${p.slug}.html`, `posts/${p.slug}.en.html`])
     if (existsSync(join(ROOT, f)) && !/<title>[^<]*．/.test(read(f))) bad(f, '<title> 缺全形分隔符「．」');
 
-/* 分類要登記：CATL 有中英標籤、兩份首頁有 chip（財報分析走資料表，不用 chip） */
+/* 分類要登記：CATL 有中英標籤、兩份首頁有 chip（財報分析／遊戲走站徽列主分頁，不用 chip） */
 const catl = siteJs.slice(siteJs.indexOf('var CATL={'), siteJs.indexOf('};', siteJs.indexOf('var CATL={')));
 for (const cat of new Set(POSTS.map(p => p.cat))) {
   if (!catl.includes(`'${cat}':`)) bad('assets/site.js', `CATL 缺分類「${cat}」的中英標籤`);
-  if (cat === '財報分析') continue;
+  if (cat === '財報分析' || cat === '遊戲') continue;  // 這兩個走站徽列主分頁，不用 chip
   for (const [name, idx] of [['index.html', idxZh], ['index.en.html', idxEn]])
     if (!idx.includes(`class="chip" data-cat="${cat}"`)) bad(name, `.toolbar 缺分類「${cat}」的 chip`);
 }

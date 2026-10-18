@@ -225,6 +225,11 @@ SEO 三件套 `description`／`canonical`（指自己）／`hreflang`（中英�
 - 表頭與頁尾說明的中英文字在 `site.js` 的 `ETXT`。
 - 走 `<script src>` 而不是 fetch JSON，是為了跟 `site.js` 送 `POSTS`／`CATL` 同一套模式，`file://` 直開也讀得到。
 
+### 遊戲：站徽列第三個主分頁
+
+`cat:'遊戲'` 跟財報一樣是**模式不是分類**：站徽列「文章／財報／遊戲」，點「遊戲」→ `index.html#games`，首頁藏掉精選、分類列、搜尋，`#grid` 只留遊戲卡片；文章模式不列遊戲、精選也不會選到遊戲。遊戲頁的側欄只列遊戲、「回到列表」回 `#games`（`site.js` 的 `modeOf()`）。
+所以五處照做，**唯一差別是不加分類 chip**（`check.mjs` 已排除）。遊戲程式放 `posts/<slug>.game.js`，中英兩頁共用一支，頁尾 `<script src>` 載入；顏色照樣讀 CSS 變數（canvas 用 `getComputedStyle` 現讀）。
+
 ### 草稿（寫好但先不公開）
 
 做 1、2、3、4 四處（首頁卡片照常寫），第 4 處那筆加 `draft:1`；**只有 sitemap 不加**。

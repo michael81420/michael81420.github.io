@@ -15,6 +15,7 @@ const MSU = 'https://resource-static.msu.io/data', API = 'https://maplestory.io/
 
 // ---- 素材清單（第一期） ----
 const MOBS = [100100, 100101, 130101, 120100, 210100, 130100, 1210100, 1210101, 1210102, 2110200, 2220100, 2230101, 2230102, 3210100, 6130101];
+const NPCS = [1022000, 1012100, 1032001, 1052001];               // 轉職教官：武術教練、赫麗娜、漢斯、達克魯（選職業畫面）
 const MOB_ACTS = ['stand', 'move', 'hit1', 'die1'], BOSS_ACTS = { 6130101: ['attack1'] };
 const BASE = [2000, 12000, 20000, 30030];                    // 膚色身體、頭、臉、髮型（男）
 const NOVICE = [1040002, 1060002, 1072001];                   // 見習期共用：白內衣、藍短褲、紅雨鞋
@@ -106,7 +107,7 @@ await page.evaluate(() => {
   };
 });
 
-const atlas = { mob: {}, chr: {}, skl: {}, map: {} }, report = [], miss = [];
+const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {} }, report = [], miss = [];
 let bytes = 0;
 async function emit(kind, id, acts, q = 1) {           // q=1 → Chromium 走無損 WebP，像素圖邊緣不糊
   // 每個動作的幀先在頁面裡解好、存在 window.A，再一次拼圖（幀不跨回 Node）
@@ -132,6 +133,11 @@ await pool(MOBS, 4, async id => {
   const j = await get(`mob/${id}`, { regs: ['TWMS/256', ...REGS] }); if (j) { const t = JSON.parse(j); mobInfo[id] = { nm: t.name, lv: t.meta.level, hp: t.meta.maxHP, exp: t.meta.exp }; }  // 中文名
   await emit('mob', id, acts);
 });
+// NPC（msu：站立動畫）
+for (const id of NPCS) {
+  const n = await msuJson(`Npc/${String(id).padStart(7, '0')}.json`), f = await msuFrames(frames(n?.stand));
+  if (f.length) await emit('npc', id, { stand: { png: f } }); else miss.push(`npc ${id}`);
+}
 // 角色：職業 × 轉職階段
 await pool(Object.entries(CHARS).flatMap(([job, c]) => c.t.map((items, tier) => [job, tier, c.atk, items])), 3, async ([job, tier, atk, items]) => {
   const acts = {};

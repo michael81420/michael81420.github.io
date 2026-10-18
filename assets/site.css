@@ -599,3 +599,34 @@ pre .ok{color:var(--win)}                  /* 正解 */
 
 /* 觸控目標 ≥44px（手機） */
 @media(max-width:680px){.btn-back,.sitebar nav .modes a.nav-mode,.sitebar .brand{min-height:44px;display:inline-flex;align-items:center}}
+
+/* ---- 遊戲頁（posts/*.game.js 共用） ---- */
+.game-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;max-width:420px;margin:0 auto 12px}
+.game-bar .stat{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:6px 12px;font-size:13px;color:var(--ink2)}
+.game-bar .stat b{color:var(--ink);font-size:16px;margin-left:8px}
+.game-btn{margin-left:auto;background:var(--accent);color:var(--onAccent);border-radius:9px;padding:8px 14px;font-weight:600;font-size:14px}
+.game-board{display:block;width:100%;max-width:420px;aspect-ratio:1;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+.game-msg{text-align:center;color:var(--ink2);font-size:14px;min-height:1.6em;margin-top:10px}
+
+/* ---- 楓之谷倖存者（posts/maple-survivors） ---- */
+.msv .game-board{max-width:960px;aspect-ratio:16/10}
+.msv-panel{max-width:960px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+.msv-panel h3{margin:0}
+.msv-panel .hint{font-size:13px;color:var(--ink2);text-align:center}
+.msv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;width:100%;align-items:stretch}
+@media(max-width:680px){.msv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.msv-slot{display:flex;flex-direction:column;align-items:center;gap:4px;margin:0;min-height:200px;padding:12px 8px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;color:var(--ink);font:inherit;text-align:center;cursor:pointer}
+.msv-slot:hover,.msv-slot:focus-visible{border-color:var(--accent)}
+.msv-slot.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.msv-slot.empty{justify-content:center;border-style:dashed;color:var(--ink3)}
+.msv-slot canvas{width:100%;height:110px}
+.msv-slot .nm{font-weight:700}
+.msv-slot .sub{font-size:12px;color:var(--ink2);line-height:1.5}
+.msv-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.msv-row .game-btn{margin:0}
+.game-btn.ghost{background:var(--surface2);color:var(--ink);border:1px solid var(--border)}
+.msv-in{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--ink);font:inherit;width:12em}
+.msv-bar{width:min(320px,100%);height:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.msv-bar i{display:block;height:100%;background:var(--accent)}
+.game-btn:disabled{opacity:.45;cursor:default}

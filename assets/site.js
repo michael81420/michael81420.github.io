@@ -10,6 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
+  {slug:'maple-survivors',            d:'2026-10-18', cat:'遊戲',           zh:'楓之谷倖存者．同人小遊戲', en:'Maple Survivors．A Fan-Made Mini Game', draft:1},
   {slug:'esp32-iot-intro',            d:'2026-09-16', cat:'物聯網',         zh:'ESP32．物聯網入門：從一塊板子到第一個模組', en:'ESP32．Getting Into IoT: From One Board to Your First Module'},
   {slug:'vietnam-phu-quoc-hcmc-10d9n', d:'2026-09-20', cat:'旅遊',        zh:'富國島 × 胡志明 10天9夜 海島跨年之旅', en:'Phu Quoc × Ho Chi Minh City — 10 Days, 9 Nights over New Year', draft:1},
   {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry'},
@@ -131,12 +132,15 @@ var CATL={
   'AI 技術分享':     {zh:'AI 技術分享',     en:'AI Notes'},
   '軟體開發':        {zh:'軟體開發',        en:'Software Dev'},
   '旅遊':            {zh:'旅遊',            en:'Travel'},
-  '物聯網':          {zh:'物聯網',          en:'IoT'}
+  '物聯網':          {zh:'物聯網',          en:'IoT'},
+  '遊戲':            {zh:'遊戲',            en:'Games'}
 };
 var LANG=(document.documentElement.getAttribute('lang')||'').toLowerCase().indexOf('en')===0?'en':'zh';
 // 本機預覽（file:// 或 localhost）：草稿一併顯示，方便發佈前看版。線上永遠隱藏。
 var LOCAL=location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
 function catLabel(c){return (CATL[c]||{})[LANG]||c;}
+// 站徽列三個主分頁：財報分析→earn、遊戲→games、其餘→posts
+function modeOf(p){return !p?'posts':p.cat==='財報分析'?'earn':p.cat==='遊戲'?'games':'posts';}
 
 /* 語言切換：跳到對應的 .en.html / .html 版本（平行英文檔架構）。 */
 function toggleLang(){
@@ -217,7 +221,7 @@ function initHome(){
   var search=document.getElementById('search');
   var hero=document.getElementById('hero');
   var empty=document.getElementById('empty');
-  var cat='全部',sub='全部',q='';
+  var cat='全部',sub='全部',q='',gameOn=false; // gameOn：#games 模式，#grid 只留 cat:'遊戲' 的卡片
   // 日期／子分類單一來源＝POSTS，卡片的 .pc-date 由此填入（HTML 不再各寫一份）
   var DATES={},DRAFT={},SUBS={};
   POSTS.forEach(function(p){DATES[p.slug]=p.d;if(p.draft)DRAFT[p.slug]=1;if(p.sub)SUBS[p.slug]=p.sub;});
@@ -242,7 +246,7 @@ function initHome(){
   sorted.forEach(function(c){grid.appendChild(c);});
   // 自動把最新一篇填進精選
   if(hero){
-    var latest=sorted.filter(function(c){return !c.dataset.draft;})[0]; // 草稿不佔精選位
+    var latest=sorted.filter(function(c){return !c.dataset.draft&&c.dataset.cat!=='遊戲';})[0]; // 草稿、遊戲不佔精選位
     if(latest){
       hero.href=latest.getAttribute('href');
       hero.querySelector('.kicker').textContent=(LANG==='en'?'Featured · ':'精選 · ')+catLabel(latest.dataset.cat);
@@ -278,7 +282,7 @@ function initHome(){
   function apply(){
     var shown=0,matched=0;
     grid.querySelectorAll('.post-card').forEach(function(c){
-      var okCat=cat==='全部'||(c.dataset.cat===cat&&(sub==='全部'||subOf(c)===sub));
+      var okCat=(c.dataset.cat==='遊戲')===gameOn&&(gameOn||cat==='全部'||(c.dataset.cat===cat&&(sub==='全部'||subOf(c)===sub)));
       var hay=(c.dataset.title+' '+(c.dataset.excerpt||'')).toLowerCase();
       var okQ=q===''||hay.indexOf(q)>=0;
       var match=okCat&&okQ;
@@ -287,7 +291,7 @@ function initHome(){
       c.style.display=show?'':'none';
       if(show)shown++;
     });
-    var heroVisible=hero&&q===''; // 精選常駐，只有搜尋時讓位給結果
+    var heroVisible=hero&&q===''&&!gameOn; // 精選常駐，只有搜尋時讓位給結果
     if(hero)hero.style.display=heroVisible?'':'none';
     if(empty)empty.style.display=(!shown&&!heroVisible)?'':'none';
     if(showAll){
@@ -297,8 +301,9 @@ function initHome(){
       if(txt)txt.textContent=expanded?(LANG==='en'?'Show less':'收合文章'):(LANG==='en'?'Show all posts':'顯示全部文章');
     }
   }
-  /* 「財報」是模式不是分類：站徽列的「文章／財報」切換（#earnings），財報模式整塊換成資料表。
-     財報文章不進 #grid，所以兩種內容永遠不會混在同一個清單裡。 */
+  /* 「財報」「遊戲」是模式不是分類：站徽列的「文章／財報／遊戲」切換（#earnings／#games）。
+     財報模式整塊換成資料表（財報文章不進 #grid）；遊戲模式 #grid 只留遊戲卡片、文章模式不列遊戲，
+     所以三種內容永遠不會混在同一個清單裡。 */
   var earnWrap=document.getElementById('earnWrap'),earnOn=false,earnDone=false;
   var toolbar=document.querySelector('.toolbar'),modes=document.querySelectorAll('.sitebar .nav-mode');
   var earnExt=LANG==='en'?'.en.html':'.html';
@@ -408,14 +413,16 @@ function initHome(){
       renderEarn();
     });
   }
-  function setEarn(on){
-    earnOn=on;
+  function setMode(m){
+    var on=m==='earn';
+    earnOn=on;gameOn=m==='games';
     if(on)drawEarn();
     if(earnWrap)earnWrap.style.display=on?'':'none';
-    modes.forEach(function(a){a.classList.toggle('active',(a.dataset.mode==='earn')===on);});
-    if(toolbar)toolbar.style.display=on?'none':''; // 分類／搜尋只管文章
+    modes.forEach(function(a){a.classList.toggle('active',a.dataset.mode===m);});
+    if(toolbar)toolbar.style.display=m==='posts'?'':'none'; // 分類／搜尋只管文章
     grid.style.display=on?'none':'';
-    if(!on){buildSubbar();apply();}
+    if(!on){if(gameOn){q='';if(search)search.value='';}buildSubbar();apply();}
+    if(gameOn&&subbar)subbar.style.display='none';
     if(on){
       if(hero)hero.style.display='none'; // 財報是純資料頁，不放精選
       if(subbar)subbar.style.display='none';
@@ -437,10 +444,10 @@ function initHome(){
   // 首頁上點「文章」不整頁重載，只清掉 hash
   modes.forEach(function(a){
     if(a.dataset.mode==='posts')a.addEventListener('click',function(e){
-      if(location.hash){e.preventDefault();history.pushState(null,'',location.pathname);setEarn(false);}
+      if(location.hash){e.preventDefault();history.pushState(null,'',location.pathname);setMode('posts');}
     });
   });
-  function syncMode(){setEarn(location.hash==='#earnings');}
+  function syncMode(){setMode(location.hash==='#earnings'?'earn':location.hash==='#games'?'games':'posts');}
   window.addEventListener('hashchange',syncMode);
   window.addEventListener('popstate',syncMode);
   syncMode();
@@ -455,13 +462,13 @@ function initArticle(){
   if(!wrap) return;
   var ext=LANG==='en'?'.en.html':'.html';
 
-  // 文章與財報分開：財報頁側欄只列財報，文章頁不列財報
-  var earn=POSTS.some(function(p){return p.slug===slug&&p.cat==='財報分析';});
+  // 文章／財報／遊戲分開：側欄只列跟當前頁同一種的
+  var cur=POSTS.filter(function(p){return p.slug===slug;})[0],kind=modeOf(cur);
   var rail=document.createElement('aside');
   rail.className='rail';
   var title=document.createElement('div');
   title.className='rail-title';
-  title.textContent=earn?(LANG==='en'?'All earnings':'所有財報'):(LANG==='en'?'All posts':'所有文章');
+  title.textContent={earn:LANG==='en'?'All earnings':'所有財報',games:LANG==='en'?'All games':'所有遊戲',posts:LANG==='en'?'All posts':'所有文章'}[kind];
   rail.appendChild(title);
   var nav=document.createElement('nav');
   rail.appendChild(nav);
@@ -469,7 +476,7 @@ function initArticle(){
   // 依 POSTS 出現順序分組
   var order=[],groups={},activeBox=null;
   POSTS.forEach(function(p){
-    if((p.cat==='財報分析')!==earn) return;
+    if(modeOf(p)!==kind) return;
     if(p.draft&&!LOCAL&&p.slug!==slug) return; // 草稿不進別人的側欄，只在自己頁面列出（本機除外）
     if(!groups[p.cat]){groups[p.cat]=[];order.push(p.cat);}
     groups[p.cat].push(p);
@@ -518,7 +525,7 @@ function initArticle(){
       sg.appendChild(sbox);
       box.appendChild(sg);
     });
-    if(earn){while(box.firstChild)nav.appendChild(box.firstChild);return;} // 財報頁只有一個分類，不再包一層，公司直接列
+    if(kind!=='posts'){while(box.firstChild)nav.appendChild(box.firstChild);return;} // 財報／遊戲頁只有一個分類，不再包一層，直接列
     if(scrollable){
       var scrollWrap=document.createElement('div');
       scrollWrap.className='rail-scrollwrap';
@@ -567,9 +574,10 @@ function initSitebar(){
   var h='<div class="sitebar-in">'
     +'<a class="brand" href="'+base+'index'+ext+'">'
     +'<img class="site-mark" src="'+base+'favicon.png" alt="">michael</a><nav>'
-    // 首頁兩種內容：文章（卡片）／財報（資料表），用 #earnings 切換，站內任一頁都能直達
+    // 首頁三種內容：文章（卡片）／財報（資料表）／遊戲（卡片），用 #earnings／#games 切換，站內任一頁都能直達
     +'<div class="modes"><a class="nav-mode" data-mode="posts" href="'+base+'index'+ext+'">'+(LANG==='en'?'Posts':'文章')+'</a>'
-    +'<a class="nav-mode" data-mode="earn" href="'+base+'index'+ext+'#earnings">'+(LANG==='en'?'Earnings':'財報')+'</a></div>'
+    +'<a class="nav-mode" data-mode="earn" href="'+base+'index'+ext+'#earnings">'+(LANG==='en'?'Earnings':'財報')+'</a>'
+    +'<a class="nav-mode" data-mode="games" href="'+base+'index'+ext+'#games">'+(LANG==='en'?'Games':'遊戲')+'</a></div>'
     +'<a href="'+base+'about'+ext+'">'+(LANG==='en'?'About':'關於我')+'</a>';
   SOCIAL.forEach(function(s){
     h+='<a class="icon-link" href="'+s.u+'" target="_blank" rel="noopener" aria-label="'+s.n+'">'
@@ -579,14 +587,13 @@ function initSitebar(){
   bar.className='sitebar';
   bar.innerHTML=h+'</nav></div>';
   document.body.insertBefore(bar, document.body.firstChild);
-  // 文章頁：財報文章亮「財報」、其他亮「文章」（首頁由 initHome 依 #earnings 切換）
+  // 文章頁：財報亮「財報」、遊戲亮「遊戲」、其他亮「文章」（首頁由 initHome 依 hash 切換）
   var slug=document.body.getAttribute('data-slug');
   if(slug){
-    var cur=POSTS.filter(function(p){return p.slug===slug;})[0];
-    var m=cur&&cur.cat==='財報分析'?'earn':'posts';
+    var m=modeOf(POSTS.filter(function(p){return p.slug===slug;})[0]);
     bar.querySelector('.nav-mode[data-mode="'+m+'"]').classList.add('active');
     var back=document.querySelector('.btn-back');
-    if(m==='earn'&&back) back.href+='#earnings'; // 財報文章「回到列表」回財報表，不回文章列表
+    if(m!=='posts'&&back) back.href+=m==='earn'?'#earnings':'#games'; // 「回到列表」回同一種的列表
   }
   // 語言／主題鈕一律掛站徽列：文章與 about 頁原本寫在第二層 topbar 裡，整組搬上來；首頁本來就沒有，直接生一組
   var nav=bar.querySelector('nav'), acts=document.querySelector('.topbar .tb-actions');
