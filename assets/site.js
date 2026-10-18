@@ -10,7 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
-  {slug:'maple-survivors',            d:'2026-10-18', cat:'遊戲',           zh:'楓之谷倖存者．同人小遊戲', en:'Maple Survivors．A Fan-Made Mini Game', draft:1},
+  {slug:'maple-survivors',            d:'2026-10-18', cat:'遊戲',           zh:'楓之谷倖存者．同人小遊戲', en:'Maple Survivors．A Fan-Made Mini Game'},
   {slug:'esp32-iot-intro',            d:'2026-09-16', cat:'物聯網',         zh:'ESP32．物聯網入門：從一塊板子到第一個模組', en:'ESP32．Getting Into IoT: From One Board to Your First Module'},
   {slug:'vietnam-phu-quoc-hcmc-10d9n', d:'2026-09-20', cat:'旅遊',        zh:'富國島 × 胡志明 10天9夜 海島跨年之旅', en:'Phu Quoc × Ho Chi Minh City — 10 Days, 9 Nights over New Year', draft:1},
   {slug:'malaysia-kl-penang-6d5n',   d:'2026-09-06', cat:'旅遊',           zh:'吉隆坡 × 檳城 6天5夜 火車過海之旅', en:'Kuala Lumpur × Penang — 6 Days, 5 Nights by Train and Ferry'},
