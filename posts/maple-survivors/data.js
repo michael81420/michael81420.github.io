@@ -159,16 +159,16 @@ window.MSD={
   FIRST_CLEAR:{boss:{meso:5000, title:'蘑菇王剋星', rareOwnJob:1}},
   // 怒氣：擊倒怪物累積，集滿時三選一「本場限定增益」，離開關卡就消失。第 n 次要 need×n
   RAGE:{need:40, choices:3},
-  BOONS:[
-    {k:'cdr',   nm:'攻速提升',   desc:'所有攻擊冷卻 −12%',      mods:{cdr:.12}},
-    {k:'dmg',   nm:'力量湧現',   desc:'傷害 +20%',              mods:{dmg:.2}},
-    {k:'n',     nm:'多重投射',   desc:'投射物 +1 發',           mods:{n:1}},
-    {k:'area',  nm:'範圍擴大',   desc:'近戰範圍、爆炸、毒霧 +25%', mods:{area:.25}},
-    {k:'crit',  nm:'致命一擊',   desc:'爆擊率 +10%',            mods:{crit:.1}},
-    {k:'spd',   nm:'疾風步',     desc:'移動速度 +15%',          mods:{spd:.15}},
-    {k:'hp',    nm:'強健體魄',   desc:'最大 HP +20%，並補滿',   mods:{hp:.2}},
-    {k:'leech', nm:'吸取生命',   desc:'每擊倒一隻怪回復 1% HP', mods:{leech:.01}},
-    {k:'magnet',nm:'楓幣磁鐵',   desc:'撿東西的距離 +60%',      mods:{magnet:.6}},
-    {k:'heal',  nm:'喝下藥水',   desc:'立刻回復 60% HP',        heal:.6}
+  BOONS:[   // ico＝借用的技能圖示（只為了好看）
+    {k:'cdr',   nm:'攻速提升',   desc:'所有攻擊冷卻 −12%',      mods:{cdr:.12}, ico:1101004},
+    {k:'dmg',   nm:'力量湧現',   desc:'傷害 +20%',              mods:{dmg:.2}, ico:1101006},
+    {k:'n',     nm:'多重投射',   desc:'投射物 +1 發',           mods:{n:1}, ico:3001005},
+    {k:'area',  nm:'範圍擴大',   desc:'近戰範圍、爆炸、毒霧 +25%', mods:{area:.25}, ico:1001005},
+    {k:'crit',  nm:'致命一擊',   desc:'爆擊率 +10%',            mods:{crit:.1}, ico:4100001},
+    {k:'spd',   nm:'疾風步',     desc:'移動速度 +15%',          mods:{spd:.15}, ico:4101004},
+    {k:'hp',    nm:'強健體魄',   desc:'最大 HP +20%，並補滿',   mods:{hp:.2}, ico:1000001},
+    {k:'leech', nm:'吸取生命',   desc:'每擊倒一隻怪回復 1% HP', mods:{leech:.01}, ico:1001003},
+    {k:'magnet',nm:'楓幣磁鐵',   desc:'撿東西的距離 +60%',      mods:{magnet:.6}, ico:3001003},
+    {k:'heal',  nm:'喝下藥水',   desc:'立刻回復 60% HP',        heal:.6, ico:2101001}
   ]
 };

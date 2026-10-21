@@ -613,7 +613,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 /* 原作配色（標題 logo、裝備說明框、全螢幕底色）：疊在固定的場景圖上，不跟深淺色模式變 */
 .msv{--msv-gold:#FFD23F;--msv-orange:#F28A1A;--msv-brown:#4E240A;--msv-red:#D8432A;--msv-leaf:#F0641E;--msv-cream:#FFF7DE;
   --msv-night:#000;--msv-tipbg:rgb(17 27 51/.93);--msv-tipline:#7F8FAD;--msv-white:#FFF;--msv-sky:#66CCFF;--msv-grey:#9A9A9A;--msv-blue:#3A8EE6;--msv-warn:#FF6655;--msv-mine:#FFAA33;
-  --msv-frame:#3A3A40;--msv-frameline:#1E1E22;--msv-body:#D9DADC;--msv-slot:#9B9DA2;--msv-slotline:#7C7E83;--msv-ring:#B4A08A;--msv-slotb:#87AAB8;--msv-good:#7CE07C}
+  --msv-frame:#3A3A40;--msv-frameline:#1E1E22;--msv-body:#D9DADC;--msv-slot:#9B9DA2;--msv-slotline:#7C7E83;--msv-ring:#B4A08A;--msv-slotb:#87AAB8;--msv-good:#7CE07C;--msv-cell:#F3F4F6;--msv-row:#C6C8CC;--msv-ap:#FFF1C2}
 .msv-stage{position:relative;max-width:960px;aspect-ratio:16/10;margin:0 auto;border-radius:12px;overflow:hidden;background:var(--surface2) center/cover no-repeat;container-type:inline-size}
 /* Alt＋Enter 全螢幕：整張卡片進全螢幕，16:10 框依螢幕高寬取小的放大置中（下面留一行訊息） */
 .msv:fullscreen{display:flex;flex-direction:column;justify-content:center;margin:0;border:0;border-radius:0;background:var(--msv-night)}
@@ -623,7 +623,7 @@ pre .ok{color:var(--win)}                  /* 正解 */
 /* 選單視窗疊在背景圖上；內容太長時在視窗裡捲（.fix＝角色主畫面：視窗撐滿、只有 .msv-scroll 捲），不會撐大遊戲框 */
 .msv-win{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(780px,100%);max-height:100%;overflow:auto;padding:14px 16px;box-sizing:border-box;
   background:color-mix(in srgb,var(--surface) 93%,transparent);border:1px solid var(--border);border-radius:14px;box-shadow:0 6px 24px rgb(0 0 0/.25)}
-.msv-win.fix{height:100%;overflow:hidden}
+.msv-win.fix{width:100%;height:100%;overflow:hidden;gap:8px;padding:10px 14px}
 .msv-win.title{width:100%;height:100%;max-height:none;padding:0;background:none;border:0;box-shadow:none;overflow:hidden}
 .msv-title{position:relative;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;padding-top:4cqw;gap:1.6cqw;background:none;border:0;cursor:pointer;font:inherit}
 .msv-logo{width:58%;filter:drop-shadow(0 .6cqw 0 rgb(0 0 0/.25));animation:msv-bob 3s ease-in-out infinite}
@@ -664,15 +664,15 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-bar{width:min(320px,100%);height:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .msv-bar i{display:block;height:100%;background:var(--accent)}
 .game-btn:disabled{opacity:.45;cursor:default}
-.msv-hub{display:flex;gap:14px;align-items:center;width:min(680px,100%)}
+.msv-hub{display:flex;gap:14px;align-items:center;width:min(880px,100%)}
 .msv-hub>.game-btn{margin-left:auto;align-self:flex-start}
-.msv-hub canvas{width:96px;height:110px;flex:none}
+.msv-hub canvas{width:80px;height:84px;flex:none}
 .msv-hub .nm{font-weight:700;font-size:17px}
 .msv-hub p{margin:6px 0}
 .msv-tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 .msv-tabs button{padding:6px 14px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--ink2);font-weight:600;font-size:14px}
 .msv-tabs button[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
-.msv-tab{width:min(680px,100%);display:flex;flex-direction:column;gap:8px}
+.msv-tab{width:min(880px,100%);display:flex;flex-direction:column;gap:8px}
 .msv-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px}
 .msv-line.off{opacity:.55}
 .msv-line .game-btn{padding:6px 12px}
@@ -680,14 +680,79 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-line>:first-child{flex:1;text-align:left}
 .msv-line .hint{text-align:left}
 .msv-ico{display:inline-block;vertical-align:middle;image-rendering:pixelated;background-repeat:no-repeat}
-.msv-cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;width:100%}
-/* 裝備頁：左邊原作式裝備欄（EQUIPMENT INVENTORY，5×6 格，還沒做的部位鎖住），右邊背包 */
+/* 裝備頁：左邊原作式裝備欄（EQUIPMENT INVENTORY，5×6 格，還沒做的部位鎖住），右邊原作式背包（ITEM INVENTORY） */
 .msv-eqwrap{display:flex;gap:10px;width:100%;align-items:flex-start}
-.msv-eqwin{display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--surface2);border:1px solid var(--border);border-radius:10px}
-.msv-eqwin.inv{flex:1;min-width:0}
-.msv-eqwin .msv-cell{background:var(--surface)}
-.msv-wt{font-weight:700;font-size:13px;color:var(--ink2)}
 .msv-eqo{flex:none;padding:0 6px 6px;background:var(--msv-frame);border:1px solid var(--msv-frameline);border-radius:8px;box-shadow:0 2px 8px rgb(0 0 0/.3)}
+/* 原作式視窗共用：.msv-eqo 深色外框＋.msv-eqhd 標題＋.msv-eqtabs 分頁＋.msv-mb 淺灰內容；顏色走 --msv-*（跟原作一樣不隨深淺色變） */
+.msv-mb{padding:6px;background:var(--msv-body);border-radius:0 6px 6px 6px;color:var(--msv-frame);font-size:12px}
+.msv-mb small,.msv-eqo small{display:block;font-size:11px;opacity:.75;line-height:1.35}
+.msv-eqtabs button{padding:2px 10px;font-weight:700;font-size:11px;border:0;border-radius:5px 5px 0 0;background:var(--msv-slot);color:var(--msv-white);opacity:.6;cursor:pointer}
+.msv-eqtabs button.on,.msv-eqtabs button:hover{background:var(--msv-mine);opacity:1}
+.msv-mbtn{padding:3px 10px;border-radius:5px;border:1px solid var(--msv-brown);background:linear-gradient(var(--msv-gold),var(--msv-orange));color:var(--msv-brown);font-weight:700;font-size:12px;white-space:nowrap;cursor:pointer}
+.msv-mbtn:disabled{filter:grayscale(1);opacity:.5;cursor:default}
+.msv-mbtn.warn{background:var(--msv-red);color:var(--msv-white)}
+.msv-mbtn.on{background:linear-gradient(var(--msv-cream),var(--msv-gold))}
+.msv-up{width:20px;height:20px;padding:0;border-radius:4px;border:1px solid var(--msv-brown);background:linear-gradient(var(--msv-gold),var(--msv-orange));color:var(--msv-brown);font-weight:700;font-size:10px;line-height:1;cursor:pointer}
+.msv-up.x5{width:28px}
+.msv-up:disabled{filter:grayscale(1);opacity:.4;cursor:default}
+.msv-meso{display:flex;align-items:center;gap:6px;margin-top:6px;padding:3px 8px;background:var(--msv-cell);border-radius:5px;color:var(--msv-frame);font-size:12px}
+.msv-meso>span{margin-left:auto;opacity:.7}
+.msv-meso>span:first-child{margin:0;font:700 11px 'Hanken Grotesk',sans-serif;letter-spacing:.06em;opacity:1}
+.msv-empty{margin:10px 0;text-align:center;opacity:.7}
+.msv-cap{margin-bottom:4px;font-weight:700}
+/* 背包：10 欄 × 4 列＝背包上限，空格也畫出來 */
+.msv-invcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.msv-invcol>.msv-eqo,.msv-shop .msv-bag{width:100%;box-sizing:border-box}
+.msv-bag{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.msv-bag .msv-cell{height:auto;aspect-ratio:1;padding:0;background:var(--msv-cell);border:1px solid var(--msv-row);border-radius:3px}
+.msv-bag .msv-cell>span{position:absolute;right:2px;bottom:0;font-size:10px;font-weight:700;color:var(--msv-frame)}
+.msv-bag .msv-cell.on{border-color:var(--msv-mine);box-shadow:0 0 0 2px var(--msv-mine)}
+.msv-bag .msv-cell.no{border-color:var(--msv-warn)}
+/* 商店：撐滿分頁高度，楓幣與分頁固定，兩欄各自捲（.msv-keep 重畫後留在原位） */
+.msv-tab.full{flex:1 1 0;min-height:0}
+.msv-shop{flex:1;min-height:0;display:flex;flex-direction:column}
+.msv-shoptop{display:flex;align-items:center;gap:8px;padding:0 4px 6px;color:var(--msv-white);font-size:15px}
+.msv-shoptop canvas{width:44px;height:52px;flex:none}
+.msv-shoptop>div{flex:1}
+.msv-shoptop .msv-meso{margin:0;min-width:170px}
+.msv-shopcols{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.msv-shop .msv-mb{font-size:14px}
+.msv-eqtabs button{padding:5px 18px;font-size:15px}   /* 能點的分頁（商店、技能）放大；裝飾用的 span 維持小字 */
+.msv-shop small{font-size:12px}
+.msv-shop .msv-mbtn{font-size:13px}
+.msv-shopcols>.msv-mb{min-height:0;overflow:auto;border-radius:0 0 6px 6px;scrollbar-width:thin}
+.msv-shopcols>.msv-mb+.msv-mb{border-radius:6px}
+.msv-shop .msv-row{margin:6px 0}
+.msv-srow{display:flex;align-items:center;gap:8px;padding:4px 6px;border-bottom:1px solid var(--msv-row)}
+.msv-srow:nth-child(odd){background:var(--msv-cell)}
+.msv-srow>.msv-ico{flex:none}
+.msv-srow>div{flex:1;min-width:0}
+.msv-price{display:flex;align-items:center;gap:2px;font-weight:700;white-space:nowrap}
+.msv-dark{color:var(--msv-red);font-size:11px}
+/* 能力值：CHARACTER STAT＋DETAIL；技能：SKILL */
+.msv-stwrap{justify-content:center}
+.msv-stw{width:330px}
+.msv-stw .msv-mb{font-size:14px}
+.msv-stw .msv-kv{padding:3px 8px}
+.msv-stw .msv-kv.ap{margin-top:4px}
+.msv-stw .msv-kv>span{width:96px}
+.msv-stw .msv-up{width:24px;height:24px;font-size:12px}
+.msv-stw .msv-up.x5{width:34px}
+.msv-stw>.msv-mbtn{font-size:13px}
+.msv-kv{display:flex;align-items:center;gap:6px;padding:2px 6px;border-bottom:1px solid var(--msv-row)}
+.msv-kv>span{width:72px;flex:none;font-weight:700}
+.msv-kv>b{flex:1;padding:1px 6px;background:var(--msv-cell);border-radius:3px;font-weight:600}
+.msv-kv em{font-style:normal;color:var(--msv-blue)}
+.msv-kv i{margin-left:3px;padding:0 3px;border-radius:3px;background:var(--msv-mine);color:var(--msv-white);font-weight:700;font-size:10px}
+.msv-kv.ap{margin-top:6px;background:var(--msv-ap);border:1px solid var(--msv-mine);border-radius:4px}
+.msv-stw>.msv-mbtn{display:block;margin:6px auto 0}
+.msv-skw{width:min(520px,100%);box-sizing:border-box;align-self:center}
+.msv-skjob{padding:2px 4px 6px;font-weight:700;font-size:14px;border-bottom:1px solid var(--msv-row)}
+.msv-skr{display:grid;grid-template-columns:36px 1fr 52px 76px 20px;align-items:center;gap:8px;padding:4px 6px;border-bottom:1px solid var(--msv-row)}
+.msv-skr:nth-child(even){background:var(--msv-cell)}
+.msv-skr.off b{opacity:.55}
+.msv-sklv{font-weight:700;text-align:right}
+.msv-tip .tp-nx{opacity:.7}
 .msv-eqhd{padding:5px 0 4px;text-align:center;font:700 11px 'Hanken Grotesk',sans-serif;letter-spacing:.08em;color:var(--msv-white)}
 .msv-eqtabs{display:flex;gap:3px}
 .msv-eqtabs span{padding:2px 10px;font-size:11px;font-weight:700;border-radius:5px 5px 0 0;background:var(--msv-slot);color:var(--msv-white);opacity:.6}
@@ -722,9 +787,6 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-tip .tp-jobs{display:flex;gap:8px;margin:6px 0;padding:4px 0;border-top:1px dashed var(--msv-tipline);border-bottom:1px dashed var(--msv-tipline)}
 .msv-tip .tp-jobs .me{color:var(--msv-mine)}
 .msv-tip .tp-jobs .off{color:var(--msv-grey);opacity:.6}
-.msv-line.sk>.msv-ico{flex:none}
-.msv-line.sk>div{flex:1}
-.msv-line .hint.nx{color:var(--ink3)}
 .game-btn.warn{background:var(--lose);color:var(--onAccent);border-color:var(--lose)}
 /* 聲音設定：遊戲框右下角的 ♪，點開才出現開關與音量 */
 .msv-au{position:absolute;right:1%;bottom:1.6%;z-index:4;display:flex;align-items:center;gap:6px}
@@ -751,9 +813,32 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-mobs .msv-ico{margin:2px 0 3px}
 .msv-line.mob>:first-child{flex:none}
 .msv-line.mob>div{flex:1}
-.msv-cells>.hint{grid-column:1/-1}
 .msv-ctl{position:absolute;top:6.5%;right:1.4%;display:flex;gap:.5cqw;z-index:2}
 .msv-ctl button{padding:.4cqw 1cqw;border-radius:.8cqw;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--ink2);font-weight:700;font-size:1.3cqw}
 .msv-ctl button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
 .msv-ctl button.warn{background:var(--lose);border-color:var(--lose);color:var(--onAccent)}
-.msv-pick{background:color-mix(in srgb,var(--bg) 82%,transparent)}
+.msv-pick{background:rgb(0 0 0/.45)}
+/* 怒氣三選一：原作說明框（深藍底）的卡片＋鍵盤鍵帽數字 */
+.msv-boons{width:min(720px,100%);box-sizing:border-box;padding:0 10px 10px}
+.msv-boons>.msv-eqhd{padding:8px 0;font-size:14px}
+.msv-boonrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.msv-boon{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 10px 12px;background:var(--msv-tipbg);border:2px solid var(--msv-tipline);border-radius:8px;color:var(--msv-white);font-family:inherit;cursor:pointer;transition:transform .12s,border-color .12s}
+.msv-boon:hover,.msv-boon:focus-visible{border-color:var(--msv-gold);transform:translateY(-3px);outline:none}
+.msv-boon .tp-ico{display:flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--msv-white);border-radius:6px}
+.msv-boon .tp-ico .msv-ico{zoom:1.6}
+.msv-boon .nm{font-weight:700;font-size:17px;color:var(--msv-gold)}
+.msv-boon .ds{font-size:14px;line-height:1.5;text-align:center}
+.msv-boon .lv{margin-top:2px;padding-top:6px;width:100%;border-top:1px dashed var(--msv-tipline);font-size:12px;color:var(--msv-sky)}
+.msv-boon kbd{position:absolute;top:6px;left:6px}
+.msv-boonft{margin-top:8px;text-align:center;font-size:12px;color:var(--msv-white);opacity:.75}
+/* 原作鍵盤設定的鍵帽 */
+.msv-eqo kbd{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 5px;box-sizing:border-box;border-radius:4px;background:linear-gradient(var(--msv-white),var(--msv-body));border:1px solid var(--msv-slotline);box-shadow:0 2px 0 var(--msv-slotline);color:var(--msv-frame);font:700 12px 'Hanken Grotesk',sans-serif}
+/* 確認／暫停視窗：疊在遊戲框正中，蓋住底下 */
+.msv-modal{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;padding:12px;background:rgb(0 0 0/.45)}
+.msv-modal[hidden]{display:none}
+.msv-dlg{width:min(380px,100%);box-sizing:border-box}
+.msv-dlg>.msv-mb{padding:16px 14px;font-size:15px;text-align:center;line-height:1.6;border-radius:6px}
+.msv-dlg>.msv-mb small{margin-top:4px;font-size:12px}
+.msv-dlg>.msv-row{margin-top:8px}
+.msv-mbtn.ghost{background:linear-gradient(var(--msv-white),var(--msv-body))}
+.msv-keys{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;text-align:left;font-size:14px}
