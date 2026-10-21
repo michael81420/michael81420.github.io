@@ -30,6 +30,7 @@ var POSTS=[
   {slug:'unitedhealth-2026q3-earnings', d:'2026-10-14', cat:'財報分析', sub:'UnitedHealth', zh:'UnitedHealth．2026 Q3 財報拆解', en:'UnitedHealth．Q3 2026 Earnings, Unpacked'},
   {slug:'unitedhealth-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'UnitedHealth', zh:'UnitedHealth．2026 Q2 財報拆解', en:'UnitedHealth．Q2 2026 Earnings, Unpacked'},
   {slug:'spacex-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'SpaceX', zh:'SpaceX．2026 Q2 財報拆解', en:'SpaceX．Q2 2026 Earnings, Unpacked'},
+  {slug:'spacex-2026q3-earnings', d:'2026-10-21', cat:'財報分析', sub:'SpaceX', zh:'SpaceX．2026 Q3 財報拆解', en:'SpaceX．2026 Q3 Earnings, Unpacked'},
   {slug:'crowdstrike-fy2027q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'CrowdStrike', zh:'CrowdStrike．FY2027 Q2 財報拆解', en:'CrowdStrike．FY2027 Q2 Earnings, Unpacked'},
   {slug:'datadog-2026q2-earnings', d:'2026-09-26', cat:'財報分析', sub:'Datadog', zh:'Datadog．2026 Q2 財報拆解', en:'Datadog．Q2 2026 Earnings, Unpacked'},
   {slug:'micron-fy2026q3-earnings', d:'2026-09-26', cat:'財報分析', sub:'Micron', zh:'Micron．FY2026 Q3 財報拆解', en:'Micron．FY2026 Q3 Earnings, Unpacked'},
