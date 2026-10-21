@@ -53,6 +53,7 @@ var POSTS=[
   {slug:'typesafe-jev',               d:'2026-09-25', cat:'AI 技術分享',     zh:'Jev．只下判斷的 AI 模型', en:"Jev．The AI Model That Only Decides"},
   {slug:'openwiki',                   d:'2026-07-16', cat:'AI 技術分享',     zh:'OpenWiki · agent 自動寫 codebase 維基', en:'OpenWiki · Agent Auto-Writes Your Codebase Wiki'},
   {slug:'karpathy-llm-wiki',          d:'2026-07-16', cat:'AI 技術分享',     zh:'LLM Wiki · 會長大的知識庫', en:'LLM Wiki · A Knowledge Base That Grows'},
+  {slug:'gooaye-ep707-stocks',        d:'2026-10-21', cat:'股癌podcast分析', zh:'股癌 EP707 · 個股觀點整理',          en:'Gooaye EP707 · Stock Notes'},
   {slug:'gooaye-ep706-stocks',        d:'2026-10-17', cat:'股癌podcast分析', zh:'股癌 EP706 · 個股觀點整理',          en:'Gooaye EP706 · Stock Notes'},
   {slug:'gooaye-ep705-stocks',        d:'2026-10-14', cat:'股癌podcast分析', zh:'股癌 EP705 · 個股觀點整理',          en:'Gooaye EP705 · Stock Notes'},
   {slug:'gooaye-ep704-stocks',        d:'2026-10-10', cat:'股癌podcast分析', zh:'股癌 EP704 · 個股觀點整理',          en:'Gooaye EP704 · Stock Notes'},
