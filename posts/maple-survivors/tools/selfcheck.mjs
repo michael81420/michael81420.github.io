@@ -49,8 +49,14 @@ const r = await p.evaluate(() => {
   const sp0 = late.sp[0]; M.advance(late, 'thief');
   if (late.sp[0] !== sp0 || late.sp[1] !== D.SP_ADV + 5 * D.SP_LV[1]) out.push(`晚轉補點錯誤：${JSON.stringify(late.sp)}`);
   // 飛鏢：盜賊 1 轉送一組；要武器種類的技能，種類要在 WT 裡
-  if (!window.MSA.star[D.STAR_GIFT] || late.star[D.STAR_GIFT] !== window.MSA.star[D.STAR_GIFT].n * D.STAR_SETS) out.push('盜賊 1 轉沒送飛鏢（或 atlas 沒有飛鏢：重跑素材工具）');
+  if (!window.MSA.star[D.STAR_GIFT] || !late.star[D.STAR_GIFT]) out.push('盜賊 1 轉沒送飛鏢（或 atlas 沒有飛鏢：重跑素材工具）');
   for (const id in D.SK) if (D.SK[id].wt && !D.WT[D.SK[id].wt]) out.push(`技能 ${id} 要的武器種類 ${D.SK[id].wt} 不在 WT`);
+  if (late.starEq != D.STAR_GIFT) out.push('盜賊 1 轉沒把送的飛鏢裝上');
+  for (const id in D.MOBS) for (const i of D.MOBS[id].stars || []) if (!window.MSA.star[i]) out.push(`怪物 ${id} 掉的飛鏢 ${i} 不在 atlas`);
+  // 防呆：拳套不能帶二連擊（要短刀），換短刀就能帶
+  const tw = { ...late, sk: { 4001334: 1 }, load: [4001334], eqp: { weapon: { id: 1472000, st: {} } } };
+  if (M.loadout(tw).length) out.push('穿拳套還能帶二連擊');
+  tw.eqp.weapon = { id: 1332000, st: {} }; if (M.loadout(tw).length !== 1) out.push('穿短刀帶不了二連擊');
   // 一鍵穿裝換上更好的；全部賣出不賣等級比自己高的
   const I0 = window.MSA.itm, w1 = +Object.keys(I0).find(k => I0[k].s === 'weapon' && I0[k].job === 'thief' && I0[k].wt === 'claw' && I0[k].req <= late.lv && !I0[k].rare && (I0[k].rq.luk || 0) <= late.luk);
   late.inv = [{ id: w1, st: { pad: 99 }, tuc: 0, up: 0, q: 1 }, { id: w1, st: {}, tuc: 0, up: 0, q: 0, req: 99 }];
@@ -67,6 +73,9 @@ const r = await p.evaluate(() => {
   if (M.jobOk({ job: 'warrior', br: 'spear' }, I[1302077]) || !M.jobOk({ job: 'warrior' }, I[1432015]) || !M.jobOk({ job: 'beginner' }, I[1452002])) out.push('武器的職業／分支限制錯誤');
   return out;
 });
+// 選單點得動：標題 → 角色選擇（面板的 click handler 壞掉時所有按鈕都會沒反應）
+await p.evaluate(() => document.querySelector('.msv-title').click());   // 直接觸發：標題上的怪物在走，滑鼠點擊會等它穩定
+if (!await p.locator('.msv-slot').count()) r.push('點標題畫面進不了角色選擇（選單 click handler 壞了？）');
 await b.close();
 const bad = [...r, ...errs];
 if (bad.length) { console.log('✗ ' + bad.join('\n✗ ')); process.exit(1); }

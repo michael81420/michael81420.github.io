@@ -60,7 +60,8 @@ input{font-family:inherit;outline:none}
 #showAll.open svg{transform:rotate(180deg)}
 #showAll:hover{color:var(--accent)}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:6px 0;
-  position:sticky;top:72px;z-index:30;background:var(--bg)}
+  position:sticky;top:72px;z-index:30;width:fit-content;pointer-events:none}
+.topbar>*{pointer-events:auto} /* 只佔返回鈕寬度、不蓋到文章 */
 .tb-actions{display:flex;align-items:center;gap:10px}
 /* 站徽列：全寬置頂圖層（站徽 + 站名 + 導覽）；文章頁 topbar 疊成第二層 */
 .sitebar{position:fixed;left:0;right:0;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);overflow-x:clip}
@@ -755,6 +756,38 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-skr:nth-child(even){background:var(--msv-cell)}
 .msv-skr.off b{opacity:.55}
 .msv-sklv{font-weight:700;text-align:right}
+.msv-skr.pick{cursor:pointer}
+.msv-skr.pick:hover{outline:2px solid var(--msv-mine);outline-offset:-2px}
+.msv-skr.on{background:rgb(255 170 51/.25)}
+.msv-sktag{padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;text-align:center}
+.msv-sktag.on{background:var(--msv-mine);color:var(--msv-white)}
+.msv-sktag.no{background:var(--msv-grey);color:var(--msv-white)}
+/* 技能頁：左邊 SKILL SLOT（帶進關卡的技能，可排序）＋右邊 SKILL */
+.msv-skwrap>.msv-skw{flex:1;width:auto}
+.msv-slotw{width:230px}
+.msv-slr{display:flex;align-items:center;gap:6px;height:42px;padding:0 4px;margin-bottom:4px;box-sizing:border-box;border:1px solid var(--msv-slotline);border-radius:4px;background:var(--msv-slot);color:var(--msv-white);font-weight:700;font-size:13px}
+.msv-slr>em{width:14px;font-style:normal;text-align:center;opacity:.8}
+.msv-slr>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msv-slr button{flex:none;width:20px;height:20px;padding:0;border:0;border-radius:3px;background:rgb(255 255 255/.15);color:var(--msv-white);font-size:10px;cursor:pointer}
+.msv-slr button:hover:not(:disabled){background:var(--msv-mine)}
+.msv-slr button.x:hover{background:var(--msv-red)}
+.msv-slr button:disabled{opacity:.3;cursor:default}
+.msv-slr.off{background:none;border-style:dashed;border-color:var(--msv-row);color:var(--msv-frame);opacity:.6}
+.msv-slr.off>span{text-align:center}
+.msv-ldbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0;padding:6px;background:var(--msv-cell);border:1px solid var(--msv-row);border-radius:5px;color:var(--msv-frame);font-size:13px}
+.msv-ldbar>b{margin-right:4px}
+.msv-ld{display:flex;align-items:center;gap:5px;min-width:112px;height:40px;padding:2px 8px;box-sizing:border-box;border:1px solid var(--msv-slotline);border-radius:4px;background:var(--msv-slot);color:var(--msv-white);font-size:12px;font-weight:700}
+button.msv-ld{cursor:pointer}
+.msv-ld i{margin-left:auto;font-style:normal;opacity:.7}
+button.msv-ld:hover i{opacity:1;color:var(--msv-red)}
+.msv-ld.off{justify-content:center;background:none;border-style:dashed;border-color:var(--msv-row);color:var(--msv-frame);opacity:.6}
+/* 飛鏢：裝備欄的飛鏢格＋下面一排持有的飛鏢（點一下裝上） */
+.msv-equip .msv-cell>span{position:absolute;right:2px;bottom:0;font-size:9px}
+.msv-strow{display:flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:236px;margin-top:6px;padding:4px 6px;box-sizing:border-box;background:var(--msv-body);border-radius:6px;color:var(--msv-frame);font-size:12px}
+.msv-strow .msv-cell{position:relative;width:36px;height:36px;padding:0;background:var(--msv-cell);border:1px solid var(--msv-row);border-radius:3px;cursor:pointer}
+.msv-strow .msv-cell.on{border-color:var(--msv-mine);box-shadow:0 0 0 2px var(--msv-mine)}
+.msv-strow .msv-cell.no{border-color:var(--msv-warn);opacity:.6}
+.msv-strow .msv-cell>span{position:absolute;right:1px;bottom:0;font-size:9px;font-weight:700}
 .msv-tip .tp-nx{opacity:.7}
 .msv-eqhd{padding:5px 0 4px;text-align:center;font:700 11px 'Hanken Grotesk',sans-serif;letter-spacing:.08em;color:var(--msv-white)}
 .msv-eqtabs{display:flex;gap:3px}
