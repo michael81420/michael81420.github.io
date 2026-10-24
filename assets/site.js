@@ -21,6 +21,7 @@ var POSTS=[
   {slug:'alphabet-2026q2-earnings',   d:'2026-08-03', cat:'財報分析',       sub:'Alphabet',  zh:'Alphabet．2026 Q2 財報拆解', en:'Alphabet．Q2 2026 Earnings, Unpacked'},
   {slug:'amazon-2026q2-earnings',     d:'2026-08-03', cat:'財報分析',       sub:'Amazon',    zh:'Amazon．2026 Q2 財報拆解',   en:'Amazon．Q2 2026 Earnings, Unpacked'},
   {slug:'microsoft-2026q2-earnings',  d:'2026-08-03', cat:'財報分析',       sub:'Microsoft', zh:'Microsoft．FY2026 Q4 財報拆解', en:'Microsoft．FY2026 Q4 Earnings, Unpacked'},
+  {slug:'meta-2026q3-earnings', d:'2026-10-25', cat:'財報分析', sub:'Meta', zh:'Meta．2026 Q3 財報拆解', en:'Meta．Q3 2026 Earnings, Unpacked'},
   {slug:'meta-2026q2-earnings',       d:'2026-08-03', cat:'財報分析',       sub:'Meta',      zh:'Meta．2026 Q2 財報拆解',     en:'Meta．Q2 2026 Earnings, Unpacked'},
   {slug:'tesla-2026q2-earnings',      d:'2026-08-03', cat:'財報分析',       sub:'Tesla',     zh:'Tesla．2026 Q2 財報拆解',    en:'Tesla．Q2 2026 Earnings, Unpacked'},
   {slug:'oracle-fy2027q1-earnings',   d:'2026-09-17', cat:'財報分析',       sub:'Oracle',    zh:'Oracle．FY2027 Q1 財報拆解', en:'Oracle．FY2027 Q1 Earnings, Unpacked'},
