@@ -657,6 +657,9 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-slot canvas{width:100%;height:110px}
 .msv-slot .nm{font-weight:700}
 .msv-slot .sub{font-size:12px;color:var(--ink2);line-height:1.5}
+.msv-advsk{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:auto;padding-top:6px}
+.msv-grid.n1,.msv-grid.n2,.msv-grid.n3{display:flex;justify-content:center}.msv-grid.n1>*,.msv-grid.n2>*,.msv-grid.n3>*{width:calc(25% - 9px)}
+.msv-newchr{width:min(260px,100%);cursor:default}
 .msv-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
 .msv-row .game-btn{margin:0}
 .game-btn.ghost{background:var(--surface2);color:var(--ink);border:1px solid var(--border)}
@@ -817,20 +820,29 @@ pre .ok{color:var(--win)}                  /* 正解 */
 .msv-ctl button{padding:.4cqw 1cqw;border-radius:.8cqw;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 85%,transparent);color:var(--ink2);font-weight:700;font-size:1.3cqw}
 .msv-ctl button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--onAccent)}
 .msv-ctl button.warn{background:var(--lose);border-color:var(--lose);color:var(--onAccent)}
-.msv-pick{background:rgb(0 0 0/.45)}
-/* 怒氣三選一：原作說明框（深藍底）的卡片＋鍵盤鍵帽數字 */
-.msv-boons{width:min(720px,100%);box-sizing:border-box;padding:0 10px 10px}
-.msv-boons>.msv-eqhd{padding:8px 0;font-size:14px}
-.msv-boonrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.msv-boon{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 10px 12px;background:var(--msv-tipbg);border:2px solid var(--msv-tipline);border-radius:8px;color:var(--msv-white);font-family:inherit;cursor:pointer;transition:transform .12s,border-color .12s}
-.msv-boon:hover,.msv-boon:focus-visible{border-color:var(--msv-gold);transform:translateY(-3px);outline:none}
-.msv-boon .tp-ico{display:flex;align-items:center;justify-content:center;width:64px;height:64px;background:var(--msv-white);border-radius:6px}
-.msv-boon .tp-ico .msv-ico{zoom:1.6}
-.msv-boon .nm{font-weight:700;font-size:17px;color:var(--msv-gold)}
-.msv-boon .ds{font-size:14px;line-height:1.5;text-align:center}
-.msv-boon .lv{margin-top:2px;padding-top:6px;width:100%;border-top:1px dashed var(--msv-tipline);font-size:12px;color:var(--msv-sky)}
-.msv-boon kbd{position:absolute;top:6px;left:6px}
-.msv-boonft{margin-top:8px;text-align:center;font-size:12px;color:var(--msv-white);opacity:.75}
+/* 怒氣三選一：原作式視窗（同 SKILL 視窗）＋上方描邊金字，整塊在遊戲框正中 */
+.msv-pick{justify-content:center;align-items:center;background:radial-gradient(rgb(0 0 0/.25),rgb(0 0 0/.6))}
+.msv-boons{display:flex;flex-direction:column;align-items:center;width:min(640px,100%);animation:msv-pop .18s ease-out}
+.msv-boons>.msv-eqo{width:100%;box-sizing:border-box}
+.msv-boons .msv-mb{padding:10px;border-radius:6px}
+.msv-boonhd{margin-bottom:-.15em;font:900 clamp(26px,5cqw,44px) 'Noto Sans TC',sans-serif;letter-spacing:.12em;color:var(--msv-gold);
+  -webkit-text-stroke:.16em var(--msv-brown);paint-order:stroke fill;filter:drop-shadow(0 3px 0 var(--msv-brown));z-index:1}
+.msv-boonrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.msv-boon{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 8px 10px;background:var(--msv-cell);border:1px solid var(--msv-row);border-radius:6px;
+  color:var(--msv-frame);font-family:inherit;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s}
+.msv-boon:hover,.msv-boon:focus-visible{border-color:var(--msv-mine);box-shadow:0 0 0 2px var(--msv-mine);transform:translateY(-2px);outline:none}
+.msv-boon .bi{position:relative;display:flex;align-items:center;justify-content:center;width:60px;height:60px;background:var(--msv-white);border:1px solid var(--msv-slotline);border-radius:5px;box-shadow:inset 0 0 0 3px var(--msv-body)}
+.msv-boon .bi .msv-ico{zoom:1.5}
+.msv-boon .bi kbd{position:absolute;left:-9px;top:-9px}
+.msv-boon .nm{font-weight:700;font-size:16px}
+.msv-boon .lv{font:700 12px 'Hanken Grotesk',sans-serif;color:var(--msv-slotline)}
+.msv-boon .lv b{color:var(--msv-blue)}
+.msv-boon .ds{flex:1;font-size:13px;line-height:1.45;text-align:center}
+.msv-boon .msv-mbtn{margin-top:2px;padding:3px 18px}
+.msv-boon:hover .msv-mbtn{filter:brightness(1.08)}
+.msv-boons .msv-meso small{margin-left:auto;opacity:.75}
+@keyframes msv-pop{from{transform:scale(.92);opacity:0}}
+@media(prefers-reduced-motion:reduce){.msv-boons{animation:none}}
 /* 原作鍵盤設定的鍵帽 */
 .msv-eqo kbd{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 5px;box-sizing:border-box;border-radius:4px;background:linear-gradient(var(--msv-white),var(--msv-body));border:1px solid var(--msv-slotline);box-shadow:0 2px 0 var(--msv-slotline);color:var(--msv-frame);font:700 12px 'Hanken Grotesk',sans-serif}
 /* 確認／暫停視窗：疊在遊戲框正中，蓋住底下 */

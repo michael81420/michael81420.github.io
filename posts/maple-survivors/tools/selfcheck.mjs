@@ -23,9 +23,51 @@ const r = await p.evaluate(() => {
   for (const id in D.MOBS) if (!window.__msvDropTable(id).eq.length) out.push(`怪物 ${id} 沒有任何掉落`);
   for (const id in D.MOBS) for (const i of D.MOBS[id].rare || []) if (!window.MSA.itm[i]) out.push(`怪物 ${id} 的稀有掉落 ${i} 不在 atlas`);
   for (const id in D.SK) if (!window.MSA.ico.skills?.a[id]) out.push(`技能 ${id} 沒有圖示：重跑 tools/build-assets.mjs`);
+  for (const id in D.SK) { const d = D.SK[id]; if (d.br && !D.JOBS[d.job].br[d.br]) out.push(`技能 ${id} 的分支 ${d.br} 不在 JOBS.${d.job}.br`); }
+  for (const j in D.JOBS) for (const br in D.JOBS[j].br || {}) if (!Object.values(D.SK).some(d => d.job === j && d.br === br)) out.push(`${j} 的 2 轉分支 ${br} 沒有技能`);
+  // 初心者 → 1 轉 → 2 轉：SP 各階段一池，存著不點也帶不到下一轉
+  const M = window.__msv, s = M.newSlot('t', 'beginner'), begMax = Object.values(D.SK).filter(d => d.job === 'beginner').reduce((a, d) => a + d.max, 0);
+  if (s.job !== 'beginner' || s.adv !== 0) out.push('新角色不是初心者');
+  while (s.lv < D.ADV_LV[1]) M.lvUp(s);
+  if (s.sp[0] !== Math.min(begMax, (D.ADV_LV[1] - 1) * D.SP_LV[0])) out.push(`初心者 SP ${s.sp[0]}，應為 ${begMax}（點滿見習技能就不再給）`);
+  M.fix(s); if (s.sp[0] !== Math.min(begMax, (D.ADV_LV[1] - 1) * D.SP_LV[0])) out.push(`讀檔把點得掉的 SP 收掉了：${s.sp[0]}`);
+  M.advance(s, 'magician');
+  if (s.job !== 'magician' || s.int !== D.START_MAIN || s.ap !== (s.lv - 1) * D.AP_LV) out.push('1 轉沒有重置 AP 成新職業主屬性');
+  while (s.lv < D.ADV_LV[2]) M.lvUp(s);
+  const sp1 = s.sp[1]; M.advance(s, 'cleric'); M.lvUp(s);
+  if (s.sp[1] !== sp1 || s.sp[2] !== D.SP_ADV + D.SP_LV[2] || s.br !== 'cleric') out.push(`2 轉後 SP 混池：${JSON.stringify(s.sp)}`);
+  if (M.skOk(s, 2101004) || !M.skOk(s, 2301005) || !M.skOk(s, 1000)) out.push('2 轉分支技能過濾錯誤');
+  // 每個職業／分支：每一轉拿到的 SP 不超過那一轉技能點滿所需（剛好點完或不夠點，不會有多的）
+  const need = (j, a, br) => Object.values(D.SK).filter(d => d.adv === a && (d.job === j) && (!d.br || d.br === br)).reduce((n, d) => n + d.max, 0);
+  for (const j in D.JOBS) for (const br of Object.keys(D.JOBS[j].br || {})) {
+    const c = M.newSlot('t', 'beginner'); while (c.lv < D.ADV_LV[1]) M.lvUp(c); M.advance(c, j);
+    while (c.lv < D.ADV_LV[2]) M.lvUp(c); if (c.sp[1] > need(j, 1)) out.push(`${j} 1 轉 SP ${c.sp[1]} 超過技能總和 ${need(j, 1)}`);
+    M.advance(c, br); while (c.lv < 120) M.lvUp(c); if (c.sp[2] > need(j, 2, br)) out.push(`${j}/${br} 2 轉 SP ${c.sp[2]} 超過技能總和 ${need(j, 2, br)}`);
+  }
+  // 晚轉：過門檻後的等級 SP 不進舊池，轉職時補到新池
+  const late = M.newSlot('t', 'beginner'); while (late.lv < D.ADV_LV[1] + 5) M.lvUp(late);
+  const sp0 = late.sp[0]; M.advance(late, 'thief');
+  if (late.sp[0] !== sp0 || late.sp[1] !== D.SP_ADV + 5 * D.SP_LV[1]) out.push(`晚轉補點錯誤：${JSON.stringify(late.sp)}`);
+  // 飛鏢：盜賊 1 轉送一組；要武器種類的技能，種類要在 WT 裡
+  if (!window.MSA.star[D.STAR_GIFT] || late.star[D.STAR_GIFT] !== window.MSA.star[D.STAR_GIFT].n * D.STAR_SETS) out.push('盜賊 1 轉沒送飛鏢（或 atlas 沒有飛鏢：重跑素材工具）');
+  for (const id in D.SK) if (D.SK[id].wt && !D.WT[D.SK[id].wt]) out.push(`技能 ${id} 要的武器種類 ${D.SK[id].wt} 不在 WT`);
+  // 一鍵穿裝換上更好的；全部賣出不賣等級比自己高的
+  const I0 = window.MSA.itm, w1 = +Object.keys(I0).find(k => I0[k].s === 'weapon' && I0[k].job === 'thief' && I0[k].wt === 'claw' && I0[k].req <= late.lv && !I0[k].rare && (I0[k].rq.luk || 0) <= late.luk);
+  late.inv = [{ id: w1, st: { pad: 99 }, tuc: 0, up: 0, q: 1 }, { id: w1, st: {}, tuc: 0, up: 0, q: 0, req: 99 }];
+  if (M.bestGear(late) !== 1 || late.eqp.weapon.st.pad !== 99) out.push('一鍵穿裝沒換上比較好的武器');
+  if (M.sellList(late, 'all').some(it => it.req === 99)) out.push('全部賣出賣到了等級比自己高的裝備');
+  // 武器：每個職業／分支都有教官送的武器、商店有東西可買；分支限制種類
+  const I = window.MSA.itm;
+  for (const j in D.JOBS) for (const br of [undefined, ...Object.keys(D.JOBS[j].br || {})]) {
+    const c = { job: j, br }, w = M.starter(c), nm = j + (br ? '/' + br : '');
+    if (!w || !M.jobOk(c, I[w.id])) out.push(`${nm} 沒有可用的起始武器`);
+    for (const t of D.JOBS[j].br?.[br]?.wt || []) if (!Object.values(I).some(m => m.wt === t && !m.rare)) out.push(`${nm} 的武器種類 ${t} 一件都沒有`);
+  }
+  for (const m of Object.values(I)) if (m.s === 'weapon' && !D.WT[m.wt]) out.push(`武器 ${m.nm} 的種類 ${m.wt} 不在 WT`);
+  if (M.jobOk({ job: 'warrior', br: 'spear' }, I[1302077]) || !M.jobOk({ job: 'warrior' }, I[1432015]) || !M.jobOk({ job: 'beginner' }, I[1452002])) out.push('武器的職業／分支限制錯誤');
   return out;
 });
 await b.close();
 const bad = [...r, ...errs];
 if (bad.length) { console.log('✗ ' + bad.join('\n✗ ')); process.exit(1); }
-console.log('✓ 卷軸機率、掉落表、技能圖示自檢通過');
+console.log('✓ 卷軸機率、掉落表、技能圖示、轉職與 SP 分池自檢通過');

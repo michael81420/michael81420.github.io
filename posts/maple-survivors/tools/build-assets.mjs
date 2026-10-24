@@ -21,23 +21,43 @@ const NPCS = [1022000, 1012100, 1032001, 1052001];               // 轉職教官
 const MOB_ACTS = ['stand', 'move', 'hit1', 'die1'], BOSS_ACTS = { 6130101: ['attack1'] };
 const BASE = [2000, 12000, 20000, 30030];                    // 膚色身體、頭、臉、髮型（男）
 const NOVICE = [1040002, 1060002, 1072001];                   // 見習期共用：白內衣、藍短褲、紅雨鞋
-const CHARS = {                                               // 職業 → [見習, 1轉, 2轉] 的裝備
-  warrior: { atk: 'swingO1', t: [[...NOVICE, 1302000], [1002002, 1040015, 1060008, 1072005, 1302077], [1002023, 1040021, 1060016, 1072003, 1302008]] },
-  bowman:  { atk: 'shoot1',  t: [[...NOVICE, 1452051], [1002010, 1040008, 1062004, 1072015, 1452002], [1002161, 1040067, 1060056, 1072079, 1452005]] },
-  magician:{ atk: 'swingO1', t: [[...NOVICE, 1372043], [1002017, 1040004, 1060012, 1072006, 1382000], [1002013, 1050003, 1072076, 1382017]] },
-  thief:   { atk: 'swingO2', t: [[...NOVICE, 1472061], [1002122, 1040031, 1060021, 1072070, 1472000], [1002171, 1040057, 1060043, 1072032, 1472008]] },
+// 職業 → [見習, 1轉, 2轉] 的裝備（key＝職業-階段）；br＝2 轉分支另一套（key＝職業-2-分支，沒列的分支用 職業-2）
+// two＝雙手武器：原作站／走要用 stand2／walk2 才拿得出武器（存檔 key 照樣叫 stand1／walk1）
+const CHARS = {
+  beginner:{ atk: 'swingO1', t: [NOVICE] },                  // 初心者：空手
+  warrior: { atk: 'swingO1', t: [[...NOVICE, 1302000], [1002002, 1040015, 1060008, 1072005, 1302077], [1002023, 1040021, 1060016, 1072003, 1302008]],
+             br: { page: { t: [1002023, 1040021, 1060016, 1072003, 1302008, 1092000] }, spear: { atk: 'stabT1', two: 1, t: [1002023, 1040021, 1060016, 1072003, 1432000] } } },
+  bowman:  { atk: 'shoot1',  t: [[...NOVICE, 1452051], [1002010, 1040008, 1062004, 1072015, 1452002], [1002161, 1040067, 1060056, 1072079, 1452005]],
+             br: { xbow: { atk: 'shoot2', t: [1002161, 1040067, 1060056, 1072079, 1462001] } } },
+  magician:{ atk: 'swingO1', t: [[...NOVICE, 1372043], [1002017, 1040004, 1060012, 1072006, 1382000], [1002013, 1050003, 1072076, 1382017]],
+             br: { il: { t: [1002013, 1050003, 1072076, 1382002] }, cleric: { t: [1002013, 1050003, 1072076, 1372001] } } },
+  thief:   { atk: 'swingO2', t: [[...NOVICE, 1472061], [1002122, 1040031, 1060021, 1072070, 1472000], [1002171, 1040057, 1060043, 1072032, 1472008]],
+             br: { bandit: { atk: 'stabO1', t: [1002171, 1040057, 1060043, 1072032, 1332000] } } },
 };
 const CHAR_ACTS = ['stand1', 'walk1', 'atk', 'alert'];
-const SKILL_JOBS = [100, 110, 200, 210, 300, 310, 400, 410];
+const SKILL_JOBS = [100, 110, 120, 130, 200, 210, 220, 230, 300, 310, 320, 400, 410, 420];
 const SKILLS = [1001004, 1001005, 1101006, 1100002, 2001004, 2001005, 2101004, 2101005, 2101001, 2001002,
-                3001004, 3001005, 3101005, 3100001, 4001344, 4001003, 4101004, 4100001]; // 有特效要畫的技能（被動多半沒圖，抓不到就略過）
+                3001004, 3001005, 3101005, 3100001, 4001344, 4001003, 4101004, 4100001,
+                1201006, 1200002, 1301007, 1301006, 1300002, 3201005, 3200001, 2201004, 2201005, 2201001, 2301005, 2301002, 2301004,
+                4201005, 4201003, 4001334]; // 有特效要畫的技能（被動多半沒圖，抓不到就略過）
+// 初心者技能：maplestory.io 的 job/0 skillbook 會壞 → 走 msu 的 Skill/000（level/1 的 ball、hit）
+const BEGINNER_SKILLS = [1000];
+// 飛鏢（拳套丟的消耗品）：原作雜貨店賣的那幾種；數值、組數、價格讀 msu 的 Consume/0207，飛出去的樣子用它的 bullet
+const STARS = [2070000, 2070001, 2070002, 2070003, 2070004];
 // 裝備：從 GMS v83 物品清單自動挑（非點裝、Lv35 以下、不限女性），每個 職業×部位 依等級段各取一件；
 // 名字有「楓葉」的武器當稀有（只會掉落）。數值與圖示讀 msu 的 WZ info，中文名讀台版清單。
-const EQ_SUB = { 'One-Handed Sword': ['weapon', 'Weapon'], 'Bow': ['weapon', 'Weapon'], 'Wand': ['weapon', 'Weapon'], 'Staff': ['weapon', 'Weapon'], 'Claw': ['weapon', 'Weapon'],
+// 武器：原作分 14 種，wt＝種類 key（data.js 的 WT 有中文名，JOBS.br.wt 限制 2 轉分支能拿哪幾種）
+const WT = { 'One-Handed Sword': 'sw1', 'Two-Handed Sword': 'sw2', 'One-Handed Axe': 'ax1', 'Two-Handed Axe': 'ax2', 'One-Handed Blunt Weapon': 'bw1', 'Two-Handed Blunt': 'bw2',
+  'Spear': 'spear', 'Pole Arm': 'pole', 'Bow': 'bow', 'Crossbow': 'xbow', 'Wand': 'wand', 'Staff': 'staff', 'Claw': 'claw', 'Dagger': 'dagger' };
+const EQ_SUB = { ...Object.fromEntries(Object.keys(WT).map(k => [k, ['weapon', 'Weapon']])),
   'Hat': ['cap', 'Cap'], 'Top': ['coat', 'Coat'], 'Overall': ['coat', 'Longcoat'], 'Bottom': ['pants', 'Pants'], 'Shoes': ['shoes', 'Shoes'], 'Glove': ['glove', 'Glove'], 'Cape': ['cape', 'Cape'] };
 const EQ_JOB = { Warrior: 'warrior', Bowman: 'bowman', Magician: 'magician', Thief: 'thief', Beginner: 'all' };
-const WEAPON_OF = { warrior: ['One-Handed Sword'], bowman: ['Bow'], magician: ['Wand', 'Staff'], thief: ['Claw'] };
+// 武器歸哪個職業看種類（原作很多低等武器 requiredJobs 是 Beginner＝誰都能拿，照種類歸給會用它的職業）
+const WEAPON_OF = { warrior: ['One-Handed Sword', 'Two-Handed Sword', 'One-Handed Axe', 'Two-Handed Axe', 'One-Handed Blunt Weapon', 'Two-Handed Blunt', 'Spear', 'Pole Arm'],
+  bowman: ['Bow', 'Crossbow'], magician: ['Wand', 'Staff'], thief: ['Claw', 'Dagger'] };
 const EQ_TIERS = [0, 8, 15, 20, 25, 30, 35];
+// 舊存檔身上穿著的東西不能從 atlas 消失（atlas 沒有就讀不到）：曾經進過 atlas、之後被別件擠掉的列在這
+const KEEP = [1302077, 1372043];
 const SCROLLS = { w: [2043000, 2043004, 2043001, 2043005, 2043002], a: [2040000, 2040008, 2040001, 2040009, 2040002] };  // 100/70/60/30/10
 // BOSS 關沿用 s1 地板。
 // 關卡地板：原作沒有俯視地面 → 用該地區的 bsc（原作就設計成無縫重複的泥土填充）鋪底，再撒該地區的地圖物件
@@ -51,7 +71,7 @@ const FLOORS = {
 
 // 音樂與音效（msu 的 Sound/*）。BGM 照原作地區挑；轉成單聲道低位元率 mp3（要裝 ffmpeg），5 首約 3 MB
 const BGM = { menu: 'BgmUI/Title', s1: 'Bgm00/GoPicnic', s2: 'Bgm00/GoPicnic', s3: 'Bgm00/GoPicnic', s4: 'Bgm00/SleepyWood', s5: 'Bgm00/Nightmare', boss: 'Bgm01/BadGuys' };
-const SFX = { 'atk-warrior': 'Weapon/swordS/Attack', 'atk-bowman': 'Weapon/bow/Attack', 'atk-magician': 'Skill/2001004/Use', 'atk-thief': 'Weapon/tGlove/Attack',
+const SFX = { 'atk-beginner': 'Weapon/swordS/Attack', 'atk-warrior': 'Weapon/swordS/Attack', 'atk-bowman': 'Weapon/bow/Attack', 'atk-magician': 'Skill/2001004/Use', 'atk-thief': 'Weapon/tGlove/Attack',
   ...Object.fromEntries(['Portal', 'PickUpItem', 'DropItem', 'LevelUp', 'JobChanged', 'QuestClear', 'Tombstone', 'EnchantSuccess', 'EnchantFailure', 'gaugeFull'].map(k => [k, `Game/${k}`])),
   ...Object.fromEntries(['BtMouseClick', 'Tab', 'BuyShopItem', 'EnchantDestroyed'].map(k => [k, `UI/${k}`])) };   // 技能 skl-<id>、怪物 mobd-/mobx-<id> 由清單自動補
 
@@ -123,7 +143,7 @@ await page.evaluate(() => {
   };
 });
 
-const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {}, itm: {}, ico: {} }, report = [], miss = [];
+const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {}, itm: {}, ico: {}, star: {} }, report = [], miss = [];
 let bytes = 0;
 async function emit(kind, id, acts, q = 1) {           // q=1 → Chromium 走無損 WebP，像素圖邊緣不糊
   // 每個動作的幀先在頁面裡解好、存在 window.A，再一次拼圖（幀不跨回 Node）
@@ -155,15 +175,16 @@ for (const id of NPCS) {
   if (f.length) await emit('npc', id, { stand: { png: f } }); else miss.push(`npc ${id}`);
 }
 // 角色：職業 × 轉職階段
-await pool(Object.entries(CHARS).flatMap(([job, c]) => c.t.map((items, tier) => [job, tier, c.atk, items])), 3, async ([job, tier, atk, items]) => {
+await pool(Object.entries(CHARS).flatMap(([job, c]) => [...c.t.map((items, tier) => [`${job}-${tier}`, c.atk, items]),
+  ...Object.entries(c.br || {}).map(([br, x]) => [`${job}-2-${br}`, x.atk || c.atk, x.t, x.two])]), 3, async ([key, atk, items, two]) => {
   const acts = {};
-  await Promise.all(CHAR_ACTS.map(async a => { const act = a === 'atk' ? atk : a, b = await get(charPath([...BASE, ...items], act), { raw: true });
-    if (b) acts[a] = { gif: b.toString('base64') }; else miss.push(`chr ${job}-${tier} ${act}`); }));
-  await emit('chr', `${job}-${tier}`, acts);
+  await Promise.all(CHAR_ACTS.map(async a => { const act = a === 'atk' ? atk : two ? a.replace('1', '2') : a, b = await get(charPath([...BASE, ...items], act), { raw: true });
+    if (b) acts[a] = { gif: b.toString('base64') }; else miss.push(`chr ${key} ${act}`); }));
+  await emit('chr', key, acts);
 });
 // 技能：各職業 skillbook 一次抓，挑有特效的
 // 技能圖示（v83 skillbook 內含 32×32 icon／iconDisabled）：data.js 用到的技能都抓，一個技能一列 [可用, 未學]
-const skillNm = {}, SK_IDS = [...readFileSync(join(import.meta.dirname, '../data.js'), 'utf8').matchAll(/(\d{7}):\{job:/g)].map(m => +m[1]), skIco = {};
+const skillNm = {}, SK_IDS = [...readFileSync(join(import.meta.dirname, '../data.js'), 'utf8').matchAll(/(\d+):\{job:/g)].map(m => +m[1]), skIco = {};
 const icoPng = b64 => b64 && { image: b64, origin: { x: 16, y: 32 } };
 for (const job of SKILL_JOBS) {
   const b = await get(`job/${job}/skillbook`); if (!b) { miss.push(`skillbook ${job}`); continue; }
@@ -176,6 +197,12 @@ for (const job of SKILL_JOBS) {
     if (!(await emit('skl', s.id, acts))) miss.push(`skl ${s.id} ${s.description?.name}（無特效圖）`);
   }
 }
+{ const sb = (await msuJson('Skill/000.json'))?.skill || {};
+  for (const id of BEGINNER_SKILLS) { const s = sb[String(id).padStart(7, '0')], lv = s?.level?.['1'];
+    if (!s) { miss.push(`skl ${id}（msu Skill/000 沒有）`); continue; }
+    skillNm[id] = id; skIco[id] = { png: await msuFrames([s.icon, s.iconDisabled || s.icon].map(f => ({ ...f, origin: { x: 16, y: 32 } }))) };
+    const acts = {}; for (const k of ['ball', 'hit']) { const f = await msuFrames(frames(k === 'hit' ? lv?.hit?.['0'] : lv?.[k])); if (f.length) acts[k] = { png: f }; }
+    if (!(await emit('skl', id, acts))) miss.push(`skl ${id}（無特效圖）`); } }
 for (const id of SKILLS) if (!(id in skillNm)) miss.push(`skl ${id}（skillbook 裡找不到）`);
 for (const id of SK_IDS) if (!skIco[id]) miss.push(`技能圖示 ${id}`);
 await emit('ico', 'skills', skIco, 1);
@@ -200,11 +227,12 @@ for (const [k, f] of Object.entries(FLOORS)) {
     const sub = it.typeInfo?.subCategory, job = EQ_JOB[(it.requiredJobs || [])[0]];
     if (!EQ_SUB[sub] || !job || it.isCash || it.requiredGender === 1 || it.requiredLevel > 35 || (it.requiredJobs || []).length !== 1 || !tw[it.id]) continue;
     if (/楓葉/.test(tw[it.id])) { if (EQ_SUB[sub][0] === 'weapon') rare.push(it); continue; }   // 楓葉之劍在原作是初心者可用，所以先於職業過濾
-    if (EQ_SUB[sub][0] === 'weapon' && (job === 'all' || !WEAPON_OF[job].includes(sub))) continue;
-    const tier = EQ_TIERS.filter(t => t <= it.requiredLevel).pop(), key = `${job}/${sub}/${tier}`;
+    const wjob = EQ_SUB[sub][0] === 'weapon' ? Object.keys(WEAPON_OF).find(j => WEAPON_OF[j].includes(sub)) : job;
+    if (wjob !== job && job !== 'all') continue;   // 武器：requiredJobs 要嘛 Beginner、要嘛就是會用這種武器的職業
+    const tier = EQ_TIERS.filter(t => t <= it.requiredLevel).pop(), key = `${wjob}/${sub}/${tier}`;
     if (!pick[key] || it.id < pick[key].id) pick[key] = it;
   }
-  const chosen = [...Object.values(pick), ...rare].sort((a, b) => a.id - b.id), eq = [];
+  const chosen = [...new Set([...Object.values(pick), ...rare, ...all.filter(it => KEEP.includes(it.id))])].sort((a, b) => a.id - b.id), eq = [];
   await pool(chosen, 6, async it => {
     const [slotNm, dir] = EQ_SUB[it.typeInfo.subCategory], j = await msuJson(`Character/${dir}/${String(it.id).padStart(8, '0')}.json`), inf = j?.info;
     if (!inf?.icon?._path) { miss.push(`itm ${it.id} ${tw[it.id]}`); return; }
@@ -212,7 +240,7 @@ for (const [k, f] of Object.entries(FLOORS)) {
     const job = slotNm === 'weapon' ? Object.keys(WEAPON_OF).find(j => WEAPON_OF[j].includes(it.typeInfo.subCategory)) : EQ_JOB[it.requiredJobs[0]];
     if (!Object.keys(st).length) return;   // 沒有任何屬性的是造型服，當裝備沒意義
     const rq = {}; for (const k of ['STR', 'DEX', 'INT', 'LUK']) if (+inf['req' + k]) rq[k.toLowerCase()] = +inf['req' + k];   // 原作的屬性需求
-    eq.push({ id: it.id, f: inf.icon, m: { nm: tw[it.id], s: slotNm, job, rq, req: it.requiredLevel, st, tuc: +inf.tuc || 0, price: +inf.price || 1,
+    eq.push({ id: it.id, f: inf.icon, m: { nm: tw[it.id], s: slotNm, job, ...(slotNm === 'weapon' ? { wt: WT[it.typeInfo.subCategory] } : {}), rq, req: it.requiredLevel, st, tuc: +inf.tuc || 0, price: +inf.price || 1,
       ...(rare.includes(it) ? { rare: 1 } : {}), ...(slotNm === 'coat' && dir === 'Longcoat' ? { ov: 1 } : {}) } });
   });
   eq.sort((a, b) => a.id - b.id);
@@ -225,16 +253,28 @@ for (const [k, f] of Object.entries(FLOORS)) {
   const eqIco = await Promise.all(eq.map(async e => (await v83(e.id)) || (await msuFrames([e.f]))[0]));
   const acts = { eq: { png: eqIco }, sc: { png: await msuFrames(sc) } };
   for (let i = 0; i < 4; i++) { const f = await v83(9000000 + i); if (f) acts['meso' + i] = { png: [f] }; else miss.push(`楓幣圖示 ${i}`); }
+  const stc = await msuJson('Item/Consume/0207.json'), st = STARS.map(id => [id, stc?.[String(id).padStart(8, '0')]]).filter(([id, j]) => { const ok = j?.info && tw[id]; if (!ok) miss.push(`飛鏢 ${id}`); return ok; });
+  acts.star = { png: await Promise.all(st.map(async ([id, j]) => (await v83(id)) || (await msuFrames([j.info.icon]))[0])) };
+  for (const [i, [id, j]] of st.entries()) { const f = j.info; atlas.star[id] = { nm: tw[id], atk: f.incPAD, req: f.reqLevel || 0, n: f.slotMax, price: f.price, i };
+    await emit('skl', id, { ball: { png: await msuFrames(frames(j.bullet)) } }); }
   await emit('ico', 'items', acts, 1);
   eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; });
   report.push(`itm  ${eq.length} 件裝備（稀有 ${eq.filter(e => e.m.rare).length}）、卷軸圖示 ${sc.length}`);
+}
+// 傷害數字（原作 BasicEff）：NoRed 打怪、NoCri 爆擊、NoViolet 被打；1＝第一位大字、0＝其餘位數；NoRed0 第 10 幀＝Miss、crit＝爆擊底圖
+{ const be = await msuJson('Effect/BasicEff.json'), acts = {};
+  for (const k of ['NoRed', 'NoCri', 'NoViolet']) for (const n of [0, 1]) { const node = be?.[k + n], f = await msuFrames([...Array(10).keys(), 'Miss'].map(i => node?.[i]).filter(f => f?._path));
+    if (f.length >= 10) acts[k + n] = { png: f }; else miss.push(`傷害數字 ${k}${n}`); }
+  if (be?.NoCri1?.effect) acts.crit = { png: await msuFrames([be.NoCri1.effect]) };
+  await emit('ico', 'num', acts, 1);
 }
 // 音樂與音效：同一個原始檔只轉一次（很多怪物共用受傷音）
 {
   const mobSnd = await msuJson('Sound/Mob.json'), sklSnd = await msuJson('Sound/Skill.json'), snd = { bgm: {}, fx: {} }, done = {};
   const fx = { ...SFX };
   for (const id of MOBS) { const m = mobSnd?.[String(id).padStart(7, '0')]; if (m?.Damage) fx['mobd-' + id] = m.Damage.replace(/^Sound\/|\.mp3$/g, ''); if (m?.Die) fx['mobx-' + id] = m.Die.replace(/^Sound\/|\.mp3$/g, ''); }
-  for (const id of SKILLS) if (sklSnd?.[id]?.Use) fx['skl-' + id] = `Skill/${id}/Use`;
+  // 原作很多技能共用別的技能的音效（嫩寶丟擲術用強力攻擊的），照 Use 指的路徑抓
+  for (const id of [...SKILLS, ...BEGINNER_SKILLS]) { const u = sklSnd?.[String(id).padStart(7, '0')]?.Use; if (u) fx['skl-' + id] = u.replace(/^Sound\/|\.mp3$/g, ''); }
   const conv = async (path, bgm) => {
     const file = (bgm ? 'bgm-' : 'sfx-') + path.replace(/\//g, '-') + '.mp3';
     if (done[file] !== undefined) return done[file];
