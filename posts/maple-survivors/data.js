@@ -39,7 +39,7 @@ window.MSD={
   // 飛鏢：盜賊 1 轉教官送海星鏢並裝上；持有就無限丟，飛鏢攻擊力加在武器攻擊上；沒裝飛鏢拳套只能空手揍（初心者的近身攻擊）
   STAR_GIFT:2070000,
   ATK_K:.6,
-  HIT_INV:1,                           // 被打之後的無敵秒數
+  HIT_INV:.5,                          // 被打之後的無敵秒數（原本 1 秒，被包圍幾乎不痛）
   STATS:['str','dex','int','luk'], STAT_NM:{str:'STR 力量',dex:'DEX 敏捷',int:'INT 智力',luk:'LUK 幸運'},
   START_STAT:4, START_MAIN:12,         // 創角：四項 4，主屬性 12
   AP_LV:5, SP_ADV:1,                   // 每升一級 5 AP；轉職當下送 1 SP
@@ -148,8 +148,9 @@ window.MSD={
     4201002:{job:'thief', adv:2, br:'bandit', nm:'快速之刀', max:10, mods:{cdr:[.04,.2]}, desc:'所有攻擊冷卻縮短。'},
     4200000:{job:'thief', adv:2, br:'bandit', nm:'短劍精通', max:10, mods:{dmg:[.05,.2], crit:[.02,.1]}, desc:'傷害與爆擊率提升。'}
   },
-  // 升到下一級要的經驗。節奏目標：2～3 場到 Lv10；在等級相當的關卡每場升 1～3 級
-  exp:function(lv){ return Math.round(16*Math.pow(lv,2.2)+10) },
+  // 升到下一級要的經驗。Lv15 以前照舊（新手關一場左右就能跳下一關）；之後乘上 1＋((lv−15)/60)²，越後面越多場，
+  // 最後一關（s12，Lv66）打到 Lv70 約 5 場。場數表見 README
+  exp:function(lv){ return Math.round((16*Math.pow(lv,2.2)+10)*(1+Math.pow(Math.max(0,lv-15)/60,2))) },
   DEATH_EXP:.3,
   // 怪物：lv＝原作等級（決定掉落表）；hp/atk 依原作縮放過；spd＝每秒像素；r 不填就依圖寬推
   MOBS:{
@@ -167,9 +168,34 @@ window.MSD={
     2230101:{nm:'殭屍菇菇',lv:24, hp:900,  atk:32, spd:50, exp:70, stars:[2070003]},
     2230102:{nm:'黑肥肥',  lv:26, hp:1100, atk:36, spd:75, exp:85},
     3210100:{nm:'火肥肥',  lv:32, hp:1600, atk:44, spd:70, exp:110, stars:[2070004]},
+    // Lv35–75（第二批關卡）：hp≈1.6×lv²、atk≈1.35×lv、exp≈3.4×lv，照前面的怪物外推
+    3230101:{nm:'小幽靈',    lv:35, hp:1960, atk:47,  spd:55, exp:120},
+    3210800:{nm:'猴子',      lv:37, hp:2190, atk:50,  spd:70, exp:126},
+    4230101:{nm:'天使猴',    lv:40, hp:2560, atk:54,  spd:70, exp:136},
+    4230100:{nm:'冰獨眼獸',  lv:40, hp:2560, atk:54,  spd:50, exp:136},
+    4230103:{nm:'鋼之肥肥',  lv:42, hp:2820, atk:57,  spd:75, exp:143},
+    4130100:{nm:'土龍',      lv:45, hp:3240, atk:61,  spd:50, exp:153},
+    4230102:{nm:'大幽靈',    lv:48, hp:3690, atk:65,  spd:55, exp:163},
+    5100000:{nm:'小雪球',    lv:50, hp:4000, atk:68,  spd:60, exp:170},
+    5130100:{nm:'青龍',      lv:50, hp:4000, atk:68,  spd:50, exp:170},
+    5130101:{nm:'石巨人',    lv:55, hp:4840, atk:74,  spd:40, exp:187},
+    5130104:{nm:'野狼',      lv:55, hp:4840, atk:74,  spd:80, exp:187},
+    5130102:{nm:'黑曜石巨人',lv:58, hp:5380, atk:78,  spd:40, exp:197},
+    5140000:{nm:'白狼',      lv:58, hp:5380, atk:78,  spd:85, exp:197},
+    5150000:{nm:'混種石巨人',lv:59, hp:5570, atk:80,  spd:42, exp:200},
+    6130100:{nm:'赤龍',      lv:60, hp:5760, atk:81,  spd:55, exp:204},
+    6230100:{nm:'魔龍',      lv:62, hp:6150, atk:84,  spd:70, exp:211},
+    6230600:{nm:'冰龍',      lv:64, hp:6550, atk:86,  spd:55, exp:218},
+    6300000:{nm:'雪吉拉',    lv:65, hp:6760, atk:88,  spd:50, exp:221},
+    6230601:{nm:'黑龍',      lv:68, hp:7400, atk:92,  spd:60, exp:231},
+    6400000:{nm:'黑吉拉',    lv:68, hp:7400, atk:92,  spd:55, exp:231},
+    7130100:{nm:'月牙牛魔王',lv:70, hp:7840, atk:95,  spd:60, exp:238},
+    7130101:{nm:'長槍牛魔王',lv:75, hp:9000, atk:101, spd:60, exp:255},
     // BOSS：slam＝每 cd 秒舉起來砸地（atlas 的 attack1），範圍 r 內受 dmg 傷害，砸下前 warn 秒畫出預警圈
     6130101:{nm:'蘑菇王',  lv:20, hp:30000,atk:40, spd:50, exp:3000, boss:1, stars:[2070004], slam:{cd:6, r:170, dmg:60, warn:1},
-             rare:[1302020,1302058,1302080,1382009,1452016,1472030]}
+             rare:[1302020,1302058,1302080,1382009,1452016,1472030]},
+    5220002:{nm:'殭屍猴王', lv:50, hp:190000, atk:80,  spd:55, exp:5000, boss:1, slam:{cd:5, r:190, dmg:120, warn:1}},
+    8130100:{nm:'小巴洛古', lv:75, hp:450000, atk:120, spd:50, exp:9000, boss:1, slam:{cd:5, r:220, dmg:180, warn:1}}
   },
   // 關卡（依序解鎖：通關前一關才能挑戰下一關）。waves 依時間切換怪物組；rate＝每秒生怪數，隨時間線性加到 rate2
   // rec＝建議等級；boss＝{id, t 出場秒數}：打倒 BOSS 才算通關，dur 是時限（時間到算失敗）
@@ -202,13 +228,57 @@ window.MSD={
       {t:0,   mobs:[2230102],                  rate:1.5, rate2:3},
       {t:100, mobs:[2230102,3210100],          rate:3,   rate2:5.5},
       {t:220, mobs:[3210100],                  rate:5,   rate2:7}
+    ]},
+    // 第二批（Lv35–70）：地板先共用 s1–s5
+    s6:{nm:'幽靈樹林', floor:'s4', rec:35, dur:300, waves:[
+      {t:0,   mobs:[3230101,3210800],          rate:1.5, rate2:3},
+      {t:100, mobs:[3210800,4230101],          rate:3,   rate2:5.5},
+      {t:220, mobs:[4230101,3230101],          rate:5,   rate2:7}
+    ]},
+    s7:{nm:'冰獨眼獸的山谷', floor:'s5', rec:41, dur:300, waves:[
+      {t:0,   mobs:[4230100,4230103],          rate:1.5, rate2:3},
+      {t:100, mobs:[4230103,4130100],          rate:3,   rate2:5.5},
+      {t:220, mobs:[4130100,4230102],          rate:5,   rate2:7}
+    ]},
+    boss2:{nm:'殭屍猴王的墓地', floor:'s4', rec:47, dur:600, boss:{id:5220002, t:180}, waves:[
+      {t:0,   mobs:[4230102,5100000],          rate:2,   rate2:3},
+      {t:120, mobs:[5100000,5130100],          rate:3,   rate2:4}
+    ]},
+    s8:{nm:'石巨人寺院', floor:'s5', rec:52, dur:300, waves:[
+      {t:0,   mobs:[5130100,5130101],          rate:1.5, rate2:3},
+      {t:100, mobs:[5130101,5130102],          rate:3,   rate2:5.5},
+      {t:220, mobs:[5130102,5150000],          rate:5,   rate2:7}
+    ]},
+    s9:{nm:'野狼領地', floor:'s3', rec:55, dur:300, waves:[
+      {t:0,   mobs:[5130104],                  rate:1.5, rate2:3},
+      {t:100, mobs:[5130104,5140000],          rate:3,   rate2:5.5},
+      {t:220, mobs:[5140000,5150000],          rate:5,   rate2:7}
+    ]},
+    s10:{nm:'龍之峽谷', floor:'s5', rec:58, dur:300, waves:[
+      {t:0,   mobs:[6130100,6230100],          rate:1.5, rate2:3},
+      {t:100, mobs:[6230100,6230600],          rate:3,   rate2:5.5},
+      {t:220, mobs:[6230600,6230601],          rate:5,   rate2:7}
+    ]},
+    s11:{nm:'冰雪峽谷', floor:'s3', rec:62, dur:300, waves:[
+      {t:0,   mobs:[6300000,6230600],          rate:1.5, rate2:3},
+      {t:100, mobs:[6300000,6400000],          rate:3,   rate2:5.5},
+      {t:220, mobs:[6400000,6230601],          rate:5,   rate2:7}
+    ]},
+    s12:{nm:'牛魔王的領地', floor:'s4', rec:66, dur:300, waves:[
+      {t:0,   mobs:[7130100],                  rate:1.5, rate2:3},
+      {t:100, mobs:[7130100,7130101],          rate:3,   rate2:5.5},
+      {t:220, mobs:[7130101],                  rate:5,   rate2:7}
+    ]},
+    boss3:{nm:'小巴洛古的祭壇', floor:'s4', rec:70, dur:600, boss:{id:8130100, t:180}, waves:[
+      {t:0,   mobs:[7130100,6400000],          rate:2,   rate2:3},
+      {t:120, mobs:[7130100,7130101],          rate:3,   rate2:4}
     ]}
   },
   // BOSS 首次通關獎勵：本職業稀有武器（保底）＋楓幣＋稱號
-  FIRST_CLEAR:{boss:{meso:5000, title:'蘑菇王剋星', rareOwnJob:1}},
+  FIRST_CLEAR:{boss:{meso:5000, title:'蘑菇王剋星', rareOwnJob:1}, boss2:{meso:20000, title:'殭屍猴王剋星'}, boss3:{meso:60000, title:'巴洛古剋星'}},
   // 怒氣：擊倒怪物累積，集滿時三選一「本場限定增益」，離開關卡就消失。第 n 次要 need×n
   RAGE:{need:40, choices:3},
-  BOONS:[   // ico＝借用的技能圖示（只為了好看）
+  BOONS:[   // ico＝借用的技能圖示（只為了好看）；clear＝選了就把畫面上的怪物全部擊倒（BOSS 除外；經驗、掉落照拿，不累積怒氣）
     {k:'cdr',   nm:'攻速提升',   desc:'所有攻擊冷卻 −12%',      mods:{cdr:.12}, ico:1101004},
     {k:'dmg',   nm:'力量湧現',   desc:'傷害 +20%',              mods:{dmg:.2}, ico:1101006},
     {k:'n',     nm:'多重投射',   desc:'投射物 +1 發',           mods:{n:1}, ico:3001005},
@@ -216,8 +286,9 @@ window.MSD={
     {k:'crit',  nm:'致命一擊',   desc:'爆擊率 +10%',            mods:{crit:.1}, ico:4100001},
     {k:'spd',   nm:'疾風步',     desc:'移動速度 +15%',          mods:{spd:.15}, ico:4101004},
     {k:'hp',    nm:'強健體魄',   desc:'最大 HP +20%，並補滿',   mods:{hp:.2}, ico:1000001},
-    {k:'leech', nm:'吸取生命',   desc:'每擊倒一隻怪回復 1% HP', mods:{leech:.01}, ico:1001003},
-    {k:'magnet',nm:'楓幣磁鐵',   desc:'撿東西的距離 +60%',      mods:{magnet:.6}, ico:3001003},
+    {k:'leech', nm:'吸取生命',   desc:'每擊倒一隻怪回復 0.3% HP', mods:{leech:.003}, ico:1001003},
+    {k:'exp',   nm:'經驗加成',   desc:'本場獲得經驗 +20%',      mods:{exp:.2}, ico:3001003},
+    {k:'clear', nm:'一鍵清屏',   desc:'擊倒畫面上所有怪物（BOSS 除外）', clear:1, ico:2201005},
     {k:'heal',  nm:'喝下藥水',   desc:'立刻回復 60% HP',        heal:.6, ico:2101001}
   ]
 };

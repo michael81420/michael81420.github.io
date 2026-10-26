@@ -16,9 +16,11 @@ const OUT = resolve(import.meta.dirname, '../assets'), CACHE = join(import.meta.
 const MSU = 'https://resource-static.msu.io/data', API = 'https://maplestory.io/api', REGS = ['GMS/83', 'GMS/255', 'TWMS/256', 'KMS/389'];
 
 // ---- 素材清單（第一期） ----
-const MOBS = [100100, 100101, 130101, 120100, 210100, 130100, 1210100, 1210101, 1210102, 2110200, 2220100, 2230101, 2230102, 3210100, 6130101];
+const MOBS = [100100, 100101, 130101, 120100, 210100, 130100, 1210100, 1210101, 1210102, 2110200, 2220100, 2230101, 2230102, 3210100, 6130101,
+  3230101, 3210800, 4230101, 4130100, 4230103, 4230102, 4230100, 5100000, 5130100, 5220002, 5130101, 5130102, 5150000,   // Lv35–70（第二批關卡）
+  5140000, 5130104, 6300000, 6400000, 6130100, 6230600, 6230601, 6230100, 7130100, 7130101, 8130100];
 const NPCS = [1022000, 1012100, 1032001, 1052001];               // 轉職教官：武術教練、赫麗娜、漢斯、達克魯（選職業畫面）
-const MOB_ACTS = ['stand', 'move', 'hit1', 'die1'], BOSS_ACTS = { 6130101: ['attack1'] };
+const MOB_ACTS = ['stand', 'move', 'hit1', 'die1'], BOSS_ACTS = { 6130101: ['attack1'], 5220002: ['attack1'], 8130100: ['attack1'] };
 const BASE = [2000, 12000, 20000, 30030];                    // 膚色身體、頭、臉、髮型（男）
 const NOVICE = [1040002, 1060002, 1072001];                   // 見習期共用：白內衣、藍短褲、紅雨鞋
 // 職業 → [見習, 1轉, 2轉] 的裝備（key＝職業-階段）；br＝2 轉分支另一套（key＝職業-2-分支，沒列的分支用 職業-2）
@@ -44,7 +46,7 @@ const SKILLS = [1001004, 1001005, 1101006, 1100002, 2001004, 2001005, 2101004, 2
 const BEGINNER_SKILLS = [1000];
 // 飛鏢（拳套丟的消耗品）：原作雜貨店賣的那幾種；數值、組數、價格讀 msu 的 Consume/0207，飛出去的樣子用它的 bullet
 const STARS = [2070000, 2070001, 2070002, 2070003, 2070004];
-// 裝備：從 GMS v83 物品清單自動挑（非點裝、Lv35 以下、不限女性），每個 職業×部位 依等級段各取一件；
+// 裝備：從 GMS v83 物品清單自動挑（非點裝、Lv70 以下、不限女性），每個 職業×部位 依等級段各取一件；
 // 名字有「楓葉」的武器當稀有（只會掉落）。數值與圖示讀 msu 的 WZ info，中文名讀台版清單。
 // 武器：原作分 14 種，wt＝種類 key（data.js 的 WT 有中文名，JOBS.br.wt 限制 2 轉分支能拿哪幾種）
 const WT = { 'One-Handed Sword': 'sw1', 'Two-Handed Sword': 'sw2', 'One-Handed Axe': 'ax1', 'Two-Handed Axe': 'ax2', 'One-Handed Blunt Weapon': 'bw1', 'Two-Handed Blunt': 'bw2',
@@ -55,9 +57,9 @@ const EQ_JOB = { Warrior: 'warrior', Bowman: 'bowman', Magician: 'magician', Thi
 // 武器歸哪個職業看種類（原作很多低等武器 requiredJobs 是 Beginner＝誰都能拿，照種類歸給會用它的職業）
 const WEAPON_OF = { warrior: ['One-Handed Sword', 'Two-Handed Sword', 'One-Handed Axe', 'Two-Handed Axe', 'One-Handed Blunt Weapon', 'Two-Handed Blunt', 'Spear', 'Pole Arm'],
   bowman: ['Bow', 'Crossbow'], magician: ['Wand', 'Staff'], thief: ['Claw', 'Dagger'] };
-const EQ_TIERS = [0, 8, 15, 20, 25, 30, 35];
+const EQ_TIERS = [0, 8, 15, 20, 25, 30, 35, 40, 50, 60, 70];
 // 舊存檔身上穿著的東西不能從 atlas 消失（atlas 沒有就讀不到）：曾經進過 atlas、之後被別件擠掉的列在這
-const KEEP = [1302077, 1372043];
+const KEEP = [1302077, 1372043, 1462024];
 const SCROLLS = { w: [2043000, 2043004, 2043001, 2043005, 2043002], a: [2040000, 2040008, 2040001, 2040009, 2040002] };  // 100/70/60/30/10
 // BOSS 關沿用 s1 地板。
 // 關卡地板：原作沒有俯視地面 → 用該地區的 bsc（原作就設計成無縫重複的泥土填充）鋪底，再撒該地區的地圖物件
@@ -70,7 +72,8 @@ const FLOORS = {
 };
 
 // 音樂與音效（msu 的 Sound/*）。BGM 照原作地區挑；轉成單聲道低位元率 mp3（要裝 ffmpeg），5 首約 3 MB
-const BGM = { menu: 'BgmUI/Title', s1: 'Bgm00/GoPicnic', s2: 'Bgm00/GoPicnic', s3: 'Bgm00/GoPicnic', s4: 'Bgm00/SleepyWood', s5: 'Bgm00/Nightmare', boss: 'Bgm01/BadGuys' };
+const BGM = { menu: 'BgmUI/Title', s1: 'Bgm00/GoPicnic', s2: 'Bgm00/GoPicnic', s3: 'Bgm00/GoPicnic', s4: 'Bgm00/SleepyWood', s5: 'Bgm00/Nightmare', boss: 'Bgm01/BadGuys',
+  s6: 'Bgm00/SleepyWood', s7: 'Bgm00/Nightmare', boss2: 'Bgm01/BadGuys', s8: 'Bgm00/SleepyWood', s9: 'Bgm00/Nightmare', s10: 'Bgm00/Nightmare', s11: 'Bgm00/Nightmare', s12: 'Bgm00/Nightmare', boss3: 'Bgm01/BadGuys' };   // 新關卡先共用既有曲子，不加檔案
 const SFX = { 'atk-beginner': 'Weapon/swordS/Attack', 'atk-warrior': 'Weapon/swordS/Attack', 'atk-bowman': 'Weapon/bow/Attack', 'atk-magician': 'Skill/2001004/Use', 'atk-thief': 'Weapon/tGlove/Attack',
   ...Object.fromEntries(['Portal', 'PickUpItem', 'DropItem', 'LevelUp', 'JobChanged', 'QuestClear', 'Tombstone', 'EnchantSuccess', 'EnchantFailure', 'gaugeFull'].map(k => [k, `Game/${k}`])),
   ...Object.fromEntries(['BtMouseClick', 'Tab', 'BuyShopItem', 'EnchantDestroyed'].map(k => [k, `UI/${k}`])) };   // 技能 skl-<id>、怪物 mobd-/mobx-<id> 由清單自動補
@@ -144,7 +147,7 @@ await page.evaluate(() => {
 });
 
 const atlas = { mob: {}, chr: {}, skl: {}, map: {}, npc: {}, itm: {}, ico: {}, star: {} }, report = [], miss = [];
-let bytes = 0;
+let bytes = 0, dollEq = [];
 async function emit(kind, id, acts, q = 1) {           // q=1 → Chromium 走無損 WebP，像素圖邊緣不糊
   // 每個動作的幀先在頁面裡解好、存在 window.A，再一次拼圖（幀不跨回 Node）
   const r = await page.evaluate(async ({ acts, q }) => { const A = {};
@@ -225,7 +228,7 @@ for (const [k, f] of Object.entries(FLOORS)) {
   const pick = {}, rare = [];
   for (const it of all) {
     const sub = it.typeInfo?.subCategory, job = EQ_JOB[(it.requiredJobs || [])[0]];
-    if (!EQ_SUB[sub] || !job || it.isCash || it.requiredGender === 1 || it.requiredLevel > 35 || (it.requiredJobs || []).length !== 1 || !tw[it.id]) continue;
+    if (!EQ_SUB[sub] || !job || it.isCash || it.requiredGender === 1 || it.requiredLevel > 70 || (it.requiredJobs || []).length !== 1 || !tw[it.id]) continue;
     if (/楓葉/.test(tw[it.id])) { if (EQ_SUB[sub][0] === 'weapon') rare.push(it); continue; }   // 楓葉之劍在原作是初心者可用，所以先於職業過濾
     const wjob = EQ_SUB[sub][0] === 'weapon' ? Object.keys(WEAPON_OF).find(j => WEAPON_OF[j].includes(sub)) : job;
     if (wjob !== job && job !== 'all') continue;   // 武器：requiredJobs 要嘛 Beginner、要嘛就是會用這種武器的職業
@@ -240,7 +243,7 @@ for (const [k, f] of Object.entries(FLOORS)) {
     const job = slotNm === 'weapon' ? Object.keys(WEAPON_OF).find(j => WEAPON_OF[j].includes(it.typeInfo.subCategory)) : EQ_JOB[it.requiredJobs[0]];
     if (!Object.keys(st).length) return;   // 沒有任何屬性的是造型服，當裝備沒意義
     const rq = {}; for (const k of ['STR', 'DEX', 'INT', 'LUK']) if (+inf['req' + k]) rq[k.toLowerCase()] = +inf['req' + k];   // 原作的屬性需求
-    eq.push({ id: it.id, f: inf.icon, m: { nm: tw[it.id], s: slotNm, job, ...(slotNm === 'weapon' ? { wt: WT[it.typeInfo.subCategory] } : {}), rq, req: it.requiredLevel, st, tuc: +inf.tuc || 0, price: +inf.price || 1,
+    eq.push({ id: it.id, dir, f: inf.icon, m: { nm: tw[it.id], s: slotNm, job, ...(slotNm === 'weapon' ? { wt: WT[it.typeInfo.subCategory] } : {}), rq, req: it.requiredLevel, st, tuc: +inf.tuc || 0, price: +inf.price || 1,
       ...(rare.includes(it) ? { rare: 1 } : {}), ...(slotNm === 'coat' && dir === 'Longcoat' ? { ov: 1 } : {}) } });
   });
   eq.sort((a, b) => a.id - b.id);
@@ -258,8 +261,75 @@ for (const [k, f] of Object.entries(FLOORS)) {
   for (const [i, [id, j]] of st.entries()) { const f = j.info; atlas.star[id] = { nm: tw[id], atk: f.incPAD, req: f.reqLevel || 0, n: f.slotMax, price: f.price, i };
     await emit('skl', id, { ball: { png: await msuFrames(frames(j.bullet)) } }); }
   await emit('ico', 'items', acts, 1);
-  eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; });
+  eq.forEach((e, i) => { atlas.itm[e.id] = { ...e.m, i }; }); dollEq = eq;
   report.push(`itm  ${eq.length} 件裝備（稀有 ${eq.filter(e => e.m.rare).length}）、卷軸圖示 ${sc.length}`);
+}
+// 紙娃娃：原作角色是一層層部件疊出來的（身體、頭、臉、髮型＋每件裝備），每個部件有原點、對齊點（neck／navel／hand／brow）和層級 z（zmap 由後往前）。
+// 身體／頭／臉／髮型固定是 BASE 那套，所以每件裝備在每個動作、每一幀的位置在這裡就能算好；遊戲裡只依穿著把部件照 z 疊起來（game.js 的 doll()）。
+// atlas.doll = {src:[圖], base:{動作:[幀:[部件]]}, d:{動作:[毫秒]}, it:{裝備id:{動作:[幀:[部件]]}}, wp:{武器id:[雙手?, 攻擊動作]}}；部件＝[圖, x, y, w, h, 左上 dx, dy（相對腳底）, z]
+const DOLL_ACTS = ['stand1', 'stand2', 'walk1', 'walk2', 'swingO1', 'swingO2', 'swingT1', 'swingP1', 'stabO1', 'stabT1', 'shoot1', 'shoot2'];
+const WT_ATK = { sw1: 'swingO1', ax1: 'swingO1', bw1: 'swingO1', wand: 'swingO1', staff: 'swingO1', sw2: 'swingT1', ax2: 'swingT1', bw2: 'swingT1', spear: 'stabT1', pole: 'swingP1', bow: 'shoot1', xbow: 'shoot2', claw: 'swingO2', dagger: 'stabO1' };
+{
+  const zmap = JSON.parse(await get('zmap', { regs: ['GMS/83'] })), zi = n => Math.max(0, zmap.indexOf(n));
+  const pad = id => String(id).padStart(8, '0'), fkeys = n => Object.keys(n || {}).filter(k => /^\d+$/.test(k)).sort((a, b) => a - b).map(k => n[k]);
+  const [body, head, hair, face] = await Promise.all(['Character/00002000', 'Character/00012000', `Character/Hair/${pad(BASE[3])}`, `Character/Face/${pad(BASE[2])}`].map(p => msuJson(p + '.json')));
+  const pngs = new Map();   // _path → 序號：原作很多幀 inlink 到同一張圖，只存一次
+  // 一幀的部件依對齊點放好：已知對齊點 A（會補上新的），部件原點＝A[共同點]−部件的 map[共同點]；第一個部件（身體）原點放在腳底 (0,0)
+  const place = (parts, A, out) => {
+    let todo = Object.values(parts || {}).filter(p => p?._path && p.origin);
+    for (let n = 0; todo.length && n < 4; n++) todo = todo.filter(p => {
+      const m = p.map || {}, key = Object.keys(m).find(k => A[k]);
+      if (!key && Object.keys(A).length) return true;   // 還沒有共同對齊點，等別的部件先補
+      const o = key ? { x: A[key].x - m[key].x, y: A[key].y - m[key].y } : { x: 0, y: 0 };
+      for (const [k, v] of Object.entries(m)) A[k] ??= { x: o.x + v.x, y: o.y + v.y };
+      if (!pngs.has(p._path)) pngs.set(p._path, pngs.size);
+      out.push([pngs.get(p._path), o.x - p.origin.x, o.y - p.origin.y, zi(p.z)]); return false; });
+  };
+  const base = {}, anchors = {}, d = {};
+  for (const act of DOLL_ACTS) fkeys(body?.[act]).forEach((bf, i) => {
+    const A = {}, out = [], hf = fkeys(head?.[act]), hr = fkeys(hair?.[act]);
+    place({ body: bf.body }, A, out); place({ ...bf, body: null }, A, out);
+    place({ head: (hf[i] || hf[0] || head?.front)?.head }, A, out);
+    if (bf.face !== 0) place(face?.default, A, out);
+    place(hr[i] || hr[0] || hair?.default, A, out);
+    (base[act] ??= []).push(out); (anchors[act] ??= []).push(A); (d[act] ??= []).push(bf.delay || 100);
+  });
+  const it = {}, wp = {};
+  await pool(dollEq, 6, async e => {
+    const j = await msuJson(`Character/${e.dir}/${pad(e.id)}.json`); if (!j) { miss.push(`紙娃娃 ${e.id}`); return; }
+    let acts = DOLL_ACTS;
+    if (e.m.s === 'weapon') {   // 武器只存會用到的：站／走（雙手武器用 stand2／walk2）＋這種武器的攻擊動作
+      const two = !j.stand1 && !!j.stand2, atk = [WT_ATK[e.m.wt], ...DOLL_ACTS.slice(4)].find(a => j[a] && base[a]);
+      wp[e.id] = [two ? 1 : 0, atk || 'swingO1']; acts = two ? ['stand2', 'walk2', atk] : ['stand1', 'walk1', atk];
+    }
+    const r = {};
+    for (const act of acts) { if (!act || !anchors[act]) continue; const src = fkeys(j[act]);
+      r[act] = anchors[act].map((A, i) => { const out = []; place(src[i] || src[0] || j.default, { ...A }, out); return out; }); }
+    it[e.id] = r;
+  });
+  // 拼圖：橫向一列列排，寬 2048、一張高到 2048 就換下一張
+  const list = [...pngs.keys()], rect = [];
+  await page.evaluate(() => { window.D = []; });
+  for (let i = 0; i < list.length; i += 300) {
+    const chunk = await Promise.all(list.slice(i, i + 300).map(async p => (await msu(p))?.toString('base64') || ''));
+    await page.evaluate(async c => { for (const s of c) window.D.push(s ? await createImageBitmap(new Blob([Uint8Array.from(atob(s), x => x.charCodeAt(0))], { type: 'image/png' })) : null); }, chunk);
+  }
+  const sheets = await page.evaluate(async () => {
+    const out = [], rect = [], SW = 2048, SH = 2048; let c, g, x = 0, y = 0, rowH = 0;
+    const flush = async () => { if (!c) return; const t = new OffscreenCanvas(SW, y + rowH); t.getContext('2d').drawImage(c, 0, 0);
+      const u = new Uint8Array(await (await t.convertToBlob({ type: 'image/webp', quality: 1 })).arrayBuffer()); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); out.push(btoa(s)); };
+    const order = window.D.map((b, i) => i).sort((a, b) => (window.D[b]?.height || 0) - (window.D[a]?.height || 0));
+    for (const i of order) { const b = window.D[i]; if (!b) { rect[i] = [0, 0, 0, 0, 0]; continue; }
+      if (x + b.width > SW) { x = 0; y += rowH + 1; rowH = 0; }
+      if (!c || y + b.height > SH) { await flush(); c = new OffscreenCanvas(SW, SH); g = c.getContext('2d'); x = 0; y = 0; rowH = 0; }
+      g.drawImage(b, x, y); rect[i] = [out.length, x, y, b.width, b.height]; x += b.width + 1; rowH = Math.max(rowH, b.height); }
+    await flush(); return { out, rect };
+  });
+  const src = sheets.out.map((b64, i) => { const f = `doll-${i}.webp`; writeFileSync(join(OUT, f), Buffer.from(b64, 'base64')); bytes += b64.length * 3 / 4; return f; });
+  const fin = fr => fr.map(ps => ps.map(([n, dx, dy, z]) => [...sheets.rect[n], dx, dy, z]).filter(p => p[3]));
+  const mapActs = o => Object.fromEntries(Object.entries(o).map(([a, fr]) => [a, fin(fr)]));
+  atlas.doll = { src, base: mapActs(base), d, it: Object.fromEntries(Object.entries(it).map(([id, r]) => [id, mapActs(r)])), wp };
+  report.push(`doll ${Object.keys(it).length} 件、${list.length} 張部件圖、${src.length} 張拼圖 ${(sheets.out.reduce((s, b) => s + b.length * 3 / 4, 0) / 1024 / 1024).toFixed(2)}MB`);
 }
 // 傷害數字（原作 BasicEff）：NoRed 打怪、NoCri 爆擊、NoViolet 被打；1＝第一位大字、0＝其餘位數；NoRed0 第 10 幀＝Miss、crit＝爆擊底圖
 { const be = await msuJson('Effect/BasicEff.json'), acts = {};

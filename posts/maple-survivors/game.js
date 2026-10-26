@@ -21,7 +21,7 @@ function frameAt(e,act,t,loop){
 }
 // 原作素材都面向左；flip＝面向右。原點對到 (x,y)
 function spr(e,f,x,y,flip,s){
-  if(!f) return; s=s||1; var im=img(e.src);
+  if(!f) return; s=s||1; var im=e.im||img(e.src);
   if(!flip) return g.drawImage(im,f[0],f[1],f[2],f[3],x-f[4]*s,y-f[5]*s,f[2]*s,f[3]*s);
   g.save(); g.translate(x,y); g.scale(-1,1); g.drawImage(im,f[0],f[1],f[2],f[3],-f[4]*s,-f[5]*s,f[2]*s,f[3]*s); g.restore();
 }
@@ -190,7 +190,30 @@ function starUse(s){ var id=s.starEq, m=A.star[id]; return m&&s.star[id]>0&&m.re
 // 只能打怪取得的飛鏢：寫在怪物的 stars 欄位；回傳會掉的怪物名稱（空＝商店有賣）
 function starMobs(id){ return Object.keys(D.MOBS).filter(function(k){ return (D.MOBS[k].stars||[]).indexOf(+id)>=0 }).map(function(k){ return D.MOBS[k].nm }) }
 // 外觀：2 轉分支有自己那套就用，沒有用 職業-階段
-function chrKey(s){ var k=s.job+'-'+s.adv; return s.br&&A.chr[k+'-'+s.br]?k+'-'+s.br:k }
+function chrKey(s){ var d=doll(s); if(d) return d; var k=s.job+'-'+s.adv; return s.br&&A.chr[k+'-'+s.br]?k+'-'+s.br:k }
+// ---- 紙娃娃 ----
+// 依身上穿的裝備，把 atlas.doll 的部件照 z 疊成一個跟 A.chr 同格式的外觀（stand1／walk1／atk），同一套穿著只合成一次。
+// 雙手武器站／走用 stand2／walk2；攻擊動作看武器（atlas.doll.wp）；穿套服不畫褲子。
+// ponytail: 部件拼圖還沒載完就回 null，chrKey 先用固定外觀（職業-轉職）；標題畫面那幾秒通常就載完了
+var DL=A.doll; if(DL) DL.src.forEach(img);
+function doll(s){
+  if(!DL||!DL.src.every(function(f){ return img(f).complete&&img(f).naturalWidth })) return null;
+  var eq=D.EQ_SLOTS.map(function(q){ var it=s.eqp[q[0]]; return it&&DL.it[it.id]&&!(q[0]==='pants'&&s.eqp.coat&&A.itm[s.eqp.coat.id].ov)?it.id:0 }).filter(Boolean),
+      key='d-'+eq.join('-'); if(A.chr[key]) return key;
+  var w=s.eqp.weapon&&DL.wp[s.eqp.weapon.id], src={stand1:w&&w[0]?'stand2':'stand1', walk1:w&&w[0]?'walk2':'walk1', atk:w?w[1]:'swingO1'}, rows={}, W=0, H=0;
+  for(var a in src) rows[a]=(DL.base[src[a]]||DL.base.stand1).map(function(b,i){
+    var ps=b.concat.apply(b,eq.map(function(id){ var f=DL.it[id][src[a]]; return f&&(f[i]||f[0])||[] })).sort(function(p,q){ return p[7]-q[7] }),
+        x0=Math.min.apply(null,ps.map(function(p){ return p[5] })), y0=Math.min.apply(null,ps.map(function(p){ return p[6] })),
+        x1=Math.max.apply(null,ps.map(function(p){ return p[5]+p[3] })), y1=Math.max.apply(null,ps.map(function(p){ return p[6]+p[4] }));
+    return {ps:ps, x0:x0, y0:y0, w:x1-x0, h:y1-y0, d:(DL.d[src[a]]||DL.d.stand1)[i]} });
+  for(a in rows){ W=Math.max(W,rows[a].reduce(function(t,f){ return t+f.w+1 },0)); H+=Math.max.apply(null,rows[a].map(function(f){ return f.h }))+1 }
+  var c=document.createElement('canvas'), cg=c.getContext('2d'), e={im:c, a:{}, tot:{}}, y=0; c.width=W; c.height=H;
+  for(a in rows){ var x=0;
+    e.a[a]=rows[a].map(function(f){ f.ps.forEach(function(p){ cg.drawImage(img(DL.src[p[0]]),p[1],p[2],p[3],p[4],x+p[5]-f.x0,y+p[6]-f.y0,p[3],p[4]) });
+      var m=[x,y,f.w,f.h,-f.x0,-f.y0,f.d]; x+=f.w+1; return m });
+    e.tot[a]=e.a[a].reduce(function(t,m){ return t+m[6] },0)/1000; y+=Math.max.apply(null,rows[a].map(function(f){ return f.h }))+1 }
+  A.chr[key]=e; return key;
+}
 
 // ---- 聲音：BGM 一個 <audio> 循環；音效每次 clone 一個 <audio>（file:// 直開也能播，Web Audio 的 fetch 不行）----
 // ponytail: 同一個音效 70ms 內只響一次、同時最多 10 個，怪物再多也不會炸耳朵；要更準的混音再換 Web Audio
@@ -212,7 +235,7 @@ function start(i,stageId){
   // 基本攻擊看武器（盜賊拳套丟飛鏢、短刀近身砍）；要飛鏢卻沒有就空手揍。技能要的武器種類不對就不放
   var wt=wpWt(s), sid=wt==='claw'?starUse(s):null, base=J.atkBy&&J.atkBy[wt]||J.atk; if(base.star&&!sid) base=D.JOBS.beginner.atk;
   slot=i;
-  P={job:s.job, adv:s.adv, ck:chrKey(s), J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, rage:0, rageN:0, R:{cdr:0,dmg:0,n:0,area:0,crit:0,spd:0,hp:0,leech:0,magnet:0}, boons:[], face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0,def:0,hp:0},
+  P={job:s.job, adv:s.adv, ck:chrKey(s), J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, rage:0, rageN:0, R:{cdr:0,dmg:0,n:0,area:0,crit:0,spd:0,hp:0,leech:0,exp:0}, boons:[], face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0,def:0,hp:0},
      // 基本攻擊永遠在第一格；其餘是技能欄裡的主動技能
      starId:sid, starMul:sid?(J.base+S.W+A.star[sid].atk)/(J.base+S.W):1,   // 飛鏢攻擊力加在武器攻擊上
      acts:[{d:base, lv:1, cd:0}].concat(loadout(s).map(function(id){ return {id:+id, d:D.SK[id], lv:s.sk[id], cd:.5} }))};
@@ -241,7 +264,7 @@ function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) 
 function hurt(m,dmg,crit){
   if(m.dieT>=0) return; dmg=Math.max(1,Math.round(dmg*(.9+Math.random()*.2)));
   m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0); sfx((m.hp<=0?'mobx-':'mobd-')+m.id,m.hp<=0?.8:.4);
-  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=m.M.exp; if(BENCH) return; dropFrom(m);
+  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=Math.round(m.M.exp*(1+P.R.exp)); if(BENCH) return; dropFrom(m);
     if(P.R.leech) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*P.R.leech);
     if(m.M.boss) st.winT=1.5;   // BOSS 倒下 1.5 秒後結算（讓死亡動畫播完）
     if(++P.rage>=D.RAGE.need*(P.rageN+1)){ P.rage=0; P.rageN++; openPick() } }
@@ -257,12 +280,22 @@ function openPick(){
   pickEl.innerHTML='<div class="msv-boons"><div class="msv-boonhd">怒氣爆發！</div><div class="msv-eqo"><div class="msv-eqhd">RAGE BURST</div><div class="msv-mb"><div class="msv-boonrow">'+picks.map(function(b,i){
     var n=P.boons.filter(function(x){ return x===b.k }).length, f=A.ico.skills.a[b.ico];
     return '<button class="msv-boon" data-pick="'+i+'"><span class="bi">'+(f?ico(f[0],'','',A.ico.skills):'')+'<kbd>'+(i+1)+'</kbd></span><span class="nm">'+b.nm+'</span>'+
-      '<span class="lv">'+(n?'Lv.'+n+' → <b>Lv.'+(n+1)+'</b>':'<b>NEW</b>')+'</span><span class="ds">'+b.desc+'</span><span class="msv-mbtn">選擇</span></button>' }).join('')+
-    '</div></div><div class="msv-meso"><span>第 '+P.rageN+' 次爆發</span><small>按 1–3 或點一下選擇・只在這一場有效</small></div></div></div>';
+      '<span class="lv">'+(b.clear?'畫面上 '+onScreen().length+' 隻':boonVal(b))+'</span><span class="ds">'+b.desc+'</span><span class="msv-mbtn">選擇</span></button>' }).join('')+
+    '</div></div><div class="msv-meso"><span>第 '+P.rageN+' 次爆發</span><small>按 1–'+picks.length+' 或點一下選擇・只在這一場有效</small></div></div></div>';
   pickEl.style.display='';
 }
+// 卡片上的「目前 → 選完」：本場增益累積值（投射物 +0 → +1、傷害 +0% → +20%）；HP 類直接給 HP 數字
+function boonVal(b){
+  if(b.heal) return 'HP '+Math.round(P.hp)+' → <b>'+Math.round(Math.min(P.maxHp,P.hp+P.maxHp*b.heal))+'</b>';
+  var k=Object.keys(b.mods)[0], a=P.R[k], z=a+b.mods[k];
+  if(k==='hp') return '最大 HP '+P.maxHp+' → <b>'+Math.round(P.S.maxHp*(1+z+P.B.hp))+'</b>';
+  var f=k==='n'?function(v){ return '+'+v }:function(v){ return (k==='cdr'?'−':'+')+(+(v*100).toFixed(1))+'%' };
+  return f(a)+' → <b>'+f(z)+'</b>';
+}
+function onScreen(){ var o=[]; mobs.each(function(m){ if(m.dieT<0&&!m.M.boss&&m.x>cam.x&&m.x<cam.x+W&&m.y>cam.y&&m.y<cam.y+H) o.push(m) }); return o }
 function choose(i){
   var b=picks[i]; if(!b) return;
+  if(b.clear){ var rg=P.rage; P.rage=-1e9; onScreen().forEach(function(m){ hurt(m,m.hp*2) }); P.rage=rg }   // 清屏不算怒氣，免得馬上又跳三選一
   if(b.heal) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*b.heal);
   for(var k in b.mods) P.R[k]+=b.mods[k];
   if(b.mods&&b.mods.hp){ P.maxHp=Math.round(P.S.maxHp*(1+P.R.hp+P.B.hp)); P.hp=P.maxHp }
@@ -390,7 +423,7 @@ function update(dt){
     });
   });
   drops.each(function(d){ d.t+=dt; var dx=P.x-d.x, dy=P.y-d.y, dd=Math.hypot(dx,dy);
-    if(dd<D.MAGNET*(1+P.R.magnet)) d.fly=true;
+    if(dd<D.MAGNET) d.fly=true;
     if(d.fly){ var v=Math.min(dd,(260+d.t*60)*dt); d.x+=dx/dd*v; d.y+=dy/dd*v }
     if(dd<D.PICK&&pick(d)) drops.free(d) });
   zones.each(function(z){ z.t+=dt; z.tick-=dt;
@@ -574,7 +607,7 @@ function show(h,cls){
 function drawMinis(t){
   minis.forEach(function(m){ var fr=m.e.a[m.act], f=frameAt(m.e,m.act,t,true), mh=Math.max.apply(null,fr.map(function(q){return q[5]})), mw=Math.max.apply(null,fr.map(function(q){return q[2]})), k=Math.min(2,(m.c.height-8)/mh,(m.c.width-4)/mw);
     m.g.setTransform(1,0,0,1,0,0); m.g.clearRect(0,0,m.c.width,m.c.height); m.g.imageSmoothingEnabled=false;
-    var x=m.c.width/2, y=m.c.height-4, im=img(m.e.src);
+    var x=m.c.width/2, y=m.c.height-4, im=m.e.im||img(m.e.src);
     m.g.translate(x,y); if(m.flip) m.g.scale(-1,1); m.g.drawImage(im,f[0],f[1],f[2],f[3],-f[4]*k,-f[5]*k,f[2]*k,f[3]*k) });
 }
 function fmt(sec){ return Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0') }

@@ -70,6 +70,10 @@ const r = await p.evaluate(() => {
     for (const t of D.JOBS[j].br?.[br]?.wt || []) if (!Object.values(I).some(m => m.wt === t && !m.rare)) out.push(`${nm} 的武器種類 ${t} 一件都沒有`);
   }
   for (const m of Object.values(I)) if (m.s === 'weapon' && !D.WT[m.wt]) out.push(`武器 ${m.nm} 的種類 ${m.wt} 不在 WT`);
+  // 紙娃娃：每件裝備都要有部件（沒有就穿了看不出來），武器要有雙手／攻擊動作；關卡裡的怪物都要有圖
+  const DL = window.MSA.doll;
+  for (const id in I) if (!DL?.it[id]) out.push(`裝備 ${id} ${I[id].nm} 沒有紙娃娃部件：重跑 tools/build-assets.mjs`); else if (I[id].s === 'weapon' && !DL.wp[id]) out.push(`武器 ${id} 沒有紙娃娃動作`);
+  for (const g of Object.values(D.STAGES)) for (const id of [...g.waves.flatMap(w => w.mobs), ...(g.boss ? [g.boss.id] : [])]) if (!D.MOBS[id] || !window.MSA.mob[id]) out.push(`關卡 ${g.nm} 的怪物 ${id} 沒有數值或圖`);
   if (M.jobOk({ job: 'warrior', br: 'spear' }, I[1302077]) || !M.jobOk({ job: 'warrior' }, I[1432015]) || !M.jobOk({ job: 'beginner' }, I[1452002])) out.push('武器的職業／分支限制錯誤');
   return out;
 });
