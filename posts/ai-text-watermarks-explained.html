@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 浮水印．原理與限制</title>
+<meta name="description" content="從影片拆解 Unicode 標記、KGW 與 SynthID-Text，重算機率並逐項查核。浮水印能提供來源線索，但不能證明內容正確、辨認所有 AI，或單獨判定作弊。">
+<link rel="canonical" href="https://michael81420.github.io/posts/ai-text-watermarks-explained.html">
+<link rel="alternate" hreflang="zh-Hant" href="https://michael81420.github.io/posts/ai-text-watermarks-explained.html">
+<link rel="alternate" hreflang="en" href="https://michael81420.github.io/posts/ai-text-watermarks-explained.en.html">
+<link rel="alternate" hreflang="x-default" href="https://michael81420.github.io/posts/ai-text-watermarks-explained.html">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../assets/site.css"><script src="../assets/site.js" defer></script>
+</head><body data-slug="ai-text-watermarks-explained"><div class="wrap" role="main">
+<div class="topbar"><a class="btn-back" href="../index.html">← 回到列表</a><div class="tb-actions"><button class="lang-toggle" onclick="toggleLang()" aria-label="Switch to English">EN</button><button class="theme-toggle" onclick="toggleTheme()" aria-label="切換主題">☾</button></div></div>
+<header><h1>AI 浮水印．原理與限制</h1><div class="sub">從影片拆解 Unicode 標記、KGW 與 SynthID-Text，重算機率並逐項查核。浮水印能提供來源線索，但不能證明內容正確、辨認所有 AI，或單獨判定作弊。</div><div style="margin-top:10px"><a class="badge new" href="https://www.youtube.com/watch?v=qQLcjHRpU3c" target="_blank" rel="noopener">來源：YouTube</a> <span class="badge">整理／查核日：2026-10-31</span></div></header>
+<div class="card tldr"><h2>TL;DR</h2><p>文字浮水印可以把訊號分散在很多次 token 選擇中，不需要多塞一個看不見的字元。拿著對應金鑰的偵測器，再統計這些選擇是否異常吻合。</p>
+<p><b>影片抓對了核心方向；閱讀時要補上統計假設、演算法細節與證據邊界。</b>有訊號只能支持某個加印流程可能參與過；沒訊號也不能證明真人原創。文字是否正確，仍得查來源。</p>
+</div>
+<h2>先交代來源與查核範圍</h2>
+<div class="card">
+<p>本文討論 <a href="https://www.youtube.com/watch?v=qQLcjHRpU3c" target="_blank" rel="noopener">《AI水印到底藏哪了？》</a>，以 NotebookLM 匯入的自動逐字稿為基礎，並對照原始論文、官方程式與文件。查核日為 2026-10-31。這是獨立整理與評論，不是逐字翻譯。</p>
+<p><b>限制：</b>逐字稿有名稱與數字辨識錯誤，本文統一使用 Claude、KGW、SynthID-Text 等正式名稱；無法確認的口述、影片畫面與歷史部署傳聞，保留為未驗證。未對商用模型進行金鑰偵測或品質實測。</p>
+</div>
+<h2>一、先分清楚：字元標記與統計浮水印</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px"><svg viewBox="0 0 760 178" style="width:100%;min-width:760px;height:auto;font-family:inherit" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三種機制的驗證與失效方式不同">
+<defs><marker id="wm1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="15" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">字元標記</text>
+<text x="130" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">插入或替換特殊字元</text>
+
+<rect x="265" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">統計浮水印</text>
+<text x="380" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">生成時改變抽樣選擇</text>
+
+<rect x="515" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="630" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">來源憑證</text>
+<text x="630" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">以簽章記錄檔案來歷</text>
+<text x="380" y="155" text-anchor="middle" style="fill:var(--accent);font-size:14px">三種機制的驗證與失效方式不同</text>
+</svg></div><p>Unicode 的 U+200B 是零寬空格；U+202F 是有寬度的窄不換行空格。這些字元本來就有排版用途，<b>出現特殊空格，不足以推論廠商刻意加了浮水印</b>。盲目刪除格式字元也可能破壞語言與排版。見 <a href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-6/" target="_blank" rel="noopener">Unicode 規範</a>。</p>
+<p>若訊號只靠特定字元承載，替換那些字元可能移除它。統計浮水印則把線索放進實際選詞裡，單純清空格通常碰不到訊號。簽章與檔案來源憑證又是另一層，不能把三者混成同一種「隱形標籤」。</p>
+</div>
+<h2>二、KGW：讓綠組比較容易被抽中</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px"><svg viewBox="0 0 760 355" style="width:100%;min-width:760px;height:auto;font-family:inherit" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="綠組加分會改變正規化後的機率，但不會禁用紅組"><text x="22" y="30" text-anchor="start" style="fill:var(--ink);font-size:18px">教學例：綠組 logits 加上 δ = ln(2)</text><text x="22" y="56" text-anchor="start" style="fill:var(--ink);font-size:15px">原始抽樣機率</text><text x="408" y="56" text-anchor="start" style="fill:var(--ink);font-size:15px">加分後重新正規化</text><text x="22" y="102" text-anchor="start" style="fill:var(--ink);font-size:15px">好</text><rect x="90" y="85" width="200" height="24" rx="6" style="fill:var(--ink3);stroke:var(--border)"/><text x="300" y="102" text-anchor="start" style="fill:var(--ink);font-size:15px">50%</text><text x="408" y="102" text-anchor="start" style="fill:var(--ink);font-size:15px">好</text><rect x="480" y="85" width="153.84" height="24" rx="6" style="fill:var(--ink3);stroke:var(--border)"/><text x="643.84" y="102" text-anchor="start" style="fill:var(--ink);font-size:15px">38.46%</text><text x="22" y="167" text-anchor="start" style="fill:var(--ink);font-size:15px">不錯</text><rect x="90" y="150" width="120" height="24" rx="6" style="fill:var(--win);stroke:var(--border)"/><text x="220" y="167" text-anchor="start" style="fill:var(--ink);font-size:15px">30%</text><text x="408" y="167" text-anchor="start" style="fill:var(--ink);font-size:15px">不錯</text><rect x="480" y="150" width="184.6" height="24" rx="6" style="fill:var(--win);stroke:var(--border)"/><text x="674.6" y="167" text-anchor="start" style="fill:var(--ink);font-size:15px">46.15%</text><text x="22" y="232" text-anchor="start" style="fill:var(--ink);font-size:15px">棒</text><rect x="90" y="215" width="80" height="24" rx="6" style="fill:var(--ink3);stroke:var(--border)"/><text x="180" y="232" text-anchor="start" style="fill:var(--ink);font-size:15px">20%</text><text x="408" y="232" text-anchor="start" style="fill:var(--ink);font-size:15px">棒</text><rect x="480" y="215" width="61.52" height="24" rx="6" style="fill:var(--ink3);stroke:var(--border)"/><text x="551.52" y="232" text-anchor="start" style="fill:var(--ink);font-size:15px">15.38%</text><text x="22" y="304" text-anchor="start" style="fill:var(--win);font-size:15px">這一步只有「不錯」是綠組；「好」與「棒」仍可能被抽中。</text><text x="22" y="333" text-anchor="start" style="fill:var(--ink2);font-size:14px">綠組機率：2 × 0.30 ÷ (0.50 + 2 × 0.30 + 0.20) = 46.15%</text></svg></div><p>2023 年的 <a href="https://arxiv.org/html/2301.10226v4" target="_blank" rel="noopener">Kirchenbauer 等人論文</a>提出隨前文變動的綠組與紅組。軟版本給綠組 logits 加上偏置 δ，再經 softmax 正規化；不是把詞永久禁用，也不是固定增加幾個百分點。綠組占比 γ 是參數，不必永遠為一半。</p>
+<p>偵測器重建每一步的分組並計數，在適當虛無假設下衡量綠組是否過多。論文的基本示範可公開分組規則；私密金鑰是部署選擇，不能把所有 KGW 都說成「只有公司能驗」。固定語句、程式碼或其他低熵內容可選空間小，訊號通常更難累積。</p>
+<p>工程取捨是<b>品質、可偵測性與抗修改能力</b>。偏置太強可能影響選詞，太弱則需要更長文本；不能從一個紅組 token 就判定「沒有加印」。</p>
+</div>
+<h2>三、偽隨機抽樣與 SynthID-Text，哪裡容易講過頭？</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px"><svg viewBox="0 0 760 390" style="width:100%;min-width:760px;height:auto;font-family:inherit" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="淘汰賽偏好金鑰分數較高的候選，不必插入隱藏字元"><text x="20" y="28" text-anchor="start" style="fill:var(--ink);font-size:18px">SynthID-Text 直覺：四次候選抽樣，兩層淘汰賽</text><text x="20" y="54" text-anchor="start" style="fill:var(--ink2);font-size:14px">候選與分數皆為示意，不代表商用設定。</text><rect x="25" y="80" width="140" height="40" rx="6" style="fill:var(--surface2);stroke:var(--border)"/><text x="95" y="105" text-anchor="middle" style="fill:var(--ink);font-size:16px">好 · 0</text><rect x="215" y="80" width="140" height="40" rx="6" style="fill:var(--surface2);stroke:var(--border)"/><text x="285" y="105" text-anchor="middle" style="fill:var(--ink);font-size:16px">不錯 · 1</text><rect x="405" y="80" width="140" height="40" rx="6" style="fill:var(--surface2);stroke:var(--border)"/><text x="475" y="105" text-anchor="middle" style="fill:var(--ink);font-size:16px">好 · 0</text><rect x="595" y="80" width="140" height="40" rx="6" style="fill:var(--surface2);stroke:var(--border)"/><text x="665" y="105" text-anchor="middle" style="fill:var(--ink);font-size:16px">棒 · 1</text><line x1="95" y1="120" x2="190" y2="158" style="stroke:var(--ink3)"/><line x1="285" y1="120" x2="190" y2="158" style="stroke:var(--ink3)"/><rect x="105" y="160" width="170" height="42" rx="6" style="fill:var(--winbg);stroke:var(--border)"/><text x="190" y="187" text-anchor="middle" style="fill:var(--win);font-size:16px">不錯 · 1</text><line x1="475" y1="120" x2="570" y2="158" style="stroke:var(--ink3)"/><line x1="665" y1="120" x2="570" y2="158" style="stroke:var(--ink3)"/><rect x="485" y="160" width="170" height="42" rx="6" style="fill:var(--winbg);stroke:var(--border)"/><text x="570" y="187" text-anchor="middle" style="fill:var(--win);font-size:16px">棒 · 1</text><text x="20" y="142" text-anchor="start" style="fill:var(--ink2);font-size:13px">第 1 層</text><text x="20" y="216" text-anchor="start" style="fill:var(--ink2);font-size:13px">第 2 層：重算分數</text><line x1="190" y1="202" x2="300" y2="260" style="stroke:var(--ink3)"/><line x1="570" y1="202" x2="460" y2="260" style="stroke:var(--ink3)"/><rect x="300" y="260" width="160" height="44" rx="6" style="fill:var(--winbg);stroke:var(--border)"/><text x="380" y="288" text-anchor="middle" style="fill:var(--win);font-size:17px">棒 · 1</text><text x="190" y="238" text-anchor="middle" style="fill:var(--ink2);font-size:14px">不錯 → 0</text><text x="570" y="238" text-anchor="middle" style="fill:var(--win);font-size:14px">棒 → 1</text><text x="20" y="337" text-anchor="start" style="fill:var(--ink2);font-size:15px">高分晉級、同分隨機；同一 token 在同一層，分數相同。</text><text x="20" y="367" text-anchor="start" style="fill:var(--accent);font-size:15px">偵測時由文字重建分數，再檢驗整段是否異常偏高。</text></svg></div><p><b>讀圖：</b>每個葉節點是一次抽樣，所以「好」可以出現兩次。第一層由「不錯」和「棒」晉級；第二層重新計分，「不錯」這次可以是 0，最後由「棒」勝出。累積很多次選擇後，輸出會偏向金鑰規則下的高分 token；偵測器檢驗的就是這種偏向。</p>
+<p><a href="https://scottaaronson.blog/?p=6823" target="_blank" rel="noopener">Scott Aaronson 在 2022 年的公開說明</a>支持「用秘密偽隨機函數留下可計分的訊號」這個方向，並非本文確認任何產品當時已上線。影片的區間抽樣示意有助理解，但一般情況下，同一個前置 token 不保證選出同一個下一詞：模型分布還取決於更長前文與設定。偵測也不能直接化約成逐詞比對完全相等。</p>
+<p><a href="https://www.nature.com/articles/s41586-024-08025-4" target="_blank" rel="noopener">2024 年 Nature 論文</a>介紹 SynthID-Text。影片以八個候選兩兩晉級來說明 tournament sampling：用金鑰、上下文、候選 token 與層數產生分數，逐層偏好高分者。這是示意，候選數與層數並非固定為八個、三層。</p>
+<p>關鍵限定：<b>non-distortionary 談的是對金鑰隨機性平均後的分布性質，且序列層次需要處理重複上下文。</b>它不保證固定金鑰、固定前文時的選詞機率逐一不變。論文也報告跨回答多樣性與偵測能力之間的取捨，不能說成完全沒有影響。</p>
+<p>官方 <a href="https://github.com/google-deepmind/synthid-text/blob/main/docs/tournament.md" target="_blank" rel="noopener">tournament 技術說明</a>補上重複上下文遮罩；<a href="https://github.com/google-deepmind/synthid-text/blob/main/src/synthid_text/logits_processing.py" target="_blank" rel="noopener">update_scores 實作</a>逐層更新整個候選分布，無須真的展開龐大淘汰樹。本文對照的是查核日的公開版本，不代表所有商用部署參數都相同。</p>
+</div>
+<h2>四、自己重算：200 個 token 中有 155 個綠組</h2>
+<div class="card">
+<p>先設定純教學模型：<b>X 服從 Binomial(200, 0.5)，每次判定獨立</b>。若檢測方向是「綠組越多越可疑」，應算至少 155 個的右尾，而非只算恰好 155 個。</p>
+<p><code>P(X ≥ 155) = Σ[k=155…200] C(200,k) / 2²⁰⁰ ≈ 1.19858 × 10⁻¹⁵</code><br>倒數約 8.34322 × 10¹⁴；對應常見 z 分數約 7.78。四次全綠的教學例子則是 (1/2)⁴ = 1/16。</p>
+<p>自動逐字稿把大數讀作「八百多萬分之一」；若原音是「八百多萬億分之一」，量級便與重算相符。<b>未逐字回聽，不能據字幕判影片算錯</b>，也不沿用彩票類比。</p>
+<p>更重要的是：這個 p 值描述無浮水印假設下出現極端計數的機率，<b>不是這篇「由人寫成的機率」</b>。真實文本有重複片語、相關樣本與多次測試問題，需要去重、校準及預先設定門檻。這個理想數字不能拿去當實際服務誤判率。</p>
+</div>
+<h2>五、工程上怎麼用，才不會用錯</h2>
+<div class="card">
+<div class="fig" style="overflow-x:auto;margin:2px 0 18px"><svg viewBox="0 0 760 178" style="width:100%;min-width:760px;height:auto;font-family:inherit" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="浮水印提供來源線索，內容正確性仍需獨立查核">
+<defs><marker id="wm3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" style="fill:var(--ink3)"/></marker></defs>
+<rect x="15" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="130" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">取得足夠文本</text>
+<text x="130" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">保留來源與版本</text>
+<line x1="248" y1="75" x2="262" y2="75" style="stroke:var(--ink3)" marker-end="url(#wm3)"/>
+<rect x="265" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="380" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">用匹配偵測器檢驗</text>
+<text x="380" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">確認方法、金鑰、門檻</text>
+<line x1="498" y1="75" x2="512" y2="75" style="stroke:var(--ink3)" marker-end="url(#wm3)"/>
+<rect x="515" y="30" width="230" height="90" rx="10" style="fill:var(--surface2);stroke:var(--border)"/>
+<text x="630" y="65" text-anchor="middle" style="fill:var(--ink);font-size:16px;font-weight:700">結合其他證據</text>
+<text x="630" y="94" text-anchor="middle" style="fill:var(--ink2);font-size:13px">回到來源與內容查核</text>
+<text x="380" y="155" text-anchor="middle" style="fill:var(--accent);font-size:14px">浮水印提供來源線索，內容正確性仍需獨立查核</text>
+</svg></div><p>以下是本文的工程判斷：把結果寫成「此金鑰下偵測到訊號／證據不足」，並記錄版本、文本長度與偵測門檻。遇到短文、引用、翻譯、程式碼、多人編輯或混合來源，另列不確定性；涉及學術或人事判定時，應保留人工覆核與其他佐證。</p>
+<div style="overflow-x:auto"><table style="min-width:640px"><thead><tr><th scope="col">互補方法</th><th scope="col">適用用途</th><th scope="col">仍有的缺口</th></tr></thead><tbody><tr><td>統計浮水印</td><td>特定加印流程的來源線索</td><td>要匹配金鑰與方法；不保證抗改寫</td></tr><tr><td>檔案簽章／來源憑證</td><td>驗證簽署者與簽署後完整性</td><td>需信任簽署者；簽章不證明內容為真</td></tr><tr><td>版本紀錄與來源引用</td><td>追蹤修改過程、核對事實</td><td>需保留紀錄，無法單憑缺少紀錄定罪</td></tr></tbody></table></div><p>一般 AI 文風分類器依賴另一種統計判斷，不能冒充金鑰式浮水印驗證。公開 <a href="https://github.com/google-deepmind/synthid-text" target="_blank" rel="noopener">SynthID 參考實作</a>適合研究與測試，README 明載不供直接生產使用；正式採用前應用自己的語料與編輯流程量測誤報、漏報和品質。</p>
+</div>
+<h2>六、這支影片值得怎麼看？</h2>
+<div class="card">
+<p>它適合用來建立「訊號藏在很多次抽樣裡」的直覺。若要據此做偵測工具或判定作者身分，還缺威脅模型、錯誤率校準與演算法完整條件。把通俗比喻當成設計規格，就容易出錯。</p>
+<p>影片最後討論創作價值，屬於價值判斷，無法用浮水印分數驗證。本文的看法是：來源透明與作品品質值得分開追問；知道 AI 曾參與，仍不會自動回答作品是否準確、有用或有原創貢獻。</p>
+</div>
+<div class="foot"><b>資料來源</b>：<a href="https://www.youtube.com/watch?v=qQLcjHRpU3c" target="_blank" rel="noopener">Source video</a> · <a href="https://arxiv.org/html/2301.10226v4" target="_blank" rel="noopener">KGW (2023)</a> · <a href="https://www.nature.com/articles/s41586-024-08025-4" target="_blank" rel="noopener">SynthID-Text (2024)</a> · <a href="https://github.com/google-deepmind/synthid-text" target="_blank" rel="noopener">Official reference code</a> · <a href="https://github.com/google-deepmind/synthid-text/blob/main/docs/tournament.md" target="_blank" rel="noopener">Tournament notes</a> · <a href="https://github.com/google-deepmind/synthid-text/blob/main/src/synthid_text/logits_processing.py" target="_blank" rel="noopener">Score-update code</a> · <a href="https://scottaaronson.blog/?p=6823" target="_blank" rel="noopener">Aaronson (2022)</a> · <a href="https://www.anthropic.com/news/claude-text-watermark" target="_blank" rel="noopener">Anthropic</a> · <a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-50" target="_blank" rel="noopener">EU Article 50</a> · <a href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-6/" target="_blank" rel="noopener">Unicode</a> · <a href="https://eth-sri.github.io/blog/probingsynthid" target="_blank" rel="noopener">ETH SRI evaluation</a><br>本頁為個人技術研究筆記；廠商說明均按來源歸屬，不視為獨立效能驗證。</div>
+</div></body></html>

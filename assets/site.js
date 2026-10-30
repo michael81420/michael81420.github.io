@@ -21,6 +21,7 @@ var POSTS=[
   {slug:'microsoft-fy2027q1-earnings', d:'2026-10-31', cat:'財報分析', sub:'Microsoft', zh:'Microsoft．FY2027 Q1 財報拆解', en:'Microsoft．FY2027 Q1 Earnings, Unpacked', draft:1},
 
   {slug:'amazon-2026q3-earnings', d:'2026-10-31', cat:'財報分析', sub:'Amazon', zh:'Amazon．2026 Q3 財報拆解', en:'Amazon．2026 Q3 Earnings, Unpacked', draft:1},
+  {slug:'ai-text-watermarks-explained', d:'2026-10-31', cat:'AI 技術分享', zh:'AI 浮水印．原理與限制', en:'AI Watermarks．How They Work'},
   {slug:'maple-survivors',            d:'2026-10-18', cat:'遊戲',           zh:'楓之谷倖存者．同人小遊戲', en:'Maple Survivors．A Fan-Made Mini Game'},
   {slug:'esp32-iot-intro',            d:'2026-09-16', cat:'物聯網',         zh:'ESP32．物聯網入門：從一塊板子到第一個模組', en:'ESP32．Getting Into IoT: From One Board to Your First Module'},
   {slug:'vietnam-phu-quoc-hcmc-10d9n', d:'2026-09-20', cat:'旅遊',        zh:'富國島 × 胡志明 10天9夜 海島跨年之旅', en:'Phu Quoc × Ho Chi Minh City — 10 Days, 9 Nights over New Year', draft:1},
