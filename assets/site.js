@@ -10,6 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
+  {slug:'gooaye-ep710-stocks', d:'2026-11-01', cat:'股癌podcast分析', zh:'股癌 EP710．利多不漲的風控、現金流與 FAU 競爭', en:'Gooaye EP710．Risk Control, Cash Flow and the FAU Race'},
   {slug:'sk-hynix-2026q3-earnings', d:'2026-10-31', cat:'財報分析', sub:'SK hynix', zh:'SK hynix．2026 Q3 財報拆解', en:'SK hynix．2026 Q3 Earnings, Unpacked', draft:1},
 
   {slug:'coinbase-2026q3-earnings', d:'2026-10-31', cat:'財報分析', sub:'Coinbase', zh:'Coinbase．2026 Q3 財報拆解', en:'Coinbase．2026 Q3 Earnings, Unpacked', draft:1},
