@@ -96,6 +96,22 @@ for (const p of POSTS) {
   }
 }
 
+/* 股癌列表沿用系列名稱；內頁 title/h1 保留當集主題。 */
+for (const p of POSTS) {
+  const ep = p.slug.match(/^gooaye-ep(\d+)-stocks$/)?.[1];
+  if (!ep) continue;
+  for (const [lang, idx, title, suffix] of [
+    ['zh', idxZh, `股癌 EP${ep} · 個股觀點整理`, '.html'],
+    ['en', idxEn, `Gooaye EP${ep} · Stock Notes`, '.en.html']
+  ]) {
+    if (p[lang] !== title) bad('assets/site.js', `${p.slug} ${lang} 列表標題應為「${title}」`);
+    const card = [...idx.matchAll(/<a\b[^>]*class="post-card"[^>]*>[\s\S]*?<\/a>/g)]
+      .find(m => m[0].includes(`href="posts/${p.slug}${suffix}"`))?.[0];
+    if (!card?.includes(`<div class="pc-title">${title}</div>`))
+      bad(lang === 'zh' ? 'index.html' : 'index.en.html', `${p.slug} 卡片標題應為「${title}」`);
+  }
+}
+
 /* 標題一律「主體．本次說明」（全形句點）
    ponytail: 只管 2026-09-26 之後的新文章，舊的 33 篇沒照規則，要補再把日期往前推 */
 for (const p of POSTS.filter(p => p.d >= '2026-09-26'))
