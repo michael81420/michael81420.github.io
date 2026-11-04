@@ -887,3 +887,29 @@ button.msv-ld:hover i{opacity:1;color:var(--msv-red)}
 .msv-dlg>.msv-row{margin-top:8px}
 .msv-mbtn.ghost{background:linear-gradient(var(--msv-white),var(--msv-body))}
 .msv-keys{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;text-align:left;font-size:14px}
+
+.pstack-lab{margin:24px 0;overflow-wrap:anywhere}
+.pstack-lab h3{margin:0 0 8px;scroll-margin-top:6rem}
+.pstack-lab .pstack-example{font-size:13px;color:var(--ink2);margin:0 0 16px}
+.pstack-lab fieldset{border:0;padding:0;margin:0 0 14px;min-width:0}
+.pstack-lab legend{font-weight:700;margin-bottom:10px}
+.pstack-lab .pstack-options{display:grid;gap:10px}
+.pstack-lab .pstack-options label{display:flex;align-items:flex-start;gap:10px;padding:12px;min-height:44px;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s}
+.pstack-lab .pstack-options label:has(input:checked){border-color:var(--accent)}
+.pstack-lab input[type=radio]{margin:5px 0 0;flex:none;accent-color:var(--accent)}
+.pstack-lab button{min-height:44px;white-space:normal}
+.pstack-lab :is(button,input,summary):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pstack-lab .pstack-evidence{margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+.pstack-lab h4{font-size:15px;margin:0 0 8px}
+.pstack-lab [data-outcome]+[data-outcome]{margin-top:20px}
+.pstack-lab [data-outcome] p{margin:0 0 12px}
+.pstack-lab .pstack-checks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.pstack-lab .pstack-checks li{display:flex;gap:10px;align-items:baseline;line-height:1.6}
+.pstack-lab .pstack-checks b{flex:none;min-width:6em;font-size:13px}
+.pstack-lab .pstack-reports{padding-left:20px;margin:0 0 14px}
+.pstack-lab .pstack-reports li{margin-bottom:8px}
+.pstack-lab details{border-top:1px solid var(--border)}
+.pstack-lab summary{padding:12px 0;font-weight:700;cursor:pointer;min-height:44px;box-sizing:border-box}
+.pstack-lab [hidden]{display:none!important}
+@media(max-width:500px){.pstack-lab{padding:16px 13px}.pstack-lab .demo-row{gap:10px}.pstack-lab .demo-row button{flex:1}.pstack-lab .pstack-checks li{gap:8px}}
+@media(prefers-reduced-motion:reduce){.pstack-lab button,.pstack-lab .pstack-options label{transition:none}}

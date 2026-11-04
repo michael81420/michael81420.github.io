@@ -157,6 +157,13 @@ for (const f of pages) {
 
   // <pre> 裡是程式碼範例，不是真的樣式或連結，掃之前先拿掉
   const s = read(f).replace(/<pre[\s\S]*?<\/pre>/g, '');
+  if (/<body\b[^>]*\bdata-sources="footer"/.test(s)) {
+    const body = s.slice(s.indexOf('<body'));
+    const footer = body.indexOf('<div class="foot" id="sources">');
+    if (footer < 0) bad(f, '文末來源模式缺 .foot#sources');
+    else if (/<a\b[^>]*\bhref="(?:https?:)?\/\//.test(body.slice(0, footer)))
+      bad(f, '來源與外部閱讀連結要集中在文末 .foot#sources');
+  }
   for (const m of s.matchAll(/(fill|stroke|color|background(?:-color)?|border(?:-[a-z]+)?)\s*[:=]\s*"?\s*(#[0-9a-fA-F]{3,8})\b/g))
     bad(f, `寫死色碼 ${m[2]}（要用 var(--…)，否則 dark mode 會爆）`);
 
