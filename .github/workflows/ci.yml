@@ -32,6 +32,8 @@ jobs:
         run: node tools/visual.mjs
       - name: pstack 互動檢查
         run: node tools/pstack.mjs
+      - name: 讀者操作檢查
+        run: node tools/journeys.mjs
       - name: 楓之谷倖存者自檢（卷軸機率、掉落表）
         run: node posts/maple-survivors/tools/selfcheck.mjs
 

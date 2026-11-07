@@ -11,8 +11,8 @@
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
   {slug:'gooaye-ep712-stocks', d:'2026-11-07', cat:'股癌podcast分析', zh:'股癌 EP712 · 個股觀點整理', en:'Gooaye EP712 · Stock Notes'},
-  {slug:'pstack-agent-engineering', d:'2026-11-03', cat:'軟體開發', zh:'pstack．讓 AI 寫程式有流程，也有驗證', en:'pstack．Engineering Workflows with Evidence', draft:1},
   {slug:'gooaye-ep711-stocks', d:'2026-11-05', cat:'股癌podcast分析', zh:'股癌 EP711 · 個股觀點整理', en:'Gooaye EP711 · Stock Notes'},
+  {slug:'pstack-agent-engineering', d:'2026-11-03', cat:'軟體開發', zh:'pstack．讓 AI 寫程式有流程，也有驗證', en:'pstack．Engineering Workflows with Evidence', draft:1},
   {slug:'gooaye-ep710-stocks', d:'2026-11-01', cat:'股癌podcast分析', zh:'股癌 EP710 · 個股觀點整理', en:'Gooaye EP710 · Stock Notes'},
   {slug:'gooaye-ep709-stocks', d:'2026-11-01', cat:'股癌podcast分析', zh:'股癌 EP709 · 個股觀點整理', en:'Gooaye EP709 · Stock Notes'},
   {slug:'sk-hynix-2026q3-earnings', d:'2026-10-31', cat:'財報分析', sub:'SK hynix', zh:'SK hynix．2026 Q3 財報拆解', en:'SK hynix．2026 Q3 Earnings, Unpacked', draft:1},
@@ -475,7 +475,7 @@ function initHome(){
   syncMode();
 }
 /* 文章頁：頂部返回鈕與標題（含標誌線）維持整列、置中；
-   標誌線「以下」才切成 [左側清單][置中內文][右側對稱留白]。
+   標誌線「以下」才切成 [左側清單][內文]，整個容器水平置中。
    只在帶 body[data-slug] 的文章頁啟用；首頁無此屬性故略過。 */
 function initArticle(){
   var slug=document.body.getAttribute('data-slug');
@@ -560,7 +560,7 @@ function initArticle(){
     if(hasActive)activeBox=box;
   });
 
-  // 把標題（含標誌線）以下的內容搬進置中內文欄，左側放清單，右側對稱留白
+  // 把標題（含標誌線）以下的內容搬進內文欄，左側放清單
   var header=wrap.querySelector(':scope > header');
   var cols=document.createElement('div');
   cols.className='article-cols';

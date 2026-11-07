@@ -48,11 +48,28 @@ page.on('pageerror', e => noise.push(`JS 例外: ${e.message}`));
 
 for (const f of pages) {
   noise = [];
+  await page.setViewportSize({ width: 390, height: 800 });
   await page.goto('file://' + join(ROOT, f), { waitUntil: 'load' });
   await page.waitForTimeout(80); // 等 site.js 的 defer 腳本 render 完卡片/表格
   for (const msg of [...new Set([...await page.evaluate(probe), ...noise])]) errs.push(`${f}: ${msg}`);
+  if (f.startsWith('posts/')) {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const layout = await page.evaluate(() => {
+      const out = [], wrap = document.querySelector('body[data-slug] .wrap');
+      if (!wrap) return out;
+      const box = wrap.getBoundingClientRect();
+      if (Math.abs(box.left - (innerWidth - box.right)) > 2) out.push('桌機文章容器未水平置中');
+      for (const p of document.querySelectorAll('.article-body > .card > p, .article-body > .card > ul, .article-body > .card > ol')) {
+        const card = p.parentElement, style = getComputedStyle(card);
+        const available = card.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        if (p.getBoundingClientRect().width < available - 2) { out.push('桌機文章段落未使用卡片內寬'); break; }
+      }
+      return out;
+    });
+    for (const msg of layout) errs.push(`${f}: ${msg}`);
+  }
 }
 await browser.close();
 
 if (errs.length) { console.error(`✗ ${errs.length} 個問題：\n` + errs.map(e => '  ' + e).join('\n')); process.exit(1); }
-console.log(`✓ ${pages.length} 個頁面視覺檢查通過（390px 寬）`);
+console.log(`✓ ${pages.length} 個頁面視覺檢查通過（390px；文章另驗 1440px 欄寬）`);

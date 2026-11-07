@@ -235,45 +235,73 @@ function start(i,stageId){
   // 基本攻擊看武器（盜賊拳套丟飛鏢、短刀近身砍）；要飛鏢卻沒有就空手揍。技能要的武器種類不對就不放
   var wt=wpWt(s), sid=wt==='claw'?starUse(s):null, base=J.atkBy&&J.atkBy[wt]||J.atk; if(base.star&&!sid) base=D.JOBS.beginner.atk;
   slot=i;
-  P={job:s.job, adv:s.adv, ck:chrKey(s), J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, rage:0, rageN:0, R:{cdr:0,dmg:0,n:0,area:0,crit:0,spd:0,hp:0,leech:0,exp:0}, boons:[], face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0,def:0,hp:0},
+  P={job:s.job, adv:s.adv, ck:chrKey(s), J:J, S:S, x:0, y:0, hp:S.maxHp, maxHp:S.maxHp, rage:0, rageN:0, combo:0, comboT:0, fever:0, feverN:0, dashCd:0, dashT:0, dashX:0, dashY:1, eliteKills:0, R:{cdr:0,dmg:0,n:0,area:0,crit:0,spd:0,hp:0,leech:0,exp:0}, boons:[], face:false, moving:false, t:0, atkAnim:-1, inv:0, kills:0, exp:0, buffs:[], B:{dmg:0,spd:0,inv:0,def:0,hp:0},
      // 基本攻擊永遠在第一格；其餘是技能欄裡的主動技能
      starId:sid, starMul:sid?(J.base+S.W+A.star[sid].atk)/(J.base+S.W):1,   // 飛鏢攻擊力加在武器攻擊上
      acts:[{d:base, lv:1, cd:0}].concat(loadout(s).map(function(id){ return {id:+id, d:D.SK[id], lv:s.sk[id], cd:.5} }))};
   stage=D.STAGES[stageId||'s1']; stage.id=stageId||'s1'; floorE=A.map[stage.floor]; keys={}; joy=null;
-  st={t:0, spawnAcc:0, dur:+Q.get('dur')||stage.dur, bossT:stage.boss&&(Q.has('bosst')?+Q.get('bosst'):stage.boss.t), boss:null, winT:-1};
+  st={t:0, spawnAcc:0, dur:+Q.get('dur')||stage.dur, bossT:stage.boss&&(Q.has('bosst')?+Q.get('bosst'):stage.boss.t), boss:null, elite:null, eliteT:D.ELITE.every, winT:-1};
   pickEl.style.display='none';
   // 實際掉落只掉本職業＋共用（每種怪先算好）
   P.drops={}; stageMobs(stage).forEach(function(id){ var t=dropTable(id), own=function(i){ return jobOk(s,A.itm[i]) };
     P.drops[id]={eq:t.eq.filter(own), rare:t.rare.filter(own), st:s.job==='thief'?(D.MOBS[id].stars||[]).filter(function(x){ return !s.star[x] }):[]} });   // 已經有的飛鏢不再掉
   P.loot={meso:0, items:[], scr:{}, star:{}}; P.room=i==null?0:D.INV_MAX-s.inv.length;
   [mobs,shots,fxs,nums,zones,drops].forEach(function(p){ p.each(function(o){p.free(o)}) });
-  view('game'); state='run'; msg(''); bgm(stage.id); sfx('Portal');
+  view('game'); state='run'; msg('方向鍵／WASD 移動・空白鍵衝刺・連殺觸發狂熱・金圈精英掉裝回血'); bgm(stage.id); sfx('Portal');
+  if(!BENCH) for(var n=0;n<D.OPENING.count;n++) spawn(stage.waves[0].mobs[n%stage.waves[0].mobs.length],D.OPENING.radius);
 }
 function msg(s){ $('msv-msg').textContent=s }
 
 // ---- 生怪：鏡頭外一圈 ----
-function spawn(id){
-  var M=D.MOBS[id], e=A.mob[id], m=mobs.get(), a=Math.random()*Math.PI*2, R=Math.hypot(W,H)/2+60;
-  m.id=id; m.M=M; m.e=e; m.x=P.x+Math.cos(a)*R; m.y=P.y+Math.sin(a)*R; m.hp=M.hp; m.face=false;
+function spawn(id,radius){
+  var M=D.MOBS[id], e=A.mob[id], m=mobs.get(), a=Math.random()*Math.PI*2, R=radius||Math.hypot(W,H)/2+60;
+  m.elite=false; m.id=id; m.M=M; m.e=e; m.x=P.x+Math.cos(a)*R; m.y=P.y+Math.sin(a)*R; m.hp=M.hp; m.face=false;
   m.t=Math.random(); m.hitT=-1; m.dieT=-1; m.frz=0; m.r=M.r||Math.max(10,e.a.stand[0][2]*.32); m.slamT=M.slam?M.slam.cd:0; m.slamA=-1;
   return m;
 }
 function curWave(){ var w=stage.waves[0]; for(var i=0;i<stage.waves.length;i++) if(st.t>=stage.waves[i].t) w=stage.waves[i]; return w }
 
+// ---- 衝刺／連殺 ----
+window.__msv.combat={start:start, update:update, spawn:spawn, hurt:hurt, deal:deal, dash:dash, choose:choose, pause:pause, resume:resume,
+  snapshot:function(){return {player:P, stage:st, state:state, picks:picks}}, rageNeed:rageNeed};
+function rageNeed(){ return Math.min(D.RAGE.cap,D.RAGE.need+D.RAGE.step*P.rageN) }
+function dash(){
+  if(state!=='run'||P.dashCd>0) return false;
+  var x=joy?joy.dx:(keys.right?1:0)-(keys.left?1:0), y=joy?joy.dy:(keys.down?1:0)-(keys.up?1:0), len=Math.hypot(x,y);
+  if(len>.1){ P.dashX=x/len; P.dashY=y/len }
+  P.dashCd=D.DASH.cd; P.dashT=D.DASH.dur; P.inv=Math.max(P.inv,D.DASH.inv);
+  sfx('Portal',.4); return true;
+}
+function chainKill(){
+  if(P.fever>0) return;
+  P.combo++; P.comboT=D.COMBO.window;
+  if(P.combo>=D.COMBO.need){ P.combo=0; P.fever=D.COMBO.dur; P.feverN++;
+    P.acts.forEach(function(k){ k.cd=0 });
+    num(P.x,P.y-90,'狂熱！傷害 ×'+D.COMBO.dmg,2); sfx('gaugeFull'); }
+}
 // ---- 傷害 ----
 function hurt(m,dmg,crit){
   if(m.dieT>=0) return; dmg=Math.max(1,Math.round(dmg*(.9+Math.random()*.2)));
   m.hp-=dmg; m.hitT=0; num(m.x,m.y-m.e.a.stand[0][5],dmg,crit?2:0); sfx((m.hp<=0?'mobx-':'mobd-')+m.id,m.hp<=0?.8:.4);
-  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=Math.round(m.M.exp*(1+P.R.exp)); if(BENCH) return; dropFrom(m);
+  if(m.hp<=0){ m.dieT=0; P.kills++; P.exp+=Math.round(m.M.exp*(1+P.R.exp)); if(BENCH) return; dropFrom(m); chainKill();
+    if(m.elite){ st.elite=null; P.eliteKills++; P.hp=Math.min(P.maxHp,P.hp+P.maxHp*D.ELITE.heal);
+      var eq=P.drops[m.id].eq; if(eq.length) addDrop(m,'eq',eq[(Math.random()*eq.length)|0]);
+      num(m.x,m.y-70,'精英擊破！回血＋裝備',2); }
     if(P.R.leech) P.hp=Math.min(P.maxHp,P.hp+P.maxHp*P.R.leech);
     if(m.M.boss) st.winT=1.5;   // BOSS 倒下 1.5 秒後結算（讓死亡動畫播完）
-    if(++P.rage>=D.RAGE.need*(P.rageN+1)){ P.rage=0; P.rageN++; openPick() } }
+    if(++P.rage>=rageNeed()){ P.rage=0; P.rageN++; openPick() } }
 }
 // 怒氣集滿：暫停，三選一本場增益（鍵盤 1/2/3 或點選）
 var pickEl=$('msv-pick'), picks=[];
 function openPick(){
   sfx('gaugeFull');
-  var pool=D.BOONS.filter(function(b){ return !b.heal||P.hp<P.maxHp }); picks=[];
+  var pool=D.BOONS.filter(function(b){
+    if(b.heal&&P.hp>=P.maxHp) return false;
+    if(b.k==='cdr'&&P.S.cdr+P.R.cdr>=.75||b.k==='crit'&&P.S.crit+P.R.crit>=1) return false;
+    if(b.k==='n') return P.acts.some(function(k){ return k.d.k==='shot' });
+    if(b.k==='area') return P.acts.some(function(k){ return k.d.k==='slash'||k.d.k==='mist'||k.d.splash });
+    return true;
+  }); picks=[];
   while(picks.length<Math.min(D.RAGE.choices,pool.length)){ var b=pool[(Math.random()*pool.length)|0]; if(picks.indexOf(b)<0) picks.push(b) }
   state='pick'; keys={}; joy=null;
   // 原作式視窗：金字標題＋深色外框＋淺灰內容，每張卡像技能書的一格（圖示格、名稱、層數、說明、選擇鈕）
@@ -323,6 +351,7 @@ function pick(d){
 }
 // 玩家打怪都走這裡：爆擊、追擊（終極之劍／弓）
 function deal(m,dmg){
+  if(P.fever>0) dmg*=D.COMBO.dmg;
   var c=Math.random()<P.S.crit+P.R.crit; hurt(m,dmg*(c?D.CRIT_DMG:1),c);
   if(P.S.final && Math.random()<P.S.final && m.dieT<0){ hurt(m,dmg*.6,false); fx(P.S.finalId,'hit',m.x,m.y-20,false) }
 }
@@ -364,6 +393,8 @@ function cast(k){
 // ---- 更新 ----
 function update(dt){
   st.t+=dt; P.t+=dt;
+  P.dashCd=Math.max(0,P.dashCd-dt); P.dashT=Math.max(0,P.dashT-dt);
+  P.fever=Math.max(0,P.fever-dt); P.comboT=Math.max(0,P.comboT-dt); if(!P.comboT) P.combo=0;
   // buff：每幀重算加總
   P.B.dmg=0; P.B.spd=0; P.B.inv=0; P.B.def=0; P.B.hp=0;
   P.buffs=P.buffs.filter(function(b){ b.t-=dt; if(b.t<=0) return false; for(var k in b.mods) P.B[k]+=lerp(b.mods[k],b.lv,b.max); return true });
@@ -374,6 +405,8 @@ function update(dt){
   var mx=(keys.right?1:0)-(keys.left?1:0), my=(keys.down?1:0)-(keys.up?1:0);
   if(joy){ mx=joy.dx; my=joy.dy }
   var ml=Math.hypot(mx,my), spd=P.S.spd*(1+P.B.spd+P.R.spd); P.moving=ml>.1;
+  if(P.dashT>0){ mx=P.dashX; my=P.dashY; ml=1; spd*=D.DASH.speed; P.moving=true }
+  else if(ml>.1){ P.dashX=mx/ml; P.dashY=my/ml }
   if(P.moving){ if(ml>1){mx/=ml; my/=ml} P.x+=mx*spd*dt; P.y+=my*spd*dt; if(Math.abs(mx)>.1) P.face=mx>0 }
   cam.x=P.x-W/2; cam.y=P.y-H/2+30;
   // 生怪
@@ -381,6 +414,12 @@ function update(dt){
   else { var w=curWave(), k=Math.min(1,st.t/st.dur); st.spawnAcc+=dt*(w.rate+(w.rate2-w.rate)*k);
     while(st.spawnAcc>=1){ st.spawnAcc--; spawn(w.mobs[(Math.random()*w.mobs.length)|0]) } }
   if(stage.boss&&!st.boss&&st.t>=st.bossT&&!BENCH){ st.boss=spawn(stage.boss.id); num(P.x,P.y-100,D.MOBS[stage.boss.id].nm+'出現了！',2) }
+  if(!BENCH&&st.t>=st.eliteT&&(!st.elite||st.elite.dieT>=0)){
+    var ew=curWave(), em=spawn(ew.mobs[(Math.random()*ew.mobs.length)|0],D.ELITE.radius);
+    em.elite=true; em.M=Object.assign({},em.M,{hp:em.M.hp*D.ELITE.hp,atk:em.M.atk*D.ELITE.atk,exp:em.M.exp*D.ELITE.exp,spd:em.M.spd*D.ELITE.speed});
+    em.hp=em.M.hp; st.elite=em; st.eliteT=st.t+D.ELITE.every;
+    num(P.x,P.y-100,'精英來襲！擊破可回血掉裝',2); sfx('gaugeFull');
+  }
   buildGrid();
   // 怪物：朝玩家走 + 互相推開；碰到玩家 → 迴避判定 → 減傷
   var pr=14, safe=P.inv>0||P.B.inv>0||BENCH;
@@ -408,7 +447,7 @@ function update(dt){
   });
   if(P.inv>0) P.inv-=dt;
   // 攻擊：每個技能各自冷卻，好了就放（沒目標就等下一幀）
-  P.acts.forEach(function(k){ k.cd-=dt; if(k.cd<=0 && cast(k)) k.cd=lerp(k.d.cd,k.lv,k.d.max)*(1-Math.min(.75,P.S.cdr+P.R.cdr)) });
+  P.acts.forEach(function(k){ k.cd-=dt; if(k.cd<=0 && cast(k)) k.cd=lerp(k.d.cd,k.lv,k.d.max)*(1-Math.min(.75,P.S.cdr+P.R.cdr))/(P.fever>0?D.COMBO.haste:1) });
   if(P.atkAnim>=0){ P.atkAnim+=dt; if(P.atkAnim>.35) P.atkAnim=-1 }
   // 投射物
   shots.each(function(s){
@@ -505,9 +544,15 @@ function draw(){
       if(n.kind===2) spr(NE,NE.a.crit[0],sx+fs[0][4],y);
       fs.forEach(function(f){ spr(NE,f,sx+f[4],y); sx+=f[2]-5 }) }
     else { g.font=n.kind===2?'bold 26px sans-serif':'bold 20px sans-serif'; g.fillStyle=C[NC[n.kind]]; g.strokeText(n.v,x,y); g.fillText(n.v,x,y) } }); g.globalAlpha=1;
+  if(P.dashT>0||P.fever>0){ g.strokeStyle=C[P.fever>0?'--turn':'--accent']; g.lineWidth=3; g.globalAlpha=.65;
+    g.beginPath(); g.ellipse(P.x-cam.x,P.y-cam.y,30+Math.sin(P.t*20)*4,14,0,0,7); g.stroke(); g.globalAlpha=1; }
   drawHud();
 }
 function drawMob(m){
+  if(m.elite&&m.dieT<0){ var x=m.x-cam.x, y=m.y-cam.y;
+    g.strokeStyle=C['--mid']; g.lineWidth=3; g.beginPath(); g.ellipse(x,y,m.r+10,(m.r+10)*.5,0,0,7); g.stroke();
+    g.fillStyle=C['--surface']; g.fillRect(x-24,y-65,48,6); g.fillStyle=C['--mid']; g.fillRect(x-24,y-65,48*Math.max(0,m.hp)/m.M.hp,6);
+  }
   var act=m.dieT>=0?'die1':m.slamA>=0?'attack1':m.hitT>=0?'hit1':'move', t=m.dieT>=0?m.dieT:m.slamA>=0?m.slamA:m.t;
   if(m.dieT>=0) g.globalAlpha=Math.max(0,1-m.dieT/m.e.tot.die1*.6);
   spr(m.e,frameAt(m.e,act,t,act==='move'),m.x-cam.x,m.y-cam.y,m.face); g.globalAlpha=1;
@@ -521,16 +566,22 @@ function drawHud(){
   var w=220; g.fillStyle=C['--surface']; g.globalAlpha=.8; g.fillRect(12,12,w+8,22); g.globalAlpha=1;
   g.fillStyle=C['--lose']; g.fillRect(16,16,w*P.hp/P.maxHp,14);
   g.fillStyle=C['--ink']; g.font='bold 12px sans-serif'; g.textAlign='left'; g.fillText('HP '+Math.ceil(P.hp)+' / '+P.maxHp,22,27);
-  g.globalAlpha=.8; g.fillStyle=C['--surface']; g.fillRect(12,36,w+8,10); g.globalAlpha=1; g.fillStyle=C['--turn']; g.fillRect(16,38,w*P.rage/(D.RAGE.need*(P.rageN+1)),6);
-  if(st.boss&&st.boss.dieT<0){ var bw=420, bm=st.boss; g.globalAlpha=.85; g.fillStyle=C['--surface']; g.fillRect(W/2-bw/2-4,44,bw+8,24); g.globalAlpha=1;
-    g.fillStyle=C['--lose']; g.fillRect(W/2-bw/2,48,bw*Math.max(0,bm.hp)/bm.M.hp,16); g.fillStyle=C['--ink']; g.textAlign='center'; g.fillText(bm.M.nm+'　'+Math.max(0,Math.ceil(bm.hp))+' / '+bm.M.hp,W/2,61) }
+  g.globalAlpha=.8; g.fillStyle=C['--surface']; g.fillRect(12,36,w+8,10); g.globalAlpha=1; g.fillStyle=C['--turn']; g.fillRect(16,38,w*P.rage/rageNeed(),6);
+  if(st.boss&&st.boss.dieT<0){ var bw=420, bm=st.boss; g.globalAlpha=.85; g.fillStyle=C['--surface']; g.fillRect(W/2-bw/2-4,94,bw+8,24); g.globalAlpha=1;
+    g.fillStyle=C['--lose']; g.fillRect(W/2-bw/2,98,bw*Math.max(0,bm.hp)/bm.M.hp,16); g.fillStyle=C['--ink']; g.textAlign='center'; g.fillText(bm.M.nm+'　'+Math.max(0,Math.ceil(bm.hp))+' / '+bm.M.hp,W/2,111) }
   var left=Math.max(0,st.dur-st.t), s=String(Math.floor(left%60)).padStart(2,'0');
   g.font='bold 22px sans-serif'; g.textAlign='center'; g.strokeStyle=C['--surface']; g.lineWidth=4;
   g.strokeText(Math.floor(left/60)+':'+s,W/2,34); g.fillText(Math.floor(left/60)+':'+s,W/2,34);
   g.font='bold 13px sans-serif'; g.textAlign='right'; var txt='擊倒 '+P.kills+'　楓幣 '+P.loot.meso+'　裝備 '+P.loot.items.length+'　怪物 '+mobs.n+(BENCH?'　'+fps.toFixed(0)+' fps　'+(window.__msvMs||0).toFixed(1)+' ms':'');
   g.strokeText(txt,W-14,28); g.fillText(txt,W-14,28);
+  g.textAlign='left'; g.font='bold 13px sans-serif'; g.fillStyle=C['--ink'];
+  var chain=P.fever>0?'狂熱 '+P.fever.toFixed(1)+'s・傷害 ×'+D.COMBO.dmg+'／攻速 ×'+D.COMBO.haste:'連殺 '+P.combo+' / '+D.COMBO.need+(P.combo?'・'+P.comboT.toFixed(1)+'s':'・擊倒怪物接續連殺');
+  g.strokeText(chain,16,65); g.fillText(chain,16,65);
+  g.strokeText('衝刺 [Space] '+(P.dashCd>0?P.dashCd.toFixed(1)+'s':'就緒'),16,85); g.fillText('衝刺 [Space] '+(P.dashCd>0?P.dashCd.toFixed(1)+'s':'就緒'),16,85);
+  if(st.elite&&st.elite.dieT<0){ var ex=Math.max(70,Math.min(W-70,st.elite.x-cam.x)), ey=Math.max(220,Math.min(H-65,st.elite.y-cam.y));
+    g.textAlign='center'; g.fillStyle=C['--mid']; g.strokeText('◆ 精英',ex,ey-80); g.fillText('◆ 精英',ex,ey-80); }
   // 技能冷卻列（左下）
-  var bx=14; P.acts.forEach(function(k,i){ if(!i) return; var full=lerp(k.d.cd,k.lv,k.d.max)*(1-P.S.cdr), r=Math.max(0,k.cd)/full;
+  var bx=14; P.acts.forEach(function(k,i){ if(!i) return; var full=lerp(k.d.cd,k.lv,k.d.max)*(1-Math.min(.75,P.S.cdr+P.R.cdr))/(P.fever>0?D.COMBO.haste:1), r=Math.max(0,k.cd)/full;
     g.globalAlpha=.85; g.fillStyle=C['--surface']; g.fillRect(bx,H-34,96,22); g.fillStyle=C['--accent']; g.fillRect(bx,H-34,96*(1-r),22); g.globalAlpha=1;
     g.fillStyle=C['--ink']; g.font='bold 12px sans-serif'; g.textAlign='center'; g.fillText(k.d.nm,bx+48,H-19); bx+=102 });
   if(joy){ g.globalAlpha=.35; g.strokeStyle=C['--ink']; g.lineWidth=3; g.beginPath(); g.arc(joy.ox,joy.oy,50,0,7); g.stroke();
@@ -552,11 +603,11 @@ function loop(ts){
 
 // ---- 遊戲中控制列：倍速、強制結束 ----
 var spd=1, ctl=document.createElement('div'); ctl.className='msv-ctl'; ctl.style.display='none'; cv.parentNode.appendChild(ctl);
-function drawCtl(){ ctl.innerHTML='<button data-spd="1" title="倍速循環 1x→2x→4x（F）">'+spd+'x</button><button data-pause="1" title="暫停（P／Esc）">暫停</button>'+
+function drawCtl(){ ctl.innerHTML='<button data-dash="1" title="沿移動方向無敵衝刺（空白鍵，冷卻 '+D.DASH.cd+' 秒）">衝刺</button><button data-spd="1" title="倍速循環 1x→2x→4x（F）">'+spd+'x</button><button data-pause="1" title="暫停（P／Esc）">暫停</button>'+
   '<button data-quit="1" title="比照倒下結算：經驗 '+D.DEATH_EXP*100+'%、本場裝備與卷軸沒收">結束</button>' }
 function cycleSpd(){ spd=spd===4?1:spd*2; drawCtl(); if(state==='pause') pause() }
 ctl.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b||state!=='run'&&state!=='pick'&&state!=='pause') return; sfx('BtMouseClick');
-  if(b.dataset.spd) cycleSpd(); else if(b.dataset.pause) state==='pause'?resume():pause(); else quitAsk() });
+  if(b.dataset.dash) dash(); else if(b.dataset.spd) cycleSpd(); else if(b.dataset.pause) state==='pause'?resume():pause(); else quitAsk() });
 
 // 確認視窗與暫停視窗：疊在遊戲框正中（選單、關卡中共用）；Enter＝確定、Esc＝取消
 var modal=document.createElement('div'), askCb=null; modal.className='msv-modal'; modal.hidden=true; cv.parentNode.appendChild(modal);
@@ -564,7 +615,7 @@ function dlg(hd,body,btns){ modal.innerHTML='<div class="msv-eqo msv-dlg"><div c
 function ask(txt,yes,no){ askCb={yes:yes,no:no}; dlg('確認',txt,'<button class="msv-mbtn" data-ok="1">確定（Enter）</button><button class="msv-mbtn ghost" data-ok="0">取消（Esc）</button>') }
 function answer(ok){ var c=askCb; askCb=null; modal.hidden=true; if(c&&(ok?c.yes:c.no)) (ok?c.yes:c.no)() }
 function pause(){ if(state!=='run'&&state!=='pause') return; state='pause'; keys={}; joy=null;
-  dlg('PAUSE','<div class="msv-keys"><kbd>P</kbd><span>繼續（Esc 也可以）</span><kbd>Q</kbd><span>結束挑戰（經驗只拿 '+D.DEATH_EXP*100+'%，本場裝備與卷軸沒收）</span><kbd>F</kbd><span>倍速 1x → 2x → 4x（目前 '+spd+'x）</span></div>',
+  dlg('PAUSE','<div class="msv-keys"><kbd>Space</kbd><span>方向衝刺（短暫無敵，冷卻 '+D.DASH.cd+' 秒）</span><kbd>P</kbd><span>繼續（Esc 也可以）</span><kbd>Q</kbd><span>結束挑戰（經驗只拿 '+D.DEATH_EXP*100+'%，本場裝備與卷軸沒收）</span><kbd>F</kbd><span>倍速 1x → 2x → 4x（目前 '+spd+'x）</span></div>',
     '<button class="msv-mbtn" data-resume="1">繼續（P）</button><button class="msv-mbtn ghost" data-endq="1">結束挑戰（Q）</button>') }
 function resume(){ if(state!=='pause') return; modal.hidden=true; state='run' }
 function quitAsk(){ var from=state; if(from==='run'){ state='pause'; keys={}; joy=null }
@@ -582,6 +633,7 @@ addEventListener('keydown',function(e){
 // ---- 輸入 ----
 var KM={ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
 addEventListener('keydown',function(e){ var k=KM[e.code]; if(k&&state==='run'){ keys[k]=true; e.preventDefault() }
+  if(e.code==='Space'&&state==='run'){ e.preventDefault(); if(!e.repeat) dash() }
   if(state==='pick'&&/^Digit[1-3]$/.test(e.code)){ choose(+e.code.slice(5)-1); e.preventDefault() } });
 addEventListener('keyup',function(e){ var k=KM[e.code]; if(k) keys[k]=false });
 addEventListener('blur',function(){ keys={} });
@@ -787,7 +839,7 @@ function hubScreen(){
   show(h,'fix');
 }
 function goTab(s){
-  return Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id], ok=unlocked(s,id), B=g2.boss&&D.MOBS[g2.boss.id];
+  return '<p class="hint">空白鍵衝刺穿越怪群・'+D.COMBO.need+' 連殺進入狂熱・每 '+D.ELITE.every+' 秒精英來襲，擊破回血＋掉裝。</p>'+Object.keys(D.STAGES).map(function(id){ var g2=D.STAGES[id], r=s.st[id], ok=unlocked(s,id), B=g2.boss&&D.MOBS[g2.boss.id];
     var goal=B?'打倒'+B.nm+'（'+fmt(g2.boss.t)+' 出場，時限 '+fmt(g2.dur)+'）'+(D.FIRST_CLEAR[id]&&!(r&&r.clears)?'・首通送稀有武器':''):'撐過 '+fmt(g2.dur)+' 通關';
     return '<div class="msv-line'+(ok?'':' off')+'"><div><b>'+esc(g2.nm)+'</b> <span class="hint">建議 Lv.'+g2.rec+'</span><div class="hint">'+goal+'・'+(r?'最久 '+fmt(r.best)+(r.clears?'・通關 '+r.clears+' 次':''):'尚未挑戰')+'</div>'+
       '<div class="msv-mobs">'+stageMobs(g2).map(function(m){ return '<button data-cxmob="'+m+'"><canvas data-spr="mob:'+m+'"></canvas><span>'+D.MOBS[m].nm+'<br>Lv.'+D.MOBS[m].lv+'</span></button>' }).join('')+'</div></div>'+
@@ -860,7 +912,7 @@ function advTab(s){
     '<div class="msv-grid'+(opts.length<4?' n'+opts.length:'')+'">'+opts.map(function(k){ return advCard(s,k) }).join('')+'</div>';
 }
 function resultScreen(win,gain,up){
-  var s=SV.slots[slot], h='<h3>'+(win?'通關！':P.quit?'結束挑戰':P.hp>0?'時間到…':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻</p>'+
+  var s=SV.slots[slot], h='<h3>'+(win?'通關！':P.quit?'結束挑戰':P.hp>0?'時間到…':'倒下了…')+'</h3><p class="hint">存活 '+fmt(Math.floor(st.t))+'・擊倒 '+P.kills+' 隻・狂熱 '+P.feverN+' 次・精英 '+P.eliteKills+' 隻</p>'+
     '<p>經驗 +'+gain+(win?'':'<span class="hint">（'+(P.quit?'中途結束':'死亡')+'只結算 '+D.DEATH_EXP*100+'%，原本 '+P.exp+'）</span>')+'</p>';
   if(s) h+=(up?'<p><b>等級提升！Lv.'+(s.lv-up)+' → Lv.'+s.lv+'</b>　獲得 AP '+up*D.AP_LV+(P.spGain?'、SP '+P.spGain:'')+'</p>':'')+
     (canAdv(s)?'<p><b>可以轉職了！</b>回角色畫面的「轉職！」分頁。</p>':'')+

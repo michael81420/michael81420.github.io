@@ -80,7 +80,77 @@ const r = await p.evaluate(() => {
 // 選單點得動：標題 → 角色選擇（面板的 click handler 壞掉時所有按鈕都會沒反應）
 await p.evaluate(() => document.querySelector('.msv-title').click());   // 直接觸發：標題上的怪物在走，滑鼠點擊會等它穩定
 if (!await p.locator('.msv-slot').count()) r.push('點標題畫面進不了角色選擇（選單 click handler 壞了？）');
+// 戰鬥測試在同一幀同步執行，不依賴真實時間或隨機掉落率。
+r.push(...await p.evaluate(() => {
+  const out = [], C = window.__msv.combat, D = window.MSD;
+  const check = (ok, label) => { if (!ok) out.push(label); };
+  const reset = () => { C.start(null, 's1'); const s = C.snapshot(); s.player.inv = 999; return s; };
+  const kill = () => { const m = C.spawn(D.STAGES.s1.waves[0].mobs[0]); C.hurt(m, 1e9); if (C.snapshot().state === 'pick') C.choose(0); return m; };
+  let { player: P, stage: S } = reset();
+  const saved = localStorage.getItem('msvSave');
+  dispatchEvent(new KeyboardEvent('keydown', { code: 'KeyD' }));
+  dispatchEvent(new KeyboardEvent('keydown', { code: 'Space' }));
+  check(P.dashCd === D.DASH.cd && P.dashX === 1, '空白鍵沒有沿輸入方向衝刺');
+  check(!C.dash(), '衝刺冷卻中仍可重複使用');
+  C.update(.05); check(P.x > P.S.spd * .05 * 3, '衝刺沒有加速位移');
+  dispatchEvent(new KeyboardEvent('keyup', { code: 'KeyD' }));
+  P.dashCd = 0; P.inv = 0; C.dash();
+  const contact = C.spawn(D.STAGES.s1.waves[0].mobs[0]); contact.x = P.x; contact.y = P.y;
+  const hp = P.hp; C.update(.01); check(P.hp === hp, '衝刺無敵期間仍受碰撞傷害');
+  C.pause(); const cd = P.dashCd; check(!C.dash() && P.dashCd === cd, '暫停中仍可衝刺'); C.resume();
+  P.dashCd = 0; document.querySelector('[data-dash]').click(); check(P.dashCd === D.DASH.cd, '螢幕衝刺按鈕失效');
+  ({ player: P, stage: S } = reset());
+  kill(); check(P.combo === 1, '擊倒沒有累積連殺');
+  C.update(D.COMBO.window + .01); check(P.combo === 0, '連殺逾時沒有歸零');
+  reset(); P = C.snapshot().player;
+  for (let i = 0; i < D.RAGE.need; i++) {
+    const m = C.spawn(D.STAGES.s1.waves[0].mobs[0]); C.hurt(m, 1e9);
+  }
+  check(C.snapshot().state === 'pick' && P.rageN === 1 && C.snapshot().picks.length === 3, '首次怒氣沒有在新門檻提供三選一');
+  check(!C.dash(), '三選一期間仍可衝刺'); C.choose(0);
+  check(C.snapshot().state === 'run', '選完增益沒有繼續戰鬥');
+  P.rageN = 999; check(C.rageNeed() === D.RAGE.cap, '怒氣門檻沒有封頂');
+  ({ player: P } = reset());
+  for (let i = 0; i < D.COMBO.need; i++) kill();
+  check(P.fever === D.COMBO.dur && P.feverN === 1, '連殺達標沒有啟動狂熱');
+  kill(); check(P.feverN === 1, '狂熱期間重複觸發狂熱');
+  const random = Math.random; Math.random = () => .5;
+  const target = C.spawn(D.STAGES.s1.waves[0].mobs[0]); target.hp = 10000;
+  C.deal(target, 10); const boosted = 10000 - target.hp;
+  P.fever = 0; C.deal(target, 10); check(boosted === Math.round(10 * D.COMBO.dmg) && target.hp === 10000 - boosted - 10, '狂熱傷害倍率／結束後傷害錯誤');
+  Math.random = random;
+  P.fever = .01; C.update(.02); check(P.fever === 0, '狂熱時間結束沒有解除');
+  ({ player: P, stage: S } = reset()); P.hp = P.maxHp / 2;
+  S.t = D.ELITE.every; C.update(.01); const elite = S.elite;
+  check(elite?.elite && elite.hp === D.MOBS[elite.id].hp * D.ELITE.hp, '精英沒有準時出現或生命倍率錯誤');
+  S.t += D.ELITE.every; C.update(.01); check(S.elite === elite, '未擊倒的精英被下一隻取代');
+  const before = P.hp; P.room = D.INV_MAX;
+  elite.x = P.x; elite.y = P.y; C.hurt(elite, 1e9);
+  check(P.eliteKills === 1 && S.elite === null && P.hp >= before + P.maxHp * D.ELITE.heal - .01, '精英擊破沒有回血／記錄擊倒');
+  C.update(.01);
+  check(P.loot.items.length >= 1, '精英擊破沒有保底裝備');
+  const normal = C.spawn(elite.id); check(!normal.elite && normal.hp === D.MOBS[normal.id].hp, '精英屬性污染普通怪物');
+  // BOSS 保持清屏免疫；精英仍可被清屏擊破，獎勵只發一次。
+  C.start(null, 'boss'); ({ player: P, stage: S } = C.snapshot()); P.inv = 999; S.t = S.bossT;
+  C.update(.01); const boss = S.boss; boss.x = P.x + 30; boss.y = P.y;
+  const bossHp = boss.hp; kill();
+  C.snapshot().picks[0] = D.BOONS.find(b => b.clear); C.choose(0);
+  check(boss.hp === bossHp && boss.dieT < 0, '新增玩法讓清屏可以擊倒 BOSS');
+  C.hurt(boss, 1e9); C.update(1.6);
+  check(document.querySelector('#msv-panel').textContent.includes('通關！'), 'BOSS 擊破沒有正常結算');
+  reset(); P = C.snapshot().player;
+  P.acts = [{ d: { k: 'slash' } }];
+  P.rage = C.rageNeed() - 1; kill();
+  check(C.snapshot().picks.every(b => b.k !== 'n'), '純近戰仍會抽到多重投射');
+  document.querySelector('[data-spd]').click(); document.querySelector('[data-spd]').click();
+  check(document.querySelector('[data-spd]').textContent === '4x', '新增控制鈕破壞 4 倍速切換');
+  document.querySelector('[data-spd]').click();
+  reset(); P = C.snapshot().player;
+  check(P.fever === 0 && P.combo === 0 && P.dashCd === 0 && P.eliteKills === 0, '重開關卡沒有重置戰鬥增益');
+  check(localStorage.getItem('msvSave') === saved, '戰鬥測試改寫了永久存檔');
+  return out;
+}));
 await b.close();
 const bad = [...r, ...errs];
 if (bad.length) { console.log('✗ ' + bad.join('\n✗ ')); process.exit(1); }
-console.log('✓ 卷軸機率、掉落表、技能圖示、轉職與 SP 分池自檢通過');
+console.log('✓ 卷軸機率、掉落表、技能圖示、轉職與 SP 分池、衝刺／連殺狂熱／精英獎勵自檢通過');

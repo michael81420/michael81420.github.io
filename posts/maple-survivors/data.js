@@ -276,8 +276,12 @@ window.MSD={
   },
   // BOSS 首次通關獎勵：本職業稀有武器（保底）＋楓幣＋稱號
   FIRST_CLEAR:{boss:{meso:5000, title:'蘑菇王剋星', rareOwnJob:1}, boss2:{meso:20000, title:'殭屍猴王剋星'}, boss3:{meso:60000, title:'巴洛古剋星'}},
-  // 怒氣：擊倒怪物累積，集滿時三選一「本場限定增益」，離開關卡就消失。第 n 次要 need×n
-  RAGE:{need:40, choices:3},
+  // 戰鬥節奏：開場即有怪、衝刺脫困、連殺狂熱、定時精英；全部只在本場有效。
+  OPENING:{count:5, radius:260},
+  DASH:{cd:3, dur:.2, inv:.3, speed:4.5},
+  COMBO:{need:15, window:4, dur:7, dmg:1.6, haste:1.8},
+  ELITE:{every:40, radius:340, hp:4, atk:1.25, exp:5, speed:1.15, heal:.2},
+  RAGE:{need:12, step:12, cap:60, choices:3},
   BOONS:[   // ico＝借用的技能圖示（只為了好看）；clear＝選了就把畫面上的怪物全部擊倒（BOSS 除外；經驗、掉落照拿，不累積怒氣）
     {k:'cdr',   nm:'攻速提升',   desc:'所有攻擊冷卻 −12%',      mods:{cdr:.12}, ico:1101004},
     {k:'dmg',   nm:'力量湧現',   desc:'傷害 +20%',              mods:{dmg:.2}, ico:1101006},
