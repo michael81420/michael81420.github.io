@@ -10,6 +10,7 @@
    只有知道網址的人看得到（純靜態站無法真正上鎖）。
    發佈時：刪掉這裡的 draft:1 即可，index 兩張卡片照常先寫好；sitemap 兩行仍要手動補。 */
 var POSTS=[
+  {slug:'gooaye-ep718-stocks', d:'2026-11-29', cat:'股癌podcast分析', zh:'股癌 EP718 · 個股觀點整理', en:'Gooaye EP718 · Stock Notes'},
   {slug:'gooaye-ep717-stocks', d:'2026-11-25', cat:'股癌podcast分析', zh:'股癌 EP717 · 個股觀點整理', en:'Gooaye EP717 · Stock Notes'},
   {slug:'gooaye-ep716-stocks', d:'2026-11-21', cat:'股癌podcast分析', zh:'股癌 EP716 · 個股觀點整理', en:'Gooaye EP716 · Stock Notes'},
   {slug:'gooaye-ep715-stocks', d:'2026-11-18', cat:'股癌podcast分析', zh:'股癌 EP715 · 個股觀點整理', en:'Gooaye EP715 · Stock Notes'},
